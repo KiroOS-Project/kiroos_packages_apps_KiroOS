@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiro Phone: keypad, recents and contacts pages with a bottom tab bar -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="8dp"
+        android:paddingStart="20dp">
+
+        <TextView
+            android:id="@+id/page_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Kiro.Title" />
+
+        <ImageButton
+            android:id="@+id/btn_more"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/icon_button_bg"
+            android:contentDescription="@string/more_options"
+            android:src="@drawable/ic_more" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <include layout="@layout/page_keypad" />
+
+        <include layout="@layout/page_recents" />
+
+        <include layout="@layout/page_contacts" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/kiro_divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal">
+
+        <include android:id="@+id/tab_keypad" layout="@layout/tab_item" />
+
+        <include android:id="@+id/tab_recents" layout="@layout/tab_item" />
+
+        <include android:id="@+id/tab_contacts" layout="@layout/tab_item" />
+    </LinearLayout>
+</LinearLayout>

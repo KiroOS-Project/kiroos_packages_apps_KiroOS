@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/page_recents"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:id="@+id/chip_all"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@drawable/chip_bg"
+            android:gravity="center"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/filter_all"
+            android:textColor="@color/kiro_text"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/chip_missed"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/chip_bg"
+            android:gravity="center"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/filter_missed"
+            android:textColor="@color/kiro_text"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/recents_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:divider="@null"
+            android:paddingBottom="8dp"
+            android:scrollbarStyle="outsideOverlay" />
+
+        <TextView
+            android:id="@+id/recents_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_recents"
+            android:visibility="gone"
+            style="@style/Kiro.Caption" />
+    </FrameLayout>
+</LinearLayout>

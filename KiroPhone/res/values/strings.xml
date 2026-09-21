@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Phone</string>
+
+    <!-- tabs and menu -->
+    <string name="tab_keypad">Keypad</string>
+    <string name="tab_recents">Recents</string>
+    <string name="tab_contacts">Contacts</string>
+    <string name="more_options">More options</string>
+    <string name="return_to_call">Return to call</string>
+    <string name="call_settings">Call settings</string>
+    <string name="calling_accounts">Calling accounts</string>
+    <string name="blocked_numbers">Blocked numbers</string>
+    <string name="clear_history">Clear call history</string>
+    <string name="clear_history_confirm">Delete all calls from the history?</string>
+    <string name="clear">Clear</string>
+    <string name="not_available">Not available</string>
+
+    <!-- keypad -->
+    <string name="call">Call</string>
+    <string name="delete">Delete</string>
+    <string name="add_contact">Add to contacts</string>
+    <string name="voicemail">Voicemail</string>
+    <string name="imei">IMEI</string>
+    <string name="unavailable">Unavailable</string>
+    <string name="no_call_permission">Kiro Phone is not allowed to make calls</string>
+    <string name="no_contacts_app">No contacts app</string>
+    <string name="no_messages_app">No messaging app</string>
+
+    <!-- recents -->
+    <string name="filter_all">All</string>
+    <string name="filter_missed">Missed</string>
+    <string name="no_recents">No calls yet</string>
+    <string name="title_count">%1$s (%2$d)</string>
+    <string name="label_number">%1$s · %2$s</string>
+    <string name="contact_details">Contact details</string>
+    <string name="send_message">Send message</string>
+    <string name="copy_number">Copy number</string>
+    <string name="copied">Copied</string>
+    <string name="edit_before_call">Edit number before call</string>
+    <string name="block_number">Block number</string>
+    <string name="number_blocked">%s blocked</string>
+    <string name="block_failed">Could not block the number</string>
+    <string name="delete_from_history">Delete from history</string>
+
+    <!-- contacts -->
+    <string name="search_contacts">Search contacts</string>
+    <string name="no_contacts">No contacts with a phone number</string>
+    <string name="new_contact">New contact</string>
+    <string name="more_numbers">%1$s +%2$d</string>
+
+    <!-- in call -->
+    <string name="incoming_call">Incoming call</string>
+    <string name="dialing">Calling…</string>
+    <string name="ongoing_call">Ongoing call</string>
+    <string name="on_hold">On hold</string>
+    <string name="call_ended">Call ended</string>
+    <string name="conference_call">Conference call</string>
+    <string name="private_number">Private number</string>
+    <string name="unknown_caller">Unknown</string>
+    <string name="payphone">Payphone</string>
+    <string name="answer">Answer</string>
+    <string name="decline">Decline</string>
+    <string name="hang_up">Hang up</string>
+    <string name="mute">Mute</string>
+    <string name="keypad">Keypad</string>
+    <string name="speaker">Speaker</string>
+    <string name="audio">Audio</string>
+    <string name="hold">Hold</string>
+    <string name="add_call">Add call</string>
+    <string name="merge">Merge</string>
+    <string name="swap">Swap</string>
+    <string name="hide">Hide</string>
+    <string name="route_bluetooth">Bluetooth</string>
+    <string name="route_headset">Wired headset</string>
+    <string name="route_earpiece">Phone</string>
+    <string name="on_hold_named">On hold · %s</string>
+    <string name="other_call_named">Other call · %s</string>
+    <string name="call_with">Call with</string>
+    <string name="sim_n">SIM %d</string>
+    <string name="send_tones">Send the tones %s?</string>
+    <string name="send">Send</string>
+    <string name="reply_message">Message</string>
+    <string name="reply_cant_talk">Can\'t talk now. What\'s up?</string>
+    <string name="reply_call_back">I\'ll call you right back.</string>
+    <string name="reply_on_my_way">I\'ll call you later.</string>
+    <string name="reply_custom">Write your own…</string>
+    <string name="reply_hint">Message</string>
+</resources>

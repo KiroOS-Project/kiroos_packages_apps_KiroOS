@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/page_contacts"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <EditText
+        android:id="@+id/contacts_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:drawablePadding="12dp"
+        android:drawableStart="@drawable/ic_search"
+        android:drawableTint="@color/kiro_text_secondary"
+        android:hint="@string/search_contacts"
+        android:imeOptions="actionSearch|flagNoExtractUi"
+        android:inputType="textPersonName|textNoSuggestions"
+        android:maxLines="1"
+        android:singleLine="true"
+        style="@style/Kiro.Field" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/contacts_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:divider="@null"
+            android:fastScrollEnabled="true"
+            android:paddingBottom="88dp"
+            android:scrollbarStyle="outsideOverlay" />
+
+        <TextView
+            android:id="@+id/contacts_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_contacts"
+            android:visibility="gone"
+            style="@style/Kiro.Caption" />
+
+        <ImageButton
+            android:id="@+id/btn_new_contact"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="20dp"
+            android:contentDescription="@string/new_contact"
+            android:elevation="6dp"
+            android:src="@drawable/ic_person_add" />
+    </FrameLayout>
+</LinearLayout>

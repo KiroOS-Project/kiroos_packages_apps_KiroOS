@@ -129,7 +129,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 try {
                     startActivity(new Intent(AlarmClock.ACTION_SHOW_ALARMS)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                } catch (ActivityNotFoundException e) {
+                } catch (ActivityNotFoundException | SecurityException e) {
                     // no clock app
                 }
             }
@@ -250,14 +250,15 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             final LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             for (int c = 0; c < GRID_COLUMNS; c++, i++) {
-                final View cell;
                 if (i < grid.size()) {
-                    cell = bindIcon(inflater, row, grid.get(i), true);
+                    row.addView(bindIcon(inflater, row, grid.get(i), true),
+                            new LinearLayout.LayoutParams(0,
+                                    ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
                 } else {
-                    cell = new View(this);
+                    // empty cell: keeps the columns aligned (a wrap_content View would
+                    // take all the height it is offered)
+                    row.addView(new View(this), new LinearLayout.LayoutParams(0, 0, 1f));
                 }
-                row.addView(cell, new LinearLayout.LayoutParams(0,
-                        ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
             }
             mGrid.addView(row);
         }

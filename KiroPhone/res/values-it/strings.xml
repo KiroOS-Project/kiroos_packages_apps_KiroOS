@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Telefono</string>
+
+    <string name="tab_keypad">Tastiera</string>
+    <string name="tab_recents">Recenti</string>
+    <string name="tab_contacts">Contatti</string>
+    <string name="more_options">Altre opzioni</string>
+    <string name="return_to_call">Torna alla chiamata</string>
+    <string name="call_settings">Impostazioni chiamate</string>
+    <string name="calling_accounts">Account per le chiamate</string>
+    <string name="blocked_numbers">Numeri bloccati</string>
+    <string name="clear_history">Cancella cronologia chiamate</string>
+    <string name="clear_history_confirm">Eliminare tutte le chiamate dalla cronologia?</string>
+    <string name="clear">Cancella</string>
+    <string name="not_available">Non disponibile</string>
+
+    <string name="call">Chiama</string>
+    <string name="delete">Elimina</string>
+    <string name="add_contact">Aggiungi ai contatti</string>
+    <string name="voicemail">Segreteria</string>
+    <string name="imei">IMEI</string>
+    <string name="unavailable">Non disponibile</string>
+    <string name="no_call_permission">Kiro Phone non ha il permesso di chiamare</string>
+    <string name="no_contacts_app">Nessuna app contatti</string>
+    <string name="no_messages_app">Nessuna app messaggi</string>
+
+    <string name="filter_all">Tutte</string>
+    <string name="filter_missed">Perse</string>
+    <string name="no_recents">Nessuna chiamata</string>
+    <string name="contact_details">Dettagli contatto</string>
+    <string name="send_message">Invia messaggio</string>
+    <string name="copy_number">Copia numero</string>
+    <string name="copied">Copiato</string>
+    <string name="edit_before_call">Modifica prima di chiamare</string>
+    <string name="block_number">Blocca numero</string>
+    <string name="number_blocked">%s bloccato</string>
+    <string name="block_failed">Impossibile bloccare il numero</string>
+    <string name="delete_from_history">Elimina dalla cronologia</string>
+
+    <string name="search_contacts">Cerca contatti</string>
+    <string name="no_contacts">Nessun contatto con numero di telefono</string>
+    <string name="new_contact">Nuovo contatto</string>
+
+    <string name="incoming_call">Chiamata in arrivo</string>
+    <string name="dialing">Chiamata in corso…</string>
+    <string name="ongoing_call">Chiamata in corso</string>
+    <string name="on_hold">In attesa</string>
+    <string name="call_ended">Chiamata terminata</string>
+    <string name="conference_call">Conferenza</string>
+    <string name="private_number">Numero privato</string>
+    <string name="unknown_caller">Sconosciuto</string>
+    <string name="payphone">Telefono pubblico</string>
+    <string name="answer">Rispondi</string>
+    <string name="decline">Rifiuta</string>
+    <string name="hang_up">Riaggancia</string>
+    <string name="mute">Muto</string>
+    <string name="keypad">Tastiera</string>
+    <string name="speaker">Vivavoce</string>
+    <string name="audio">Audio</string>
+    <string name="hold">Attesa</string>
+    <string name="add_call">Aggiungi</string>
+    <string name="merge">Unisci</string>
+    <string name="swap">Scambia</string>
+    <string name="hide">Nascondi</string>
+    <string name="route_bluetooth">Bluetooth</string>
+    <string name="route_headset">Auricolare con filo</string>
+    <string name="route_earpiece">Telefono</string>
+    <string name="on_hold_named">In attesa · %s</string>
+    <string name="other_call_named">Altra chiamata · %s</string>
+    <string name="call_with">Chiama con</string>
+    <string name="sim_n">SIM %d</string>
+    <string name="send_tones">Inviare i toni %s?</string>
+    <string name="send">Invia</string>
+    <string name="reply_message">Messaggio</string>
+    <string name="reply_cant_talk">Non posso parlare ora. Dimmi pure.</string>
+    <string name="reply_call_back">Ti richiamo subito.</string>
+    <string name="reply_on_my_way">Ti chiamo più tardi.</string>
+    <string name="reply_custom">Scrivi un messaggio…</string>
+    <string name="reply_hint">Messaggio</string>
+</resources>

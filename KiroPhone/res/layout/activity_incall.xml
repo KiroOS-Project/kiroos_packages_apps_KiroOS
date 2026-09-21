@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiro Phone in-call screen -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black">
+
+    <LinearLayout
+        android:id="@+id/call_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingEnd="24dp"
+        android:paddingStart="24dp">
+
+        <TextView
+            android:id="@+id/account_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:visibility="gone"
+            style="@style/Kiro.Caption" />
+
+        <TextView
+            android:id="@+id/call_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/kiro_accent"
+            android:textSize="15sp" />
+
+        <FrameLayout
+            android:layout_width="@dimen/incall_avatar"
+            android:layout_height="@dimen/incall_avatar"
+            android:layout_marginTop="28dp">
+
+            <TextView
+                android:id="@+id/avatar_letter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/avatar_circle"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:textColor="@color/kiro_text"
+                android:textSize="48sp" />
+
+            <ImageView
+                android:id="@+id/avatar_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/avatar_circle"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/caller_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            style="@style/Kiro.Title" />
+
+        <TextView
+            android:id="@+id/caller_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:textColor="@color/kiro_text_secondary"
+            style="@style/Kiro.Body" />
+
+        <LinearLayout
+            android:id="@+id/secondary_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/kiro_button"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/secondary_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                style="@style/Kiro.Body" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_swap" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- in-call controls -->
+        <LinearLayout
+            android:id="@+id/controls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <include android:id="@+id/btn_mute" layout="@layout/incall_toggle" />
+
+                <include android:id="@+id/btn_keypad" layout="@layout/incall_toggle" />
+
+                <include android:id="@+id/btn_speaker" layout="@layout/incall_toggle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <include android:id="@+id/btn_hold" layout="@layout/incall_toggle" />
+
+                <include android:id="@+id/btn_add" layout="@layout/incall_toggle" />
+
+                <include android:id="@+id/btn_merge" layout="@layout/incall_toggle" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btn_end"
+                android:layout_width="@dimen/call_button"
+                android:layout_height="@dimen/call_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="32dp"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/call_end_bg"
+                android:contentDescription="@string/hang_up"
+                android:src="@drawable/ic_call_end" />
+        </LinearLayout>
+
+        <!-- incoming call -->
+        <LinearLayout
+            android:id="@+id/incoming"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/btn_decline"
+                    android:layout_width="@dimen/call_button"
+                    android:layout_height="@dimen/call_button"
+                    android:background="@drawable/call_end_bg"
+                    android:contentDescription="@string/decline"
+                    android:src="@drawable/ic_call_end" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/decline"
+                    style="@style/Kiro.Caption" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/btn_reply"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/kiro_button"
+                    android:contentDescription="@string/reply_message"
+                    android:src="@drawable/ic_message" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/reply_message"
+                    style="@style/Kiro.Caption" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/btn_answer"
+                    android:layout_width="@dimen/call_button"
+                    android:layout_height="@dimen/call_button"
+                    android:background="@drawable/call_button_bg"
+                    android:contentDescription="@string/answer"
+                    android:src="@drawable/ic_call" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/answer"
+                    style="@style/Kiro.Caption" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- DTMF keypad over the call -->
+    <LinearLayout
+        android:id="@+id/dtmf_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/kiro_black"
+        android:clickable="true"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        android:paddingEnd="24dp"
+        android:paddingStart="24dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/dtmf_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            style="@style/Kiro.Caption" />
+
+        <TextView
+            android:id="@+id/dtmf_digits"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="start"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/kiro_text"
+            android:textSize="34sp" />
+
+        <com.kiroos.phone.DialpadView
+            android:id="@+id/dtmf_pad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/dtmf_end"
+                android:layout_width="@dimen/call_button"
+                android:layout_height="@dimen/call_button"
+                android:background="@drawable/call_end_bg"
+                android:contentDescription="@string/hang_up"
+                android:src="@drawable/ic_call_end" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/dtmf_hide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/kiro_touch_target"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:paddingEnd="12dp"
+                    android:paddingStart="12dp"
+                    android:text="@string/hide"
+                    android:textColor="@color/kiro_accent"
+                    android:textSize="16sp" />
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

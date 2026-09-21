@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiro Phone v1.0: dialer, recents, contacts and the in-call screen -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kiroos.phone">
+
+    <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CALL_PRIVILEGED" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CONTROL_INCALL_EXPERIENCE" />
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.READ_BLOCKED_NUMBERS" />
+    <uses-permission android:name="android.permission.WRITE_BLOCKED_NUMBERS" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher_phone"
+        android:theme="@style/Theme.Kiro"
+        android:supportsRtl="true"
+        android:defaultToDeviceProtectedStorage="true">
+
+        <activity
+            android:name=".PhoneActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:screenOrientation="nosensor"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
+            android:resizeableActivity="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DIAL" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tel" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DIAL" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="voicemail" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DIAL" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.DIAL" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.item/phone" />
+                <data android:mimeType="vnd.android.cursor.item/person" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.CALL_BUTTON" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <!-- missed call notification and "call history" links -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="vnd.android.cursor.dir/calls" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".incall.InCallActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:taskAffinity="com.kiroos.phone.incall"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:screenOrientation="nosensor"
+            android:configChanges="keyboardHidden|orientation|screenSize|smallestScreenSize|screenLayout"
+            android:resizeableActivity="true"
+            android:directBootAware="true"
+            android:theme="@style/Theme.Kiro.InCall" />
+
+        <service
+            android:name=".incall.KiroInCallService"
+            android:permission="android.permission.BIND_INCALL_SERVICE"
+            android:directBootAware="true">
+            <meta-data android:name="android.telecom.IN_CALL_SERVICE_UI" android:value="true" />
+            <intent-filter>
+                <action android:name="android.telecom.InCallService" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".incall.NotificationActions"
+            android:exported="false"
+            android:directBootAware="true" />
+    </application>
+</manifest>

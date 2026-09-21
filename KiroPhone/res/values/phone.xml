@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Kiro.InCall" parent="@style/Theme.Kiro">
+        <item name="android:windowBackground">@color/kiro_black</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Activity</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <color name="key_fill">#FF141417</color>
+
+    <dimen name="incall_avatar">120dp</dimen>
+    <dimen name="incall_toggle">64dp</dimen>
+    <dimen name="call_button">72dp</dimen>
+    <dimen name="row_height">72dp</dimen>
+    <dimen name="row_avatar">44dp</dimen>
+    <dimen name="suggestion_height">56dp</dimen>
+    <dimen name="dialpad_key_height">54dp</dimen>
+</resources>

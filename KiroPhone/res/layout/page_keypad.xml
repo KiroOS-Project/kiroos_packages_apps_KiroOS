@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/page_keypad"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- contacts matching what is typed (T9 names and numbers) -->
+    <LinearLayout
+        android:id="@+id/suggestions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <Space
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="0dp" />
+
+        <EditText
+            android:id="@+id/digits"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:cursorVisible="false"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/kiro_text"
+            android:textSize="34sp" />
+
+        <ImageButton
+            android:id="@+id/btn_backspace"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/icon_button_bg"
+            android:contentDescription="@string/delete"
+            android:src="@drawable/ic_backspace"
+            android:tint="@color/kiro_text_secondary"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <com.kiroos.phone.DialpadView
+        android:id="@+id/dialpad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="20dp"
+        android:paddingStart="20dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/btn_add_contact"
+                android:layout_width="@dimen/kiro_touch_target"
+                android:layout_height="@dimen/kiro_touch_target"
+                android:layout_gravity="center"
+                android:background="@drawable/icon_button_bg"
+                android:contentDescription="@string/add_contact"
+                android:src="@drawable/ic_person_add"
+                android:tint="@color/kiro_text_secondary"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/btn_call"
+            android:layout_width="@dimen/call_button"
+            android:layout_height="@dimen/call_button"
+            android:background="@drawable/call_button_bg"
+            android:contentDescription="@string/call"
+            android:src="@drawable/ic_call" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageButton
+                android:id="@+id/btn_voicemail"
+                android:layout_width="@dimen/kiro_touch_target"
+                android:layout_height="@dimen/kiro_touch_target"
+                android:layout_gravity="center"
+                android:background="@drawable/icon_button_bg"
+                android:contentDescription="@string/voicemail"
+                android:src="@drawable/ic_voicemail"
+                android:tint="@color/kiro_text_secondary" />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>
