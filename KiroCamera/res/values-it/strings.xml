@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fotocamera</string>
+    <string name="photo">Foto</string>
+    <string name="video">Video</string>
+    <string name="shutter">Scatta</string>
+    <string name="flash">Flash</string>
+    <string name="grid">Griglia</string>
+    <string name="raw_on">RAW attivo: ogni foto viene salvata anche in DNG</string>
+    <string name="raw_off">RAW disattivato</string>
+    <string name="last_photo">Ultima foto</string>
+    <string name="switch_camera">Cambia fotocamera</string>
+    <string name="need_camera">Kiro Camera ha bisogno del permesso fotocamera</string>
+    <string name="camera_error">La fotocamera non è disponibile</string>
+    <string name="save_failed">Impossibile salvare la foto</string>
+    <string name="video_error">Impossibile avviare la registrazione</string>
+</resources>

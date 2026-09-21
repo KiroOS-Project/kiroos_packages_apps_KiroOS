@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black">
+
+    <FrameLayout
+        android:id="@+id/preview_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/preview_top">
+
+        <com.kiroos.camera.PreviewView
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/focus_ring"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/focus_ring"
+        android:visibility="invisible" />
+
+    <View
+        android:id="@+id/flash_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/kiro_black"
+        android:visibility="gone" />
+
+    <!-- top controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp">
+
+        <ImageButton
+            android:id="@+id/btn_flash"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/flash" />
+
+        <ImageButton
+            android:id="@+id/btn_grid"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/grid"
+            android:src="@drawable/ic_grid" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/rec_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/kiro_negative"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif-medium"
+            android:visibility="gone" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/btn_4k"
+            android:text="@string/uhd"
+            style="@style/ToggleChip" />
+
+        <TextView
+            android:id="@+id/btn_raw"
+            android:text="@string/raw"
+            style="@style/ToggleChip" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/zoom_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/zoom_bg"
+        android:paddingBottom="6dp"
+        android:paddingEnd="14dp"
+        android:paddingStart="14dp"
+        android:paddingTop="6dp"
+        android:textColor="@color/kiro_text"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <!-- bottom controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:id="@+id/modes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/mode_photo"
+                android:text="@string/photo"
+                style="@style/ModeChip" />
+
+            <TextView
+                android:id="@+id/mode_video"
+                android:layout_marginStart="8dp"
+                android:text="@string/video"
+                style="@style/ModeChip" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/thumb"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/thumb_bg"
+                    android:contentDescription="@string/last_photo"
+                    android:scaleType="centerCrop" />
+            </FrameLayout>
+
+            <ImageButton
+                android:id="@+id/shutter"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:background="@null"
+                android:contentDescription="@string/shutter"
+                android:scaleType="fitCenter" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/btn_switch"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/thumb_bg"
+                    android:contentDescription="@string/switch_camera"
+                    android:src="@drawable/ic_switch_camera" />
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

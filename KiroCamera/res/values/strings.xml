@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Camera</string>
+    <string name="photo">Photo</string>
+    <string name="video">Video</string>
+    <string name="shutter">Shutter</string>
+    <string name="flash">Flash</string>
+    <string name="grid">Grid</string>
+    <string name="raw">RAW</string>
+    <string name="uhd">4K</string>
+    <string name="raw_on">RAW on: every photo is also saved as DNG</string>
+    <string name="raw_off">RAW off</string>
+    <string name="last_photo">Last photo</string>
+    <string name="switch_camera">Switch camera</string>
+    <string name="need_camera">Kiro Camera needs the camera permission</string>
+    <string name="camera_error">The camera is not available</string>
+    <string name="save_failed">The photo could not be saved</string>
+    <string name="video_error">Recording could not start</string>
+</resources>
