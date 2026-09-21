@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:background="@drawable/file_row"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingEnd="16dp"
+    android:paddingStart="20dp">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:importantForAccessibility="no" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="middle"
+            android:maxLines="1"
+            style="@style/Kiro.Body" />
+
+        <TextView
+            android:id="@+id/info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            style="@style/Kiro.Caption" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_check"
+        android:tint="@color/kiro_accent"
+        android:visibility="gone" />
+</LinearLayout>

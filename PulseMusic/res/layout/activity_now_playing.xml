@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black"
+    android:fitsSystemWindows="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingEnd="24dp"
+    android:paddingStart="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_down"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:layout_marginStart="-12dp"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/close"
+            android:src="@drawable/ic_expand_more" />
+
+        <TextView
+            android:id="@+id/format"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/kiro_accent"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05" />
+
+        <ImageButton
+            android:id="@+id/btn_eq"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:layout_marginEnd="-12dp"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/equalizer"
+            android:src="@drawable/ic_equalizer" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/art"
+        android:layout_width="@dimen/art_size"
+        android:layout_height="@dimen/art_size"
+        android:layout_marginTop="8dp"
+        android:importantForAccessibility="no"
+        android:tint="@color/kiro_text_tertiary" />
+
+    <com.kiroos.pulse.WaveView
+        android:id="@+id/wave"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/wave_height"
+        android:layout_marginTop="12dp" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        style="@style/Kiro.Headline" />
+
+    <TextView
+        android:id="@+id/artist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        style="@style/Kiro.Caption" />
+
+    <SeekBar
+        android:id="@+id/seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:id="@+id/elapsed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Kiro.Caption" />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Kiro.Caption" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_shuffle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:layout_weight="1"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/shuffle"
+            android:src="@drawable/ic_shuffle" />
+
+        <ImageButton
+            android:id="@+id/btn_prev"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/previous"
+            android:src="@drawable/ic_previous" />
+
+        <ImageButton
+            android:id="@+id/btn_play"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
+            android:contentDescription="@string/play"
+            android:src="@drawable/ic_play" />
+
+        <ImageButton
+            android:id="@+id/btn_next"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/next"
+            android:src="@drawable/ic_next" />
+
+        <ImageButton
+            android:id="@+id/btn_repeat"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:layout_weight="1"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/repeat"
+            android:src="@drawable/ic_repeat" />
+    </LinearLayout>
+</LinearLayout>

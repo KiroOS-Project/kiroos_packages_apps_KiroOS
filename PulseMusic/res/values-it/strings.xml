@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="songs">Brani</string>
+    <string name="albums">Album</string>
+    <string name="artists">Artisti</string>
+    <string name="streams">Stream</string>
+    <string name="stream">Stream</string>
+    <string name="unknown">Sconosciuto</string>
+    <string name="no_music">Nessuna musica trovata sul telefono</string>
+    <string name="no_streams">Aggiungi una web radio o un link audio diretto (MP3, AAC, FLAC, OGG o playlist .m3u / .pls)</string>
+    <string name="stream_hint">Link dello stream (https://…)</string>
+    <string name="stream_name">Nome</string>
+    <string name="save_stream">Salvare questo stream?</string>
+    <string name="save_and_play">Salva e riproduci</string>
+    <string name="just_play">Riproduci e basta</string>
+    <string name="remove_stream">Rimuovere %s?</string>
+    <string name="remove">Rimuovi</string>
+    <string name="bad_url">Si possono riprodurre solo link http e https</string>
+    <string name="play">Riproduci</string>
+    <string name="pause">Pausa</string>
+    <string name="next">Successivo</string>
+    <string name="previous">Precedente</string>
+    <string name="shuffle">Casuale</string>
+    <string name="repeat">Ripeti</string>
+    <string name="close">Chiudi</string>
+    <string name="back">Indietro</string>
+    <string name="buffering">Caricamento…</string>
+    <string name="live">Diretta</string>
+    <string name="play_error">Impossibile riprodurre: %s</string>
+    <string name="equalizer">Equalizzatore</string>
+    <string name="preamp">Pre-amplificatore</string>
+    <string name="preamp_hint">Abbassalo quando alzi le bande per evitare distorsioni</string>
+    <string name="preset_flat">Neutro</string>
+    <string name="preset_bass">Bassi</string>
+    <string name="preset_vocal">Voce</string>
+    <string name="preset_treble">Alti</string>
+    <string name="preset_classical">Classica</string>
+    <string name="preset_electronic">Elettronica</string>
+    <plurals name="songs">
+        <item quantity="one">%d brano</item>
+        <item quantity="other">%d brani</item>
+    </plurals>
+</resources>

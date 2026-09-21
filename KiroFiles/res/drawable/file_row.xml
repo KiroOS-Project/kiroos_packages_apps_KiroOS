@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- list row: ripple on touch, tinted while selected -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/kiro_ripple">
+    <item>
+        <selector>
+            <item android:state_activated="true">
+                <color android:color="@color/selected_row" />
+            </item>
+            <item>
+                <color android:color="@android:color/transparent" />
+            </item>
+        </selector>
+    </item>
+</ripple>

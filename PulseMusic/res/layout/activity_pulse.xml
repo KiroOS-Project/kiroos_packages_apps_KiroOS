@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="8dp"
+        android:paddingStart="20dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            style="@style/Kiro.Title" />
+
+        <ImageButton
+            android:id="@+id/btn_eq"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/equalizer"
+            android:src="@drawable/ic_equalizer" />
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp">
+
+            <TextView android:id="@+id/tab_songs" android:text="@string/songs" style="@style/Chip" />
+
+            <TextView android:id="@+id/tab_albums" android:text="@string/albums" style="@style/Chip" />
+
+            <TextView android:id="@+id/tab_artists" android:text="@string/artists" style="@style/Chip" />
+
+            <TextView android:id="@+id/tab_streams" android:text="@string/streams" style="@style/Chip" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <LinearLayout
+        android:id="@+id/stream_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/stream_url"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="@string/stream_hint"
+            android:imeOptions="actionGo|flagNoExtractUi"
+            android:inputType="textUri"
+            android:maxLines="1"
+            android:singleLine="true"
+            style="@style/Kiro.Field" />
+
+        <ImageButton
+            android:id="@+id/stream_play"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/play"
+            android:src="@drawable/ic_play" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:fastScrollEnabled="true" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone"
+            style="@style/Kiro.Caption" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/mini_player"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="@color/kiro_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="8dp"
+        android:paddingStart="12dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/mini_art"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/kiro_card"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mini_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                style="@style/Kiro.Body" />
+
+            <TextView
+                android:id="@+id/mini_artist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                style="@style/Kiro.Caption" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/mini_toggle"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/play"
+            android:src="@drawable/ic_play" />
+    </LinearLayout>
+</LinearLayout>
