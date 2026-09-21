@@ -8,6 +8,7 @@ LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res packages/apps/KiroOS/KiroUi/res
 LOCAL_STATIC_JAVA_LIBRARIES := kiroos-ui
 LOCAL_AAPT_FLAGS := --auto-add-overlay --extra-packages com.kiroos.ui
 LOCAL_SDK_VERSION := current
-LOCAL_OVERRIDES_PACKAGES := Eleven Music MusicFX AudioFX
+# AudioFX stays: it is the system equalizer for other players (Pulse has its own)
+LOCAL_OVERRIDES_PACKAGES := Eleven Music
 LOCAL_PROGUARD_ENABLED := disabled
 include $(BUILD_PACKAGE)
