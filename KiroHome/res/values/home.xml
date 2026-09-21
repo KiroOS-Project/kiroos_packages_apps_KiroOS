@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- The wallpaper shows through; bars are transparent and drawn over -->
+    <style name="Theme.KiroHome" parent="@style/Theme.Kiro">
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:popupMenuStyle">@android:style/Widget.Material.PopupMenu</item>
+    </style>
+
+    <!-- keeps white text readable on light wallpapers -->
+    <style name="HomeShadow">
+        <item name="android:shadowColor">#99000000</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">6</item>
+    </style>
+
+    <dimen name="icon_size">56dp</dimen>
+    <dimen name="home_margin">12dp</dimen>
+
+    <color name="drawer_scrim">#F2000000</color>
+    <color name="dock_fill">#8C121214</color>
+
+</resources>
