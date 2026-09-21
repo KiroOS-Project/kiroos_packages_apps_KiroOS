@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calendar</string>
+    <string name="today">Today</string>
+    <string name="previous_month">Previous month</string>
+    <string name="next_month">Next month</string>
+    <string name="no_events">No events</string>
+    <string name="new_event">New event</string>
+    <string name="no_title">(No title)</string>
+    <string name="all_day">All day</string>
+    <string name="back">Back</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="event_missing">This event no longer exists</string>
+    <string name="delete_event">Delete this event?</string>
+    <string name="delete_series">Delete this event and all its repetitions?</string>
+    <string name="no_maps">No maps app</string>
+    <string name="title_hint">Title</string>
+    <string name="location_hint">Place</string>
+    <string name="description_hint">Notes</string>
+    <string name="repeat">Repeat</string>
+    <string name="reminder">Reminder</string>
+    <string name="calendar">Calendar</string>
+    <string name="repeat_none">Does not repeat</string>
+    <string name="repeat_daily">Every day</string>
+    <string name="repeat_weekly">Every week</string>
+    <string name="repeat_monthly">Every month</string>
+    <string name="repeat_yearly">Every year</string>
+    <string name="no_reminder">No reminder</string>
+    <string name="at_start">At the start</string>
+    <string name="minutes_before">%d minutes before</string>
+    <string name="hours_before">%d hours before</string>
+    <string name="days_before">%d days before</string>
+    <string name="weeks_before">%d weeks before</string>
+    <string name="phone_calendar">Phone</string>
+    <string name="no_calendar">No calendar can be written. Allow Calendar access and try again.</string>
+    <string name="save_failed">The event could not be saved</string>
+</resources>

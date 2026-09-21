@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="4dp"
+        android:paddingStart="20dp">
+
+        <TextView
+            android:id="@+id/month_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            style="@style/Kiro.Title" />
+
+        <ImageButton
+            android:id="@+id/btn_today"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/today"
+            android:src="@drawable/ic_today" />
+
+        <ImageButton
+            android:id="@+id/btn_prev"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/previous_month"
+            android:src="@drawable/ic_chevron_left" />
+
+        <ImageButton
+            android:id="@+id/btn_next"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/next_month"
+            android:src="@drawable/ic_chevron_right" />
+    </LinearLayout>
+
+    <com.kiroos.calendar.MonthView
+        android:id="@+id/month"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/month_height"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/kiro_divider" />
+
+    <TextView
+        android:id="@+id/day_title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:textColor="@color/kiro_accent"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-medium" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/agenda"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:divider="@null"
+            android:paddingBottom="88dp" />
+
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_events"
+            android:visibility="gone"
+            style="@style/Kiro.Caption" />
+
+        <ImageButton
+            android:id="@+id/btn_add"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="20dp"
+            android:contentDescription="@string/new_event"
+            android:elevation="6dp"
+            android:src="@drawable/ic_add" />
+    </FrameLayout>
+</LinearLayout>

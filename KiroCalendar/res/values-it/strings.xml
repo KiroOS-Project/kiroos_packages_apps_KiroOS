@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calendario</string>
+    <string name="today">Oggi</string>
+    <string name="previous_month">Mese precedente</string>
+    <string name="next_month">Mese successivo</string>
+    <string name="no_events">Nessun evento</string>
+    <string name="new_event">Nuovo evento</string>
+    <string name="no_title">(Senza titolo)</string>
+    <string name="all_day">Tutto il giorno</string>
+    <string name="back">Indietro</string>
+    <string name="edit">Modifica</string>
+    <string name="delete">Elimina</string>
+    <string name="save">Salva</string>
+    <string name="dismiss">Ignora</string>
+    <string name="event_missing">Questo evento non esiste più</string>
+    <string name="delete_event">Eliminare questo evento?</string>
+    <string name="delete_series">Eliminare questo evento e tutte le ripetizioni?</string>
+    <string name="no_maps">Nessuna app di mappe</string>
+    <string name="title_hint">Titolo</string>
+    <string name="location_hint">Luogo</string>
+    <string name="description_hint">Note</string>
+    <string name="repeat">Ripeti</string>
+    <string name="reminder">Promemoria</string>
+    <string name="calendar">Calendario</string>
+    <string name="repeat_none">Non si ripete</string>
+    <string name="repeat_daily">Ogni giorno</string>
+    <string name="repeat_weekly">Ogni settimana</string>
+    <string name="repeat_monthly">Ogni mese</string>
+    <string name="repeat_yearly">Ogni anno</string>
+    <string name="no_reminder">Nessun promemoria</string>
+    <string name="at_start">All\'inizio</string>
+    <string name="minutes_before">%d minuti prima</string>
+    <string name="hours_before">%d ore prima</string>
+    <string name="days_before">%d giorni prima</string>
+    <string name="weeks_before">%d settimane prima</string>
+    <string name="phone_calendar">Telefono</string>
+    <string name="no_calendar">Nessun calendario scrivibile. Consenti l\'accesso al Calendario e riprova.</string>
+    <string name="save_failed">Impossibile salvare l\'evento</string>
+</resources>
