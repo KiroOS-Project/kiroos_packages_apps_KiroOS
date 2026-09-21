@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Messages</string>
+    <string name="search">Search messages</string>
+    <string name="make_default">Kiro Messages is not your SMS app. Tap to make it the default and send and receive messages here.</string>
+    <string name="no_conversations">No conversations</string>
+    <string name="no_results">Nothing found</string>
+    <string name="new_message">New message</string>
+    <string name="picture">Picture</string>
+    <string name="delete_conversation">Delete conversation</string>
+    <string name="delete_conversation_confirm">Delete all messages with %s?</string>
+    <string name="delete">Delete</string>
+    <string name="back">Back</string>
+    <string name="call">Call</string>
+    <string name="to_hint">To: name or number</string>
+    <string name="remove_attachment">Remove picture</string>
+    <string name="attach">Attach picture</string>
+    <string name="compose_hint">Message</string>
+    <string name="send">Send</string>
+    <string name="me">Me</string>
+    <string name="reply">Reply</string>
+    <string name="mark_read">Mark as read</string>
+    <string name="send_failed_title">Message not sent</string>
+    <string name="send_failed_text">Open the conversation and tap the message to try again.</string>
+    <string name="download_failed_title">Picture message not downloaded</string>
+    <string name="download_failed_text">Mobile data is needed to download MMS. It will be retried by the carrier.</string>
+    <string name="no_recipients">Add a recipient</string>
+    <string name="not_default">Make Kiro Messages the default SMS app to send messages</string>
+    <string name="copy_text">Copy text</string>
+    <string name="forward">Forward</string>
+    <string name="resend">Send again</string>
+    <string name="copied">Copied</string>
+    <string name="not_sent_retry">Not sent · tap to retry</string>
+    <string name="sending">Sending…</string>
+    <string name="received">Received</string>
+    <string name="sent">Sent</string>
+</resources>

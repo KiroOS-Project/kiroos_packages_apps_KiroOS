@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Orologio</string>
+    <string name="tab_alarms">Sveglie</string>
+    <string name="tab_world">Fusi orari</string>
+    <string name="tab_timer">Timer</string>
+    <string name="tab_stopwatch">Cronometro</string>
+    <string name="alarm">Sveglia</string>
+    <string name="no_alarms">Nessuna sveglia</string>
+    <string name="add_alarm">Aggiungi sveglia</string>
+    <string name="alarm_set">Sveglia impostata per le %s</string>
+    <string name="alarm_in_minutes">Sveglia tra %d min</string>
+    <string name="alarm_in_hours">Sveglia tra %1$d h %2$d min</string>
+    <string name="alarm_in_days">Sveglia tra %1$d g %2$d h</string>
+    <string name="once">Una volta</string>
+    <string name="every_day">Ogni giorno</string>
+    <string name="weekdays">Da lunedì a venerdì</string>
+    <string name="weekend">Fine settimana</string>
+    <string name="snoozed_until">Posticipata alle %s</string>
+    <string name="label">Etichetta</string>
+    <string name="sound">Suono sveglia</string>
+    <string name="default_sound">Suono predefinito</string>
+    <string name="silent">Silenzioso</string>
+    <string name="vibrate">Vibrazione</string>
+    <string name="save">Salva</string>
+    <string name="delete">Elimina</string>
+    <string name="snooze">Posticipa</string>
+    <string name="snooze_minutes">Posticipa %d min</string>
+    <string name="dismiss">Disattiva</string>
+    <string name="missed_alarm">Sveglia persa</string>
+    <string name="timer">Timer</string>
+    <string name="timer_done">Tempo scaduto</string>
+    <string name="timer_paused">In pausa · %s rimanenti</string>
+    <string name="stop">Stop</string>
+    <string name="start">Avvia</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Riprendi</string>
+    <string name="reset">Azzera</string>
+    <string name="lap">Giro</string>
+    <string name="lap_row">Giro %1$d    %2$s    %3$s</string>
+    <string name="add_city">Aggiungi città</string>
+    <string name="search_city">Cerca città</string>
+    <string name="remove_city">Rimuovere %s?</string>
+    <string name="same_time">Stessa ora</string>
+</resources>

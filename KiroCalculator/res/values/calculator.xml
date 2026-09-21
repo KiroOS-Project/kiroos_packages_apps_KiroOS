@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="key_fill">#FF161618</color>
+    <color name="fn_fill">#FF2A2A2E</color>
+    <color name="op_fill">#FF1F4E8C</color>
+    <dimen name="keys_height">360dp</dimen>
+</resources>

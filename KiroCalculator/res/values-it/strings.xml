@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calcolatrice</string>
+    <string name="history">Cronologia</string>
+    <string name="no_history">Nessun calcolo</string>
+    <string name="clear_history">Cancella</string>
+    <string name="copied">Copiato</string>
+    <string name="error_syntax">Espressione non valida</string>
+    <string name="error_div_zero">Impossibile dividere per zero</string>
+    <string name="error_domain">Non è un numero reale</string>
+    <string name="desc_clear">Cancella</string>
+    <string name="desc_backspace">Elimina</string>
+    <string name="desc_divide">Diviso</string>
+    <string name="desc_times">Per</string>
+    <string name="desc_minus">Meno</string>
+    <string name="desc_plus">Più</string>
+    <string name="desc_equals">Uguale</string>
+    <string name="desc_negate">Cambia segno</string>
+    <string name="desc_parens">Parentesi</string>
+    <string name="desc_sqrt">Radice quadrata</string>
+</resources>

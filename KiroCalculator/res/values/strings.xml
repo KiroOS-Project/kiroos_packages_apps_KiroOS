@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calculator</string>
+    <string name="deg">DEG</string>
+    <string name="rad">RAD</string>
+    <string name="scientific">f(x)</string>
+    <string name="history">History</string>
+    <string name="no_history">No calculations yet</string>
+    <string name="clear_history">Clear</string>
+    <string name="copied">Copied</string>
+    <string name="error_syntax">Invalid expression</string>
+    <string name="error_div_zero">Can\'t divide by zero</string>
+    <string name="error_domain">Not a real number</string>
+    <string name="desc_clear">Clear</string>
+    <string name="desc_backspace">Delete</string>
+    <string name="desc_divide">Divided by</string>
+    <string name="desc_times">Times</string>
+    <string name="desc_minus">Minus</string>
+    <string name="desc_plus">Plus</string>
+    <string name="desc_equals">Equals</string>
+    <string name="desc_negate">Change sign</string>
+    <string name="desc_parens">Parentheses</string>
+    <string name="desc_sqrt">Square root</string>
+</resources>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingEnd="24dp"
+    android:paddingStart="24dp"
+    android:paddingTop="16dp">
+
+    <TextView
+        android:id="@+id/edit_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/kiro_button"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:textColor="@color/kiro_text"
+        android:textSize="52sp" />
+
+    <LinearLayout
+        android:id="@+id/edit_days"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <TextView style="@style/DayToggle" />
+
+        <TextView style="@style/DayToggle" />
+
+        <TextView style="@style/DayToggle" />
+
+        <TextView style="@style/DayToggle" />
+
+        <TextView style="@style/DayToggle" />
+
+        <TextView style="@style/DayToggle" />
+
+        <TextView style="@style/DayToggle" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edit_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/label"
+        android:inputType="textCapSentences"
+        android:maxLines="1"
+        android:singleLine="true"
+        style="@style/Kiro.Field" />
+
+    <TextView
+        android:id="@+id/edit_sound"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/kiro_touch_target"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/kiro_button"
+        android:drawablePadding="12dp"
+        android:drawableStart="@drawable/ic_volume"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        style="@style/Kiro.Body" />
+
+    <Switch
+        android:id="@+id/edit_vibrate"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/kiro_touch_target"
+        android:layout_marginTop="8dp"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:text="@string/vibrate"
+        style="@style/Kiro.Body" />
+</LinearLayout>

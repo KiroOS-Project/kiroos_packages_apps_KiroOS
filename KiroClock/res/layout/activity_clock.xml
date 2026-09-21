@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/page_title"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        style="@style/Kiro.Title" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- alarms -->
+        <FrameLayout
+            android:id="@+id/page_alarms"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/alarms_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:divider="@null"
+                android:paddingBottom="96dp" />
+
+            <TextView
+                android:id="@+id/alarms_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/no_alarms"
+                android:visibility="gone"
+                style="@style/Kiro.Caption" />
+
+            <ImageButton
+                android:id="@+id/btn_add_alarm"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="20dp"
+                android:contentDescription="@string/add_alarm"
+                android:elevation="6dp"
+                android:src="@drawable/ic_add" />
+        </FrameLayout>
+
+        <!-- world clock -->
+        <FrameLayout
+            android:id="@+id/page_world"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextClock
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-light"
+                    android:format12Hour="h:mm"
+                    android:format24Hour="HH:mm"
+                    android:gravity="center"
+                    android:textColor="@color/kiro_text"
+                    android:textSize="72sp" />
+
+                <TextClock
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:format12Hour="EEEE d MMMM"
+                    android:format24Hour="EEEE d MMMM"
+                    android:gravity="center"
+                    style="@style/Kiro.Caption" />
+
+                <ListView
+                    android:id="@+id/world_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:clipToPadding="false"
+                    android:divider="@null"
+                    android:paddingBottom="96dp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btn_add_city"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="20dp"
+                android:contentDescription="@string/add_city"
+                android:elevation="6dp"
+                android:src="@drawable/ic_add" />
+        </FrameLayout>
+
+        <!-- timer -->
+        <FrameLayout
+            android:id="@+id/page_timer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/timer_setup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <NumberPicker
+                        android:id="@+id/timer_hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/unit_h"
+                        style="@style/Kiro.Caption" />
+
+                    <NumberPicker
+                        android:id="@+id/timer_minutes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/unit_min"
+                        style="@style/Kiro.Caption" />
+
+                    <NumberPicker
+                        android:id="@+id/timer_seconds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/unit_s"
+                        style="@style/Kiro.Caption" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/timer_start"
+                    android:layout_width="160dp"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="40dp"
+                    android:gravity="center"
+                    android:text="@string/start"
+                    android:textColor="@color/kiro_on_accent"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/timer_running"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/timer_remaining"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/kiro_text"
+                    android:textSize="80sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/timer_reset"
+                        android:layout_width="96dp"
+                        android:layout_height="56dp"
+                        android:gravity="center"
+                        android:text="@string/reset"
+                        android:textColor="@color/kiro_text"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/timer_pause"
+                        android:layout_width="120dp"
+                        android:layout_height="56dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginStart="12dp"
+                        android:gravity="center"
+                        android:textColor="@color/kiro_on_accent"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/timer_plus"
+                        android:layout_width="96dp"
+                        android:layout_height="56dp"
+                        android:gravity="center"
+                        android:text="@string/plus_minute"
+                        android:textColor="@color/kiro_text"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- stopwatch -->
+        <LinearLayout
+            android:id="@+id/page_stopwatch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/sw_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginTop="32dp"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:textColor="@color/kiro_text"
+                android:textSize="64sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/sw_lap"
+                    android:layout_width="128dp"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center"
+                    android:textColor="@color/kiro_text"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/sw_start"
+                    android:layout_width="128dp"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:textColor="@color/kiro_on_accent"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/sw_laps"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:divider="@null" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/kiro_divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal">
+
+        <include android:id="@+id/tab_alarms" layout="@layout/tab_item" />
+
+        <include android:id="@+id/tab_world" layout="@layout/tab_item" />
+
+        <include android:id="@+id/tab_timer" layout="@layout/tab_item" />
+
+        <include android:id="@+id/tab_stopwatch" layout="@layout/tab_item" />
+    </LinearLayout>
+</LinearLayout>

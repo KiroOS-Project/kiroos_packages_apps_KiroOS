@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Messaggi</string>
+    <string name="search">Cerca messaggi</string>
+    <string name="make_default">Kiro Messaggi non è la tua app SMS. Tocca per renderla predefinita e inviare e ricevere i messaggi qui.</string>
+    <string name="no_conversations">Nessuna conversazione</string>
+    <string name="no_results">Nessun risultato</string>
+    <string name="new_message">Nuovo messaggio</string>
+    <string name="picture">Immagine</string>
+    <string name="delete_conversation">Elimina conversazione</string>
+    <string name="delete_conversation_confirm">Eliminare tutti i messaggi con %s?</string>
+    <string name="delete">Elimina</string>
+    <string name="back">Indietro</string>
+    <string name="call">Chiama</string>
+    <string name="to_hint">A: nome o numero</string>
+    <string name="remove_attachment">Rimuovi immagine</string>
+    <string name="attach">Allega immagine</string>
+    <string name="compose_hint">Messaggio</string>
+    <string name="send">Invia</string>
+    <string name="me">Io</string>
+    <string name="reply">Rispondi</string>
+    <string name="mark_read">Segna come letto</string>
+    <string name="send_failed_title">Messaggio non inviato</string>
+    <string name="send_failed_text">Apri la conversazione e tocca il messaggio per riprovare.</string>
+    <string name="download_failed_title">MMS non scaricato</string>
+    <string name="download_failed_text">Per scaricare gli MMS servono i dati mobili. L\'operatore riproverà.</string>
+    <string name="no_recipients">Aggiungi un destinatario</string>
+    <string name="not_default">Rendi Kiro Messaggi l\'app SMS predefinita per inviare</string>
+    <string name="copy_text">Copia testo</string>
+    <string name="forward">Inoltra</string>
+    <string name="resend">Invia di nuovo</string>
+    <string name="copied">Copiato</string>
+    <string name="not_sent_retry">Non inviato · tocca per riprovare</string>
+    <string name="sending">Invio…</string>
+    <string name="received">Ricevuto</string>
+    <string name="sent">Inviato</string>
+</resources>

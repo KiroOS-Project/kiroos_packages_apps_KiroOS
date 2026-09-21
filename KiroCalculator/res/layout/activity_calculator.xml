@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:paddingEnd="12dp"
+    android:paddingStart="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/angle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/kiro_button"
+            android:gravity="center"
+            android:minWidth="64dp"
+            android:paddingEnd="14dp"
+            android:paddingStart="14dp"
+            android:textColor="@color/kiro_text"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/btn_scientific"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/kiro_button"
+            android:gravity="center"
+            android:paddingEnd="14dp"
+            android:paddingStart="14dp"
+            android:text="@string/scientific"
+            android:textColor="@color/kiro_text"
+            android:textSize="14sp" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/btn_history"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/history"
+            android:src="@drawable/ic_history" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/expression"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:ellipsize="start"
+        android:fontFamily="sans-serif-light"
+        android:gravity="end|bottom"
+        android:maxLines="2"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:textColor="@color/kiro_text"
+        android:textSize="56sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/result"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="start"
+            android:gravity="end"
+            android:maxLines="1"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:textColor="@color/kiro_text_secondary"
+            android:textSize="26sp" />
+
+        <ImageButton
+            android:id="@+id/btn_backspace"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/desc_backspace"
+            android:src="@drawable/ic_backspace"
+            android:tint="@color/kiro_text_secondary" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/scientific"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/keys"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/keys_height"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:orientation="vertical" />
+</LinearLayout>
