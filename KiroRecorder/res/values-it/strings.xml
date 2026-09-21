@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Registratore</string>
+    <string name="file_prefix">Registrazione</string>
+    <string name="record">Registra</string>
+    <string name="recording">Registrazione in corso</string>
+    <string name="paused">In pausa</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Riprendi</string>
+    <string name="stop">Stop</string>
+    <string name="no_recordings">Nessuna registrazione</string>
+    <string name="need_permissions">Per registrare servono microfono e memoria</string>
+    <string name="cannot_play">Impossibile riprodurre il file</string>
+    <string name="share">Condividi</string>
+    <string name="rename">Rinomina</string>
+    <string name="rename_failed">Esiste già una registrazione con questo nome</string>
+    <string name="delete">Elimina</string>
+    <string name="delete_confirm">Eliminare %s?</string>
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="EditField" parent="@style/Kiro.Field">
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="SectionHeader">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:textColor">@color/kiro_accent</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="AddRow">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/kiro_touch_target</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:textColor">@color/kiro_accent</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@drawable/kiro_icon_button</item>
+    </style>
+</resources>

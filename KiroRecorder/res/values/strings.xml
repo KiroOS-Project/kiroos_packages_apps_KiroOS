@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Recorder</string>
+    <string name="file_prefix">Recording</string>
+    <string name="record">Record</string>
+    <string name="recording">Recording</string>
+    <string name="paused">Paused</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="stop">Stop</string>
+    <string name="no_recordings">No recordings yet</string>
+    <string name="need_permissions">The microphone and storage are needed to record</string>
+    <string name="cannot_play">Can\'t play this file</string>
+    <string name="share">Share</string>
+    <string name="rename">Rename</string>
+    <string name="rename_failed">A recording with this name already exists</string>
+    <string name="delete">Delete</string>
+    <string name="delete_confirm">Delete %s?</string>
+</resources>
