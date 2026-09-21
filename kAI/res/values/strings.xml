@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">kAI</string>
+    <string name="ask">Ask kAI</string>
+    <string name="send">Send</string>
+    <string name="stop">Stop</string>
+    <string name="new_chat">New chat</string>
+    <string name="copied">Copied</string>
+    <string name="welcome">Your assistant runs on your PC</string>
+    <string name="welcome_hint">Start the kAI bridge on the PC (kai_bridge.py) and connect the phone by USB, or set the PC address in the settings.</string>
+    <string name="bridge">Bridge</string>
+    <string name="bridge_help">USB: run kai_bridge.py on the PC, it sets up "adb reverse" and you can keep 127.0.0.1. Wi-Fi: use the PC\'s address.</string>
+    <string name="host">Address (127.0.0.1)</string>
+    <string name="port">Port (8765)</string>
+    <string name="model_hint">Model (empty = bridge default)</string>
+    <string name="save">Save</string>
+    <string name="connecting">Connecting…</string>
+    <string name="connected">Connected · %s</string>
+    <string name="default_model">default model</string>
+    <string name="not_connected">Bridge not reachable · tap to retry</string>
+    <string name="error_answer">⚠ No answer: %s</string>
+</resources>
