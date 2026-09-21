@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="thumb_task" type="id" />
+    <item name="thumb_item" type="id" />
+    <item name="page_image" type="id" />
+    <item name="page_play" type="id" />
+
+    <integer name="grid_columns">3</integer>
+
+    <style name="ViewerButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/kiro_touch_target</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/kiro_icon_button</item>
+    </style>
+</resources>

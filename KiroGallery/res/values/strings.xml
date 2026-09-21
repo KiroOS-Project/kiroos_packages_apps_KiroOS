@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gallery</string>
+    <string name="choose">Choose</string>
+    <string name="photos">Photos</string>
+    <string name="albums">Albums</string>
+    <string name="camera">Camera</string>
+    <string name="nothing_here">No photos or videos</string>
+    <string name="back">Back</string>
+    <string name="share">Share</string>
+    <string name="edit">Edit</string>
+    <string name="details">Details</string>
+    <string name="delete">Delete</string>
+    <string name="set_as">Set as</string>
+    <string name="play">Play</string>
+    <string name="no_editor">No photo editor installed</string>
+    <string name="delete_photo">Delete this photo?</string>
+    <string name="delete_video">Delete this video?</string>
+    <string name="delete_failed">Could not delete</string>
+    <string name="cannot_play">This video can\'t be played</string>
+    <string name="info_name">Name: %s</string>
+    <string name="info_date">Date: %s</string>
+    <string name="info_size">Size: %1$d × %2$d · %3$s</string>
+    <string name="info_length">Length: %s</string>
+    <string name="info_path">Path: %s</string>
+</resources>

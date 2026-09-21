@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black">
+
+    <com.kiroos.gallery.SwipePager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/scrim_top"
+        android:fitsSystemWindows="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="8dp"
+        android:paddingStart="4dp">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            style="@style/Kiro.Body" />
+
+        <ImageButton
+            android:id="@+id/btn_set_as"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/set_as"
+            android:src="@drawable/ic_wallpaper" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/scrim_bottom"
+        android:fitsSystemWindows="true"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingTop="24dp">
+
+        <ImageButton
+            android:id="@+id/btn_share"
+            android:contentDescription="@string/share"
+            android:src="@drawable/ic_share"
+            style="@style/ViewerButton" />
+
+        <ImageButton
+            android:id="@+id/btn_edit"
+            android:contentDescription="@string/edit"
+            android:src="@drawable/ic_edit"
+            style="@style/ViewerButton" />
+
+        <ImageButton
+            android:id="@+id/btn_info"
+            android:contentDescription="@string/details"
+            android:src="@drawable/ic_info"
+            style="@style/ViewerButton" />
+
+        <ImageButton
+            android:id="@+id/btn_delete"
+            android:contentDescription="@string/delete"
+            android:src="@drawable/ic_delete"
+            style="@style/ViewerButton" />
+    </LinearLayout>
+</FrameLayout>

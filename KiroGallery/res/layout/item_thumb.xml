@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kiroos.gallery.SquareFrame xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/kiro_surface">
+
+    <ImageView
+        android:id="@+id/thumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="6dp"
+        android:background="@drawable/badge_bg"
+        android:paddingEnd="6dp"
+        android:paddingStart="6dp"
+        android:textColor="@color/kiro_text"
+        android:textSize="11sp"
+        android:visibility="gone" />
+</com.kiroos.gallery.SquareFrame>
