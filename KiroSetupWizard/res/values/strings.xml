@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kiro Setup</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="skip">Skip</string>
+    <string name="start">Start</string>
+    <string name="language_title">Welcome to KiroOS</string>
+    <string name="language_summary">Choose the language of your Galaxy.</string>
+    <string name="wifi_title">Connect to Wi-Fi</string>
+    <string name="wifi_summary">Updates, apps and your accounts need an internet connection.</string>
+    <string name="wifi_turning_on">Turning on Wi-Fi…</string>
+    <string name="wifi_choose">Choose a network</string>
+    <string name="wifi_connected_to">Connected to %1$s</string>
+    <string name="wifi_connecting">Connecting to %1$s…</string>
+    <string name="wifi_failed">Could not add the network, check the password</string>
+    <string name="wifi_state_connected">Connected</string>
+    <string name="wifi_secured">Secured</string>
+    <string name="wifi_open">Open network</string>
+    <string name="wifi_password">Password</string>
+    <string name="wifi_connect">Connect</string>
+    <string name="mobile_title">Mobile network</string>
+    <string name="mobile_summary">Calls, messages and mobile data.</string>
+    <string name="mobile_no_sim">No SIM card inserted</string>
+    <string name="mobile_sim_locked">The SIM is locked: unlock it with its PIN</string>
+    <string name="mobile_operator">Operator: %1$s</string>
+    <string name="mobile_searching">Looking for the network…</string>
+    <string name="mobile_data">Mobile data</string>
+    <string name="mobile_data_summary">Internet when you are not on Wi-Fi</string>
+    <string name="mobile_roaming">Roaming</string>
+    <string name="mobile_roaming_summary">Mobile data abroad (extra charges may apply)</string>
+    <string name="fingerprint_title">Fingerprint</string>
+    <string name="fingerprint_summary">Unlock your phone with a touch of the home button.</string>
+    <string name="fingerprint_add">Add fingerprint</string>
+    <string name="fingerprint_add_another">Add another fingerprint</string>
+    <string name="fingerprint_none">No fingerprint added yet. A screen lock (PIN, pattern or password) is set first.</string>
+    <string name="fingerprint_unavailable">Fingerprint setup is not available on this device</string>
+    <string name="stats_title">Device statistics</string>
+    <string name="stats_summary">Help count how many phones run KiroOS and on which versions.</string>
+    <string name="stats_switch">Share device statistics</string>
+    <string name="stats_switch_summary">Model, KiroOS and Android version, language, country and carrier</string>
+    <string name="stats_note">Sent with a random code when checking for updates. Never the IMEI or the serial number. You can change it later on the KiroOS Update screen.</string>
+    <string name="done_title">All set</string>
+    <string name="done_summary">Your Galaxy is ready. Enjoy KiroOS.</string>
+    <string name="done_device">%1$s · KiroOS %2$s</string>
+    <plurals name="fingerprint_enrolled">
+        <item quantity="one">One fingerprint added</item>
+        <item quantity="other">%d fingerprints added</item>
+    </plurals>
+</resources>

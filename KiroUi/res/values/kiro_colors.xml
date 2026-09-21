@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS v1.0 palette: Pure Black AMOLED. Black pixels are off on the S6 panels. -->
+<resources>
+    <color name="kiro_black">#FF000000</color>
+    <color name="kiro_surface">#FF121214</color>
+    <color name="kiro_surface_raised">#FF1C1C1F</color>
+    <color name="kiro_surface_pressed">#FF2A2A2E</color>
+    <color name="kiro_divider">#1FFFFFFF</color>
+    <color name="kiro_text">#FFFFFFFF</color>
+    <color name="kiro_text_secondary">#99FFFFFF</color>
+    <color name="kiro_text_tertiary">#61FFFFFF</color>
+    <color name="kiro_accent">#FF3987E5</color>
+    <color name="kiro_accent_pressed">#FF2A78D6</color>
+    <color name="kiro_on_accent">#FFFFFFFF</color>
+    <color name="kiro_positive">#FF30D158</color>
+    <color name="kiro_negative">#FFFF453A</color>
+    <color name="kiro_warning">#FFFFB340</color>
+    <color name="kiro_ripple">#33FFFFFF</color>
+</resources>

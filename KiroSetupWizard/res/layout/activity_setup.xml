@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/kiro_black"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:id="@+id/progress_dots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:orientation="horizontal" />
+
+    <FrameLayout
+        android:id="@+id/page_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/kiro_gutter"
+        android:paddingEnd="@dimen/kiro_gutter"
+        android:paddingTop="12dp"
+        android:paddingBottom="20dp">
+
+        <Button
+            android:id="@+id/button_back"
+            style="@style/Kiro.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:text="@string/back" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/button_next"
+            style="@style/Kiro.Button.Accent"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:minWidth="140dp"
+            android:text="@string/next" />
+    </LinearLayout>
+</LinearLayout>

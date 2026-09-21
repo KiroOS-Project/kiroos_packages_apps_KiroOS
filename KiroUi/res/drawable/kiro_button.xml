@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/kiro_ripple">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/kiro_surface_raised" />
+            <corners android:radius="@dimen/kiro_corner" />
+        </shape>
+    </item>
+</ripple>
