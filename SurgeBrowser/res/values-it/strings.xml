@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="url_hint">Cerca o digita un indirizzo</string>
+    <string name="new_tab">Nuova scheda</string>
+    <string name="tabs">Schede</string>
+    <string name="tabs_hint">Tocca per passare · tieni premuto per chiudere</string>
+    <string name="menu">Menu</string>
+    <string name="forward">Avanti</string>
+    <string name="reload">Ricarica</string>
+    <string name="add_bookmark">Aggiungi segnalibro</string>
+    <string name="bookmarks">Segnalibri</string>
+    <string name="history">Cronologia</string>
+    <string name="share">Condividi</string>
+    <string name="desktop_site">Versione desktop</string>
+    <string name="adblock">Blocca pubblicità e tracker</string>
+    <string name="search_engine">Motore di ricerca</string>
+    <string name="clear_data">Cancella dati di navigazione</string>
+    <string name="clear_data_confirm">Eliminare cookie, cache, dati dei siti e cronologia?</string>
+    <string name="clear">Cancella</string>
+    <string name="cleared">Dati di navigazione cancellati</string>
+    <string name="blocked_here">%d pubblicità e tracker bloccati in questa pagina</string>
+    <string name="no_app">Nessuna app può aprire questo link</string>
+    <string name="open_new_tab">Apri in nuova scheda</string>
+    <string name="opened_in_background">Aperto in una nuova scheda</string>
+    <string name="copy_link">Copia link</string>
+    <string name="share_link">Condividi link</string>
+    <string name="download_image">Scarica immagine</string>
+    <string name="copied">Copiato</string>
+    <string name="downloading">Download di %s</string>
+    <string name="download_failed">Impossibile scaricare questo file</string>
+    <string name="location_prompt">%s vuole usare la tua posizione</string>
+    <string name="media_prompt">%s vuole usare fotocamera o microfono</string>
+    <string name="allow">Consenti</string>
+    <string name="deny">Nega</string>
+    <string name="start_hint">Privato di default: pubblicità e tracker sono bloccati.</string>
+    <string name="already_bookmarked">Già nei segnalibri</string>
+    <string name="bookmarked">Segnalibro aggiunto</string>
+    <string name="no_bookmarks">Nessun segnalibro</string>
+    <string name="no_history">Nessuna cronologia</string>
+    <string name="edit_bookmarks">Rimuovi…</string>
+    <string name="remove_bookmarks">Rimuovi segnalibri</string>
+    <string name="remove">Rimuovi</string>
+</resources>

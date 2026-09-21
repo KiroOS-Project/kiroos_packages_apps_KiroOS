@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Surge</string>
+    <string name="url_hint">Search or type an address</string>
+    <string name="new_tab">New tab</string>
+    <string name="tabs">Tabs</string>
+    <string name="tabs_hint">Tap to switch · long press to close</string>
+    <string name="menu">Menu</string>
+    <string name="forward">Forward</string>
+    <string name="reload">Reload</string>
+    <string name="add_bookmark">Add bookmark</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="history">History</string>
+    <string name="share">Share</string>
+    <string name="desktop_site">Desktop site</string>
+    <string name="adblock">Block ads and trackers</string>
+    <string name="search_engine">Search engine</string>
+    <string name="clear_data">Clear browsing data</string>
+    <string name="clear_data_confirm">Delete cookies, cache, site data and history?</string>
+    <string name="clear">Clear</string>
+    <string name="cleared">Browsing data cleared</string>
+    <string name="blocked_here">%d ads and trackers blocked on this page</string>
+    <string name="no_app">No app can open this link</string>
+    <string name="open_new_tab">Open in new tab</string>
+    <string name="opened_in_background">Opened in a new tab</string>
+    <string name="copy_link">Copy link</string>
+    <string name="share_link">Share link</string>
+    <string name="download_image">Download image</string>
+    <string name="copied">Copied</string>
+    <string name="downloading">Downloading %s</string>
+    <string name="download_failed">This file can\'t be downloaded</string>
+    <string name="location_prompt">%s wants to use your location</string>
+    <string name="media_prompt">%s wants to use the camera or microphone</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+    <string name="start_hint">Private by default: ads and trackers are blocked.</string>
+    <string name="already_bookmarked">Already in bookmarks</string>
+    <string name="bookmarked">Bookmark added</string>
+    <string name="no_bookmarks">No bookmarks yet</string>
+    <string name="no_history">No history</string>
+    <string name="edit_bookmarks">Remove…</string>
+    <string name="remove_bookmarks">Remove bookmarks</string>
+    <string name="remove">Remove</string>
+</resources>

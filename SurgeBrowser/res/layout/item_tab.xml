@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_title"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:background="@drawable/kiro_button"
+    android:ellipsize="end"
+    android:gravity="center_vertical"
+    android:maxLines="1"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp"
+    android:textColor="@color/kiro_text"
+    android:textSize="15sp" />
