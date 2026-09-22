@@ -148,6 +148,14 @@ final class AppRepository {
                 for (Listener l : new ArrayList<>(mListeners)) {
                     l.onAppsChanged(mApps);
                 }
+                // the home has its icons now; render the drawer's ones before it is opened
+                final List<AppInfo> all = mApps;
+                AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mIcons.prewarm(all);
+                    }
+                });
                 if (mReloadPending) {
                     mReloadPending = false;
                     reload();

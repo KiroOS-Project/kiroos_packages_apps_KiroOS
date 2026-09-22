@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -29,14 +30,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * Talks to the kAI bridge on the PC (scripts/kai_bridge.py): the model runs there, the
- * phone only sends the conversation and shows the answer as it streams in.
+ * Talks to the language model running on the PC: the model runs there, the phone only
+ * sends the conversation and shows the answer as it streams in.
  *
- * Protocol: GET /health → {"ok":true,"model":"…"}; POST /v1/chat with
- * {"model":"…","messages":[{"role","content"}…]} → newline-delimited JSON
- * {"delta":"…"} … {"done":true} (or {"error":"…"}).
- *
- * Over USB, "adb reverse tcp:8765 tcp:8765" makes 127.0.0.1:8765 on the phone reach the PC.
+ * Two servers are understood, detected by {@link #health()}:
+ * <ul>
+ * <li>Ollama itself (default, port 11434): GET /api/tags lists the models, POST /api/chat
+ * streams {"message":{"content":"…"},"done":false} lines. Over USB,
+ * "adb reverse tcp:11434 tcp:11434" is all the PC needs (scripts/kai_usb.cmd).</li>
+ * <li>the KiroOS kAI bridge (scripts/kai_bridge.py): GET /health, POST /v1/chat streaming
+ * {"delta":"…"} … {"done":true} lines.</li>
+ * </ul>
  */
 final class BridgeClient {
 
@@ -58,29 +62,70 @@ final class BridgeClient {
         }
     }
 
+    /** Thrown by {@link #health()} when the server answers but has no model to use. */
+    static final class NoModelException extends Exception {
+        NoModelException() {
+            super("no model");
+        }
+    }
+
     private final String mBase;
     private volatile HttpURLConnection mActive;
     private volatile boolean mCancelled;
+    private boolean mOllama = true;
 
     BridgeClient(String host, int port) {
         mBase = "http://" + host + ":" + port;
     }
 
-    /** "model name" when the bridge answers, else throws */
-    String health() throws Exception {
-        final HttpURLConnection c = (HttpURLConnection) new URL(mBase + "/health").openConnection();
+    /**
+     * The model that will answer (the preferred one if the server has it, else the first
+     * one it has). Throws when nothing answers, NoModelException when no model is installed.
+     */
+    String health(String preferred) throws Exception {
+        try {
+            final JSONArray models = new JSONObject(get("/api/tags")).optJSONArray("models");
+            mOllama = true;
+            if (models == null || models.length() == 0) {
+                throw new NoModelException();
+            }
+            String first = null;
+            for (int i = 0; i < models.length(); i++) {
+                final String name = models.getJSONObject(i).optString("name", "");
+                if (first == null) {
+                    first = name;
+                }
+                if (!preferred.isEmpty() && (name.equals(preferred)
+                        || name.equals(preferred + ":latest"))) {
+                    return name;
+                }
+            }
+            return first;
+        } catch (FileNotFoundException e) {
+            // HTTP 404: not Ollama, try the kAI bridge protocol
+            mOllama = false;
+            return new JSONObject(get("/health")).optString("model", preferred);
+        }
+    }
+
+    private String get(String path) throws Exception {
+        final HttpURLConnection c = (HttpURLConnection) new URL(mBase + path).openConnection();
         c.setConnectTimeout(2500);
-        c.setReadTimeout(2500);
+        c.setReadTimeout(4000);
         try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream(),
                 StandardCharsets.UTF_8))) {
-            final JSONObject o = new JSONObject(r.readLine());
-            return o.optString("model", "");
+            final StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = r.readLine()) != null) {
+                sb.append(line);
+            }
+            return sb.toString();
         } finally {
             c.disconnect();
         }
     }
 
-    /** Blocking: call on a worker thread. */
+    /** Blocking: call on a worker thread, after {@link #health} picked the protocol. */
     void chat(String model, List<Message> history, Stream stream) {
         mCancelled = false;
         HttpURLConnection c = null;
@@ -93,10 +138,15 @@ final class BridgeClient {
             if (model != null && !model.isEmpty()) {
                 body.put("model", model);
             }
-            c = (HttpURLConnection) new URL(mBase + "/v1/chat").openConnection();
+            if (mOllama) {
+                // keep the model loaded between questions (Ollama's default is 5 minutes)
+                body.put("keep_alive", "30m");
+            }
+            c = (HttpURLConnection) new URL(mBase + (mOllama ? "/api/chat" : "/v1/chat"))
+                    .openConnection();
             mActive = c;
             c.setConnectTimeout(4000);
-            c.setReadTimeout(120000); // big local models can think for a while
+            c.setReadTimeout(180000); // loading a model on the PC can take a while
             c.setDoOutput(true);
             c.setRequestMethod("POST");
             c.setRequestProperty("Content-Type", "application/json; charset=utf-8");
@@ -104,8 +154,9 @@ final class BridgeClient {
             try (OutputStream out = c.getOutputStream()) {
                 out.write(body.toString().getBytes(StandardCharsets.UTF_8));
             }
-            if (c.getResponseCode() != 200) {
-                stream.onError("HTTP " + c.getResponseCode());
+            final int code = c.getResponseCode();
+            if (code != 200) {
+                stream.onError(errorOf(c, code));
                 return;
             }
             try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream(),
@@ -120,8 +171,12 @@ final class BridgeClient {
                         stream.onError(o.getString("error"));
                         return;
                     }
-                    if (o.has("delta")) {
-                        stream.onDelta(o.getString("delta"));
+                    final String delta = mOllama
+                            ? (o.has("message") ? o.getJSONObject("message").optString("content")
+                                    : "")
+                            : o.optString("delta");
+                    if (!delta.isEmpty()) {
+                        stream.onDelta(delta);
                     }
                     if (o.optBoolean("done")) {
                         break;
@@ -130,7 +185,7 @@ final class BridgeClient {
             }
             stream.onDone();
         } catch (JSONException e) {
-            stream.onError("bad answer from the bridge");
+            stream.onError("bad answer from the PC");
         } catch (Exception e) {
             if (mCancelled) {
                 stream.onDone();
@@ -143,6 +198,20 @@ final class BridgeClient {
             }
             mActive = null;
         }
+    }
+
+    /** The server's own error message ({"error":"…"}) if it sent one, else "HTTP code". */
+    private static String errorOf(HttpURLConnection c, int code) {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getErrorStream(),
+                StandardCharsets.UTF_8))) {
+            final String err = new JSONObject(r.readLine()).optString("error", "");
+            if (!err.isEmpty()) {
+                return err;
+            }
+        } catch (Exception e) {
+            // no readable body
+        }
+        return "HTTP " + code;
     }
 
     void cancel() {

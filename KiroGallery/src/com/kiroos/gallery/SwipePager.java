@@ -104,6 +104,9 @@ public class SwipePager extends FrameLayout {
     }
 
     private void layoutPages() {
+        if (mAdapter == null) {
+            return; // laid out before the photos finished loading: no pages yet
+        }
         final float w = getWidth();
         for (int i = 0; i < 3; i++) {
             mPages[i].setTranslationX((i - 1) * w + mOffset);
@@ -143,6 +146,9 @@ public class SwipePager extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (mAdapter == null) {
+            return false; // still loading: nothing to swipe
+        }
         track(ev, false);
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_MOVE:

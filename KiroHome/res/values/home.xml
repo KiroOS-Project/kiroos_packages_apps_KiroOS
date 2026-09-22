@@ -22,6 +22,7 @@
     </style>
 
     <dimen name="icon_size">56dp</dimen>
+    <dimen name="icon_elevation">3dp</dimen>
     <dimen name="home_margin">12dp</dimen>
 
     <color name="drawer_scrim">#F2000000</color>

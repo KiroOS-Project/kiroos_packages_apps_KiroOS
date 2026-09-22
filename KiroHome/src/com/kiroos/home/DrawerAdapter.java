@@ -115,6 +115,7 @@ final class DrawerAdapter extends BaseAdapter {
             h = new Holder();
             h.icon = (ImageView) v.findViewById(R.id.app_icon);
             h.label = (TextView) v.findViewById(R.id.app_label);
+            mIcons.lift(h.icon);
             v.setTag(h);
         }
         final AppInfo app = mShown.get(position);

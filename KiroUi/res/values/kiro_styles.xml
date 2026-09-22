@@ -18,12 +18,29 @@
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowContentTransitions">true</item>
         <item name="android:alertDialogTheme">@style/Theme.Kiro.Dialog</item>
+        <!-- lists and grids cascade in when they first show their content -->
+        <item name="android:listViewStyle">@style/Kiro.ListView</item>
+        <item name="android:gridViewStyle">@style/Kiro.GridView</item>
     </style>
 
     <style name="Theme.Kiro.Dialog" parent="@android:style/Theme.Material.Dialog.Alert">
         <item name="android:colorAccent">@color/kiro_accent</item>
         <item name="android:windowBackground">@drawable/kiro_dialog_bg</item>
         <item name="android:textColorPrimary">@color/kiro_text</item>
+        <item name="android:windowAnimationStyle">@style/Kiro.Animation.Dialog</item>
+    </style>
+
+    <style name="Kiro.ListView" parent="@android:style/Widget.Material.ListView">
+        <item name="android:layoutAnimation">@anim/kiro_list_enter</item>
+    </style>
+
+    <style name="Kiro.GridView" parent="@android:style/Widget.Material.GridView">
+        <item name="android:layoutAnimation">@anim/kiro_grid_enter</item>
+    </style>
+
+    <style name="Kiro.Animation.Dialog" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/kiro_dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/kiro_dialog_exit</item>
     </style>
 
     <!-- root of the Kiro.* text and widget styles -->

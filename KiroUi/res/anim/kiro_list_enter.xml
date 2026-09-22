@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS v1.0: list rows cascade in, 20 ms apart -->
+<layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animation="@anim/kiro_item_enter"
+    android:animationOrder="normal"
+    android:delay="6%" />

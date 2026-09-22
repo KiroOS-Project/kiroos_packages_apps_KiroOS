@@ -286,6 +286,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final View v = inflater.inflate(R.layout.item_app, parent, false);
         final ImageView icon = (ImageView) v.findViewById(R.id.app_icon);
         icon.setImageDrawable(mIcons.icon(app));
+        mIcons.lift(icon);
         final TextView label = (TextView) v.findViewById(R.id.app_label);
         label.setText(app.label);
         label.setVisibility(withLabel ? View.VISIBLE : View.GONE);
@@ -413,6 +414,10 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     }
 
     private void setDrawerProgress(float p) {
+        if (mDrawerProgress == 0f && p > 0f) {
+            // opening: the icons cascade in again (Kiro.GridView layout animation)
+            mDrawerGrid.scheduleLayoutAnimation();
+        }
         mDrawerProgress = p;
         final float h = mRoot.getHeight() > 0 ? mRoot.getHeight()
                 : getResources().getDisplayMetrics().heightPixels;

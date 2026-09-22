@@ -62,6 +62,8 @@ public class KaiActivity extends Activity {
     private static final String SYSTEM_PROMPT = "You are kAI, the assistant of KiroOS on a "
             + "Samsung Galaxy S6. Answer clearly and concisely, in the user's language, using "
             + "Markdown when it helps.";
+    /** Ollama's port; over USB "adb reverse tcp:11434 tcp:11434" maps it to the PC */
+    private static final int DEFAULT_PORT = 11434;
 
     private final Handler mHandler = new Handler();
     private final List<BridgeClient.Message> mMessages = new ArrayList<>();
@@ -152,34 +154,41 @@ public class KaiActivity extends Activity {
     }
 
     private BridgeClient client() {
-        return new BridgeClient(mPrefs.getString("host", "127.0.0.1"), mPrefs.getInt("port", 8765));
+        return new BridgeClient(mPrefs.getString("host", "127.0.0.1"),
+                mPrefs.getInt("port", DEFAULT_PORT));
     }
 
     private void checkBridge() {
         mStatus.setText(R.string.connecting);
         mStatus.setTextColor(getColor(R.color.kiro_text_secondary));
         final BridgeClient c = client();
+        final String preferred = mPrefs.getString("model", "");
         new AsyncTask<Void, Void, String>() {
-            private String mError;
+            private boolean mNoModel;
 
             @Override
             protected String doInBackground(Void... params) {
                 try {
-                    return c.health();
+                    return c.health(preferred);
+                } catch (BridgeClient.NoModelException e) {
+                    mNoModel = true;
+                    return null;
                 } catch (Exception e) {
-                    mError = e.getMessage();
                     return null;
                 }
             }
 
             @Override
             protected void onPostExecute(String model) {
+                if (isDestroyed()) {
+                    return;
+                }
                 if (model != null) {
                     mStatus.setText(getString(R.string.connected, model.isEmpty()
                             ? getString(R.string.default_model) : model));
                     mStatus.setTextColor(getColor(R.color.kiro_positive));
                 } else {
-                    mStatus.setText(R.string.not_connected);
+                    mStatus.setText(mNoModel ? R.string.no_model : R.string.not_connected);
                     mStatus.setTextColor(getColor(R.color.kiro_negative));
                 }
             }
@@ -206,10 +215,24 @@ public class KaiActivity extends Activity {
         }
         mClient = client();
         final BridgeClient c = mClient;
-        final String model = mPrefs.getString("model", "");
+        final String preferred = mPrefs.getString("model", "");
         new Thread(new Runnable() {
             @Override
             public void run() {
+                // ask the PC which model answers (and which protocol it speaks) first
+                String model;
+                try {
+                    model = c.health(preferred);
+                } catch (BridgeClient.NoModelException e) {
+                    model = null;
+                    postError(answer, getString(R.string.no_model));
+                } catch (Exception e) {
+                    model = null;
+                    postError(answer, getString(R.string.not_connected));
+                }
+                if (model == null) {
+                    return;
+                }
                 c.chat(model, history, new BridgeClient.Stream() {
                     private long mLastUi;
 
@@ -248,22 +271,27 @@ public class KaiActivity extends Activity {
 
                     @Override
                     public void onError(final String message) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (answer.content.isEmpty()) {
-                                    answer.content = getString(R.string.error_answer, message);
-                                }
-                                setBusy(false);
-                                refresh();
-                                save();
-                                checkBridge();
-                            }
-                        });
+                        postError(answer, message);
                     }
                 });
             }
         }, "kAI-chat").start();
+    }
+
+    /** Shows why there is no answer in the answer bubble (from any thread). */
+    private void postError(final BridgeClient.Message answer, final String message) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (answer.content.isEmpty()) {
+                    answer.content = getString(R.string.error_answer, message);
+                }
+                setBusy(false);
+                refresh();
+                save();
+                checkBridge();
+            }
+        });
     }
 
     private void setBusy(boolean busy) {
@@ -288,7 +316,7 @@ public class KaiActivity extends Activity {
         final EditText port = (EditText) v.findViewById(R.id.port);
         final EditText model = (EditText) v.findViewById(R.id.model);
         host.setText(mPrefs.getString("host", "127.0.0.1"));
-        port.setText(String.valueOf(mPrefs.getInt("port", 8765)));
+        port.setText(String.valueOf(mPrefs.getInt("port", DEFAULT_PORT)));
         model.setText(mPrefs.getString("model", ""));
         new AlertDialog.Builder(this)
                 .setTitle(R.string.bridge)
@@ -300,7 +328,7 @@ public class KaiActivity extends Activity {
                         try {
                             p = Integer.parseInt(port.getText().toString().trim());
                         } catch (NumberFormatException e) {
-                            p = 8765;
+                            p = DEFAULT_PORT;
                         }
                         mPrefs.edit().putString("host", host.getText().toString().trim())
                                 .putInt("port", p)

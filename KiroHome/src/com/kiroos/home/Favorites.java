@@ -32,6 +32,8 @@ final class Favorites {
     private static final String KEY_GRID = "grid";
     private static final String KEY_DOCK = "dock";
     private static final String KEY_SEEDED = "seeded";
+    /** default packages already placed once */
+    private static final String KEY_PLACED = "placed";
 
     private static final String[] DEFAULT_DOCK = {
             "com.kiroos.phone", "com.kiroos.messages", "com.kiroos.surge", "com.kiroos.camera",
@@ -101,27 +103,58 @@ final class Favorites {
         write(KEY_GRID, grid);
     }
 
-    /** First run: the KiroOS suite on the home, as far as those apps are installed. */
+    /**
+     * Places the KiroOS suite on the home: everything on first run, and later each default
+     * app the first time it shows up installed (a suite app added by an update, or a layout
+     * seeded while some apps were missing). An app is placed only once, so one the user
+     * removed from the home stays removed.
+     */
     void seedDefaults(AppRepository repo) {
-        if (mPrefs.getBoolean(KEY_SEEDED, false) || repo.apps().isEmpty()) {
+        if (repo.apps().isEmpty()) {
             return;
         }
-        write(KEY_DOCK, keysFor(repo, DEFAULT_DOCK));
-        write(KEY_GRID, keysFor(repo, DEFAULT_GRID));
-        mPrefs.edit().putBoolean(KEY_SEEDED, true).apply();
-    }
-
-    private static List<String> keysFor(AppRepository repo, String[] packages) {
-        final List<String> keys = new ArrayList<>();
-        for (String pkg : packages) {
-            for (AppInfo app : repo.apps()) {
-                if (app.component.getPackageName().equals(pkg)) {
-                    keys.add(app.key());
-                    break;
+        final boolean firstRun = !mPrefs.getBoolean(KEY_SEEDED, false);
+        final List<String> placed = firstRun ? new ArrayList<String>() : read(KEY_PLACED);
+        if (firstRun) {
+            write(KEY_DOCK, new ArrayList<String>());
+            write(KEY_GRID, new ArrayList<String>());
+        }
+        final List<String> dock = dock();
+        final List<String> grid = grid();
+        boolean changed = firstRun;
+        for (String[] defaults : new String[][] {DEFAULT_DOCK, DEFAULT_GRID}) {
+            for (String pkg : defaults) {
+                final String key = keyFor(repo, pkg);
+                if (key == null || placed.contains(pkg)) {
+                    continue;
+                }
+                placed.add(pkg);
+                changed = true;
+                if (dock.contains(key) || grid.contains(key)) {
+                    continue;
+                }
+                if (defaults == DEFAULT_DOCK && dock.size() < HomeActivity.DOCK_SIZE) {
+                    dock.add(key);
+                } else if (grid.size() < HomeActivity.GRID_COLUMNS * HomeActivity.GRID_ROWS) {
+                    grid.add(key);
                 }
             }
         }
-        return keys;
+        if (changed) {
+            write(KEY_DOCK, dock);
+            write(KEY_GRID, grid);
+            write(KEY_PLACED, placed);
+            mPrefs.edit().putBoolean(KEY_SEEDED, true).apply();
+        }
+    }
+
+    private static String keyFor(AppRepository repo, String pkg) {
+        for (AppInfo app : repo.apps()) {
+            if (app.component.getPackageName().equals(pkg)) {
+                return app.key();
+            }
+        }
+        return null;
     }
 
     private List<String> read(String key) {

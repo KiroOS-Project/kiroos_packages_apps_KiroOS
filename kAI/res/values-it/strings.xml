@@ -6,16 +6,17 @@
     <string name="new_chat">Nuova chat</string>
     <string name="copied">Copiato</string>
     <string name="welcome">Il tuo assistente gira sul PC</string>
-    <string name="welcome_hint">Avvia il bridge kAI sul PC (kai_bridge.py) e collega il telefono via USB, oppure imposta l\'indirizzo del PC nelle impostazioni.</string>
-    <string name="bridge">Bridge</string>
-    <string name="bridge_help">USB: avvia kai_bridge.py sul PC, imposta lui \"adb reverse\" e puoi lasciare 127.0.0.1. Wi-Fi: usa l\'indirizzo del PC.</string>
+    <string name="welcome_hint">Collega il telefono via USB e avvia \"Avvia kAI\" sul PC (Ollama). Via Wi-Fi: imposta l\'indirizzo del PC nelle impostazioni.</string>
+    <string name="bridge">Connessione al PC</string>
+    <string name="bridge_help">USB: avvia \"Avvia kAI\" sul PC e lascia 127.0.0.1 e la porta 11434. Wi-Fi: indirizzo del PC, con Ollama aperto alla rete.</string>
     <string name="host">Indirizzo (127.0.0.1)</string>
-    <string name="port">Porta (8765)</string>
-    <string name="model_hint">Modello (vuoto = predefinito del bridge)</string>
+    <string name="port">Porta (11434)</string>
+    <string name="model_hint">Modello (vuoto = il primo installato)</string>
     <string name="save">Salva</string>
     <string name="connecting">Connessione…</string>
     <string name="connected">Connesso · %s</string>
     <string name="default_model">modello predefinito</string>
-    <string name="not_connected">Bridge non raggiungibile · tocca per riprovare</string>
+    <string name="not_connected">PC non raggiungibile · tocca per riprovare</string>
+    <string name="no_model">Nessun modello sul PC · avvia \"Avvia kAI\"</string>
     <string name="error_answer">⚠ Nessuna risposta: %s</string>
 </resources>
