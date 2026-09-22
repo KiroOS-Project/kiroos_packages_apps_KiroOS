@@ -154,6 +154,7 @@ public class KaiActivity extends Activity {
     protected void onResume() {
         super.onResume();
         mResumed = true;
+        mHandler.removeCallbacks(mStopLocal);
         checkBridge();
     }
 
@@ -161,8 +162,25 @@ public class KaiActivity extends Activity {
     protected void onPause() {
         mResumed = false;
         mHandler.removeCallbacks(mRetry);
+        // give the model's memory back a few minutes after leaving kAI
+        mHandler.removeCallbacks(mStopLocal);
+        mHandler.postDelayed(mStopLocal, 3 * 60 * 1000);
         super.onPause();
     }
+
+    private final Runnable mStopLocal = new Runnable() {
+        @Override
+        public void run() {
+            if (!mResumed && !mBusy) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        LocalEngine.stop();
+                    }
+                }, "kAI-stop").start();
+            }
+        }
+    };
 
     private final Runnable mRetry = new Runnable() {
         @Override
@@ -178,18 +196,52 @@ public class KaiActivity extends Activity {
                 mPrefs.getInt("port", DEFAULT_PORT));
     }
 
+    /** who answers: a model on the PC (faster, bigger) when reachable, else the phone's own */
+    private static final class Target {
+        final BridgeClient client;
+        final String model;
+        final boolean local;
+
+        Target(BridgeClient client, String model, boolean local) {
+            this.client = client;
+            this.model = model;
+            this.local = local;
+        }
+    }
+
+    /**
+     * Blocking (worker thread). The PC first (USB tunnel or LAN address from the settings),
+     * then the on-device model, started if needed. Throws NoModelException / Exception
+     * only when neither can answer.
+     */
+    private Target resolve(boolean startLocal) throws Exception {
+        final BridgeClient pc = client();
+        final String preferred = mPrefs.getString("model", "");
+        Exception pcError;
+        try {
+            return new Target(pc, pc.health(preferred), false);
+        } catch (Exception e) {
+            pcError = e;
+        }
+        if (LocalEngine.available()) {
+            if (!startLocal || LocalEngine.ensureRunning()) {
+                return new Target(BridgeClient.local(), LocalEngine.MODEL_NAME, true);
+            }
+        }
+        throw pcError;
+    }
+
     private void checkBridge() {
         mStatus.setText(R.string.connecting);
         mStatus.setTextColor(getColor(R.color.kiro_text_secondary));
-        final BridgeClient c = client();
-        final String preferred = mPrefs.getString("model", "");
-        new AsyncTask<Void, Void, String>() {
+        new AsyncTask<Void, Void, Target>() {
             private boolean mNoModel;
 
             @Override
-            protected String doInBackground(Void... params) {
+            protected Target doInBackground(Void... params) {
                 try {
-                    return c.health(preferred);
+                    // warm the on-device model up now, so the first answer is quick
+                    return resolve(true);
                 } catch (BridgeClient.NoModelException e) {
                     mNoModel = true;
                     return null;
@@ -199,14 +251,19 @@ public class KaiActivity extends Activity {
             }
 
             @Override
-            protected void onPostExecute(String model) {
+            protected void onPostExecute(Target t) {
                 if (isDestroyed()) {
                     return;
                 }
-                if (model != null) {
-                    mStatus.setText(getString(R.string.connected, model.isEmpty()
-                            ? getString(R.string.default_model) : model));
+                if (t != null) {
+                    mStatus.setText(getString(t.local ? R.string.on_device : R.string.connected,
+                            t.model.isEmpty() ? getString(R.string.default_model) : t.model));
                     mStatus.setTextColor(getColor(R.color.kiro_positive));
+                    if (t.local && mResumed) {
+                        // the PC may be plugged in later: look again now and then
+                        mHandler.removeCallbacks(mRetry);
+                        mHandler.postDelayed(mRetry, 15000);
+                    }
                 } else {
                     mStatus.setText(mNoModel ? R.string.no_model : R.string.not_connected);
                     mStatus.setTextColor(getColor(R.color.kiro_negative));
@@ -244,27 +301,22 @@ public class KaiActivity extends Activity {
             }
             history.add(m);
         }
-        mClient = client();
-        final BridgeClient c = mClient;
-        final String preferred = mPrefs.getString("model", "");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // ask the PC which model answers (and which protocol it speaks) first
-                String model;
+                // the PC if it is there, else the phone's own model
+                final Target t;
                 try {
-                    model = c.health(preferred);
+                    t = resolve(true);
                 } catch (BridgeClient.NoModelException e) {
-                    model = null;
                     postError(answer, getString(R.string.no_model));
+                    return;
                 } catch (Exception e) {
-                    model = null;
                     postError(answer, getString(R.string.not_connected));
-                }
-                if (model == null) {
                     return;
                 }
-                c.chat(model, history, new BridgeClient.Stream() {
+                mClient = t.client;
+                t.client.chat(t.model, history, new BridgeClient.Stream() {
                     private long mLastUi;
 
                     @Override

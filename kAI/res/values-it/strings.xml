@@ -5,8 +5,9 @@
     <string name="stop">Ferma</string>
     <string name="new_chat">Nuova chat</string>
     <string name="copied">Copiato</string>
-    <string name="welcome">Il tuo assistente gira sul PC</string>
-    <string name="welcome_hint">Collega il telefono via USB e avvia \"Avvia kAI\" sul PC (Ollama). Via Wi-Fi: imposta l\'indirizzo del PC nelle impostazioni.</string>
+    <string name="welcome">Il tuo assistente, anche offline</string>
+    <string name="welcome_hint">kAI risponde direttamente sul telefono, senza internet. Se colleghi il PC via USB con \"Avvia kAI\" usa il modello del PC, più veloce e più preciso.</string>
+    <string name="on_device">Sul telefono · %s</string>
     <string name="bridge">Connessione al PC</string>
     <string name="bridge_help">USB: avvia \"Avvia kAI\" sul PC e lascia 127.0.0.1 e la porta 11434. Wi-Fi: indirizzo del PC, con Ollama aperto alla rete.</string>
     <string name="host">Indirizzo (127.0.0.1)</string>

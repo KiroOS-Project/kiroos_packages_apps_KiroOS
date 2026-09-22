@@ -6,8 +6,9 @@
     <string name="stop">Stop</string>
     <string name="new_chat">New chat</string>
     <string name="copied">Copied</string>
-    <string name="welcome">Your assistant runs on your PC</string>
-    <string name="welcome_hint">Connect the phone by USB and run \"Start kAI\" on the PC (Ollama). Over Wi-Fi: set the PC address in the settings.</string>
+    <string name="welcome">Your assistant, even offline</string>
+    <string name="welcome_hint">kAI answers right on the phone, no internet needed. With the PC plugged in by USB and \"Start kAI\" running, it uses the PC\'s model: faster and smarter.</string>
+    <string name="on_device">On the phone · %s</string>
     <string name="bridge">PC connection</string>
     <string name="bridge_help">USB: run \"Start kAI\" on the PC and keep 127.0.0.1 and port 11434. Wi-Fi: the PC\'s address, with Ollama open to the network.</string>
     <string name="host">Address (127.0.0.1)</string>
