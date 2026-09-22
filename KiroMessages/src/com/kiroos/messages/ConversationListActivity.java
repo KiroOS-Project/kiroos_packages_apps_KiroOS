@@ -143,6 +143,12 @@ public class ConversationListActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        watch();
+    }
+
+    /** (re)registers the observer on the SMS/MMS provider and reloads the conversations */
+    private void watch() {
+        getContentResolver().unregisterContentObserver(mObserver);
         try {
             getContentResolver().registerContentObserver(
                     android.net.Uri.parse("content://mms-sms/"), true, mObserver);
@@ -255,8 +261,8 @@ public class ConversationListActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
         Names.clear();
-        onStop();
-        onStart();
+        // just granted: start watching and reload (never call the lifecycle methods by hand)
+        watch();
     }
 
     private final class Adapter extends BaseAdapter {

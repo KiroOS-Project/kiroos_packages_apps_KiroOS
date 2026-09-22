@@ -187,12 +187,7 @@ public class ContactsActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        try {
-            getContentResolver().registerContentObserver(Contacts.CONTENT_URI, true, mObserver);
-        } catch (SecurityException e) {
-            // no permission yet
-        }
-        load();
+        watch();
     }
 
     @Override
@@ -203,8 +198,19 @@ public class ContactsActivity extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
-        onStop();
-        onStart();
+        // just granted: start watching and load (never call the lifecycle methods by hand)
+        watch();
+    }
+
+    /** (re)registers the observer on the contacts provider and loads the list */
+    private void watch() {
+        getContentResolver().unregisterContentObserver(mObserver);
+        try {
+            getContentResolver().registerContentObserver(Contacts.CONTENT_URI, true, mObserver);
+        } catch (SecurityException e) {
+            // no permission yet
+        }
+        load();
     }
 
     private void load() {

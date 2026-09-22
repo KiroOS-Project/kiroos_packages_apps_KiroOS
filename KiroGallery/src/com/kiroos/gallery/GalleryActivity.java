@@ -148,7 +148,11 @@ public class GalleryActivity extends Activity {
         findViewById(R.id.btn_camera).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA));
+                try {
+                    startActivity(new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA));
+                } catch (android.content.ActivityNotFoundException e) {
+                    // no camera app (disabled)
+                }
             }
         });
         findViewById(R.id.btn_camera).setVisibility(mPicker ? View.GONE : View.VISIBLE);

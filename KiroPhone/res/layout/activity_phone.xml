@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/kiro_black"
     android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <LinearLayout

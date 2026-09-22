@@ -152,9 +152,10 @@ public class BrowserActivity extends Activity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     // show the full address to edit, all selected
-                    if (mCurrent != null && mCurrent.web.getUrl() != null
-                            && !mCurrent.web.getUrl().startsWith("data:")) {
-                        mUrl.setText(mCurrent.web.getUrl());
+                    // (the start page is about:blank: nothing to edit there, keep the hint)
+                    final String url = mCurrent != null ? mCurrent.web.getUrl() : null;
+                    if (url != null && !url.startsWith("data:") && !"about:blank".equals(url)) {
+                        mUrl.setText(url);
                     }
                     mUrl.selectAll();
                 } else {

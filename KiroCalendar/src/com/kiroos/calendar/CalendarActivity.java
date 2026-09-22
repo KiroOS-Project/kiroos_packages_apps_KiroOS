@@ -158,13 +158,25 @@ public class CalendarActivity extends Activity implements MonthView.Listener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] results) {
-        onStop();
-        onStart();
+        // just granted: start watching and load (never call the lifecycle methods by hand)
+        watch();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        watch();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        getContentResolver().unregisterContentObserver(mObserver);
+    }
+
+    /** (re)registers the observer on the calendar provider and loads the month */
+    private void watch() {
+        getContentResolver().unregisterContentObserver(mObserver);
         try {
             getContentResolver().registerContentObserver(CalendarContract.CONTENT_URI, true,
                     mObserver);
@@ -172,12 +184,6 @@ public class CalendarActivity extends Activity implements MonthView.Listener {
             // no permission yet
         }
         load();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        getContentResolver().unregisterContentObserver(mObserver);
     }
 
     @Override
@@ -198,9 +204,18 @@ public class CalendarActivity extends Activity implements MonthView.Listener {
     }
 
     private void showMonth() {
-        mMonthTitle.setText(DateUtils.formatDateTime(this, mSelected.getTimeInMillis(),
-                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_MONTH_DAY
-                        | DateUtils.FORMAT_SHOW_YEAR));
+        // "Settembre 2026" did not fit next to the buttons: the month in full, the year
+        // smaller and dimmer after it
+        final String month = new java.text.SimpleDateFormat("LLLL", java.util.Locale.getDefault())
+                .format(mSelected.getTime());
+        final String year = " " + mSelected.get(Calendar.YEAR);
+        final android.text.SpannableString title = new android.text.SpannableString(
+                Character.toUpperCase(month.charAt(0)) + month.substring(1) + year);
+        final int start = title.length() - year.length();
+        title.setSpan(new android.text.style.RelativeSizeSpan(0.62f), start, title.length(), 0);
+        title.setSpan(new android.text.style.ForegroundColorSpan(
+                getColor(R.color.kiro_text_secondary)), start, title.length(), 0);
+        mMonthTitle.setText(title);
         mMonthView.setMonth(mSelected.get(Calendar.YEAR), mSelected.get(Calendar.MONTH),
                 mSelected.get(Calendar.DAY_OF_MONTH));
         load();
