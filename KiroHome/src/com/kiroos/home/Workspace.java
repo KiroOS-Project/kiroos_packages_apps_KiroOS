@@ -1,0 +1,224 @@
+/*
+ * Copyright (C) 2026 KiroOS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.kiroos.home;
+
+import android.animation.ValueAnimator;
+import android.content.Context;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.kiroos.ui.KiroTouch;
+
+/**
+ * The home pages side by side: every icon is laid out in its cell of its page, and the
+ * pages scroll horizontally (the gesture comes from HomeLayout, so it works anywhere on the
+ * home). One flat view group, no nested page views: scrolling only moves scrollX.
+ */
+public class Workspace extends ViewGroup {
+
+    interface Listener {
+        /** position in pages, fractional while scrolling (0 = first page) */
+        void onPageScrolled(float position);
+    }
+
+    /** a child's cell */
+    static final class LayoutParams extends ViewGroup.LayoutParams {
+        int page;
+        int index;
+
+        LayoutParams(int page, int index) {
+            super(0, 0);
+            this.page = page;
+            this.index = index;
+        }
+    }
+
+    /** the tallest a cell gets; it shrinks when widgets take room */
+    private final int mMaxCellHeight;
+    private int mCellHeight;
+    /** the rows sit at the bottom, right above the dock */
+    private int mGridTop;
+    private int mPageCount = 1;
+    private int mCurrentPage;
+    private float mDragStartScroll;
+    private ValueAnimator mSettle;
+    private Listener mListener;
+
+    public Workspace(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mMaxCellHeight = context.getResources().getDimensionPixelSize(R.dimen.cell_height);
+        mCellHeight = mMaxCellHeight;
+        setClipChildren(false);
+    }
+
+    void setListener(Listener l) {
+        mListener = l;
+    }
+
+    int cellWidth() {
+        return getWidth() / HomeModel.COLUMNS;
+    }
+
+    int cellHeight() {
+        return mCellHeight;
+    }
+
+    /** top of the first row, in this view's coordinates */
+    int gridTop() {
+        return mGridTop;
+    }
+
+    int pageCount() {
+        return mPageCount;
+    }
+
+    int currentPage() {
+        return mCurrentPage;
+    }
+
+    void setPageCount(int count) {
+        mPageCount = Math.max(1, count);
+        if (mCurrentPage >= mPageCount) {
+            snapTo(mPageCount - 1, false);
+        }
+        notifyScroll();
+    }
+
+    /** the cell index under a point in this view's coordinates (current page), or -1 */
+    int cellAt(float x, float y) {
+        if (getWidth() == 0 || x < 0 || y < 0 || x >= getWidth() || y >= getHeight()) {
+            return -1;
+        }
+        final int col = Math.min(HomeModel.COLUMNS - 1, (int) (x / cellWidth()));
+        final int row = Math.max(0, Math.min(HomeModel.ROWS - 1,
+                (int) ((y - mGridTop) / mCellHeight)));
+        return row * HomeModel.COLUMNS + col;
+    }
+
+    // --- paging -----------------------------------------------------------------------------
+
+    void beginDrag() {
+        if (mSettle != null) {
+            mSettle.cancel();
+        }
+        mDragStartScroll = getScrollX();
+    }
+
+    /** dx: finger travel since beginDrag (right = positive) */
+    void drag(float dx) {
+        float target = mDragStartScroll - dx;
+        final float max = (mPageCount - 1) * getWidth();
+        // rubber band past the first and the last page
+        if (target < 0) {
+            target = target / 3f;
+        } else if (target > max) {
+            target = max + (target - max) / 3f;
+        }
+        scrollTo((int) target, 0);
+        notifyScroll();
+    }
+
+    /** finger up: settle on the page the fling or the position points to */
+    void release(float velocityX, float minFling) {
+        final int w = Math.max(1, getWidth());
+        final float pos = getScrollX() / (float) w;
+        int page = Math.round(pos);
+        if (velocityX < -minFling) {
+            page = (int) Math.floor(pos) + 1;
+        } else if (velocityX > minFling) {
+            page = (int) Math.ceil(pos) - 1;
+        }
+        snapTo(page, true);
+    }
+
+    void snapTo(int page, boolean animate) {
+        page = Math.max(0, Math.min(mPageCount - 1, page));
+        mCurrentPage = page;
+        final int target = page * getWidth();
+        if (mSettle != null) {
+            mSettle.cancel();
+        }
+        if (!animate || getWidth() == 0) {
+            scrollTo(target, 0);
+            notifyScroll();
+            return;
+        }
+        mSettle = ValueAnimator.ofInt(getScrollX(), target);
+        mSettle.setDuration(Math.min(420, 180 + Math.abs(target - getScrollX()) / 3));
+        mSettle.setInterpolator(KiroTouch.EASE);
+        mSettle.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator a) {
+                scrollTo((int) a.getAnimatedValue(), 0);
+                notifyScroll();
+            }
+        });
+        mSettle.start();
+    }
+
+    private void notifyScroll() {
+        if (mListener != null && getWidth() > 0) {
+            mListener.onPageScrolled(getScrollX() / (float) getWidth());
+        }
+    }
+
+    // --- layout -----------------------------------------------------------------------------
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int w = MeasureSpec.getSize(widthMeasureSpec);
+        final int h = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED
+                ? mMaxCellHeight * HomeModel.ROWS : MeasureSpec.getSize(heightMeasureSpec);
+        mCellHeight = Math.min(mMaxCellHeight, h / HomeModel.ROWS);
+        mGridTop = h - mCellHeight * HomeModel.ROWS;
+        final int cw = w / HomeModel.COLUMNS;
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).measure(MeasureSpec.makeMeasureSpec(cw, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(mCellHeight, MeasureSpec.EXACTLY));
+        }
+        setMeasuredDimension(w, h);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        final int w = r - l;
+        final int cw = w / HomeModel.COLUMNS;
+        final int side = (w - cw * HomeModel.COLUMNS) / 2;
+        for (int i = 0; i < getChildCount(); i++) {
+            final View c = getChildAt(i);
+            final LayoutParams lp = (LayoutParams) c.getLayoutParams();
+            final int col = lp.index % HomeModel.COLUMNS;
+            final int row = lp.index / HomeModel.COLUMNS;
+            final int x = lp.page * w + side + col * cw;
+            final int y = mGridTop + row * mCellHeight;
+            c.layout(x, y, x + cw, y + mCellHeight);
+        }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        scrollTo(mCurrentPage * w, 0);
+        notifyScroll();
+    }
+
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof LayoutParams;
+    }
+}

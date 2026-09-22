@@ -25,10 +25,10 @@ import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
 /**
- * Root of the home screen. A vertical swipe that starts anywhere on the home (also over
- * icons, once it moves past the touch slop) is taken over: up opens the app drawer following
- * the finger, down expands the notification shade (two fingers: quick settings).
- * Long-press on empty space opens the home menu.
+ * Root of the home screen. A swipe that starts anywhere on the home (also over icons, once it
+ * moves past the touch slop) is taken over: up opens the app drawer following the finger,
+ * down expands the notification shade (two fingers: quick settings), sideways moves between
+ * the home pages. Long-press on empty space opens the home menu.
  */
 public class HomeLayout extends FrameLayout {
 
@@ -44,11 +44,20 @@ public class HomeLayout extends FrameLayout {
         void onSwipeDown(boolean twoFingers);
 
         void onEmptyLongPress(float x, float y);
+
+        /** a horizontal drag starts: the home pages follow the finger */
+        void onPageDragStart();
+
+        /** dx: horizontal travel since the drag started */
+        void onPageDrag(float dx);
+
+        void onPageRelease(float velocityX, float minFling);
     }
 
     private static final int NONE = 0;
     private static final int DRAWER = 1;
     private static final int SHADE = 2;
+    private static final int PAGE = 3;
 
     private final int mTouchSlop;
     private final float mMinFling;
@@ -102,6 +111,12 @@ public class HomeLayout extends FrameLayout {
                     mMode = dy < 0 ? DRAWER : SHADE;
                     return true;
                 }
+                if (Math.abs(dx) > mTouchSlop && Math.abs(dx) > Math.abs(dy)) {
+                    mMode = PAGE;
+                    mDownX = ev.getX(); // the pages start following from here, no jump
+                    mCallbacks.onPageDragStart();
+                    return true;
+                }
                 break;
             default:
                 break;
@@ -130,15 +145,24 @@ public class HomeLayout extends FrameLayout {
                 return true;
             case MotionEvent.ACTION_MOVE: {
                 final float dy = ev.getY() - mDownY;
-                if (mMode == NONE && Math.abs(dy) > mTouchSlop) {
-                    mMode = dy < 0 ? DRAWER : SHADE;
+                final float dx = ev.getX() - mDownX;
+                if (mMode == NONE && (Math.abs(dy) > mTouchSlop || Math.abs(dx) > mTouchSlop)) {
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        mMode = PAGE;
+                        mDownX = ev.getX();
+                        mCallbacks.onPageDragStart();
+                    } else {
+                        mMode = dy < 0 ? DRAWER : SHADE;
+                    }
                     // the long press must not fire once the finger moves
                     final MotionEvent cancel = MotionEvent.obtain(ev);
                     cancel.setAction(MotionEvent.ACTION_CANCEL);
                     mLongPress.onTouchEvent(cancel);
                     cancel.recycle();
                 }
-                if (mMode == DRAWER) {
+                if (mMode == PAGE) {
+                    mCallbacks.onPageDrag(ev.getX() - mDownX);
+                } else if (mMode == DRAWER) {
                     final float travel = getHeight() * 0.6f;
                     mCallbacks.onDrawerDrag(Math.max(0f, Math.min(1f, -dy / travel)));
                 }
@@ -148,12 +172,16 @@ public class HomeLayout extends FrameLayout {
             case MotionEvent.ACTION_CANCEL: {
                 final boolean up = ev.getActionMasked() == MotionEvent.ACTION_UP;
                 float vy = 0;
+                float vx = 0;
                 if (mVelocity != null) {
                     mVelocity.computeCurrentVelocity(1000);
                     vy = mVelocity.getYVelocity();
+                    vx = mVelocity.getXVelocity();
                 }
                 final float dy = ev.getY() - mDownY;
-                if (mMode == DRAWER) {
+                if (mMode == PAGE) {
+                    mCallbacks.onPageRelease(up ? vx : 0, mMinFling);
+                } else if (mMode == DRAWER) {
                     final boolean open = up && (vy < -mMinFling
                             || (vy < mMinFling && -dy > getHeight() * 0.25f));
                     mCallbacks.onDrawerRelease(open);

@@ -6,7 +6,6 @@
     <string name="app_not_available">App not available</string>
     <string name="remove_from_home">Remove from home</string>
     <string name="add_to_home">Add to home</string>
-    <string name="add_to_dock">Add to dock</string>
     <string name="app_info">App info</string>
     <string name="uninstall">Uninstall</string>
     <string name="home_full">The home is full</string>

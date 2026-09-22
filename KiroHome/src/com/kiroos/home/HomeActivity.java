@@ -23,16 +23,18 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.AlarmClock;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -40,12 +42,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,38 +59,54 @@ import android.widget.Toast;
 
 import com.kiroos.ui.KiroTouch;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Kiro Home v1.0: clock, widgets, a grid of favourite apps and a dock over the wallpaper.
- * Swipe up anywhere for the vertical app drawer, swipe down anywhere for notifications
- * (two fingers for quick settings). Apps open with a zoom from their icon's position.
+ * Kiro Home v1.0: clock, widgets, pages of apps and a dock over the wallpaper.
+ * Swipe sideways between the pages, up anywhere for the vertical app drawer, down for
+ * notifications (two fingers: quick settings). Long-press an app and drag it to any cell,
+ * page or dock slot (also straight from the drawer); let it go where it was for its menu.
+ * Apps open with a zoom from their icon.
  */
 public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         AppRepository.Listener {
 
     private static final int REQUEST_PICK_WIDGET = 1;
     private static final int REQUEST_CONFIGURE_WIDGET = 2;
+    /** how long an app dragged to a side edge waits before the page turns */
+    private static final long EDGE_PAGE_DELAY = 550;
 
-    static final int GRID_COLUMNS = 4;
-    static final int GRID_ROWS = 5;
-    static final int DOCK_SIZE = 4;
-
+    private final Handler mHandler = new Handler();
     private IconFactory mIcons;
     private AppRepository mRepo;
-    private Favorites mFavorites;
+    private HomeModel mModel;
     private WidgetStack mWidgets;
 
     private HomeLayout mRoot;
     private View mHomeContent;
-    private LinearLayout mGrid;
+    private Workspace mWorkspace;
+    private PageIndicator mIndicator;
     private LinearLayout mDock;
+    private View mDropHint;
     private View mDrawer;
     private GridView mDrawerGrid;
     private EditText mSearch;
     private DrawerAdapter mDrawerAdapter;
     private float mDrawerProgress;
+    private int mTouchSlop;
+
+    /** the app being dragged, where it came from, and whether it moved */
+    private static final class Drag {
+        AppInfo app;
+        HomeModel.Loc from;
+        View source;
+        float startX = Float.NaN;
+        float startY;
+        boolean moved;
+        int edge; // -1 left, +1 right, 0 none
+    }
+
+    private Drag mDrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,19 +115,29 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         setContentView(R.layout.activity_home);
+        mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
 
         mIcons = new IconFactory(this);
         mRepo = new AppRepository(this, mIcons);
-        mFavorites = new Favorites(getSharedPreferences("home", MODE_PRIVATE));
+        mModel = new HomeModel(getSharedPreferences("home", MODE_PRIVATE));
 
         mRoot = (HomeLayout) findViewById(R.id.root);
         mRoot.setCallbacks(this);
         mHomeContent = findViewById(R.id.home_content);
-        mGrid = (LinearLayout) findViewById(R.id.home_grid);
+        mWorkspace = (Workspace) findViewById(R.id.workspace);
+        mIndicator = (PageIndicator) findViewById(R.id.page_indicator);
         mDock = (LinearLayout) findViewById(R.id.dock);
+        mDropHint = findViewById(R.id.drop_hint);
         mDrawer = findViewById(R.id.drawer);
         mDrawerGrid = (GridView) findViewById(R.id.drawer_grid);
         mSearch = (EditText) findViewById(R.id.drawer_search);
+
+        mWorkspace.setListener(new Workspace.Listener() {
+            @Override
+            public void onPageScrolled(float position) {
+                mIndicator.setPosition(position);
+            }
+        });
 
         // both layers draw behind the transparent bars but keep their content clear of them
         final View drawerInner = findViewById(R.id.drawer_inner);
@@ -122,6 +152,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 return insets.consumeSystemWindowInsets();
             }
         });
+        mRoot.setOnDragListener(mDragListener);
 
         findViewById(R.id.clock_block).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +180,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mDrawerGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showAppMenu(mDrawerAdapter.getItem(position), view, true);
+                // drag it onto the home (the drawer steps aside); dropped back in place: menu
+                startDrag(mDrawerAdapter.getItem(position), null, view);
                 return true;
             }
         });
@@ -194,7 +226,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         setDrawerProgress(0f);
         mRepo.addListener(this);
         mRepo.reload();
-        KiroTouch.enter(findViewById(R.id.clock_block), mGrid, mDock);
+        KiroTouch.enter(findViewById(R.id.clock_block), mWorkspace, mDock);
     }
 
     @Override
@@ -211,6 +243,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
     @Override
     protected void onDestroy() {
+        mHandler.removeCallbacksAndMessages(null);
         mRepo.destroy();
         super.onDestroy();
     }
@@ -218,9 +251,13 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        // Home pressed while already home: close the drawer
-        if (Intent.ACTION_MAIN.equals(intent.getAction()) && isDrawerOpen()) {
-            animateDrawer(false);
+        // Home pressed while already home: close the drawer, else back to the first page
+        if (Intent.ACTION_MAIN.equals(intent.getAction())) {
+            if (isDrawerOpen()) {
+                animateDrawer(false);
+            } else {
+                mWorkspace.snapTo(0, true);
+            }
         }
     }
 
@@ -228,6 +265,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     public void onBackPressed() {
         if (isDrawerOpen()) {
             animateDrawer(false);
+        } else if (mWorkspace.currentPage() > 0) {
+            mWorkspace.snapTo(0, true);
         }
     }
 
@@ -235,54 +274,44 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
     @Override
     public void onAppsChanged(List<AppInfo> apps) {
-        mFavorites.seedDefaults(mRepo);
+        mModel.load(mRepo);
+        mModel.prune(mRepo);
         mDrawerAdapter.setApps(apps);
         mDrawerAdapter.filter(mSearch.getText().toString());
-        bindHome();
+        if (mDrag == null) {
+            bindHome();
+        }
     }
 
     private void bindHome() {
         final LayoutInflater inflater = LayoutInflater.from(this);
-        mGrid.removeAllViews();
-        final List<AppInfo> grid = resolve(mFavorites.grid());
-        int i = 0;
-        for (int r = 0; r < GRID_ROWS && i < grid.size(); r++) {
-            final LinearLayout row = new LinearLayout(this);
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            for (int c = 0; c < GRID_COLUMNS; c++, i++) {
-                if (i < grid.size()) {
-                    row.addView(bindIcon(inflater, row, grid.get(i), true),
-                            new LinearLayout.LayoutParams(0,
-                                    ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-                } else {
-                    // empty cell: keeps the columns aligned (a wrap_content View would
-                    // take all the height it is offered)
-                    row.addView(new View(this), new LinearLayout.LayoutParams(0, 0, 1f));
+        mWorkspace.removeAllViews();
+        for (int p = 0; p < mModel.pageCount(); p++) {
+            for (int i = 0; i < HomeModel.PAGE_SIZE; i++) {
+                final HomeModel.Loc loc = new HomeModel.Loc(p, i);
+                final AppInfo app = mRepo.find(mModel.at(loc));
+                if (app != null) {
+                    mWorkspace.addView(bindIcon(inflater, mWorkspace, app, true, loc),
+                            new Workspace.LayoutParams(p, i));
                 }
             }
-            mGrid.addView(row);
         }
+        mWorkspace.setPageCount(mModel.pageCount());
+        mIndicator.setCount(mModel.pageCount());
         mDock.removeAllViews();
-        for (AppInfo app : resolve(mFavorites.dock())) {
-            final View cell = bindIcon(inflater, mDock, app, false);
+        for (int i = 0; i < HomeModel.DOCK_SIZE; i++) {
+            final HomeModel.Loc loc = new HomeModel.Loc(HomeModel.DOCK, i);
+            final AppInfo app = mRepo.find(mModel.at(loc));
+            // empty slots keep their place, so an app can be dropped there
+            final View cell = app != null ? bindIcon(inflater, mDock, app, false, loc)
+                    : new View(this);
             mDock.addView(cell, new LinearLayout.LayoutParams(0,
-                    ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+                    app != null ? ViewGroup.LayoutParams.WRAP_CONTENT : 1, 1f));
         }
-    }
-
-    private List<AppInfo> resolve(List<String> keys) {
-        final List<AppInfo> out = new ArrayList<>();
-        for (String k : keys) {
-            final AppInfo a = mRepo.find(k);
-            if (a != null) {
-                out.add(a);
-            }
-        }
-        return out;
     }
 
     private View bindIcon(LayoutInflater inflater, ViewGroup parent, final AppInfo app,
-            boolean withLabel) {
+            boolean withLabel, final HomeModel.Loc loc) {
         final View v = inflater.inflate(R.layout.item_app, parent, false);
         final ImageView icon = (ImageView) v.findViewById(R.id.app_icon);
         icon.setImageDrawable(mIcons.icon(app));
@@ -300,7 +329,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         v.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                showAppMenu(app, view, false);
+                startDrag(app, loc, view);
                 return true;
             }
         });
@@ -326,18 +355,13 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
     }
 
-    private void showAppMenu(final AppInfo app, View anchor, final boolean fromDrawer) {
-        anchor.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+    private void showAppMenu(final AppInfo app, View anchor) {
         final PopupMenu menu = new PopupMenu(this, anchor, Gravity.CENTER);
         final Menu m = menu.getMenu();
-        final boolean onHome = mFavorites.contains(app.key());
-        if (onHome) {
+        if (mModel.find(app.key()) != null) {
             m.add(0, 1, 0, R.string.remove_from_home);
         } else {
             m.add(0, 2, 0, R.string.add_to_home);
-        }
-        if (!mFavorites.dock().contains(app.key())) {
-            m.add(0, 3, 0, R.string.add_to_dock);
         }
         m.add(0, 4, 0, R.string.app_info);
         m.add(0, 5, 0, R.string.uninstall);
@@ -346,18 +370,14 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case 1:
-                        mFavorites.remove(app.key());
+                        mModel.remove(app.key());
                         bindHome();
                         return true;
                     case 2:
-                        if (!mFavorites.addToGrid(app.key(), GRID_COLUMNS * GRID_ROWS)) {
+                        if (!mModel.add(app.key())) {
                             Toast.makeText(HomeActivity.this, R.string.home_full,
                                     Toast.LENGTH_SHORT).show();
                         }
-                        bindHome();
-                        return true;
-                    case 3:
-                        mFavorites.addToDock(app.key(), DOCK_SIZE);
                         bindHome();
                         return true;
                     case 4:
@@ -374,6 +394,237 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             }
         });
         menu.show();
+    }
+
+    // --- drag and drop ----------------------------------------------------------------------
+
+    /** Long-press on an app (on the home: from = its cell; in the drawer: from = null). */
+    private void startDrag(AppInfo app, HomeModel.Loc from, View cell) {
+        if (mDrag != null) {
+            return;
+        }
+        cell.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        cell.animate().cancel();
+        cell.setScaleX(1f);
+        cell.setScaleY(1f);
+        final View icon = cell.findViewById(R.id.app_icon);
+        final Drag d = new Drag();
+        d.app = app;
+        d.from = from;
+        d.source = cell;
+        mDrag = d;
+        // an extra empty page to drop on while dragging
+        mWorkspace.setPageCount(mModel.pageCount() + 1);
+        mIndicator.setCount(mModel.pageCount() + 1);
+        if (!cell.startDrag(ClipData.newPlainText("app", app.key()),
+                new View.DragShadowBuilder(icon != null ? icon : cell), d, 0)) {
+            mDrag = null;
+            bindHome();
+            if (from == null) {
+                showAppMenu(app, cell);
+            }
+            return;
+        }
+        if (from != null) {
+            cell.setAlpha(0.25f);
+        }
+    }
+
+    private final View.OnDragListener mDragListener = new View.OnDragListener() {
+        @Override
+        public boolean onDrag(View v, DragEvent e) {
+            final Drag d = mDrag;
+            if (d == null) {
+                return false;
+            }
+            switch (e.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return true;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    if (Float.isNaN(d.startX)) {
+                        d.startX = e.getX();
+                        d.startY = e.getY();
+                    } else if (!d.moved && Math.hypot(e.getX() - d.startX, e.getY() - d.startY)
+                            > mTouchSlop * 2) {
+                        d.moved = true;
+                        if (d.from == null) {
+                            // from the drawer: it steps aside so the home is the drop area
+                            animateDrawer(false);
+                        }
+                    }
+                    if (d.moved) {
+                        showHint(locAt(e.getX(), e.getY()));
+                        trackEdge(d, e.getX(), e.getY());
+                    }
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    final HomeModel.Loc to = d.moved ? locAt(e.getX(), e.getY()) : null;
+                    if (to != null) {
+                        mModel.place(d.app.key(), to);
+                    }
+                    return to != null;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    endDrag(d);
+                    return true;
+                default:
+                    return true;
+            }
+        }
+    };
+
+    private void endDrag(Drag d) {
+        mHandler.removeCallbacks(mEdgePage);
+        mDrag = null;
+        mDropHint.setVisibility(View.GONE);
+        d.source.setAlpha(1f);
+        final int page = Math.min(mWorkspace.currentPage(), Math.max(0, mModel.pageCount() - 1));
+        bindHome();
+        mWorkspace.snapTo(page, true);
+        if (!d.moved) {
+            // a long-press without a move: the app menu, anchored to the app
+            final View anchor = d.from != null ? cellView(d.from) : d.source;
+            showAppMenu(d.app, anchor != null ? anchor : mRoot);
+        }
+    }
+
+    /** the view that shows the app at loc after a rebind */
+    private View cellView(HomeModel.Loc loc) {
+        if (loc.container == HomeModel.DOCK) {
+            return loc.index < mDock.getChildCount() ? mDock.getChildAt(loc.index) : null;
+        }
+        for (int i = 0; i < mWorkspace.getChildCount(); i++) {
+            final View c = mWorkspace.getChildAt(i);
+            final Workspace.LayoutParams lp = (Workspace.LayoutParams) c.getLayoutParams();
+            if (lp.page == loc.container && lp.index == loc.index) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    /** the cell (dock slot or cell of the current page) under a point of the root */
+    private HomeModel.Loc locAt(float x, float y) {
+        final Rect r = boundsInRoot(mDock);
+        if (r.contains((int) x, (int) y) || y > r.bottom) {
+            final int slot = (int) ((x - r.left) / (r.width() / (float) HomeModel.DOCK_SIZE));
+            return new HomeModel.Loc(HomeModel.DOCK,
+                    Math.max(0, Math.min(HomeModel.DOCK_SIZE - 1, slot)));
+        }
+        final Rect w = boundsInRoot(mWorkspace);
+        if (y < w.top + mWorkspace.gridTop() - mWorkspace.cellHeight() / 2f) {
+            return null; // over the clock and the widgets
+        }
+        final int index = mWorkspace.cellAt(x - w.left,
+                Math.max(0, Math.min(w.height() - 1, y - w.top)));
+        return index < 0 ? null : new HomeModel.Loc(mWorkspace.currentPage(), index);
+    }
+
+    private Rect boundsInRoot(View v) {
+        final int[] root = new int[2];
+        final int[] at = new int[2];
+        mRoot.getLocationInWindow(root);
+        v.getLocationInWindow(at);
+        final int l = at[0] - root[0];
+        final int t = at[1] - root[1];
+        return new Rect(l, t, l + v.getWidth(), t + v.getHeight());
+    }
+
+    /** a soft squircle outline where the app will land */
+    private void showHint(HomeModel.Loc loc) {
+        if (loc == null) {
+            mDropHint.setVisibility(View.GONE);
+            return;
+        }
+        final int size = mIcons.size() + Math.round(12 * getResources().getDisplayMetrics().density);
+        float cx;
+        float cy;
+        if (loc.container == HomeModel.DOCK) {
+            final Rect r = boundsInRoot(mDock);
+            final float slot = r.width() / (float) HomeModel.DOCK_SIZE;
+            cx = r.left + slot * (loc.index + 0.5f);
+            cy = r.exactCenterY();
+        } else {
+            final Rect w = boundsInRoot(mWorkspace);
+            final int cw = mWorkspace.cellWidth();
+            final int ch = mWorkspace.cellHeight();
+            cx = w.left + (loc.index % HomeModel.COLUMNS + 0.5f) * cw;
+            // the icon sits at the top of its cell (label below)
+            cy = w.top + mWorkspace.gridTop() + (loc.index / HomeModel.COLUMNS) * ch
+                    + mIcons.size() / 2f
+                    + 6 * getResources().getDisplayMetrics().density;
+        }
+        final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mDropHint.getLayoutParams();
+        if (lp.width != size) {
+            lp.width = size;
+            lp.height = size;
+            mDropHint.setLayoutParams(lp);
+        }
+        final boolean wasVisible = mDropHint.getVisibility() == View.VISIBLE;
+        mDropHint.setVisibility(View.VISIBLE);
+        final float tx = cx - size / 2f;
+        final float ty = cy - size / 2f;
+        if (wasVisible) {
+            mDropHint.animate().x(tx).y(ty).setDuration(120).setInterpolator(KiroTouch.EASE)
+                    .start();
+        } else {
+            mDropHint.setX(tx);
+            mDropHint.setY(ty);
+        }
+    }
+
+    /** holding an app at a side edge turns the page after a moment */
+    private void trackEdge(Drag d, float x, float y) {
+        final float edge = 28 * getResources().getDisplayMetrics().density;
+        final Rect w = boundsInRoot(mWorkspace);
+        int side = 0;
+        if (y >= w.top && y <= w.bottom) {
+            if (x < edge) {
+                side = -1;
+            } else if (x > mRoot.getWidth() - edge) {
+                side = 1;
+            }
+        }
+        if (side != d.edge) {
+            d.edge = side;
+            mHandler.removeCallbacks(mEdgePage);
+            if (side != 0) {
+                mHandler.postDelayed(mEdgePage, EDGE_PAGE_DELAY);
+            }
+        }
+    }
+
+    private final Runnable mEdgePage = new Runnable() {
+        @Override
+        public void run() {
+            final Drag d = mDrag;
+            if (d == null || d.edge == 0) {
+                return;
+            }
+            final int page = mWorkspace.currentPage() + d.edge;
+            if (page >= 0 && page < mWorkspace.pageCount()) {
+                mWorkspace.snapTo(page, true);
+                mDropHint.setVisibility(View.GONE);
+                // still at the edge: keep turning
+                mHandler.postDelayed(this, EDGE_PAGE_DELAY + 250);
+            }
+        }
+    };
+
+    // --- pages ---------------------------------------------------------------------------
+
+    @Override
+    public void onPageDragStart() {
+        mWorkspace.beginDrag();
+    }
+
+    @Override
+    public void onPageDrag(float dx) {
+        mWorkspace.drag(dx);
+    }
+
+    @Override
+    public void onPageRelease(float velocityX, float minFling) {
+        mWorkspace.release(velocityX, minFling);
     }
 
     // --- drawer -------------------------------------------------------------------------

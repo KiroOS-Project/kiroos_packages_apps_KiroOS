@@ -17,8 +17,8 @@
             android:id="@+id/clock_block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical"
             android:paddingStart="8dp"
             android:paddingEnd="8dp">
@@ -33,7 +33,7 @@
                 android:includeFontPadding="false"
                 android:letterSpacing="-0.02"
                 android:textColor="@color/kiro_text"
-                android:textSize="68sp"
+                android:textSize="60sp"
                 style="@style/HomeShadow" />
 
             <TextClock
@@ -52,16 +52,22 @@
         <LinearLayout
             android:id="@+id/widget_stack"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="vertical" />
 
-        <LinearLayout
-            android:id="@+id/home_grid"
+        <!-- the home pages (4 x 4 cells each), swiped sideways; they take the room left
+             between the widgets and the dock, rows anchored at the bottom -->
+        <com.kiroos.home.Workspace
+            android:id="@+id/workspace"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:orientation="vertical" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.kiroos.home.PageIndicator
+            android:id="@+id/page_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_marginBottom="4dp" />
 
         <LinearLayout
             android:id="@+id/dock"
@@ -74,6 +80,14 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp" />
     </LinearLayout>
+
+    <!-- where a dragged app will land -->
+    <View
+        android:id="@+id/drop_hint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/drop_hint"
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/drawer"
