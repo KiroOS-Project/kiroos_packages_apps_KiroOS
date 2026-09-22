@@ -8,12 +8,13 @@
     <group>
         <clip-path android:pathData="M48.000,24.000L47.974,30.138 47.897,32.671 47.768,34.601 47.588,36.210 47.354,37.607 47.068,38.847 46.729,39.961 46.335,40.971 45.884,41.889 45.377,42.726 44.810,43.488 44.182,44.182 43.488,44.810 42.726,45.377 41.889,45.884 40.971,46.335 39.961,46.729 38.847,47.068 37.607,47.354 36.210,47.588 34.601,47.768 32.671,47.897 30.138,47.974 24.000,48.000 17.862,47.974 15.329,47.897 13.399,47.768 11.790,47.588 10.393,47.354 9.153,47.068 8.039,46.729 7.029,46.335 6.111,45.884 5.274,45.377 4.512,44.810 3.818,44.182 3.190,43.488 2.623,42.726 2.116,41.889 1.665,40.971 1.271,39.961 0.932,38.847 0.646,37.607 0.412,36.210 0.232,34.601 0.103,32.671 0.026,30.138 0.000,24.000 0.026,17.862 0.103,15.329 0.232,13.399 0.412,11.790 0.646,10.393 0.932,9.153 1.271,8.039 1.665,7.029 2.116,6.111 2.623,5.274 3.190,4.512 3.818,3.818 4.512,3.190 5.274,2.623 6.111,2.116 7.029,1.665 8.039,1.271 9.153,0.932 10.393,0.646 11.790,0.412 13.399,0.232 15.329,0.103 17.862,0.026 24.000,0.000 30.138,0.026 32.671,0.103 34.601,0.232 36.210,0.412 37.607,0.646 38.847,0.932 39.961,1.271 40.971,1.665 41.889,2.116 42.726,2.623 43.488,3.190 44.182,3.818 44.810,4.512 45.377,5.274 45.884,6.111 46.335,7.029 46.729,8.039 47.068,9.153 47.354,10.393 47.588,11.790 47.768,13.399 47.897,15.329 47.974,17.862Z" />
         <path android:fillColor="@color/ic_launcher_kai_bg" android:pathData="M0,0h48v48h-48z" />
-        <path android:fillColor="@color/ic_launcher_kai_glow" android:pathData="M0,0h48v48h-48z" />
-        <group android:translateX="11.040" android:translateY="11.940" android:scaleX="1.08" android:scaleY="1.08">
-            <path android:fillColor="#30000000" android:pathData="M12,2l2.4,6.6L21,11l-6.6,2.4L12,20l-2.4,-6.6L3,11l6.6,-2.4zM19,15l1.1,2.9L23,19l-2.9,1.1L19,23l-1.1,-2.9L15,19l2.9,-1.1z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="-22" android:translateX="0" android:translateY="0">
+        <path android:strokeColor="#FFFFFFFF" android:strokeAlpha="0.3" android:strokeWidth="1.4" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M9,24a15,5 0 1,0 30,0a15,5 0 1,0 -30,0" />
         </group>
-        <group android:translateX="11.040" android:translateY="11.040" android:scaleX="1.08" android:scaleY="1.08">
-            <path android:fillColor="#FFFFFFFF" android:pathData="M12,2l2.4,6.6L21,11l-6.6,2.4L12,20l-2.4,-6.6L3,11l6.6,-2.4zM19,15l1.1,2.9L23,19l-2.9,1.1L19,23l-1.1,-2.9L15,19l2.9,-1.1z" />
+        <path android:fillColor="@color/ic_launcher_kai_orb" android:pathData="M24,14.6a9.4,9.4 0,1 1,0,18.8a9.4,9.4 0,1 1,0,-18.8z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="-22" android:translateX="0" android:translateY="0">
+        <path android:strokeColor="#FFFFFFFF" android:strokeAlpha="0.95" android:strokeWidth="1.6" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M9,24a15,5 0 0,0 30,0" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M35.6,25.4a1.8,1.8 0,1 1,0,3.6a1.8,1.8 0,1 1,0,-3.6z" />
         </group>
     </group>
 </vector>

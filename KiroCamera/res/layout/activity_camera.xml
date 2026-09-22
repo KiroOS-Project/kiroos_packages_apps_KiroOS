@@ -31,11 +31,11 @@
         android:background="@color/kiro_black"
         android:visibility="gone" />
 
-    <!-- top controls -->
+    <!-- top controls (status bar inset added in code) -->
     <LinearLayout
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingEnd="12dp"
@@ -100,12 +100,12 @@
         android:textSize="16sp"
         android:visibility="gone" />
 
-    <!-- bottom controls -->
+    <!-- bottom controls (navigation bar inset added in code) -->
     <LinearLayout
+        android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:fitsSystemWindows="true"
         android:orientation="vertical"
         android:paddingBottom="16dp">
 

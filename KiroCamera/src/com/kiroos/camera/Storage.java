@@ -54,6 +54,24 @@ final class Storage {
         return f;
     }
 
+    /**
+     * Removes the empty clips older versions left behind (a video file is created as soon as
+     * video mode is ready, and was kept even when nothing was recorded).
+     */
+    static void deleteEmptyClips() {
+        final File[] files = dir().listFiles();
+        if (files == null) {
+            return;
+        }
+        final long now = System.currentTimeMillis();
+        for (File f : files) {
+            if (f.getName().startsWith("VID_") && f.length() == 0
+                    && now - f.lastModified() > 60 * 1000) {
+                f.delete();
+            }
+        }
+    }
+
     static void scan(Context context, File file, String mime, final Scanned done) {
         MediaScannerConnection.scanFile(context.getApplicationContext(),
                 new String[] {file.getAbsolutePath()}, new String[] {mime},

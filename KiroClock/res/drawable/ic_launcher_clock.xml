@@ -8,30 +8,53 @@
     <group>
         <clip-path android:pathData="M48.000,24.000L47.974,30.138 47.897,32.671 47.768,34.601 47.588,36.210 47.354,37.607 47.068,38.847 46.729,39.961 46.335,40.971 45.884,41.889 45.377,42.726 44.810,43.488 44.182,44.182 43.488,44.810 42.726,45.377 41.889,45.884 40.971,46.335 39.961,46.729 38.847,47.068 37.607,47.354 36.210,47.588 34.601,47.768 32.671,47.897 30.138,47.974 24.000,48.000 17.862,47.974 15.329,47.897 13.399,47.768 11.790,47.588 10.393,47.354 9.153,47.068 8.039,46.729 7.029,46.335 6.111,45.884 5.274,45.377 4.512,44.810 3.818,44.182 3.190,43.488 2.623,42.726 2.116,41.889 1.665,40.971 1.271,39.961 0.932,38.847 0.646,37.607 0.412,36.210 0.232,34.601 0.103,32.671 0.026,30.138 0.000,24.000 0.026,17.862 0.103,15.329 0.232,13.399 0.412,11.790 0.646,10.393 0.932,9.153 1.271,8.039 1.665,7.029 2.116,6.111 2.623,5.274 3.190,4.512 3.818,3.818 4.512,3.190 5.274,2.623 6.111,2.116 7.029,1.665 8.039,1.271 9.153,0.932 10.393,0.646 11.790,0.412 13.399,0.232 15.329,0.103 17.862,0.026 24.000,0.000 30.138,0.026 32.671,0.103 34.601,0.232 36.210,0.412 37.607,0.646 38.847,0.932 39.961,1.271 40.971,1.665 41.889,2.116 42.726,2.623 43.488,3.190 44.182,3.818 44.810,4.512 45.377,5.274 45.884,6.111 46.335,7.029 46.729,8.039 47.068,9.153 47.354,10.393 47.588,11.790 47.768,13.399 47.897,15.329 47.974,17.862Z" />
         <path android:fillColor="@color/ic_launcher_clock_bg" android:pathData="M0,0h48v48h-48z" />
-        <path android:fillColor="@color/ic_launcher_clock_glow" android:pathData="M0,0h48v48h-48z" />
-        <path android:fillColor="#40000000" android:pathData="M24,10.9a14,14 0,1 1,0,28a14,14 0,1 1,0,-28z" />
-        <path android:fillColor="#FFF7F7FA" android:pathData="M24,10a14,14 0,1 1,0,28a14,14 0,1 1,0,-28z" />
-        <group android:pivotX="24" android:pivotY="24" android:rotation="0">
-            <path android:fillColor="#FFB8B8C0" android:pathData="M23.4,11.6h1.2v2.2h-1.2z" />
+        <path android:fillColor="#FF000000" android:fillAlpha="0.35" android:pathData="M24,10.3a14.6,14.6 0,1 1,0,29.2a14.6,14.6 0,1 1,0,-29.2z" />
+        <path android:fillColor="#FFF7F7F9" android:pathData="M24,9.4a14.6,14.6 0,1 1,0,29.2a14.6,14.6 0,1 1,0,-29.2z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="0" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M23.9,10.8h0.2a0.5,0.5 0,0 1,0.5,0.5v2a0.5,0.5 0,0 1,-0.5,0.5h-0.2a0.5,0.5 0,0 1,-0.5,-0.5v-2a0.5,0.5 0,0 1,0.5,-0.5z" />
         </group>
-        <group android:pivotX="24" android:pivotY="24" android:rotation="90">
-            <path android:fillColor="#FFB8B8C0" android:pathData="M23.4,11.6h1.2v2.2h-1.2z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="30" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M24,10.8h0a0.4,0.4 0,0 1,0.4,0.4v1a0.4,0.4 0,0 1,-0.4,0.4h-0a0.4,0.4 0,0 1,-0.4,-0.4v-1a0.4,0.4 0,0 1,0.4,-0.4z" />
         </group>
-        <group android:pivotX="24" android:pivotY="24" android:rotation="180">
-            <path android:fillColor="#FFB8B8C0" android:pathData="M23.4,11.6h1.2v2.2h-1.2z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="60" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M24,10.8h0a0.4,0.4 0,0 1,0.4,0.4v1a0.4,0.4 0,0 1,-0.4,0.4h-0a0.4,0.4 0,0 1,-0.4,-0.4v-1a0.4,0.4 0,0 1,0.4,-0.4z" />
         </group>
-        <group android:pivotX="24" android:pivotY="24" android:rotation="270">
-            <path android:fillColor="#FFB8B8C0" android:pathData="M23.4,11.6h1.2v2.2h-1.2z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="90" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M23.9,10.8h0.2a0.5,0.5 0,0 1,0.5,0.5v2a0.5,0.5 0,0 1,-0.5,0.5h-0.2a0.5,0.5 0,0 1,-0.5,-0.5v-2a0.5,0.5 0,0 1,0.5,-0.5z" />
         </group>
-        <group android:pivotX="24" android:pivotY="24" android:rotation="305">
-            <path android:fillColor="#FF1C1C1E" android:pathData="M23,24L23,17.6Q24,16.4 25,17.6L25,24Z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="120" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M24,10.8h0a0.4,0.4 0,0 1,0.4,0.4v1a0.4,0.4 0,0 1,-0.4,0.4h-0a0.4,0.4 0,0 1,-0.4,-0.4v-1a0.4,0.4 0,0 1,0.4,-0.4z" />
         </group>
-        <group android:pivotX="24" android:pivotY="24" android:rotation="60">
-            <path android:fillColor="#FF1C1C1E" android:pathData="M23.1,24L23.1,14.6Q24,13.4 24.9,14.6L24.9,24Z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="150" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M24,10.8h0a0.4,0.4 0,0 1,0.4,0.4v1a0.4,0.4 0,0 1,-0.4,0.4h-0a0.4,0.4 0,0 1,-0.4,-0.4v-1a0.4,0.4 0,0 1,0.4,-0.4z" />
         </group>
-        <group android:pivotX="24" android:pivotY="24" android:rotation="200">
-            <path android:fillColor="#FFFF9F0A" android:pathData="M23.6,26.5L23.6,12.8L24.4,12.8L24.4,26.5Z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="180" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M23.9,10.8h0.2a0.5,0.5 0,0 1,0.5,0.5v2a0.5,0.5 0,0 1,-0.5,0.5h-0.2a0.5,0.5 0,0 1,-0.5,-0.5v-2a0.5,0.5 0,0 1,0.5,-0.5z" />
         </group>
-        <path android:fillColor="#FFFF9F0A" android:pathData="M24,22.5a1.5,1.5 0,1 1,0,3a1.5,1.5 0,1 1,0,-3z" />
+        <group android:pivotX="24" android:pivotY="24" android:rotation="210" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M24,10.8h0a0.4,0.4 0,0 1,0.4,0.4v1a0.4,0.4 0,0 1,-0.4,0.4h-0a0.4,0.4 0,0 1,-0.4,-0.4v-1a0.4,0.4 0,0 1,0.4,-0.4z" />
+        </group>
+        <group android:pivotX="24" android:pivotY="24" android:rotation="240" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M24,10.8h0a0.4,0.4 0,0 1,0.4,0.4v1a0.4,0.4 0,0 1,-0.4,0.4h-0a0.4,0.4 0,0 1,-0.4,-0.4v-1a0.4,0.4 0,0 1,0.4,-0.4z" />
+        </group>
+        <group android:pivotX="24" android:pivotY="24" android:rotation="270" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M23.9,10.8h0.2a0.5,0.5 0,0 1,0.5,0.5v2a0.5,0.5 0,0 1,-0.5,0.5h-0.2a0.5,0.5 0,0 1,-0.5,-0.5v-2a0.5,0.5 0,0 1,0.5,-0.5z" />
+        </group>
+        <group android:pivotX="24" android:pivotY="24" android:rotation="300" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M24,10.8h0a0.4,0.4 0,0 1,0.4,0.4v1a0.4,0.4 0,0 1,-0.4,0.4h-0a0.4,0.4 0,0 1,-0.4,-0.4v-1a0.4,0.4 0,0 1,0.4,-0.4z" />
+        </group>
+        <group android:pivotX="24" android:pivotY="24" android:rotation="330" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF8E8E93" android:pathData="M24,10.8h0a0.4,0.4 0,0 1,0.4,0.4v1a0.4,0.4 0,0 1,-0.4,0.4h-0a0.4,0.4 0,0 1,-0.4,-0.4v-1a0.4,0.4 0,0 1,0.4,-0.4z" />
+        </group>
+        <group android:pivotX="24" android:pivotY="24" android:rotation="305" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF1C1C1E" android:pathData="M23,24.6L23,17.2Q24,15.9 25,17.2L25,24.6Z" />
+        </group>
+        <group android:pivotX="24" android:pivotY="24" android:rotation="62" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FF1C1C1E" android:pathData="M23.15,24.6L23.15,13.8Q24,12.7 24.85,13.8L24.85,24.6Z" />
+        </group>
+        <group android:pivotX="24" android:pivotY="24" android:rotation="196" android:translateX="0" android:translateY="0">
+        <path android:fillColor="#FFFF9500" android:pathData="M23.55,27.6L23.55,12.4L24.45,12.4L24.45,27.6Z" />
+        </group>
+        <path android:fillColor="#FFFF9500" android:pathData="M24,22.4a1.6,1.6 0,1 1,0,3.2a1.6,1.6 0,1 1,0,-3.2z" />
     </group>
 </vector>
