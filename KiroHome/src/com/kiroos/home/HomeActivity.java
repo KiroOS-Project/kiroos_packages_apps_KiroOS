@@ -75,6 +75,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     private static final int REQUEST_CONFIGURE_WIDGET = 2;
     /** how long an app dragged to a side edge waits before the page turns */
     private static final long EDGE_PAGE_DELAY = 550;
+    private static final String KEY_PAGE = "page";
+    /** page to show once the layout is bound (restored after the launcher was killed) */
+    private int mStartPage;
 
     private final Handler mHandler = new Handler();
     private IconFactory mIcons;
@@ -138,6 +141,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 mIndicator.setPosition(position);
             }
         });
+        // the page survives the launcher being killed while an app is open
+        mStartPage = getSharedPreferences("home", MODE_PRIVATE).getInt(KEY_PAGE, 0);
 
         // both layers draw behind the transparent bars but keep their content clear of them
         final View drawerInner = findViewById(R.id.drawer_inner);
@@ -239,6 +244,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     protected void onStop() {
         super.onStop();
         mWidgets.stopListening();
+        getSharedPreferences("home", MODE_PRIVATE).edit()
+                .putInt(KEY_PAGE, mWorkspace.currentPage()).apply();
     }
 
     @Override
@@ -251,8 +258,11 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        // Home pressed while already home: close the drawer, else back to the first page
-        if (Intent.ACTION_MAIN.equals(intent.getAction())) {
+        // Home pressed while already on the home: close the drawer, else back to the first
+        // page. Coming back from an app (Home pressed there) keeps the page the user was on.
+        final boolean alreadyOnHome = hasWindowFocus() && (intent.getFlags()
+                & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT;
+        if (Intent.ACTION_MAIN.equals(intent.getAction()) && alreadyOnHome) {
             if (isDrawerOpen()) {
                 animateDrawer(false);
             } else {
@@ -298,6 +308,10 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
         mWorkspace.setPageCount(mModel.pageCount());
         mIndicator.setCount(mModel.pageCount());
+        if (mStartPage > 0) {
+            mWorkspace.snapTo(mStartPage, false);
+            mStartPage = 0;
+        }
         mDock.removeAllViews();
         for (int i = 0; i < HomeModel.DOCK_SIZE; i++) {
             final HomeModel.Loc loc = new HomeModel.Loc(HomeModel.DOCK, i);
@@ -315,7 +329,6 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final View v = inflater.inflate(R.layout.item_app, parent, false);
         final ImageView icon = (ImageView) v.findViewById(R.id.app_icon);
         icon.setImageDrawable(mIcons.icon(app));
-        mIcons.lift(icon);
         final TextView label = (TextView) v.findViewById(R.id.app_label);
         label.setText(app.label);
         label.setVisibility(withLabel ? View.VISIBLE : View.GONE);
@@ -547,7 +560,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             final Rect w = boundsInRoot(mWorkspace);
             final int cw = mWorkspace.cellWidth();
             final int ch = mWorkspace.cellHeight();
-            cx = w.left + (loc.index % HomeModel.COLUMNS + 0.5f) * cw;
+            cx = w.left + mWorkspace.getPaddingLeft() + (loc.index % HomeModel.COLUMNS + 0.5f) * cw;
             // the icon sits at the top of its cell (label below)
             cy = w.top + mWorkspace.gridTop() + (loc.index / HomeModel.COLUMNS) * ch
                     + mIcons.size() / 2f

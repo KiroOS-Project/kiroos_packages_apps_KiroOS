@@ -16,4 +16,8 @@
     <string name="camera_error">The camera is not available</string>
     <string name="save_failed">The photo could not be saved</string>
     <string name="video_error">Recording could not start</string>
+    <string name="timer">Timer</string>
+    <string name="ratio">Photo format</string>
+    <string name="ev_minus" translatable="false">−</string>
+    <string name="ev_plus" translatable="false">+</string>
 </resources>

@@ -15,6 +15,16 @@
             android:id="@+id/preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <!-- the last frame, frozen over the viewfinder while the camera switches (no black
+             gap), fading out on the first new frame -->
+        <ImageView
+            android:id="@+id/freeze"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
     </FrameLayout>
 
     <View
@@ -23,6 +33,19 @@
         android:layout_height="72dp"
         android:background="@drawable/focus_ring"
         android:visibility="invisible" />
+
+    <!-- self-timer countdown -->
+    <TextView
+        android:id="@+id/countdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif-light"
+        android:shadowColor="#99000000"
+        android:shadowRadius="12"
+        android:textColor="@color/kiro_text"
+        android:textSize="120sp"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/flash_overlay"
@@ -36,6 +59,8 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/scrim_top"
+        android:paddingBottom="16dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingEnd="12dp"
@@ -76,6 +101,16 @@
             android:layout_weight="1" />
 
         <TextView
+            android:id="@+id/btn_timer"
+            android:contentDescription="@string/timer"
+            style="@style/ToggleChip" />
+
+        <TextView
+            android:id="@+id/btn_ratio"
+            android:contentDescription="@string/ratio"
+            style="@style/ToggleChip" />
+
+        <TextView
             android:id="@+id/btn_4k"
             android:text="@string/uhd"
             style="@style/ToggleChip" />
@@ -106,8 +141,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="@drawable/scrim_bottom"
+        android:paddingTop="32dp"
         android:orientation="vertical"
         android:paddingBottom="16dp">
+
+        <!-- quick controls over the viewfinder: exposure and zoom -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btn_ev_down"
+                android:layout_width="40dp"
+                android:layout_height="34dp"
+                android:background="@drawable/zoom_bg"
+                android:gravity="center"
+                android:text="@string/ev_minus"
+                android:textColor="@color/kiro_text"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/ev_value"
+                android:layout_width="58dp"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:shadowColor="#99000000"
+                android:shadowRadius="4"
+                android:textColor="@color/kiro_text"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/btn_ev_up"
+                android:layout_width="40dp"
+                android:layout_height="34dp"
+                android:background="@drawable/zoom_bg"
+                android:gravity="center"
+                android:text="@string/ev_plus"
+                android:textColor="@color/kiro_text"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/btn_zoom"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginStart="18dp"
+                android:background="@drawable/zoom_bg"
+                android:gravity="center"
+                android:minWidth="48dp"
+                android:paddingEnd="12dp"
+                android:paddingStart="12dp"
+                android:textColor="@color/kiro_text"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/modes"

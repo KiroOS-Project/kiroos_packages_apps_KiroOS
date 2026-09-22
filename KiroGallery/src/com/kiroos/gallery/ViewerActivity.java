@@ -76,6 +76,25 @@ public class ViewerActivity extends Activity implements SwipePager.Adapter {
         mTitle = (TextView) findViewById(R.id.title);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        // both bars clear of the system bars: the top one below the status bar, the buttons
+        // above the navigation bar (with fitsSystemWindows on both, the top bar consumed the
+        // insets and the buttons sat under the navigation keys)
+        final int topPad = mTop.getPaddingTop();
+        final int bottomPad = mBottom.getPaddingBottom();
+        findViewById(android.R.id.content).setOnApplyWindowInsetsListener(
+                new View.OnApplyWindowInsetsListener() {
+                    @Override
+                    public android.view.WindowInsets onApplyWindowInsets(View v,
+                            android.view.WindowInsets insets) {
+                        mTop.setPadding(mTop.getPaddingLeft(),
+                                topPad + insets.getSystemWindowInsetTop(),
+                                mTop.getPaddingRight(), mTop.getPaddingBottom());
+                        mBottom.setPadding(insets.getSystemWindowInsetLeft(),
+                                mBottom.getPaddingTop(), insets.getSystemWindowInsetRight(),
+                                bottomPad + insets.getSystemWindowInsetBottom());
+                        return insets.consumeSystemWindowInsets();
+                    }
+                });
 
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
             @Override

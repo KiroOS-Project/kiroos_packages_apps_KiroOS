@@ -14,4 +14,6 @@
     <string name="camera_error">La fotocamera non è disponibile</string>
     <string name="save_failed">Impossibile salvare la foto</string>
     <string name="video_error">Impossibile avviare la registrazione</string>
+    <string name="timer">Timer</string>
+    <string name="ratio">Formato foto</string>
 </resources>

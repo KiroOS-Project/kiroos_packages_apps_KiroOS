@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
-import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -29,8 +28,6 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.LruCache;
-import android.view.View;
-import android.view.ViewOutlineProvider;
 
 import java.util.List;
 
@@ -246,37 +243,6 @@ final class IconFactory {
         }
         return Color.rgb((int) (r / n), (int) (g / n), (int) (bl / n));
     }
-
-    /**
-     * Lifts an icon view off the wallpaper: a soft shadow (render thread, no bitmap) cast
-     * by its squircle outline.
-     */
-    void lift(View icon) {
-        icon.setOutlineProvider(mOutline);
-        icon.setElevation(mContext.getResources().getDimension(R.dimen.icon_elevation));
-    }
-
-    private final ViewOutlineProvider mOutline = new ViewOutlineProvider() {
-        private final Path mPath = new Path();
-        private int mPathSize = -1;
-
-        @Override
-        public void getOutline(View view, Outline outline) {
-            final int s = Math.min(view.getWidth(), view.getHeight());
-            if (s <= 0) {
-                return;
-            }
-            if (s != mPathSize) {
-                buildSquircle(mPath, s);
-                mPathSize = s;
-            }
-            if (mPath.isConvex()) {
-                outline.setConvexPath(mPath);
-            } else {
-                outline.setRoundRect(0, 0, s, s, s * 0.3f);
-            }
-        }
-    };
 
     /** A bitmap copy of a drawable at icon size (for drag shadows). */
     Bitmap toBitmap(Drawable d) {

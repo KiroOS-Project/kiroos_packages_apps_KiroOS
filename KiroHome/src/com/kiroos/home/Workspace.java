@@ -70,8 +70,9 @@ public class Workspace extends ViewGroup {
         mListener = l;
     }
 
+    /** the view spans the full screen width (pages slide edge to edge); cells keep a margin */
     int cellWidth() {
-        return getWidth() / HomeModel.COLUMNS;
+        return (getWidth() - getPaddingLeft() - getPaddingRight()) / HomeModel.COLUMNS;
     }
 
     int cellHeight() {
@@ -104,7 +105,8 @@ public class Workspace extends ViewGroup {
         if (getWidth() == 0 || x < 0 || y < 0 || x >= getWidth() || y >= getHeight()) {
             return -1;
         }
-        final int col = Math.min(HomeModel.COLUMNS - 1, (int) (x / cellWidth()));
+        final int col = Math.max(0, Math.min(HomeModel.COLUMNS - 1,
+                (int) ((x - getPaddingLeft()) / cellWidth())));
         final int row = Math.max(0, Math.min(HomeModel.ROWS - 1,
                 (int) ((y - mGridTop) / mCellHeight)));
         return row * HomeModel.COLUMNS + col;
@@ -186,7 +188,7 @@ public class Workspace extends ViewGroup {
                 ? mMaxCellHeight * HomeModel.ROWS : MeasureSpec.getSize(heightMeasureSpec);
         mCellHeight = Math.min(mMaxCellHeight, h / HomeModel.ROWS);
         mGridTop = h - mCellHeight * HomeModel.ROWS;
-        final int cw = w / HomeModel.COLUMNS;
+        final int cw = (w - getPaddingLeft() - getPaddingRight()) / HomeModel.COLUMNS;
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).measure(MeasureSpec.makeMeasureSpec(cw, MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(mCellHeight, MeasureSpec.EXACTLY));
@@ -197,8 +199,9 @@ public class Workspace extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int w = r - l;
-        final int cw = w / HomeModel.COLUMNS;
-        final int side = (w - cw * HomeModel.COLUMNS) / 2;
+        final int inner = w - getPaddingLeft() - getPaddingRight();
+        final int cw = inner / HomeModel.COLUMNS;
+        final int side = getPaddingLeft() + (inner - cw * HomeModel.COLUMNS) / 2;
         for (int i = 0; i < getChildCount(); i++) {
             final View c = getChildAt(i);
             final LayoutParams lp = (LayoutParams) c.getLayoutParams();

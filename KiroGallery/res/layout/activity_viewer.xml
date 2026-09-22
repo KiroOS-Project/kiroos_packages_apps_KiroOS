@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/scrim_top"
-        android:fitsSystemWindows="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingEnd="8dp"
@@ -53,7 +52,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@drawable/scrim_bottom"
-        android:fitsSystemWindows="true"
         android:orientation="horizontal"
         android:paddingBottom="8dp"
         android:paddingTop="24dp">

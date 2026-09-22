@@ -16,7 +16,7 @@
     <string name="connecting">Connessione…</string>
     <string name="connected">Connesso · %s</string>
     <string name="default_model">modello predefinito</string>
-    <string name="not_connected">PC non raggiungibile · tocca per riprovare</string>
+    <string name="not_connected">PC non collegato · collega l\'USB e apri \"Avvia kAI\" sul PC</string>
     <string name="no_model">Nessun modello sul PC · avvia \"Avvia kAI\"</string>
     <string name="error_answer">⚠ Nessuna risposta: %s</string>
 </resources>

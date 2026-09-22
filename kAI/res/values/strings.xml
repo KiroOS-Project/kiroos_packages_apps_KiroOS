@@ -17,7 +17,7 @@
     <string name="connecting">Connecting…</string>
     <string name="connected">Connected · %s</string>
     <string name="default_model">default model</string>
-    <string name="not_connected">PC not reachable · tap to retry</string>
+    <string name="not_connected">PC not connected · plug in USB and run \"Start kAI\" on the PC</string>
     <string name="no_model">No model on the PC · run \"Start kAI\"</string>
     <string name="error_answer">⚠ No answer: %s</string>
 </resources>

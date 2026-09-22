@@ -54,6 +54,7 @@ import android.os.ParcelFileDescriptor;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.util.Range;
 import android.util.Size;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -119,6 +120,16 @@ public class CameraActivity extends Activity {
     private TextView mRecTime;
     private TextView mZoomText;
     private TextView m4kButton;
+    private TextView mRatioButton;
+    private TextView mTimerButton;
+    private TextView mZoomButton;
+    private TextView mEvValue;
+    private TextView mCountdown;
+    private ImageView mFreeze;
+    /** seconds left on the self-timer (the countdown view is visible while it runs) */
+    private int mTimerLeft;
+    /** frames drawn since the camera (re)opened: the frozen frame fades on the second */
+    private int mFramesSinceOpen;
 
     private HandlerThread mThread;
     private Handler mCamHandler;
@@ -136,6 +147,8 @@ public class CameraActivity extends Activity {
     private boolean mRawEnabled;
     private boolean mRawSupported;
     private boolean mFlashSupported;
+    /** photos at the sensor's full resolution; off only if the HAL refuses the session */
+    private volatile boolean mUseHighRes = true;
     /** openCamera() called, onOpened/onError not yet */
     private volatile boolean mOpening;
     /** bumped by closeCamera(): opens that complete after it are closed at once */
@@ -144,6 +157,8 @@ public class CameraActivity extends Activity {
     private long mCaptureStart;
     private int mDeviceRotation;
     private float mZoom = 1f;
+    /** exposure compensation in steps of the HAL (0.5 EV on the S6) */
+    private int mExposure;
     private Rect mActiveArray;
     private float mMaxZoom = 1f;
     private Size mPreviewSize;
@@ -220,6 +235,12 @@ public class CameraActivity extends Activity {
         mRecTime = (TextView) findViewById(R.id.rec_time);
         mZoomText = (TextView) findViewById(R.id.zoom_text);
         m4kButton = (TextView) findViewById(R.id.btn_4k);
+        mRatioButton = (TextView) findViewById(R.id.btn_ratio);
+        mTimerButton = (TextView) findViewById(R.id.btn_timer);
+        mZoomButton = (TextView) findViewById(R.id.btn_zoom);
+        mEvValue = (TextView) findViewById(R.id.ev_value);
+        mCountdown = (TextView) findViewById(R.id.countdown);
+        mFreeze = (ImageView) findViewById(R.id.freeze);
 
         mGrid = new PreviewView.Grid(this);
         ((FrameLayout) findViewById(R.id.preview_box)).addView(mGrid,
@@ -275,15 +296,16 @@ public class CameraActivity extends Activity {
             return;
         }
         loadLastThumb();
+        // always listen (frame updates drive the frozen-frame fade too)
+        mPreview.setSurfaceTextureListener(mTextureListener);
         if (mPreview.isAvailable()) {
             openCamera();
-        } else {
-            mPreview.setSurfaceTextureListener(mTextureListener);
         }
     }
 
     @Override
     protected void onPause() {
+        cancelTimer();
         if (mRecording) {
             stopRecording(false);
         }
@@ -360,6 +382,17 @@ public class CameraActivity extends Activity {
 
                 @Override
                 public void onSurfaceTextureUpdated(SurfaceTexture t) {
+                    // the new camera is streaming: let the frozen last frame go
+                    if (++mFramesSinceOpen == 2 && mFreeze.getVisibility() == View.VISIBLE) {
+                        mFreeze.animate().alpha(0f).setDuration(180)
+                                .withEndAction(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        mFreeze.setVisibility(View.GONE);
+                                        mFreeze.setImageBitmap(null);
+                                    }
+                                }).start();
+                    }
                 }
             };
 
@@ -375,12 +408,62 @@ public class CameraActivity extends Activity {
                     } else {
                         startRecording();
                     }
+                } else if (timerRunning()) {
+                    cancelTimer(); // a second press stops the countdown
                 } else {
-                    takePicture();
+                    final int timer = mPrefs.getInt("timer", 0);
+                    if (timer > 0 && !mCaptureIntent) {
+                        startTimer(timer);
+                    } else {
+                        takePicture();
+                    }
                 }
             }
         });
         KiroTouch.apply(mShutter);
+        mRatioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mVideoMode) {
+                    return;
+                }
+                mPrefs.edit().putBoolean("wide", !mPrefs.getBoolean("wide", true)).apply();
+                reopen();
+            }
+        });
+        mTimerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final int t = mPrefs.getInt("timer", 0);
+                mPrefs.edit().putInt("timer", t == 0 ? 3 : t == 3 ? 10 : 0).apply();
+                updateControls();
+            }
+        });
+        mZoomButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 1x -> 2x -> 4x -> 1x (never past what the sensor crop allows)
+                final float next = mZoom < 1.5f ? 2f : mZoom < 3f ? 4f : 1f;
+                setZoom(Math.min(next, mMaxZoom));
+            }
+        });
+        final View.OnClickListener ev = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Range<Integer> range = mChars != null ? mChars.get(
+                        CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE) : null;
+                if (range == null) {
+                    return;
+                }
+                final int step = v.getId() == R.id.btn_ev_up ? 1 : -1;
+                mExposure = Math.max(range.getLower(), Math.min(range.getUpper(),
+                        mExposure + step));
+                updateControls();
+                updatePreview();
+            }
+        };
+        findViewById(R.id.btn_ev_up).setOnClickListener(ev);
+        findViewById(R.id.btn_ev_down).setOnClickListener(ev);
         findViewById(R.id.btn_switch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -505,6 +588,59 @@ public class CameraActivity extends Activity {
         m4kButton.setTextColor(getColor(mPrefs.getBoolean("uhd", false) ? R.color.kiro_on_accent
                 : R.color.kiro_text));
         mRecTime.setVisibility(mRecording ? View.VISIBLE : View.GONE);
+        final boolean wide = mPrefs.getBoolean("wide", true);
+        mRatioButton.setText(wide ? "16:9" : "4:3");
+        mRatioButton.setVisibility(mVideoMode || mCaptureIntent ? View.GONE : View.VISIBLE);
+        final int timer = mPrefs.getInt("timer", 0);
+        mTimerButton.setText(timer == 0 ? getString(R.string.timer) : timer + " s");
+        mTimerButton.setSelected(timer > 0);
+        mTimerButton.setTextColor(getColor(timer > 0 ? R.color.kiro_on_accent : R.color.kiro_text));
+        mTimerButton.setVisibility(mVideoMode || mCaptureIntent ? View.GONE : View.VISIBLE);
+        mZoomButton.setText(String.format(java.util.Locale.US,
+                mZoom < 1.05f || Math.abs(mZoom - Math.round(mZoom)) < 0.05f ? "%.0f×" : "%.1f×",
+                mZoom));
+        mZoomButton.setVisibility(mMaxZoom > 1.5f ? View.VISIBLE : View.GONE);
+        final float step = 0.5f;
+        mEvValue.setText(mExposure == 0 ? "EV 0" : String.format(java.util.Locale.US,
+                "%+.1f", mExposure * step));
+    }
+
+    // --- self-timer ----------------------------------------------------------------------------
+
+    private void startTimer(int seconds) {
+        mTimerLeft = seconds;
+        mCountdown.setVisibility(View.VISIBLE);
+        mMain.post(mTimerTick);
+    }
+
+    /** once a second: shows the seconds left; when they run out the photo is taken */
+    private final Runnable mTimerTick = new Runnable() {
+        @Override
+        public void run() {
+            if (mTimerLeft == 0) {
+                mCountdown.setVisibility(View.GONE);
+                takePicture();
+                return;
+            }
+            mCountdown.setText(String.valueOf(mTimerLeft));
+            mCountdown.setScaleX(1.3f);
+            mCountdown.setScaleY(1.3f);
+            mCountdown.setAlpha(0f);
+            mCountdown.animate().scaleX(1f).scaleY(1f).alpha(1f).setDuration(250)
+                    .setInterpolator(KiroTouch.EASE).start();
+            mTimerLeft--;
+            mMain.postDelayed(this, 1000);
+        }
+    };
+
+    private boolean timerRunning() {
+        return mCountdown.getVisibility() == View.VISIBLE;
+    }
+
+    private void cancelTimer() {
+        mTimerLeft = 0;
+        mMain.removeCallbacks(mTimerTick);
+        mCountdown.setVisibility(View.GONE);
     }
 
     private void rotateIcons(int degrees) {
@@ -544,9 +680,29 @@ public class CameraActivity extends Activity {
      * viewfinder on the front camera.
      */
     private void reopen() {
+        freezeFrame();
         closeCamera();
         updateControls();
         openCamera();
+    }
+
+    /**
+     * Keeps the last viewfinder frame on screen (a small copy, softened) until the reopened
+     * camera draws: switching mode or camera no longer flashes black.
+     */
+    private void freezeFrame() {
+        if (!mPreview.isAvailable() || mPreview.getWidth() == 0) {
+            return;
+        }
+        final Bitmap last = mPreview.getBitmap(mPreview.getWidth() / 4, mPreview.getHeight() / 4);
+        if (last == null) {
+            return;
+        }
+        mFreeze.animate().cancel();
+        mFreeze.setImageBitmap(last);
+        mFreeze.setAlpha(1f);
+        mFreeze.setVisibility(View.VISIBLE);
+        mFramesSinceOpen = 0;
     }
 
     private String findCamera(boolean front) throws CameraAccessException {
@@ -637,7 +793,20 @@ public class CameraActivity extends Activity {
         final StreamConfigurationMap map = mChars.get(
                 CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
         if (!mVideoMode) {
-            final Size jpeg = largest(map.getOutputSizes(ImageFormat.JPEG), 4, 3);
+            // 16:9 = the whole sensor (16 MP on the S6 rear) and a full-screen viewfinder;
+            // 4:3 = 12 MP crop, the classic photo shape
+            final boolean wide = mPrefs.getBoolean("wide", true);
+            // the full-resolution sizes (16 MP / 12 MP on the S6 rear) are slower than 20 fps,
+            // so the framework lists them apart, as "high resolution" (API 23+); without
+            // them the photo was only 6 MP (16:9) or 8 MP (4:3)
+            final List<Size> all = new ArrayList<>(Arrays.asList(
+                    map.getOutputSizes(ImageFormat.JPEG)));
+            final Size[] high = map.getHighResolutionOutputSizes(ImageFormat.JPEG);
+            if (high != null && mUseHighRes) {
+                all.addAll(Arrays.asList(high));
+            }
+            final Size jpeg = largest(all.toArray(new Size[0]), wide ? 16 : 4, wide ? 9 : 3);
+            Log.i(TAG, "photo " + jpeg + (wide ? " 16:9" : " 4:3"));
             mJpegReader = ImageReader.newInstance(jpeg.getWidth(), jpeg.getHeight(),
                     ImageFormat.JPEG, 2);
             mJpegReader.setOnImageAvailableListener(mOnJpeg, mCamHandler);
@@ -647,7 +816,8 @@ public class CameraActivity extends Activity {
                         ImageFormat.RAW_SENSOR, 2);
                 mRawReader.setOnImageAvailableListener(mOnRaw, mCamHandler);
             }
-            mPreviewSize = choosePreview(map.getOutputSizes(SurfaceTexture.class), 4, 3, 1920);
+            mPreviewSize = choosePreview(map.getOutputSizes(SurfaceTexture.class),
+                    wide ? 16 : 4, wide ? 9 : 3, 1920);
         } else {
             // the encoder already takes a full-size stream: a 720p viewfinder keeps the
             // Exynos scaler (GSC) within its limits on both cameras
@@ -658,6 +828,14 @@ public class CameraActivity extends Activity {
         mMain.post(new Runnable() {
             @Override
             public void run() {
+                // 16:9 is the screen's own shape: the viewfinder fills it edge to edge, under
+                // the controls; 4:3 sits below the top bar
+                final View box = findViewById(R.id.preview_box);
+                final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) box.getLayoutParams();
+                final boolean fullScreen = size.getWidth() * 9 == size.getHeight() * 16;
+                lp.topMargin = fullScreen ? 0
+                        : getResources().getDimensionPixelSize(R.dimen.preview_top);
+                box.setLayoutParams(lp);
                 mPreview.setAspectRatio(size.getHeight(), size.getWidth());
                 configureTransform(mPreview.getWidth(), mPreview.getHeight());
                 updateControls();
@@ -795,7 +973,18 @@ public class CameraActivity extends Activity {
 
                 @Override
                 public void onConfigureFailed(CameraCaptureSession session) {
-                    Log.w(TAG, "session configuration failed");
+                    Log.w(TAG, "session configuration failed (high res " + mUseHighRes + ")");
+                    if (mUseHighRes && !mVideoMode) {
+                        // this stream combination cannot run at full resolution: fall back
+                        // to the regular sizes instead of a black viewfinder
+                        mUseHighRes = false;
+                        mMain.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                reopen();
+                            }
+                        });
+                    }
                 }
             }, mCamHandler);
         } catch (CameraAccessException | IllegalStateException e) {
@@ -817,9 +1006,23 @@ public class CameraActivity extends Activity {
         } else {
             b.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
         }
-        if (mActiveArray != null && mZoom > 1f) {
+        if (mActiveArray != null) {
+            // always set: back at 1x the crop must return to the whole sensor
             b.set(CaptureRequest.SCALER_CROP_REGION, cropFor(mZoom));
         }
+        // no banding under 50 Hz lights; exposure compensation from the EV control
+        b.set(CaptureRequest.CONTROL_AE_ANTIBANDING_MODE,
+                CaptureRequest.CONTROL_AE_ANTIBANDING_MODE_AUTO);
+        b.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, mExposure);
+    }
+
+    /** Full post-processing for a still: the HAL's best noise reduction, sharpening, tone. */
+    private void applyStillQuality(CaptureRequest.Builder b) {
+        b.set(CaptureRequest.NOISE_REDUCTION_MODE, CaptureRequest.NOISE_REDUCTION_MODE_HIGH_QUALITY);
+        b.set(CaptureRequest.EDGE_MODE, CaptureRequest.EDGE_MODE_HIGH_QUALITY);
+        b.set(CaptureRequest.TONEMAP_MODE, CaptureRequest.TONEMAP_MODE_HIGH_QUALITY);
+        b.set(CaptureRequest.COLOR_CORRECTION_ABERRATION_MODE,
+                CaptureRequest.COLOR_CORRECTION_ABERRATION_MODE_OFF);
     }
 
     private Rect cropFor(float zoom) {
@@ -847,7 +1050,8 @@ public class CameraActivity extends Activity {
     private void setZoom(float zoom) {
         mZoom = Math.max(1f, Math.min(mMaxZoom, zoom));
         mZoomText.setText(String.format(java.util.Locale.US, "%.1f×", mZoom));
-        mZoomText.setVisibility(mZoom > 1.01f ? View.VISIBLE : View.GONE);
+        mZoomText.setVisibility(View.GONE); // the zoom chip shows it now
+        updateControls();
         updatePreview();
     }
 
@@ -1025,6 +1229,7 @@ public class CameraActivity extends Activity {
                 b.addTarget(mRawReader.getSurface());
             }
             applyCommon(b);
+            applyStillQuality(b);
             b.set(CaptureRequest.JPEG_QUALITY, (byte) 100);
             b.set(CaptureRequest.JPEG_ORIENTATION, jpegOrientation());
             mPendingOrientation = jpegOrientation();

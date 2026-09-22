@@ -31,6 +31,8 @@ public class PageIndicator extends View {
 
     private final Paint mDot = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mActive = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mRing = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final float mRingWidth;
     private final RectF mRect = new RectF();
     private final float mSize;
     private final float mGap;
@@ -44,8 +46,10 @@ public class PageIndicator extends View {
         mGap = 8 * d;
         mDot.setColor(0x66FFFFFF);
         mActive.setColor(0xFFFFFFFF);
-        mDot.setShadowLayer(2 * d, 0, 0.5f * d, 0x55000000);
-        setLayerType(LAYER_TYPE_SOFTWARE, null); // the shadow layer needs it; the view is tiny
+        // a thin dark ring keeps the dots visible on light wallpapers (drawn on the GPU;
+        // a blurred shadow layer would need a software redraw on every scroll frame)
+        mRing.setColor(0x40000000);
+        mRingWidth = 1.2f * d;
     }
 
     void setCount(int count) {
@@ -70,6 +74,7 @@ public class PageIndicator extends View {
         final float r = mSize / 2f;
         for (int i = 0; i < mCount; i++) {
             final float cx = x0 + i * (mSize + mGap) + r;
+            canvas.drawCircle(cx, cy, r + mRingWidth, mRing);
             canvas.drawCircle(cx, cy, r, mDot);
         }
         // the active pill: stretches toward the next page while the finger moves

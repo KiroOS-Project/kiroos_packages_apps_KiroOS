@@ -79,6 +79,7 @@ public class KaiActivity extends Activity {
     private View mEmpty;
     private BridgeClient mClient;
     private boolean mBusy;
+    private boolean mResumed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,8 +153,25 @@ public class KaiActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        mResumed = true;
         checkBridge();
     }
+
+    @Override
+    protected void onPause() {
+        mResumed = false;
+        mHandler.removeCallbacks(mRetry);
+        super.onPause();
+    }
+
+    private final Runnable mRetry = new Runnable() {
+        @Override
+        public void run() {
+            if (mResumed && !mBusy) {
+                checkBridge();
+            }
+        }
+    };
 
     private BridgeClient client() {
         return new BridgeClient(mPrefs.getString("host", "127.0.0.1"),
@@ -192,6 +210,12 @@ public class KaiActivity extends Activity {
                 } else {
                     mStatus.setText(mNoModel ? R.string.no_model : R.string.not_connected);
                     mStatus.setTextColor(getColor(R.color.kiro_negative));
+                    // keep trying while the app is open: plugging the phone in (or starting
+                    // kAI on the PC) connects without a tap
+                    mHandler.removeCallbacks(mRetry);
+                    if (mResumed) {
+                        mHandler.postDelayed(mRetry, 4000);
+                    }
                 }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

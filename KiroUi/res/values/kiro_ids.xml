@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- KiroTouch: the delayed press animation of a view -->
+    <item name="kiro_touch_press" type="id" />
+</resources>
