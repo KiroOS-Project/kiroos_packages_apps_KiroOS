@@ -64,6 +64,8 @@ public class KaiActivity extends Activity {
             + "Markdown when it helps.";
     /** Ollama's port; over USB "adb reverse tcp:11434 tcp:11434" maps it to the PC */
     private static final int DEFAULT_PORT = 11434;
+    /** first character of R.string.error_answer in every language */
+    private static final String ERROR_MARK = "⚠";
 
     private final Handler mHandler = new Handler();
     private final List<BridgeClient.Message> mMessages = new ArrayList<>();
@@ -211,7 +213,12 @@ public class KaiActivity extends Activity {
         // the last 20 turns keep context without overflowing small local models
         final int from = Math.max(0, mMessages.size() - 1 - 20);
         for (int i = from; i < mMessages.size() - 1; i++) {
-            history.add(mMessages.get(i));
+            final BridgeClient.Message m = mMessages.get(i);
+            // failed turns are not conversation: leave out the error and its question
+            if (isError(m) || (i + 1 < mMessages.size() - 1 && isError(mMessages.get(i + 1)))) {
+                continue;
+            }
+            history.add(m);
         }
         mClient = client();
         final BridgeClient c = mClient;
@@ -276,6 +283,11 @@ public class KaiActivity extends Activity {
                 });
             }
         }, "kAI-chat").start();
+    }
+
+    /** An answer bubble that only says why there was no answer. */
+    private boolean isError(BridgeClient.Message m) {
+        return "assistant".equals(m.role) && m.content.startsWith(ERROR_MARK);
     }
 
     /** Shows why there is no answer in the answer bubble (from any thread). */
