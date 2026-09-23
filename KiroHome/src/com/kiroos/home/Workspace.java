@@ -148,6 +148,16 @@ public class Workspace extends ViewGroup {
         snapTo(page, true);
     }
 
+    /** not resting on a page and not on its way to one: go to the nearest page */
+    void settle() {
+        if ((mSettle != null && mSettle.isRunning()) || getWidth() == 0) {
+            return;
+        }
+        if (getScrollX() != mCurrentPage * getWidth()) {
+            snapTo(Math.round(getScrollX() / (float) getWidth()), true);
+        }
+    }
+
     void snapTo(int page, boolean animate) {
         page = Math.max(0, Math.min(mPageCount - 1, page));
         mCurrentPage = page;

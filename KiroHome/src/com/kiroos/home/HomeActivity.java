@@ -154,6 +154,12 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 mHomeContent.setPadding(mHomeContent.getPaddingLeft(), top,
                         mHomeContent.getPaddingRight(), bottom);
                 drawerInner.setPadding(0, top, 0, bottom);
+                // the pages slide exactly edge to edge (a rounded dp margin left 1 px strips)
+                final ViewGroup.MarginLayoutParams lp =
+                        (ViewGroup.MarginLayoutParams) mWorkspace.getLayoutParams();
+                lp.setMarginStart(-mHomeContent.getPaddingStart());
+                lp.setMarginEnd(-mHomeContent.getPaddingEnd());
+                mWorkspace.setLayoutParams(lp);
                 return insets.consumeSystemWindowInsets();
             }
         });
@@ -638,6 +644,21 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     @Override
     public void onPageRelease(float velocityX, float minFling) {
         mWorkspace.release(velocityX, minFling);
+    }
+
+    @Override
+    public void onTouchDone() {
+        if (mDrag == null) {
+            mWorkspace.settle();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && mDrag == null) {
+            mWorkspace.settle();
+        }
     }
 
     // --- drawer -------------------------------------------------------------------------
