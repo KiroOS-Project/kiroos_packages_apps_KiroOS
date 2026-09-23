@@ -30,9 +30,10 @@ import android.widget.FrameLayout;
  * down expands the notification shade (two fingers: quick settings), sideways moves between
  * the home pages. Long-press on empty space opens the home menu.
  *
- * The gesture follows one finger, the one that touched last: the fingers holding the phone
- * often rest on the screen edge, and they must neither drive the pages nor keep a page
- * swipe from settling when the swiping finger lifts.
+ * The gesture follows one finger: the fingers holding the phone often rest on the screen
+ * edge, before or during a swipe, and they must neither drive the pages nor keep a page
+ * swipe from settling when the swiping finger lifts. A new finger takes the lead unless it
+ * lands on a side edge while the leading one is not there (a grip, not a new swipe).
  */
 public class HomeLayout extends FrameLayout {
 
@@ -91,7 +92,7 @@ public class HomeLayout extends FrameLayout {
         final ViewConfiguration vc = ViewConfiguration.get(context);
         mTouchSlop = vc.getScaledTouchSlop();
         mMinFling = vc.getScaledMinimumFlingVelocity() * 4;
-        mEdge = 16 * context.getResources().getDisplayMetrics().density;
+        mEdge = 24 * context.getResources().getDisplayMetrics().density;
         mLongPress = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public void onLongPress(MotionEvent e) {
@@ -129,6 +130,9 @@ public class HomeLayout extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
+                if (isGrip(ev)) {
+                    break; // a hand settling on the edge: the swiping finger keeps the lead
+                }
                 // the new finger leads (a resting grip finger came first)
                 mPointers = Math.max(mPointers, ev.getPointerCount());
                 down(ev, ev.getActionIndex());
@@ -190,8 +194,22 @@ public class HomeLayout extends FrameLayout {
                 }
                 return true;
             case MotionEvent.ACTION_POINTER_DOWN:
-                mPointers = Math.max(mPointers, ev.getPointerCount());
                 cancelLongPress(ev);
+                if (isGrip(ev)) {
+                    return true; // a hand settling on the edge: the swiping finger keeps the lead
+                }
+                mPointers = Math.max(mPointers, ev.getPointerCount());
+                if (mMode == DONE) {
+                    // a swipe ended while the hand stays on the edge: a new finger starts a
+                    // new gesture (catching the glide like a first touch would)
+                    down(ev, ev.getActionIndex());
+                    mMode = NONE;
+                    if (mCallbacks.onTouchDown()) {
+                        mMode = PAGE;
+                        mCallbacks.onPageDragStart();
+                    }
+                    return true;
+                }
                 if (mMode != NONE && mMode != PAGE) {
                     return true; // the drawer and the shade stay with their finger
                 }
@@ -244,6 +262,23 @@ public class HomeLayout extends FrameLayout {
             default:
                 return true;
         }
+    }
+
+    /**
+     * True if the finger that just touched down lands on a side edge while the leading
+     * finger is elsewhere: the hand holding the phone, not a new swipe.
+     */
+    private boolean isGrip(MotionEvent ev) {
+        final float x = ev.getX(ev.getActionIndex());
+        if (x > mEdge && x < getWidth() - mEdge) {
+            return false;
+        }
+        final int lead = ev.findPointerIndex(mActiveId);
+        if (lead < 0 || lead == ev.getActionIndex()) {
+            return false;
+        }
+        final float lx = ev.getX(lead);
+        return lx > mEdge && lx < getWidth() - mEdge;
     }
 
     /** the home menu opens only for one finger held still */
