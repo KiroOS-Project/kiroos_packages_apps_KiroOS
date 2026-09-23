@@ -55,30 +55,36 @@ final class LocalEngine {
      * (a few seconds from /system). Blocking: call it on a worker thread.
      */
     static synchronized boolean ensureRunning() {
-        if (sProcess != null && alive(sProcess) && healthy()) {
-            return true;
+        if (sProcess != null && alive(sProcess)) {
+            if (healthy()) {
+                return true;
+            }
+            // still loading from an earlier call: wait for it, never start it over (a
+            // restart throws away the loading done so far, and it never gets ready)
+        } else {
+            stop();
+            try {
+                // the batch threads stay on the big cores too: with the little ones as well
+                // (-tb 8) loading took 20-32 s instead of 5-11 s on a busy phone
+                sProcess = new ProcessBuilder(BINARY,
+                        "-m", MODEL,
+                        "--host", HOST, "--port", String.valueOf(PORT),
+                        "-t", String.valueOf(THREADS),
+                        "-c", "4096",
+                        "--no-webui",
+                        "--log-disable")
+                        .redirectErrorStream(true)
+                        .start();
+                drain(sProcess);
+            } catch (Exception e) {
+                Log.w(TAG, "cannot start the on-device model", e);
+                sProcess = null;
+                return false;
+            }
         }
-        stop();
-        try {
-            sProcess = new ProcessBuilder(BINARY,
-                    "-m", MODEL,
-                    "--host", HOST, "--port", String.valueOf(PORT),
-                    "-t", String.valueOf(THREADS),
-                    // reading the prompt (web results) scales to all 8 cores: 19 -> 26 tok/s
-                    "-tb", "8",
-                    "-c", "4096",
-                    "--no-webui",
-                    "--log-disable")
-                    .redirectErrorStream(true)
-                    .start();
-            drain(sProcess);
-        } catch (Exception e) {
-            Log.w(TAG, "cannot start the on-device model", e);
-            sProcess = null;
-            return false;
-        }
-        // loading ~400 MB of weights: up to half a minute on a cold cache
-        for (int i = 0; i < 120; i++) {
+        // loading ~400 MB of weights: a few seconds, much longer when memory is short; the
+        // server keeps loading past this wait, the next call picks it up
+        for (int i = 0; i < 360; i++) {
             if (!alive(sProcess)) {
                 Log.w(TAG, "on-device model exited");
                 sProcess = null;
@@ -94,8 +100,12 @@ final class LocalEngine {
                 return false;
             }
         }
-        stop();
         return false;
+    }
+
+    /** true while the server is up but has not finished loading the model */
+    static synchronized boolean loading() {
+        return sProcess != null && alive(sProcess) && !healthy();
     }
 
     static synchronized void stop() {

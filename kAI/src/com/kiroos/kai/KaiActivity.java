@@ -258,6 +258,7 @@ public class KaiActivity extends Activity {
         mStatus.setTextColor(getColor(R.color.kiro_text_secondary));
         new AsyncTask<Void, Void, Target>() {
             private boolean mNoModel;
+            private boolean mLoading;
 
             @Override
             protected Target doInBackground(Void... params) {
@@ -268,6 +269,7 @@ public class KaiActivity extends Activity {
                     mNoModel = true;
                     return null;
                 } catch (Exception e) {
+                    mLoading = LocalEngine.loading();
                     return null;
                 }
             }
@@ -285,6 +287,14 @@ public class KaiActivity extends Activity {
                         // the PC may be plugged in later: look again now and then
                         mHandler.removeCallbacks(mRetry);
                         mHandler.postDelayed(mRetry, 15000);
+                    }
+                } else if (mLoading) {
+                    // the phone's own model is still loading: not an error, look again soon
+                    mStatus.setText(R.string.model_loading);
+                    mStatus.setTextColor(getColor(R.color.kiro_text_secondary));
+                    mHandler.removeCallbacks(mRetry);
+                    if (mResumed) {
+                        mHandler.postDelayed(mRetry, 1000);
                     }
                 } else {
                     mStatus.setText(mNoModel ? R.string.no_model : R.string.not_connected);
@@ -356,7 +366,8 @@ public class KaiActivity extends Activity {
                     postError(answer, getString(R.string.no_model));
                     return;
                 } catch (Exception e) {
-                    postError(answer, getString(R.string.not_connected));
+                    postError(answer, getString(LocalEngine.loading()
+                            ? R.string.model_loading : R.string.not_connected));
                     return;
                 }
                 mClient = t.client;

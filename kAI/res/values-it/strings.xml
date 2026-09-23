@@ -31,4 +31,5 @@
     <string name="web_system">Sei kAI. Rispondi in italiano in modo breve usando i risultati web forniti, citando le fonti come [1].</string>
     <string name="web_results">Risultati web</string>
     <string name="question">Domanda</string>
+    <string name="model_loading">Caricamento del modello sul telefono…</string>
 </resources>

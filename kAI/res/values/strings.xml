@@ -33,4 +33,5 @@
     <string name="web_system">You are kAI. Answer briefly, in the language of the question, using the web results given, and cite the sources like [1].</string>
     <string name="web_results">Web results</string>
     <string name="question">Question</string>
+    <string name="model_loading">Loading the on-device model…</string>
 </resources>
