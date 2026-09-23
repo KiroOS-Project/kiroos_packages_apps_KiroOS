@@ -7,7 +7,7 @@
     <string name="new_chat">New chat</string>
     <string name="copied">Copied</string>
     <string name="welcome">Your assistant, even offline</string>
-    <string name="welcome_hint">kAI answers right on the phone and looks up recent facts on the web (the globe turns it off). With the PC plugged in by USB and \"Start kAI\" running, it uses the PC\'s model: faster and smarter.</string>
+    <string name="welcome_hint">kAI answers right on the phone, even offline, and looks up recent facts on the web (the globe turns it off).</string>
     <string name="on_device">On the phone · %s</string>
     <string name="bridge">PC connection</string>
     <string name="bridge_help">USB: run \"Start kAI\" on the PC and keep 127.0.0.1 and port 11434. Wi-Fi: the PC\'s address, with Ollama open to the network.</string>
@@ -18,8 +18,8 @@
     <string name="connecting">Connecting…</string>
     <string name="connected">Connected · %s</string>
     <string name="default_model">default model</string>
-    <string name="not_connected">PC not connected · plug in USB and run \"Start kAI\" on the PC</string>
-    <string name="no_model">No model on the PC · run \"Start kAI\"</string>
+    <string name="not_connected">kAI could not start the model · try again in a moment</string>
+    <string name="no_model">No model available · try again in a moment</string>
     <string name="error_answer">⚠ No answer: %s</string>
     <string name="searching">Searching the web…</string>
     <string name="reading">Reading %s…</string>
