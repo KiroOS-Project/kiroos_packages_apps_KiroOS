@@ -39,6 +39,9 @@ public class HomeLayout extends FrameLayout {
     interface Callbacks {
         boolean isDrawerOpen();
 
+        /** an open folder takes all touches */
+        boolean isFolderOpen();
+
         /** 0 = closed, 1 = fully open; called while the finger drags the drawer up. */
         void onDrawerDrag(float progress);
 
@@ -108,7 +111,7 @@ public class HomeLayout extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mCallbacks == null || mCallbacks.isDrawerOpen()) {
+        if (mCallbacks == null || mCallbacks.isDrawerOpen() || mCallbacks.isFolderOpen()) {
             return false;
         }
         track(ev);

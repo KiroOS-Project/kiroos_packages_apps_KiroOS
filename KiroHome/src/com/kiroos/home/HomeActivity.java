@@ -34,6 +34,7 @@ import android.os.Handler;
 import android.provider.AlarmClock;
 import android.provider.Settings;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.DragEvent;
 import android.view.Gravity;
@@ -107,8 +108,13 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
     /** the app being dragged, where it came from, and whether it moved */
     private static final class Drag {
+        /** the app dragged, null for a folder */
         AppInfo app;
+        /** app key or folder key */
+        String key;
         HomeModel.Loc from;
+        /** the folder the app is dragged out of, or null */
+        String fromFolder;
         View source;
         float startX = Float.NaN;
         float startY;
@@ -117,6 +123,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     }
 
     private Drag mDrag;
+    /** the open folder and its key, or null */
+    private FolderView mFolderView;
+    private String mOpenFolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,7 +257,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // drag it onto the home (the drawer steps aside); dropped back in place: menu
-                startDrag(mDrawerAdapter.getItem(position), null, view);
+                final AppInfo app = mDrawerAdapter.getItem(position);
+                startDrag(app, app.key(), null, null, view);
                 return true;
             }
         });
@@ -335,7 +345,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
     @Override
     public void onBackPressed() {
-        if (isDrawerOpen()) {
+        if (mFolderView != null) {
+            closeFolder(true);
+        } else if (isDrawerOpen()) {
             animateDrawer(false);
         } else if (mWorkspace.currentPage() > 0) {
             mWorkspace.snapTo(0, true);
@@ -362,10 +374,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         for (int p = 0; p < mModel.pageCount(); p++) {
             for (int i = 0; i < HomeModel.PAGE_SIZE; i++) {
                 final HomeModel.Loc loc = new HomeModel.Loc(p, i);
-                final AppInfo app = mRepo.find(mModel.at(loc));
-                if (app != null) {
-                    mWorkspace.addView(bindIcon(inflater, mWorkspace, app, true, loc),
-                            new Workspace.LayoutParams(p, i));
+                final View cell = bindCell(inflater, mWorkspace, loc, true);
+                if (cell != null) {
+                    mWorkspace.addView(cell, new Workspace.LayoutParams(p, i));
                 }
             }
         }
@@ -378,12 +389,118 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mDock.removeAllViews();
         for (int i = 0; i < HomeModel.DOCK_SIZE; i++) {
             final HomeModel.Loc loc = new HomeModel.Loc(HomeModel.DOCK, i);
-            final AppInfo app = mRepo.find(mModel.at(loc));
+            final View bound = bindCell(inflater, mDock, loc, false);
             // empty slots keep their place, so an app can be dropped there
-            final View cell = app != null ? bindIcon(inflater, mDock, app, false, loc)
-                    : new View(this);
+            final View cell = bound != null ? bound : new View(this);
             mDock.addView(cell, new LinearLayout.LayoutParams(0,
-                    app != null ? ViewGroup.LayoutParams.WRAP_CONTENT : 1, 1f));
+                    bound != null ? ViewGroup.LayoutParams.WRAP_CONTENT : 1, 1f));
+        }
+    }
+
+    /** the view of a cell: an app, a folder, or null when the cell is empty */
+    private View bindCell(LayoutInflater inflater, ViewGroup parent, HomeModel.Loc loc,
+            boolean withLabel) {
+        final String key = mModel.at(loc);
+        if (HomeModel.isFolder(key)) {
+            return bindFolder(inflater, parent, key, withLabel, loc);
+        }
+        final AppInfo app = mRepo.find(key);
+        return app != null ? bindIcon(inflater, parent, app, withLabel, loc) : null;
+    }
+
+    /** the apps of a folder that are still installed */
+    private List<AppInfo> folderApps(HomeModel.Folder f) {
+        final List<AppInfo> apps = new java.util.ArrayList<>();
+        for (String k : f.items) {
+            final AppInfo app = mRepo.find(k);
+            if (app != null) {
+                apps.add(app);
+            }
+        }
+        return apps;
+    }
+
+    private View bindFolder(LayoutInflater inflater, ViewGroup parent, final String key,
+            boolean withLabel, final HomeModel.Loc loc) {
+        final HomeModel.Folder f = mModel.folder(key);
+        if (f == null) {
+            return null;
+        }
+        final View v = inflater.inflate(R.layout.item_app, parent, false);
+        final ImageView icon = (ImageView) v.findViewById(R.id.app_icon);
+        icon.setImageDrawable(mIcons.folderIcon(folderApps(f)));
+        final TextView label = (TextView) v.findViewById(R.id.app_label);
+        final String name = TextUtils.isEmpty(f.name) ? getString(R.string.folder_default)
+                : f.name;
+        label.setText(name);
+        label.setVisibility(withLabel ? View.VISIBLE : View.GONE);
+        v.setContentDescription(name);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFolder(key);
+            }
+        });
+        v.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                startDrag(null, key, loc, null, view);
+                return true;
+            }
+        });
+        KiroTouch.apply(v);
+        return v;
+    }
+
+    // --- folders ----------------------------------------------------------------------------
+
+    @Override
+    public boolean isFolderOpen() {
+        return mFolderView != null;
+    }
+
+    private void openFolder(final String key) {
+        final HomeModel.Folder f = mModel.folder(key);
+        if (f == null || mFolderView != null) {
+            return;
+        }
+        mOpenFolder = key;
+        mFolderView = new FolderView(this, mIcons, f.name, folderApps(f),
+                new FolderView.Host() {
+            @Override
+            public void onFolderAppClick(AppInfo app, View icon) {
+                launch(app, icon);
+                closeFolder(false);
+            }
+
+            @Override
+            public void onFolderAppLongClick(AppInfo app, View cell) {
+                // the app leaves the folder only where it is dropped
+                startDrag(app, app.key(), null, key, cell);
+                closeFolder(false);
+            }
+
+            @Override
+            public void onFolderRenamed(String name) {
+                mModel.rename(key, name);
+            }
+
+            @Override
+            public void onFolderClosed() {
+                mFolderView = null;
+                mOpenFolder = null;
+                if (mDrag == null) {
+                    bindHome();
+                }
+            }
+        });
+        mRoot.addView(mFolderView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private void closeFolder(boolean animate) {
+        if (mFolderView != null) {
+            mFolderView.close(animate);
         }
     }
 
@@ -405,7 +522,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         v.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                startDrag(app, loc, view);
+                startDrag(app, app.key(), loc, null, view);
                 return true;
             }
         });
@@ -434,7 +551,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     private void showAppMenu(final AppInfo app, View anchor) {
         final PopupMenu menu = new PopupMenu(this, anchor, Gravity.CENTER);
         final Menu m = menu.getMenu();
-        if (mModel.find(app.key()) != null) {
+        if (mModel.onHome(app.key())) {
             m.add(0, 1, 0, R.string.remove_from_home);
         } else {
             m.add(0, 2, 0, R.string.add_to_home);
@@ -474,8 +591,12 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
     // --- drag and drop ----------------------------------------------------------------------
 
-    /** Long-press on an app (on the home: from = its cell; in the drawer: from = null). */
-    private void startDrag(AppInfo app, HomeModel.Loc from, View cell) {
+    /**
+     * Long-press on an app or a folder (key). On the home from is its cell; from the drawer
+     * or a folder (fromFolder) from is null.
+     */
+    private void startDrag(AppInfo app, String key, HomeModel.Loc from, String fromFolder,
+            View cell) {
         if (mDrag != null) {
             return;
         }
@@ -486,17 +607,19 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final View icon = cell.findViewById(R.id.app_icon);
         final Drag d = new Drag();
         d.app = app;
+        d.key = key;
         d.from = from;
+        d.fromFolder = fromFolder;
         d.source = cell;
         mDrag = d;
         // an extra empty page to drop on while dragging
         mWorkspace.setPageCount(mModel.pageCount() + 1);
         mIndicator.setCount(mModel.pageCount() + 1);
-        if (!cell.startDrag(ClipData.newPlainText("app", app.key()),
+        if (!cell.startDrag(ClipData.newPlainText("app", key),
                 new View.DragShadowBuilder(icon != null ? icon : cell), d, 0)) {
             mDrag = null;
             bindHome();
-            if (from == null) {
+            if (from == null && fromFolder == null && app != null) {
                 showAppMenu(app, cell);
             }
             return;
@@ -523,20 +646,28 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                     } else if (!d.moved && Math.hypot(e.getX() - d.startX, e.getY() - d.startY)
                             > mTouchSlop * 2) {
                         d.moved = true;
-                        if (d.from == null) {
+                        if (d.from == null && d.fromFolder == null) {
                             // from the drawer: it steps aside so the home is the drop area
                             animateDrawer(false);
                         }
                     }
                     if (d.moved) {
-                        showHint(locAt(e.getX(), e.getY()));
+                        final HomeModel.Loc at = locAt(e.getX(), e.getY());
+                        showHint(at, mergeAt(d, at, e.getX(), e.getY()));
                         trackEdge(d, e.getX(), e.getY());
                     }
                     return true;
                 case DragEvent.ACTION_DROP:
                     final HomeModel.Loc to = d.moved ? locAt(e.getX(), e.getY()) : null;
                     if (to != null) {
-                        mModel.place(d.app.key(), to);
+                        // onto another app: a folder; anywhere else: that cell
+                        if (!(mergeAt(d, to, e.getX(), e.getY())
+                                && mModel.merge(d.key, to, getString(R.string.folder_default)))) {
+                            if (d.fromFolder != null) {
+                                mModel.removeFromFolder(d.fromFolder, d.key);
+                            }
+                            mModel.place(d.key, to);
+                        }
                     }
                     return to != null;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -557,9 +688,14 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         bindHome();
         mWorkspace.snapTo(page, true);
         if (!d.moved) {
-            // a long-press without a move: the app menu, anchored to the app
-            final View anchor = d.from != null ? cellView(d.from) : d.source;
-            showAppMenu(d.app, anchor != null ? anchor : mRoot);
+            if (d.app == null) {
+                openFolder(d.key); // a folder held without moving opens
+            } else if (d.fromFolder == null) {
+                // a long-press without a move: the app menu, anchored to the app
+                final View anchor = d.from != null ? cellView(d.from) : d.source;
+                showAppMenu(d.app, anchor != null && anchor.isAttachedToWindow()
+                        ? anchor : mRoot);
+            }
         }
     }
 
@@ -603,12 +739,33 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     }
 
     /** a soft squircle outline where the app will land */
-    private void showHint(HomeModel.Loc loc) {
+    /**
+     * True if the dragged app is over the icon of another app or a folder on a page (not at
+     * the cell's edge): dropping makes or fills a folder.
+     */
+    private boolean mergeAt(Drag d, HomeModel.Loc loc, float x, float y) {
+        if (loc == null || loc.container == HomeModel.DOCK || d.app == null) {
+            return false;
+        }
+        final String there = mModel.at(loc);
+        if (there.isEmpty() || there.equals(d.key)) {
+            return false;
+        }
+        final Rect w = boundsInRoot(mWorkspace);
+        final float cx = w.left + mWorkspace.cellLeft(loc.index) + mWorkspace.cellWidth() / 2f;
+        final float cy = w.top + mWorkspace.cellTop(loc.container, loc.index)
+                + mIcons.size() / 2f + 6 * getResources().getDisplayMetrics().density;
+        return Math.hypot(x - cx, y - cy) < mIcons.size() * 0.42f;
+    }
+
+    /** a soft squircle outline where the app will land (larger: into a folder) */
+    private void showHint(HomeModel.Loc loc, boolean merge) {
         if (loc == null) {
             mDropHint.setVisibility(View.GONE);
             return;
         }
-        final int size = mIcons.size() + Math.round(12 * getResources().getDisplayMetrics().density);
+        final float d = getResources().getDisplayMetrics().density;
+        final int size = mIcons.size() + Math.round((merge ? 24 : 12) * d);
         float cx;
         float cy;
         if (loc.container == HomeModel.DOCK) {

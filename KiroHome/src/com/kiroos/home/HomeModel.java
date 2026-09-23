@@ -25,7 +25,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Where every app sits on the home: pages of COLUMNS columns and up to MAX_ROWS rows, and a
@@ -37,6 +40,9 @@ import java.util.List;
  * page has fewer rows while the clock and the widgets sit at its top; the other pages reach
  * the top of the screen. How many rows each page shows is told by the view (setRows); apps
  * in rows that no longer fit move to the next free cell (fitRows).
+ *
+ * A cell can also hold a folder ("folder:<id>"): a named list of apps, made by dropping an
+ * app onto another one. A folder left with one app turns back into that app.
  *
  * The first page stays calm: the dock holds the everyday apps, the first page a few, the
  * rest of the KiroOS suite waits on the second page and in the drawer.
@@ -57,15 +63,34 @@ final class HomeModel {
     private static final String[] DEFAULT_DOCK = {
             "com.kiroos.phone", "com.kiroos.messages", "com.kiroos.surge", "com.kiroos.camera",
     };
-    /** first page, bottom row */
-    private static final String[] DEFAULT_PAGE1 = {
-            "com.kiroos.gallery", "com.kiroos.pulse", "com.kiroos.calendar", "com.kiroos.kai",
+
+    /**
+     * The first layout, the one the KiroOS team uses: cells as {page, row from the bottom,
+     * column, package}. Apps that are not installed leave their cell empty.
+     */
+    private static final Object[][] DEFAULT_CELLS = {
+            // first page, the two rows above the dock
+            {0, 1, 0, "com.android.vending"},
+            {0, 1, 1, "com.kiroos.calculator"},
+            {0, 1, 2, "com.kiroos.pulse"},
+            {0, 1, 3, "com.kiroos.calendar"},
+            {0, 0, 0, "com.kiroos.gallery"},
+            {0, 0, 1, "com.android.settings"},
+            {0, 0, 2, "com.kiroos.clock"},
+            {0, 0, 3, "com.kiroos.kai"},
+            // second page, the tools
+            {1, 3, 0, "com.kiroos.files"},
+            {1, 3, 3, "com.kiroos.contacts"},
+            {1, 2, 0, "com.kiroos.recorder"},
     };
-    /** second page, from its top row: the tools */
-    private static final String[] DEFAULT_PAGE2 = {
-            "com.kiroos.files", "com.kiroos.clock", "com.kiroos.calculator", "com.kiroos.contacts",
-            "com.kiroos.recorder", "com.android.settings",
-    };
+
+    static final String FOLDER_PREFIX = "folder:";
+
+    /** A named group of apps in one cell. */
+    static final class Folder {
+        String name;
+        final List<String> items = new ArrayList<>();
+    }
 
     /** A cell: container (DOCK or page) and index inside it. */
     static final class Loc {
@@ -99,6 +124,7 @@ final class HomeModel {
     private final SharedPreferences mPrefs;
     private final String[] mDock = new String[DOCK_SIZE];
     private final List<String[]> mPages = new ArrayList<>();
+    private final Map<String, Folder> mFolders = new LinkedHashMap<>();
     private boolean mLoaded;
     /** rows shown on the first page and on the others (until the view says, the classic 4) */
     private int mFirstRows = 4;
@@ -111,6 +137,106 @@ final class HomeModel {
 
     int pageCount() {
         return mPages.size();
+    }
+
+    static boolean isFolder(String key) {
+        return key != null && key.startsWith(FOLDER_PREFIX);
+    }
+
+    Folder folder(String key) {
+        return mFolders.get(key);
+    }
+
+    /** the folder an app is in, or null */
+    String folderOf(String appKey) {
+        for (Map.Entry<String, Folder> e : mFolders.entrySet()) {
+            if (e.getValue().items.contains(appKey)) {
+                return e.getKey();
+            }
+        }
+        return null;
+    }
+
+    /** true if the app is on the home, in a cell or in a folder */
+    boolean onHome(String appKey) {
+        return find(appKey) != null || folderOf(appKey) != null;
+    }
+
+    /**
+     * Drops an app onto the cell "to": into the folder there, or together with the app there
+     * into a new folder (named name). The app leaves wherever it was. False if there is
+     * nothing to merge with (empty cell, the app itself, a folder dragged onto something).
+     */
+    boolean merge(String appKey, Loc to, String name) {
+        final String target = at(to);
+        if (target.isEmpty() || target.equals(appKey) || isFolder(appKey)
+                || to.container == DOCK) {
+            return false;
+        }
+        if (target.equals(folderOf(appKey))) {
+            return true; // dropped back onto its own folder
+        }
+        // leave the old place first (a folder it leaves may turn into its last app, which
+        // cannot be the target: the target is another cell)
+        final Loc from = find(appKey);
+        if (from != null) {
+            set(from, "");
+        } else {
+            final String old = folderOf(appKey);
+            if (old != null) {
+                removeFromFolder(old, appKey);
+            }
+        }
+        if (isFolder(target)) {
+            mFolders.get(target).items.add(appKey);
+        } else {
+            final Folder f = new Folder();
+            f.name = name;
+            f.items.add(target);
+            f.items.add(appKey);
+            String key;
+            int n = mFolders.size();
+            do {
+                key = FOLDER_PREFIX + (++n);
+            } while (mFolders.containsKey(key));
+            mFolders.put(key, f);
+            set(to, key);
+        }
+        trimPages();
+        save();
+        return true;
+    }
+
+    /** takes an app out of a folder; a folder left with one app becomes that app */
+    void removeFromFolder(String folderKey, String appKey) {
+        final Folder f = mFolders.get(folderKey);
+        if (f == null) {
+            return;
+        }
+        f.items.remove(appKey);
+        dissolveIfSmall(folderKey);
+        trimPages();
+        save();
+    }
+
+    void rename(String folderKey, String name) {
+        final Folder f = mFolders.get(folderKey);
+        if (f != null && !TextUtils.equals(f.name, name)) {
+            f.name = name;
+            save();
+        }
+    }
+
+    private void dissolveIfSmall(String folderKey) {
+        final Folder f = mFolders.get(folderKey);
+        if (f == null || f.items.size() > 1) {
+            return;
+        }
+        final Loc at = find(folderKey);
+        mFolders.remove(folderKey);
+        if (at != null) {
+            set(at, f.items.isEmpty() ? "" : f.items.get(0));
+        }
     }
 
     /** rows the given page shows */
@@ -190,6 +316,11 @@ final class HomeModel {
     }
 
     void remove(String key) {
+        final String folder = folderOf(key);
+        if (folder != null) {
+            removeFromFolder(folder, key);
+            return;
+        }
         final Loc at = find(key);
         if (at != null) {
             set(at, "");
@@ -229,14 +360,32 @@ final class HomeModel {
     void prune(AppRepository repo) {
         boolean changed = false;
         for (int i = 0; i < DOCK_SIZE; i++) {
-            if (!mDock[i].isEmpty() && repo.find(mDock[i]) == null) {
+            if (!mDock[i].isEmpty() && !isFolder(mDock[i]) && repo.find(mDock[i]) == null) {
                 mDock[i] = "";
                 changed = true;
             }
         }
+        for (Iterator<Map.Entry<String, Folder>> it = mFolders.entrySet().iterator();
+                it.hasNext(); ) {
+            final Map.Entry<String, Folder> e = it.next();
+            if (find(e.getKey()) == null) {
+                it.remove(); // a folder no cell holds
+                changed = true;
+                continue;
+            }
+            for (Iterator<String> items = e.getValue().items.iterator(); items.hasNext(); ) {
+                if (repo.find(items.next()) == null) {
+                    items.remove();
+                    changed = true;
+                }
+            }
+        }
+        for (String key : new ArrayList<>(mFolders.keySet())) {
+            dissolveIfSmall(key);
+        }
         for (String[] page : mPages) {
             for (int i = 0; i < PAGE_SIZE; i++) {
-                if (!page[i].isEmpty() && repo.find(page[i]) == null) {
+                if (!page[i].isEmpty() && !isFolder(page[i]) && repo.find(page[i]) == null) {
                     page[i] = "";
                     changed = true;
                 }
@@ -342,6 +491,21 @@ final class HomeModel {
                     }
                     mPages.add(page);
                 }
+                final JSONObject folders = o.optJSONObject("folders");
+                if (folders != null) {
+                    final Iterator<String> keys = folders.keys();
+                    while (keys.hasNext()) {
+                        final String key = keys.next();
+                        final JSONObject fo = folders.getJSONObject(key);
+                        final Folder f = new Folder();
+                        f.name = fo.optString("name", "");
+                        final JSONArray items = fo.getJSONArray("items");
+                        for (int i = 0; i < items.length(); i++) {
+                            f.items.add(items.getString(i));
+                        }
+                        mFolders.put(key, f);
+                    }
+                }
                 trimPages();
                 if (version < VERSION) {
                     save();
@@ -361,18 +525,13 @@ final class HomeModel {
         for (int i = 0; i < DEFAULT_DOCK.length; i++) {
             mDock[i] = keyFor(repo, DEFAULT_DOCK[i]);
         }
-        // first page: the bottom row, right above the dock
-        for (int i = 0; i < DEFAULT_PAGE1.length; i++) {
-            mPages.get(0)[i] = keyFor(repo, DEFAULT_PAGE1[i]);
-        }
-        // second page: from its top row (fitRows moves them if the screen has fewer)
-        final int top = (mRows - 1) * COLUMNS;
-        for (int i = 0; i < DEFAULT_PAGE2.length; i++) {
-            final int row = i / COLUMNS;
-            mPages.get(1)[top - row * COLUMNS + i % COLUMNS] = keyFor(repo, DEFAULT_PAGE2[i]);
+        for (Object[] c : DEFAULT_CELLS) {
+            final int page = (Integer) c[0];
+            final int index = (Integer) c[1] * COLUMNS + (Integer) c[2];
+            mPages.get(page)[index] = keyFor(repo, (String) c[3]);
         }
         // Kiro Home 1.0 put everything on one page: keep the user's own apps (not the
-        // suite, which now has its place) on the first page, from the row above
+        // suite, which now has its place) in the first free cells
         final String old = mPrefs.getString("grid", "");
         if (!TextUtils.isEmpty(old)) {
             for (String k : old.split("\\|")) {
@@ -402,10 +561,16 @@ final class HomeModel {
             for (String[] page : mPages) {
                 pages.put(new JSONArray(Arrays.asList(page)));
             }
+            final JSONObject folders = new JSONObject();
+            for (Map.Entry<String, Folder> e : mFolders.entrySet()) {
+                folders.put(e.getKey(), new JSONObject().put("name", e.getValue().name)
+                        .put("items", new JSONArray(e.getValue().items)));
+            }
             mPrefs.edit().putString(KEY_LAYOUT, new JSONObject()
                     .put("v", VERSION)
                     .put("dock", new JSONArray(Arrays.asList(mDock)))
-                    .put("pages", pages).toString()).apply();
+                    .put("pages", pages)
+                    .put("folders", folders).toString()).apply();
         } catch (JSONException e) {
             // cannot happen with strings and arrays
         }

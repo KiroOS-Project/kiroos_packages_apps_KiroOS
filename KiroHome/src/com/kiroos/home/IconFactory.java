@@ -41,8 +41,8 @@ import java.util.List;
  * to the squircle at full size.</li>
  * <li>Icons with a solid background disc (most round legacy icons) are extended: the plate
  * takes the disc's own colour and the icon is drawn over it, as an adaptive icon would.</li>
- * <li>Round icons with a gradient or picture disc are zoomed until the disc fills the
- * squircle.</li>
+ * <li>Round icons with a one-colour gradient disc are zoomed until the disc fills the
+ * squircle; many-coloured discs and rounded squares sit whole on a plate.</li>
  * <li>Anything else (transparent or irregular icons) is trimmed and centred on a light
  * plate (graphite for light icons).</li>
  * </ul>
@@ -123,6 +123,29 @@ final class IconFactory {
         return new BitmapDrawable(mContext.getResources(), bitmap(app));
     }
 
+    /**
+     * A folder: a frosted squircle with its first four apps in a 2 x 2 grid (the icon is
+     * small enough to render on every bind, the apps' own icons are cached).
+     */
+    synchronized Drawable folderIcon(List<AppInfo> apps) {
+        final Bitmap out = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
+        final Canvas c = new Canvas(out);
+        final Paint plate = new Paint(Paint.ANTI_ALIAS_FLAG);
+        plate.setColor(0x4DFFFFFF);
+        c.drawPath(mSquircle, plate);
+        final float pad = mSize * 0.15f;
+        final float gap = mSize * 0.07f;
+        final float cell = (mSize - 2 * pad - gap) / 2f;
+        final android.graphics.RectF dst = new android.graphics.RectF();
+        for (int i = 0; i < apps.size() && i < 4; i++) {
+            final float x = pad + (i % 2) * (cell + gap);
+            final float y = pad + (i / 2) * (cell + gap);
+            dst.set(x, y, x + cell, y + cell);
+            c.drawBitmap(bitmap(apps.get(i)), null, dst, mPaint);
+        }
+        return new BitmapDrawable(mContext.getResources(), out);
+    }
+
     /** Renders the icons that are not cached yet; safe to call on a worker thread. */
     void prewarm(List<AppInfo> apps) {
         for (AppInfo app : apps) {
@@ -178,8 +201,13 @@ final class IconFactory {
                 // the disc falls outside)
                 c.drawColor(flat);
                 drawScaled(c, source, Math.min(1.25f, (half * 0.94f) / disc), 0, 0);
+            } else if (roundedSquare(raw, disc) || ringSpread(raw, disc * 0.85f) > 90) {
+                // a rounded square (Instagram) or a many-coloured disc (Chrome): zooming
+                // would crop the artwork, so it sits whole on a plate, like a transparent icon
+                c.drawPaint(lightness(raw) > 0.72f ? mPlate : mLightPlate);
+                drawScaled(c, source, INNER_FIT * 1.25f * half / disc, 0, 0);
             } else {
-                // round icon with a picture or a gradient (Telegram, Chrome…): zoomed until
+                // round icon with a one-colour gradient disc (Telegram): zoomed until
                 // the disc covers the squircle's corners (a little past them: many discs
                 // have a light antialiased rim), over the disc's own edge colour
                 final float inner = innerRadius(raw, disc);
@@ -299,6 +327,34 @@ final class IconFactory {
         }
         // a real inner ring is thin: anything smaller is the artwork, not a rim
         return inner >= disc * 0.8f ? inner : disc;
+    }
+
+    /** a rounded square, not a disc: opaque on the diagonal past the disc's radius */
+    private static boolean roundedSquare(Bitmap b, float disc) {
+        final int c = b.getWidth() / 2;
+        final int d = Math.round(disc * 0.8f); // 0.8 r on each axis = 1.13 r away
+        return Color.alpha(b.getPixel(c + d, c + d)) > 200
+                && Color.alpha(b.getPixel(c - d, c - d)) > 200
+                && Color.alpha(b.getPixel(c + d, c - d)) > 200
+                && Color.alpha(b.getPixel(c - d, c + d)) > 200;
+    }
+
+    /** the largest channel difference between colours on a circle of radius r */
+    private static int ringSpread(Bitmap b, float r) {
+        final float c = b.getWidth() / 2f;
+        int minR = 255, maxR = 0, minG = 255, maxG = 0, minB = 255, maxB = 0;
+        for (int i = 0; i < 32; i++) {
+            final double t = 2 * Math.PI * i / 32;
+            final int p = b.getPixel(Math.round(c + (float) Math.cos(t) * r),
+                    Math.round(c + (float) Math.sin(t) * r));
+            minR = Math.min(minR, Color.red(p));
+            maxR = Math.max(maxR, Color.red(p));
+            minG = Math.min(minG, Color.green(p));
+            maxG = Math.max(maxG, Color.green(p));
+            minB = Math.min(minB, Color.blue(p));
+            maxB = Math.max(maxB, Color.blue(p));
+        }
+        return Math.max(maxR - minR, Math.max(maxG - minG, maxB - minB));
     }
 
     /** the mean colour on a circle of radius r around the centre */
