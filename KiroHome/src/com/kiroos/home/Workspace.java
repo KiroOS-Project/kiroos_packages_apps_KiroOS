@@ -75,6 +75,9 @@ public class Workspace extends ViewGroup {
         super(context, attrs);
         mCellHeight = context.getResources().getDimensionPixelSize(R.dimen.cell_height);
         setClipChildren(false);
+        // the padding only places the cells: a sliding page must stay whole up to the
+        // screen edge, not be cut off a margin inside it
+        setClipToPadding(false);
     }
 
     void setListener(Listener l) {
