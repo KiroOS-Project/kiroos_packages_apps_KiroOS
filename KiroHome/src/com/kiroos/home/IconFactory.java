@@ -41,8 +41,9 @@ import java.util.List;
  * to the squircle at full size.</li>
  * <li>Icons with a solid background disc (most round legacy icons) are extended: the plate
  * takes the disc's own colour and the icon is drawn over it, as an adaptive icon would.</li>
- * <li>Round icons with a one-colour gradient disc are zoomed until the disc fills the
- * squircle; many-coloured discs and rounded squares sit whole on a plate.</li>
+ * <li>Round icons with a picture or gradient disc, and rounded squares, are drawn with
+ * their edge on the squircle's sides; the corners are filled by stretching the icon's own
+ * edge colours outwards (no crop, no plate).</li>
  * <li>Anything else (transparent or irregular icons) is trimmed and centred on a light
  * plate (graphite for light icons).</li>
  * </ul>
@@ -201,18 +202,20 @@ final class IconFactory {
                 // the disc falls outside)
                 c.drawColor(flat);
                 drawScaled(c, source, Math.min(1.25f, (half * 0.94f) / disc), 0, 0);
-            } else if (roundedSquare(raw, disc) || ringSpread(raw, disc * 0.85f) > 90) {
-                // a rounded square (Instagram) or a many-coloured disc (Chrome): zooming
-                // would crop the artwork, so it sits whole on a plate, like a transparent icon
-                c.drawPaint(lightness(raw) > 0.72f ? mPlate : mLightPlate);
-                drawScaled(c, source, INNER_FIT * 1.25f * half / disc, 0, 0);
+            } else if (roundedSquare(raw, disc)) {
+                // a rounded square (Instagram, DevCheck): its sides meet the squircle's, and
+                // its round corners are filled by stretching its own edge colours outwards,
+                // so the artwork covers the whole icon without being cropped
+                drawScaled(c, source, half / disc, 0, 0);
+                extendEdges(art, 0);
             } else {
-                // round icon with a one-colour gradient disc (Telegram): zoomed until
-                // the disc covers the squircle's corners (a little past them: many discs
-                // have a light antialiased rim), over the disc's own edge colour
+                // a disc with a picture or a gradient (Chrome, Telegram): its edge meets the
+                // squircle's sides and the corners take the colour of the disc's edge along
+                // each ray (a light rim around the disc, like Telegram's, is left out)
                 final float inner = innerRadius(raw, disc);
-                c.drawColor(ringColor(raw, inner * 0.9f));
-                drawScaled(c, source, SQUIRCLE_CORNER * 1.06f * half / inner, 0, 0);
+                final float scale = half / inner;
+                drawScaled(c, source, scale, 0, 0);
+                extendEdges(art, inner * scale - 1.5f);
             }
         } else {
             // transparent or irregular icon: trimmed of its empty margins and centred on a
@@ -327,6 +330,71 @@ final class IconFactory {
         }
         // a real inner ring is thin: anything smaller is the artwork, not a rim
         return inner >= disc * 0.8f ? inner : disc;
+    }
+
+    /**
+     * Fills the icon to its corners with its own edge: every pixel beyond the edge takes the
+     * colour found going back toward the centre. edge > 0: a disc of that radius (pixels
+     * past it are replaced, a rim included); edge = 0: the first opaque pixel inward (only
+     * transparent or half-transparent pixels are filled).
+     */
+    private static void extendEdges(Bitmap b, float edge) {
+        final int w = b.getWidth();
+        final int h = b.getHeight();
+        final int[] px = new int[w * h];
+        b.getPixels(px, 0, w, 0, 0, w, h);
+        final int[] out = px.clone();
+        final float cx = (w - 1) / 2f;
+        final float cy = (h - 1) / 2f;
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                final int i = y * w + x;
+                final float dx = x - cx;
+                final float dy = y - cy;
+                final float d = (float) Math.sqrt(dx * dx + dy * dy);
+                if (d < 1) {
+                    continue;
+                }
+                final float ux = dx / d;
+                final float uy = dy / d;
+                int src = 0;
+                if (edge > 0) {
+                    if (d <= edge) {
+                        continue;
+                    }
+                    src = sample(px, w, h, cx + ux * edge, cy + uy * edge);
+                    out[i] = src | 0xFF000000;
+                    continue;
+                }
+                if (Color.alpha(px[i]) >= 250) {
+                    continue;
+                }
+                for (float r = d; r > 0; r -= 1f) {
+                    final int p = sample(px, w, h, cx + ux * r, cy + uy * r);
+                    if (Color.alpha(p) >= 250) {
+                        // two pixels further in: past the antialiased fringe
+                        src = sample(px, w, h, cx + ux * Math.max(0, r - 2), cy + uy * Math.max(0, r - 2));
+                        break;
+                    }
+                }
+                if (src == 0) {
+                    continue;
+                }
+                // what is there (a soft edge) lies over the stretched colour
+                final int a = Color.alpha(px[i]);
+                final int r = (Color.red(px[i]) * a + Color.red(src) * (255 - a)) / 255;
+                final int g = (Color.green(px[i]) * a + Color.green(src) * (255 - a)) / 255;
+                final int bl = (Color.blue(px[i]) * a + Color.blue(src) * (255 - a)) / 255;
+                out[i] = Color.rgb(r, g, bl);
+            }
+        }
+        b.setPixels(out, 0, w, 0, 0, w, h);
+    }
+
+    private static int sample(int[] px, int w, int h, float x, float y) {
+        final int xi = Math.max(0, Math.min(w - 1, Math.round(x)));
+        final int yi = Math.max(0, Math.min(h - 1, Math.round(y)));
+        return px[yi * w + xi];
     }
 
     /** a rounded square, not a disc: opaque on the diagonal past the disc's radius */
