@@ -7,7 +7,7 @@
     <string name="new_chat">New chat</string>
     <string name="copied">Copied</string>
     <string name="welcome">Your assistant, even offline</string>
-    <string name="welcome_hint">kAI answers right on the phone, no internet needed. With the PC plugged in by USB and \"Start kAI\" running, it uses the PC\'s model: faster and smarter.</string>
+    <string name="welcome_hint">kAI answers right on the phone and looks up recent facts on the web (the globe turns it off). With the PC plugged in by USB and \"Start kAI\" running, it uses the PC\'s model: faster and smarter.</string>
     <string name="on_device">On the phone · %s</string>
     <string name="bridge">PC connection</string>
     <string name="bridge_help">USB: run \"Start kAI\" on the PC and keep 127.0.0.1 and port 11434. Wi-Fi: the PC\'s address, with Ollama open to the network.</string>
@@ -21,4 +21,16 @@
     <string name="not_connected">PC not connected · plug in USB and run \"Start kAI\" on the PC</string>
     <string name="no_model">No model on the PC · run \"Start kAI\"</string>
     <string name="error_answer">⚠ No answer: %s</string>
+    <string name="searching">Searching the web…</string>
+    <string name="reading">Reading %s…</string>
+    <string name="sources">Sources</string>
+    <string name="web_on">Web search on</string>
+    <string name="web_off">Web search off</string>
+    <string name="writing">Writing the answer…</string>
+    <!-- for the model -->
+    <string name="system_prompt">You are kAI, the assistant of KiroOS on a Samsung Galaxy S6. Answer clearly and briefly, in the user\'s language, using Markdown when it helps. Today is %s.</string>
+    <string name="web_instruction">Answer using the web results given with the question, they are more recent than what you know, and cite the sources like [1].</string>
+    <string name="web_system">You are kAI. Answer briefly, in the language of the question, using the web results given, and cite the sources like [1].</string>
+    <string name="web_results">Web results</string>
+    <string name="question">Question</string>
 </resources>

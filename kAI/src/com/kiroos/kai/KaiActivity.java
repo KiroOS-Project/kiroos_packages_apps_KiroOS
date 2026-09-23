@@ -23,6 +23,7 @@ import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -51,6 +52,9 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * kAI: chat with a language model running on the PC through the kAI bridge (USB via adb
@@ -59,9 +63,9 @@ import java.util.List;
  */
 public class KaiActivity extends Activity {
 
-    private static final String SYSTEM_PROMPT = "You are kAI, the assistant of KiroOS on a "
-            + "Samsung Galaxy S6. Answer clearly and concisely, in the user's language, using "
-            + "Markdown when it helps.";
+    /** starts the sources line under an answer that used the web */
+    static final String SOURCES_MARK = "\n\n🔎 ";
+    private static final Pattern LINK = Pattern.compile("\\[([^\\]\\n]+)\\]\\((https?://[^)\\s]+)\\)");
     /** Ollama's port; over USB "adb reverse tcp:11434 tcp:11434" maps it to the PC */
     private static final int DEFAULT_PORT = 11434;
     /** first character of R.string.error_answer in every language */
@@ -102,6 +106,24 @@ public class KaiActivity extends Activity {
                         .setPrimaryClip(ClipData.newPlainText("kAI", m.content));
                 Toast.makeText(KaiActivity.this, R.string.copied, Toast.LENGTH_SHORT).show();
                 return true;
+            }
+        });
+        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showSources(mAdapter.getItem(position));
+            }
+        });
+        final ImageButton webButton = (ImageButton) findViewById(R.id.btn_web);
+        updateWebButton(webButton);
+        webButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final boolean on = !mPrefs.getBoolean("web", true);
+                mPrefs.edit().putBoolean("web", on).apply();
+                updateWebButton(webButton);
+                Toast.makeText(KaiActivity.this, on ? R.string.web_on : R.string.web_off,
+                        Toast.LENGTH_SHORT).show();
             }
         });
         mSend.setBackground(SquircleDrawable.button(getColor(R.color.kiro_accent),
@@ -287,20 +309,42 @@ public class KaiActivity extends Activity {
         mMessages.add(new BridgeClient.Message("user", text));
         final BridgeClient.Message answer = new BridgeClient.Message("assistant", "");
         mMessages.add(answer);
+        final boolean web = mPrefs.getBoolean("web", true) && online() && WebSearch.wanted(text);
+        if (web) {
+            answer.status = getString(R.string.searching);
+        }
         refresh();
         setBusy(true);
+        // the model's instructions in the language of the question (a small model follows
+        // them better): the phone may be in English while the user writes in Italian
+        final Locale lang = WebSearch.looksItalian(text) ? Locale.ITALIAN
+                : getResources().getConfiguration().getLocales().get(0);
+        final Configuration conf = new Configuration(getResources().getConfiguration());
+        conf.setLocale(lang);
+        final android.content.Context pc = createConfigurationContext(conf);
         final List<BridgeClient.Message> history = new ArrayList<>();
-        history.add(new BridgeClient.Message("system", SYSTEM_PROMPT));
-        // the last 20 turns keep context without overflowing small local models
-        final int from = Math.max(0, mMessages.size() - 1 - 20);
+        history.add(new BridgeClient.Message("system",
+                pc.getString(R.string.system_prompt, WebSearch.today(lang))));
+        // the last 20 turns keep context without overflowing small local models (fewer when
+        // web results take room)
+        final int from = Math.max(0, mMessages.size() - 1 - (web ? 8 : 20));
+        String previousQuestion = null;
         for (int i = from; i < mMessages.size() - 1; i++) {
             final BridgeClient.Message m = mMessages.get(i);
             // failed turns are not conversation: leave out the error and its question
             if (isError(m) || (i + 1 < mMessages.size() - 1 && isError(mMessages.get(i + 1)))) {
                 continue;
             }
-            history.add(m);
+            if ("user".equals(m.role) && i < mMessages.size() - 2) {
+                previousQuestion = m.content;
+            }
+            // the sources line is for the reader, not for the model
+            final int cut = m.content.indexOf(SOURCES_MARK);
+            history.add(cut < 0 ? m : new BridgeClient.Message(m.role, m.content.substring(0, cut)));
         }
+        // a short follow-up ("and when?") is searched together with the question before it
+        final String query = previousQuestion != null && text.split("\\s+").length < 5
+                ? previousQuestion + " " + text : text;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -316,6 +360,52 @@ public class KaiActivity extends Activity {
                     return;
                 }
                 mClient = t.client;
+                if (t.local) {
+                    // the phone reads ~25 tokens/s: the last three exchanges are enough context
+                    while (history.size() > 7) {
+                        history.remove(1);
+                    }
+                }
+                List<WebSearch.Result> results = new ArrayList<>();
+                if (web) {
+                    results = WebSearch.search(query.length() > 200 ? query.substring(0, 200)
+                            : query, 4, lang);
+                    if (!results.isEmpty()) {
+                        // the phone's own model reads ~25 tokens per second and a small model
+                        // gets lost in long pages: it gets the result snippets only, the PC
+                        // also the best paragraphs of the first page
+                        String excerpt = "";
+                        if (!t.local) {
+                            postStatus(answer, getString(R.string.reading,
+                                    results.get(0).site()));
+                            excerpt = WebSearch.excerpt(results.get(0).url, query, 1500);
+                            if (excerpt.isEmpty() && results.size() > 1) {
+                                excerpt = WebSearch.excerpt(results.get(1).url, query, 1500);
+                            }
+                            history.get(0).content += " "
+                                    + pc.getString(R.string.web_instruction);
+                        } else {
+                            // the 0.5B model echoes what it sees: earlier answers and today's
+                            // date end up as the answer (measured). It gets the results and the
+                            // question alone.
+                            while (history.size() > 2) {
+                                history.remove(1);
+                            }
+                            history.set(0, new BridgeClient.Message("system",
+                                    pc.getString(R.string.web_system)));
+                        }
+                        // the model sees the results with the question; the chat shows the
+                        // question alone
+                        history.set(history.size() - 1, new BridgeClient.Message("user",
+                                WebSearch.prompt(text, results, excerpt,
+                                        pc.getString(R.string.web_results),
+                                        pc.getString(R.string.question))));
+                        postStatus(answer, getString(R.string.writing));
+                    } else {
+                        postStatus(answer, null);
+                    }
+                }
+                final List<WebSearch.Result> sources = results;
                 t.client.chat(t.model, history, new BridgeClient.Stream() {
                     private long mLastUi;
 
@@ -344,6 +434,9 @@ public class KaiActivity extends Activity {
                             public void run() {
                                 if (answer.content.isEmpty()) {
                                     mMessages.remove(answer);
+                                } else if (!sources.isEmpty()) {
+                                    answer.content = answer.content.trim()
+                                            + WebSearch.sources(sources);
                                 }
                                 setBusy(false);
                                 refresh();
@@ -359,6 +452,62 @@ public class KaiActivity extends Activity {
                 });
             }
         }, "kAI-chat").start();
+    }
+
+    /** the placeholder of an answer that has no text yet (null: the plain "…") */
+    private void postStatus(final BridgeClient.Message answer, final String status) {
+        answer.status = status;
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    private boolean online() {
+        final android.net.NetworkInfo n = ((android.net.ConnectivityManager) getSystemService(
+                CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        return n != null && n.isConnected();
+    }
+
+    /** tapping an answer with sources lists them; one opens in the browser */
+    private void showSources(BridgeClient.Message m) {
+        final int at = m.content.indexOf(SOURCES_MARK);
+        if (at < 0) {
+            return;
+        }
+        final Matcher lm = LINK.matcher(m.content.substring(at));
+        final List<String> names = new ArrayList<>();
+        final List<String> urls = new ArrayList<>();
+        while (lm.find()) {
+            names.add(lm.group(1));
+            urls.add(lm.group(2));
+        }
+        if (urls.isEmpty()) {
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.sources)
+                .setItems(names.toArray(new String[0]), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int which) {
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW,
+                                    android.net.Uri.parse(urls.get(which))));
+                        } catch (android.content.ActivityNotFoundException e) {
+                            // no browser
+                        }
+                    }
+                })
+                .show();
+    }
+
+    private void updateWebButton(ImageButton b) {
+        final boolean on = mPrefs.getBoolean("web", true);
+        b.setAlpha(on ? 1f : 0.35f);
+        b.setContentDescription(getString(on ? R.string.web_on : R.string.web_off));
     }
 
     /** An answer bubble that only says why there was no answer. */
@@ -510,7 +659,8 @@ public class KaiActivity extends Activity {
             if (user) {
                 text.setText(content);
             } else if (content.isEmpty()) {
-                text.setText("…");
+                final String status = m.status;
+                text.setText(status != null ? status : "…");
             } else {
                 text.setText(mMarkdown.render(content));
             }

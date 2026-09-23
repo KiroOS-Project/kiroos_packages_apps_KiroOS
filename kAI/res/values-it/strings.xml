@@ -6,7 +6,7 @@
     <string name="new_chat">Nuova chat</string>
     <string name="copied">Copiato</string>
     <string name="welcome">Il tuo assistente, anche offline</string>
-    <string name="welcome_hint">kAI risponde direttamente sul telefono, senza internet. Se colleghi il PC via USB con \"Avvia kAI\" usa il modello del PC, più veloce e più preciso.</string>
+    <string name="welcome_hint">kAI risponde direttamente sul telefono e cerca sul web le informazioni recenti (il mappamondo la disattiva). Se colleghi il PC via USB con \"Avvia kAI\" usa il modello del PC, più veloce e più preciso.</string>
     <string name="on_device">Sul telefono · %s</string>
     <string name="bridge">Connessione al PC</string>
     <string name="bridge_help">USB: avvia \"Avvia kAI\" sul PC e lascia 127.0.0.1 e la porta 11434. Wi-Fi: indirizzo del PC, con Ollama aperto alla rete.</string>
@@ -20,4 +20,15 @@
     <string name="not_connected">PC non collegato · collega l\'USB e apri \"Avvia kAI\" sul PC</string>
     <string name="no_model">Nessun modello sul PC · avvia \"Avvia kAI\"</string>
     <string name="error_answer">⚠ Nessuna risposta: %s</string>
+    <string name="searching">Cerco sul web…</string>
+    <string name="reading">Leggo %s…</string>
+    <string name="sources">Fonti</string>
+    <string name="web_on">Ricerca web attiva</string>
+    <string name="web_off">Ricerca web disattivata</string>
+    <string name="writing">Scrivo la risposta…</string>
+    <string name="system_prompt">Sei kAI, l\'assistente di KiroOS su un Samsung Galaxy S6. Rispondi in modo chiaro e breve, nella lingua dell\'utente, usando Markdown quando serve. Oggi è il %s.</string>
+    <string name="web_instruction">Rispondi usando i risultati web forniti con la domanda, sono più recenti di quello che sai, e cita le fonti come [1].</string>
+    <string name="web_system">Sei kAI. Rispondi in italiano in modo breve usando i risultati web forniti, citando le fonti come [1].</string>
+    <string name="web_results">Risultati web</string>
+    <string name="question">Domanda</string>
 </resources>

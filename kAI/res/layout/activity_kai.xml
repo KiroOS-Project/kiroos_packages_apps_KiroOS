@@ -35,6 +35,13 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/btn_web"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:src="@drawable/ic_web" />
+
+        <ImageButton
             android:id="@+id/btn_new"
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"

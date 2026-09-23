@@ -64,6 +64,8 @@ final class LocalEngine {
                     "-m", MODEL,
                     "--host", HOST, "--port", String.valueOf(PORT),
                     "-t", String.valueOf(THREADS),
+                    // reading the prompt (web results) scales to all 8 cores: 19 -> 26 tok/s
+                    "-tb", "8",
                     "-c", "4096",
                     "--no-webui",
                     "--log-disable")

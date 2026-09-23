@@ -55,6 +55,8 @@ final class BridgeClient {
     static final class Message {
         final String role;
         String content;
+        /** shown while there is no text yet ("Searching the web…"); not saved */
+        volatile String status;
 
         Message(String role, String content) {
             this.role = role;
@@ -236,7 +238,7 @@ final class BridgeClient {
                     .put("stream", true)
                     // a phone-sized answer, and a small model repeats itself less when capped
                     .put("max_tokens", 512)
-                    .put("temperature", 0.6);
+                    .put("temperature", 0.4);
             c = (HttpURLConnection) new URL(mBase + "/v1/chat/completions").openConnection();
             mActive = c;
             c.setConnectTimeout(4000);
