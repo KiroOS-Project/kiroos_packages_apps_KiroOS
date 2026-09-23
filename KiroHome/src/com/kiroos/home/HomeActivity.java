@@ -19,6 +19,7 @@ package com.kiroos.home;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.StatusBarManager;
+import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -89,6 +90,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     private View mHomeContent;
     private Workspace mWorkspace;
     private PageIndicator mIndicator;
+    private WallpaperManager mWallpaperManager;
     private LinearLayout mDock;
     private View mDropHint;
     private View mDrawer;
@@ -135,10 +137,24 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mDrawerGrid = (GridView) findViewById(R.id.drawer_grid);
         mSearch = (EditText) findViewById(R.id.drawer_search);
 
+        mWallpaperManager = WallpaperManager.getInstance(this);
+        final View clockBlock = findViewById(R.id.clock_block);
+        final View widgetStack = findViewById(R.id.widget_stack);
         mWorkspace.setListener(new Workspace.Listener() {
             @Override
             public void onPageScrolled(float position) {
                 mIndicator.setPosition(position);
+                // the whole screen moves with the pages: the clock and the widgets belong to
+                // the first page, and the wallpaper follows at a slower pace
+                final float first = Math.max(0f, Math.min(1f, position)) * mRoot.getWidth();
+                clockBlock.setTranslationX(-first);
+                widgetStack.setTranslationX(-first);
+                final int pages = mWorkspace.pageCount();
+                if (pages > 1 && mRoot.getWindowToken() != null) {
+                    final float x = Math.max(0f, Math.min(1f, position / (pages - 1)));
+                    mWallpaperManager.setWallpaperOffsetSteps(1f / (pages - 1), 1f);
+                    mWallpaperManager.setWallpaperOffsets(mRoot.getWindowToken(), x, 0.5f);
+                }
             }
         });
         // the page survives the launcher being killed while an app is open
@@ -658,6 +674,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus && mDrag == null) {
             mWorkspace.settle();
+            mWorkspace.notifyScroll();
         }
     }
 

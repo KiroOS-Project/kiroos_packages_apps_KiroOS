@@ -145,7 +145,41 @@ public class Workspace extends ViewGroup {
         } else if (velocityX > minFling) {
             page = (int) Math.ceil(pos) - 1;
         }
-        snapTo(page, true);
+        page = Math.max(0, Math.min(mPageCount - 1, page));
+        final int target = page * w;
+        final float distance = Math.abs(target - getScrollX());
+        if (distance < 1) {
+            snapTo(page, false);
+            return;
+        }
+        // the pages carry on at the finger's own speed and ease into place: a fixed curve
+        // started 3-4x faster than the finger, a visible jump on every fast swipe
+        final float toward = Math.signum(target - getScrollX()) == Math.signum(-velocityX)
+                ? Math.abs(velocityX) : 0; // px/s in the direction of the page
+        final float seconds = toward > minFling
+                ? Math.max(0.14f, Math.min(0.38f, 2 * distance / toward))
+                : Math.min(0.38f, 0.22f + distance / 4000f);
+        animateTo(page, (long) (seconds * 1000),
+                new Glide(Math.min(3f, toward * seconds / distance)));
+    }
+
+    /**
+     * Ease-out that starts at a given speed (slope0, relative to the average speed) and
+     * lands with none: a cubic Hermite curve, monotonic for slope0 <= 3.
+     */
+    private static final class Glide implements android.animation.TimeInterpolator {
+        private final float mSlope0;
+
+        Glide(float slope0) {
+            mSlope0 = slope0;
+        }
+
+        @Override
+        public float getInterpolation(float t) {
+            final float t2 = t * t;
+            final float t3 = t2 * t;
+            return mSlope0 * (t3 - 2 * t2 + t) + (-2 * t3 + 3 * t2);
+        }
     }
 
     /** not resting on a page and not on its way to one: go to the nearest page */
@@ -170,9 +204,19 @@ public class Workspace extends ViewGroup {
             notifyScroll();
             return;
         }
+        animateTo(page, Math.min(420, 180 + Math.abs(target - getScrollX()) / 3),
+                KiroTouch.EASE);
+    }
+
+    private void animateTo(int page, long duration, android.animation.TimeInterpolator curve) {
+        mCurrentPage = page;
+        final int target = page * getWidth();
+        if (mSettle != null) {
+            mSettle.cancel();
+        }
         mSettle = ValueAnimator.ofInt(getScrollX(), target);
-        mSettle.setDuration(Math.min(420, 180 + Math.abs(target - getScrollX()) / 3));
-        mSettle.setInterpolator(KiroTouch.EASE);
+        mSettle.setDuration(duration);
+        mSettle.setInterpolator(curve);
         mSettle.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator a) {
@@ -183,7 +227,8 @@ public class Workspace extends ViewGroup {
         mSettle.start();
     }
 
-    private void notifyScroll() {
+    /** tells the listener where the pages are (the wallpaper needs it once the window is up) */
+    void notifyScroll() {
         if (mListener != null && getWidth() > 0) {
             mListener.onPageScrolled(getScrollX() / (float) getWidth());
         }

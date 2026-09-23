@@ -27,6 +27,7 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.util.LruCache;
 
 import java.util.List;
@@ -39,7 +40,10 @@ import java.util.List;
  * to the squircle at full size.</li>
  * <li>Icons with a solid background disc (most round legacy icons) are extended: the plate
  * takes the disc's own colour and the icon is drawn over it, as an adaptive icon would.</li>
- * <li>Anything else (transparent or irregular icons) sits centred on a graphite plate.</li>
+ * <li>Round icons with a gradient or picture disc are zoomed until the disc fills the
+ * squircle.</li>
+ * <li>Anything else (transparent or irregular icons) is trimmed and centred on a light
+ * plate (graphite for light icons).</li>
  * </ul>
  * Every plate gets a soft top-light and a hairline rim. Bitmaps are cached (LRU sized to
  * the heap) and can be rendered ahead of time off the main thread.
@@ -51,6 +55,12 @@ final class IconFactory {
     private static final int RIM = 0x2EFFFFFF;
     /** how much of the plate a transparent icon covers */
     private static final float INNER = 0.78f;
+    /** a trimmed transparent icon's longest side, as a share of the plate */
+    private static final float INNER_FIT = 0.64f;
+    /** the n = 4 squircle's corner lies this far from the centre, in radii (sqrt 2 * cos(45)^0.5) */
+    private static final float SQUIRCLE_CORNER = 1.19f;
+    private static final int LIGHT_TOP = 0xFFFAFAFC;
+    private static final int LIGHT_BOTTOM = 0xFFE6E7EC;
 
     private final Context mContext;
     private final int mSize;
@@ -59,6 +69,7 @@ final class IconFactory {
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final Paint mSheen = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mPlate = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mLightPlate = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final LruCache<String, Bitmap> mCache;
 
     IconFactory(Context context) {
@@ -71,6 +82,8 @@ final class IconFactory {
                 0x1FFFFFFF, 0x00FFFFFF, Shader.TileMode.CLAMP));
         mPlate.setShader(new LinearGradient(0, 0, 0, mSize,
                 PLATE_TOP, PLATE_BOTTOM, Shader.TileMode.CLAMP));
+        mLightPlate.setShader(new LinearGradient(0, 0, 0, mSize,
+                LIGHT_TOP, LIGHT_BOTTOM, Shader.TileMode.CLAMP));
         // a screen and a half of icons for the drawer, but never more than 1/8 of the heap
         final int bytes = (int) Math.min(Runtime.getRuntime().maxMemory() / 8, 32L * 1024 * 1024);
         mCache = new LruCache<String, Bitmap>(bytes) {
@@ -120,7 +133,8 @@ final class IconFactory {
         final String key = key(app);
         Bitmap b = mCache.get(key);
         if (b == null) {
-            b = render(app.info.getBadgedIcon(mDensity));
+            // the xxxhdpi icon: zoomed round icons stay sharp
+            b = render(app.info.getBadgedIcon(Math.max(mDensity, DisplayMetrics.DENSITY_XXXHIGH)));
             mCache.put(key, b);
         }
         return b;
@@ -149,24 +163,38 @@ final class IconFactory {
         final Canvas c = new Canvas(out);
         c.save();
         c.clipPath(mSquircle);
+        final float half = mSize / 2f;
+        final float disc = fillsSquare(raw) ? 0 : discRadius(raw);
         if (fillsSquare(raw)) {
-            c.drawBitmap(raw, 0, 0, mPaint);
-        } else {
-            final int disc = discColor(raw);
-            if (disc != 0) {
-                // round icon with a solid background: grow the background to the squircle
-                // (drawn 8% larger so the legacy drop shadow around the disc falls outside)
-                c.drawColor(disc);
-                c.save();
-                c.scale(1.08f, 1.08f, mSize / 2f, mSize / 2f);
-                c.drawBitmap(raw, 0, 0, mPaint);
-                c.restore();
+            drawScaled(c, source, 1f, 0, 0);
+        } else if (disc > 0) {
+            final int flat = discColor(raw);
+            if (flat != 0) {
+                // round icon with a solid background: grow the background to the squircle,
+                // the symbol keeps its size (a little larger so the legacy drop shadow around
+                // the disc falls outside)
+                c.drawColor(flat);
+                drawScaled(c, source, Math.min(1.25f, (half * 0.94f) / disc), 0, 0);
             } else {
-                c.drawPaint(mPlate);
-                final int inset = Math.round(mSize * (1 - INNER) / 2);
-                source.setBounds(inset, inset, mSize - inset, mSize - inset);
-                source.draw(c);
+                // round icon with a picture or a gradient (Telegram, Chrome…): zoomed until
+                // the disc covers the squircle's corners (a little past them: many discs
+                // have a light antialiased rim), over the disc's own edge colour
+                c.drawColor(ringColor(raw, disc * 0.9f));
+                drawScaled(c, source, SQUIRCLE_CORNER * 1.06f * half / disc, 0, 0);
             }
+        } else {
+            // transparent or irregular icon: trimmed of its empty margins and centred on a
+            // plate that contrasts with it (light plate, graphite for light icons)
+            final Rect box = opaqueBounds(raw);
+            if (lightness(raw) > 0.72f) {
+                c.drawPaint(mPlate);
+            } else {
+                c.drawPaint(mLightPlate);
+            }
+            final float fit = box.isEmpty() ? INNER
+                    : INNER_FIT * mSize / Math.max(box.width(), box.height());
+            final float s = Math.min(fit, 1.4f);
+            drawScaled(c, source, s, half - box.exactCenterX(), half - box.exactCenterY());
         }
         c.drawRect(0, 0, mSize, mSize * 0.6f, mSheen);
         c.restore();
@@ -178,6 +206,121 @@ final class IconFactory {
         mPaint.setColor(Color.BLACK);
         raw.recycle();
         return out;
+    }
+
+    /**
+     * Draws the icon scaled by s about the centre, after moving its content by (dx, dy): the
+     * drawable itself is drawn (not the analysis bitmap) so zoomed icons stay sharp.
+     */
+    private void drawScaled(Canvas c, Drawable d, float s, float dx, float dy) {
+        final float half = mSize / 2f;
+        c.save();
+        c.scale(s, s, half, half);
+        c.translate(dx, dy);
+        d.setBounds(0, 0, mSize, mSize);
+        d.draw(c);
+        c.restore();
+    }
+
+    /**
+     * The radius of a round opaque icon (a disc centred in its square), 0 when the icon is
+     * not one: measured along the four axes, which must agree, with transparent corners.
+     */
+    private static float discRadius(Bitmap b) {
+        final int w = b.getWidth();
+        final int c = w / 2;
+        final int m = Math.round(w * 0.1f);
+        if (Color.alpha(b.getPixel(m, m)) > 40 || Color.alpha(b.getPixel(w - 1 - m, w - 1 - m)) > 40
+                || Color.alpha(b.getPixel(c, c)) < 250) {
+            return 0;
+        }
+        final int[] r = new int[4];
+        final int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (int d = 0; d < 4; d++) {
+            int i = 0;
+            while (i < c - 1 && Color.alpha(b.getPixel(c + dirs[d][0] * i, c + dirs[d][1] * i)) > 200) {
+                i++;
+            }
+            r[d] = i;
+        }
+        int min = r[0];
+        int max = r[0];
+        for (int v : r) {
+            min = Math.min(min, v);
+            max = Math.max(max, v);
+        }
+        if (min < w * 0.3f || max - min > w * 0.04f) {
+            return 0;
+        }
+        // the ring just inside the edge must be opaque all round (not a ring of shapes)
+        final float ring = min * 0.9f;
+        for (int i = 0; i < 24; i++) {
+            final double t = 2 * Math.PI * i / 24;
+            final int x = Math.round(c + (float) Math.cos(t) * ring);
+            final int y = Math.round(c + (float) Math.sin(t) * ring);
+            if (Color.alpha(b.getPixel(x, y)) < 240) {
+                return 0;
+            }
+        }
+        return (min + max) / 2f;
+    }
+
+    /** the mean colour on a circle of radius r around the centre */
+    private static int ringColor(Bitmap b, float r) {
+        final float c = b.getWidth() / 2f;
+        long red = 0;
+        long green = 0;
+        long blue = 0;
+        for (int i = 0; i < 32; i++) {
+            final double t = 2 * Math.PI * i / 32;
+            final int p = b.getPixel(Math.round(c + (float) Math.cos(t) * r),
+                    Math.round(c + (float) Math.sin(t) * r));
+            red += Color.red(p);
+            green += Color.green(p);
+            blue += Color.blue(p);
+        }
+        return Color.rgb((int) (red / 32), (int) (green / 32), (int) (blue / 32));
+    }
+
+    /** the box around the visible pixels */
+    private static Rect opaqueBounds(Bitmap b) {
+        final int w = b.getWidth();
+        final int h = b.getHeight();
+        int l = w;
+        int t = h;
+        int r = -1;
+        int btm = -1;
+        final int[] row = new int[w];
+        for (int y = 0; y < h; y++) {
+            b.getPixels(row, 0, w, 0, y, w, 1);
+            for (int x = 0; x < w; x++) {
+                if (Color.alpha(row[x]) > 24) {
+                    l = Math.min(l, x);
+                    r = Math.max(r, x);
+                    t = Math.min(t, y);
+                    btm = Math.max(btm, y);
+                }
+            }
+        }
+        return r < 0 ? new Rect() : new Rect(l, t, r + 1, btm + 1);
+    }
+
+    /** mean lightness (0-1) of the visible pixels, weighted by their opacity */
+    private static float lightness(Bitmap b) {
+        final int w = b.getWidth();
+        final int[] px = new int[w * b.getHeight()];
+        b.getPixels(px, 0, w, 0, 0, w, b.getHeight());
+        double sum = 0;
+        double weight = 0;
+        for (int p : px) {
+            final int a = Color.alpha(p);
+            if (a < 24) {
+                continue;
+            }
+            sum += a * (0.299 * Color.red(p) + 0.587 * Color.green(p) + 0.114 * Color.blue(p));
+            weight += a;
+        }
+        return weight == 0 ? 0 : (float) (sum / weight / 255);
     }
 
     /**
