@@ -16,6 +16,7 @@
 
 package com.kiroos.home;
 
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -25,15 +26,26 @@ import android.view.ViewGroup;
 import com.kiroos.ui.KiroTouch;
 
 /**
- * The home pages side by side: every icon is laid out in its cell of its page, and the
- * pages scroll horizontally (the gesture comes from HomeLayout, so it works anywhere on the
- * home). One flat view group, no nested page views: scrolling only moves scrollX.
+ * The home pages side by side, from the top of the screen to the page dots: every icon is
+ * laid out in its cell of its page, and the pages scroll horizontally (the gesture comes
+ * from HomeLayout, so it works anywhere on the home). One flat view group, no nested page
+ * views: scrolling only moves scrollX.
+ *
+ * Rows are anchored at the bottom (row 0 right above the dots, see HomeModel) and every
+ * page shows as many rows as fit; the first page stops below its header (the clock and the
+ * widgets, which HomeActivity lays over it).
+ *
+ * Paging follows the finger 1:1 and ends in a glide that starts at the finger's own speed;
+ * a touch during the glide catches the pages where they are.
  */
 public class Workspace extends ViewGroup {
 
     interface Listener {
         /** position in pages, fractional while scrolling (0 = first page) */
         void onPageScrolled(float position);
+
+        /** the rows that fit changed (first page, other pages) */
+        void onRowsChanged(int firstRows, int rows);
     }
 
     /** a child's cell */
@@ -48,11 +60,11 @@ public class Workspace extends ViewGroup {
         }
     }
 
-    /** the tallest a cell gets; it shrinks when widgets take room */
-    private final int mMaxCellHeight;
-    private int mCellHeight;
-    /** the rows sit at the bottom, right above the dock */
-    private int mGridTop;
+    private final int mCellHeight;
+    /** where the first page's grid may start (below the clock and the widgets) */
+    private int mFirstTop;
+    private int mFirstRows = 4;
+    private int mRows = 5;
     private int mPageCount = 1;
     private int mCurrentPage;
     private float mDragStartScroll;
@@ -61,8 +73,7 @@ public class Workspace extends ViewGroup {
 
     public Workspace(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mMaxCellHeight = context.getResources().getDimensionPixelSize(R.dimen.cell_height);
-        mCellHeight = mMaxCellHeight;
+        mCellHeight = context.getResources().getDimensionPixelSize(R.dimen.cell_height);
         setClipChildren(false);
     }
 
@@ -79,17 +90,25 @@ public class Workspace extends ViewGroup {
         return mCellHeight;
     }
 
-    /** top of the first row, in this view's coordinates */
-    int gridTop() {
-        return mGridTop;
-    }
-
     int pageCount() {
         return mPageCount;
     }
 
     int currentPage() {
         return mCurrentPage;
+    }
+
+    int rows(int page) {
+        return page == 0 ? mFirstRows : mRows;
+    }
+
+    /** the first page's grid stays below this line (this view's coordinates) */
+    void setFirstPageTop(int top) {
+        if (top != mFirstTop) {
+            mFirstTop = top;
+            updateRows(getHeight());
+            requestLayout();
+        }
     }
 
     void setPageCount(int count) {
@@ -100,19 +119,49 @@ public class Workspace extends ViewGroup {
         notifyScroll();
     }
 
-    /** the cell index under a point in this view's coordinates (current page), or -1 */
+    /** top of a cell of the given page, in this view's coordinates */
+    int cellTop(int page, int index) {
+        return getHeight() - (index / HomeModel.COLUMNS + 1) * mCellHeight;
+    }
+
+    /** left of a cell, in this view's coordinates (without the scroll) */
+    int cellLeft(int index) {
+        final int inner = getWidth() - getPaddingLeft() - getPaddingRight();
+        final int cw = inner / HomeModel.COLUMNS;
+        return getPaddingLeft() + (inner - cw * HomeModel.COLUMNS) / 2
+                + (index % HomeModel.COLUMNS) * cw;
+    }
+
+    /**
+     * The cell of the current page under a point in this view's coordinates; above the
+     * page's top row it is the top row (dropping on the clock area lands right below it).
+     * -1 outside the view.
+     */
     int cellAt(float x, float y) {
-        if (getWidth() == 0 || x < 0 || y < 0 || x >= getWidth() || y >= getHeight()) {
+        if (getWidth() == 0 || x < 0 || x >= getWidth() || y >= getHeight()) {
             return -1;
         }
         final int col = Math.max(0, Math.min(HomeModel.COLUMNS - 1,
                 (int) ((x - getPaddingLeft()) / cellWidth())));
-        final int row = Math.max(0, Math.min(HomeModel.ROWS - 1,
-                (int) ((y - mGridTop) / mCellHeight)));
+        final int row = Math.max(0, Math.min(rows(mCurrentPage) - 1,
+                (int) ((getHeight() - Math.max(0, y)) / mCellHeight)));
         return row * HomeModel.COLUMNS + col;
     }
 
     // --- paging -----------------------------------------------------------------------------
+
+    /**
+     * A finger touches down: a glide in progress stops right there, under the finger.
+     * True if the pages were moving (the touch then drives them at once, no slop).
+     */
+    boolean catchScroll() {
+        final boolean moving = mSettle != null && mSettle.isRunning();
+        if (moving) {
+            mSettle.cancel();
+            mCurrentPage = Math.round(getScrollX() / (float) Math.max(1, getWidth()));
+        }
+        return moving || getScrollX() != mCurrentPage * getWidth();
+    }
 
     void beginDrag() {
         if (mSettle != null) {
@@ -131,7 +180,7 @@ public class Workspace extends ViewGroup {
         } else if (target > max) {
             target = max + (target - max) / 3f;
         }
-        scrollTo((int) target, 0);
+        scrollTo(Math.round(target), 0);
         notifyScroll();
     }
 
@@ -146,28 +195,26 @@ public class Workspace extends ViewGroup {
             page = (int) Math.ceil(pos) - 1;
         }
         page = Math.max(0, Math.min(mPageCount - 1, page));
-        final int target = page * w;
-        final float distance = Math.abs(target - getScrollX());
+        final float distance = Math.abs(page * w - getScrollX());
         if (distance < 1) {
             snapTo(page, false);
             return;
         }
-        // the pages carry on at the finger's own speed and ease into place: a fixed curve
-        // started 3-4x faster than the finger, a visible jump on every fast swipe
-        final float toward = Math.signum(target - getScrollX()) == Math.signum(-velocityX)
+        // the pages carry on at the finger's own speed and ease into place
+        final float toward = Math.signum(page * w - getScrollX()) == Math.signum(-velocityX)
                 ? Math.abs(velocityX) : 0; // px/s in the direction of the page
         final float seconds = toward > minFling
-                ? Math.max(0.14f, Math.min(0.38f, 2 * distance / toward))
-                : Math.min(0.38f, 0.22f + distance / 4000f);
+                ? Math.max(0.16f, Math.min(0.36f, 2 * distance / toward))
+                : Math.min(0.36f, 0.22f + distance / 4000f);
         animateTo(page, (long) (seconds * 1000),
-                new Glide(Math.min(3f, toward * seconds / distance)));
+                new Glide(Math.min(2.5f, toward * seconds / distance)));
     }
 
     /**
      * Ease-out that starts at a given speed (slope0, relative to the average speed) and
      * lands with none: a cubic Hermite curve, monotonic for slope0 <= 3.
      */
-    private static final class Glide implements android.animation.TimeInterpolator {
+    private static final class Glide implements TimeInterpolator {
         private final float mSlope0;
 
         Glide(float slope0) {
@@ -204,11 +251,11 @@ public class Workspace extends ViewGroup {
             notifyScroll();
             return;
         }
-        animateTo(page, Math.min(420, 180 + Math.abs(target - getScrollX()) / 3),
+        animateTo(page, Math.min(400, 200 + Math.abs(target - getScrollX()) / 4),
                 KiroTouch.EASE);
     }
 
-    private void animateTo(int page, long duration, android.animation.TimeInterpolator curve) {
+    private void animateTo(int page, long duration, TimeInterpolator curve) {
         mCurrentPage = page;
         final int target = page * getWidth();
         if (mSettle != null) {
@@ -236,13 +283,31 @@ public class Workspace extends ViewGroup {
 
     // --- layout -----------------------------------------------------------------------------
 
+    private void updateRows(int h) {
+        if (h <= 0) {
+            return;
+        }
+        final int rows = Math.max(1, Math.min(HomeModel.MAX_ROWS, h / mCellHeight));
+        final int first = Math.max(1, Math.min(rows, (h - mFirstTop) / mCellHeight));
+        if (rows != mRows || first != mFirstRows) {
+            mRows = rows;
+            mFirstRows = first;
+            if (mListener != null) {
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mListener.onRowsChanged(mFirstRows, mRows);
+                    }
+                });
+            }
+        }
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final int w = MeasureSpec.getSize(widthMeasureSpec);
         final int h = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED
-                ? mMaxCellHeight * HomeModel.ROWS : MeasureSpec.getSize(heightMeasureSpec);
-        mCellHeight = Math.min(mMaxCellHeight, h / HomeModel.ROWS);
-        mGridTop = h - mCellHeight * HomeModel.ROWS;
+                ? mCellHeight * HomeModel.MAX_ROWS : MeasureSpec.getSize(heightMeasureSpec);
         final int cw = (w - getPaddingLeft() - getPaddingRight()) / HomeModel.COLUMNS;
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).measure(MeasureSpec.makeMeasureSpec(cw, MeasureSpec.EXACTLY),
@@ -254,16 +319,14 @@ public class Workspace extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int w = r - l;
-        final int inner = w - getPaddingLeft() - getPaddingRight();
-        final int cw = inner / HomeModel.COLUMNS;
-        final int side = getPaddingLeft() + (inner - cw * HomeModel.COLUMNS) / 2;
+        final int h = b - t;
+        updateRows(h);
+        final int cw = (w - getPaddingLeft() - getPaddingRight()) / HomeModel.COLUMNS;
         for (int i = 0; i < getChildCount(); i++) {
             final View c = getChildAt(i);
             final LayoutParams lp = (LayoutParams) c.getLayoutParams();
-            final int col = lp.index % HomeModel.COLUMNS;
-            final int row = lp.index / HomeModel.COLUMNS;
-            final int x = lp.page * w + side + col * cw;
-            final int y = mGridTop + row * mCellHeight;
+            final int x = lp.page * w + cellLeft(lp.index);
+            final int y = h - (lp.index / HomeModel.COLUMNS + 1) * mCellHeight;
             c.layout(x, y, x + cw, y + mCellHeight);
         }
     }

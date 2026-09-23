@@ -18,6 +18,7 @@ package com.kiroos.home;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -70,6 +71,8 @@ final class IconFactory {
     private final Paint mSheen = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mPlate = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mLightPlate = new Paint(Paint.ANTI_ALIAS_FLAG);
+    /** fills the squircle with the square artwork, antialiased at the edge */
+    private final Paint mShape = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final LruCache<String, Bitmap> mCache;
 
     IconFactory(Context context) {
@@ -159,10 +162,10 @@ final class IconFactory {
         source.setBounds(0, 0, mSize, mSize);
         source.draw(rc);
 
-        final Bitmap out = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
-        final Canvas c = new Canvas(out);
-        c.save();
-        c.clipPath(mSquircle);
+        // the artwork is drawn square, then the squircle is filled with it through a bitmap
+        // shader: an antialiased path edge (clipPath on a software canvas is stair-stepped)
+        final Bitmap art = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
+        final Canvas c = new Canvas(art);
         final float half = mSize / 2f;
         final float disc = fillsSquare(raw) ? 0 : discRadius(raw);
         if (fillsSquare(raw)) {
@@ -179,8 +182,9 @@ final class IconFactory {
                 // round icon with a picture or a gradient (Telegram, Chrome…): zoomed until
                 // the disc covers the squircle's corners (a little past them: many discs
                 // have a light antialiased rim), over the disc's own edge colour
-                c.drawColor(ringColor(raw, disc * 0.9f));
-                drawScaled(c, source, SQUIRCLE_CORNER * 1.06f * half / disc, 0, 0);
+                final float inner = innerRadius(raw, disc);
+                c.drawColor(ringColor(raw, inner * 0.9f));
+                drawScaled(c, source, SQUIRCLE_CORNER * 1.06f * half / inner, 0, 0);
             }
         } else {
             // transparent or irregular icon: trimmed of its empty margins and centred on a
@@ -197,11 +201,16 @@ final class IconFactory {
             drawScaled(c, source, s, half - box.exactCenterX(), half - box.exactCenterY());
         }
         c.drawRect(0, 0, mSize, mSize * 0.6f, mSheen);
-        c.restore();
+        final Bitmap out = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
+        final Canvas oc = new Canvas(out);
+        mShape.setShader(new BitmapShader(art, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+        oc.drawPath(mSquircle, mShape);
+        mShape.setShader(null);
+        art.recycle();
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(Math.max(1f, mSize / 96f));
         mPaint.setColor(RIM);
-        c.drawPath(mSquircle, mPaint);
+        oc.drawPath(mSquircle, mPaint);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.BLACK);
         raw.recycle();
@@ -263,6 +272,33 @@ final class IconFactory {
             }
         }
         return (min + max) / 2f;
+    }
+
+    /**
+     * The radius where a disc's own colour ends: some round icons have a white or light ring
+     * around the coloured disc (Telegram), which must not end up in the squircle's corners.
+     * Walks out from 60 % of the disc on the four axes and stops at a sharp colour change.
+     */
+    private static float innerRadius(Bitmap b, float disc) {
+        final int c = b.getWidth() / 2;
+        final int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        float inner = disc;
+        for (int[] d : dirs) {
+            final int from = Math.round(disc * 0.6f);
+            final int ref = b.getPixel(c + d[0] * from, c + d[1] * from);
+            for (int i = from; i < disc; i++) {
+                final int p = b.getPixel(c + d[0] * i, c + d[1] * i);
+                final int diff = Math.abs(Color.red(p) - Color.red(ref))
+                        + Math.abs(Color.green(p) - Color.green(ref))
+                        + Math.abs(Color.blue(p) - Color.blue(ref));
+                if (diff > 120) {
+                    inner = Math.min(inner, i);
+                    break;
+                }
+            }
+        }
+        // a real inner ring is thin: anything smaller is the artwork, not a rim
+        return inner >= disc * 0.8f ? inner : disc;
     }
 
     /** the mean colour on a circle of radius r around the centre */

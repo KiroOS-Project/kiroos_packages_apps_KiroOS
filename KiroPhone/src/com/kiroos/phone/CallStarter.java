@@ -84,7 +84,42 @@ final class CallStarter {
         return place(context, uri);
     }
 
-    static boolean callVoicemail(Context context) {
+    /**
+     * Calls the voicemail. Without a voicemail number on the SIM (or with no SIM) Telecom
+     * would start a call to nothing that ends at once: explain it instead and offer the
+     * call settings, where the number is set.
+     */
+    static boolean callVoicemail(final Context context) {
+        final TelephonyManager tm =
+                (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String number = null;
+        try {
+            number = tm.getVoiceMailNumber();
+        } catch (SecurityException e) {
+            // no phone permission: Telecom will tell
+        }
+        if (TextUtils.isEmpty(number)) {
+            new AlertDialog.Builder(context)
+                    .setTitle(R.string.voicemail)
+                    .setMessage(tm.getSimState() == TelephonyManager.SIM_STATE_READY
+                            ? R.string.no_voicemail_number : R.string.no_sim_voicemail)
+                    .setPositiveButton(R.string.call_settings,
+                            new android.content.DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(android.content.DialogInterface d, int w) {
+                            try {
+                                context.startActivity(new Intent(
+                                        TelecomManager.ACTION_SHOW_CALL_SETTINGS)
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                            } catch (android.content.ActivityNotFoundException e) {
+                                // no call settings screen
+                            }
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show();
+            return false;
+        }
         return place(context, Uri.fromParts(PhoneAccount.SCHEME_VOICEMAIL, "", null));
     }
 

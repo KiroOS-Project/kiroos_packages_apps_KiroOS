@@ -59,6 +59,9 @@ public class HomeLayout extends FrameLayout {
 
         /** a touch ended without a page swipe: the pages must rest on a page */
         void onTouchDone();
+
+        /** a finger touches down; true if it caught the pages mid-glide (it drives them now) */
+        boolean onTouchDown();
     }
 
     private static final int NONE = 0;
@@ -114,6 +117,13 @@ public class HomeLayout extends FrameLayout {
                 down(ev, 0);
                 mMode = NONE;
                 mPointers = 1;
+                if (mCallbacks.onTouchDown()) {
+                    // the pages were still gliding: they stop under the finger and follow
+                    // it from the first pixel (no slop, no jump back)
+                    mMode = PAGE;
+                    mCallbacks.onPageDragStart();
+                    return true;
+                }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
                 // the new finger leads (a resting grip finger came first)
@@ -164,9 +174,17 @@ public class HomeLayout extends FrameLayout {
         }
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                if (mMode == PAGE) {
+                    return true; // caught by onInterceptTouchEvent for this same touch
+                }
                 down(ev, 0);
                 mMode = NONE;
                 mPointers = 1;
+                if (mCallbacks.onTouchDown()) {
+                    mMode = PAGE;
+                    mCallbacks.onPageDragStart();
+                    cancelLongPress(ev);
+                }
                 return true;
             case MotionEvent.ACTION_POINTER_DOWN:
                 mPointers = Math.max(mPointers, ev.getPointerCount());

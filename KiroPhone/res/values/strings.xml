@@ -86,4 +86,6 @@
     <string name="reply_on_my_way">I\'ll call you later.</string>
     <string name="reply_custom">Write your own…</string>
     <string name="reply_hint">Message</string>
+    <string name="no_voicemail_number">No voicemail number is set for this SIM. You can add it in the call settings.</string>
+    <string name="no_sim_voicemail">The voicemail needs a SIM card with a voicemail number.</string>
 </resources>

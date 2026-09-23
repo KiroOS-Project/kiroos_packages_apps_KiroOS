@@ -13,4 +13,6 @@
     <string name="wallpaper">Wallpaper</string>
     <string name="settings">Settings</string>
     <string name="remove_widget">Remove widget</string>
+    <string name="remove_clock">Remove clock</string>
+    <string name="show_clock">Show clock</string>
 </resources>

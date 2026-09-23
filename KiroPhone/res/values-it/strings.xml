@@ -78,4 +78,6 @@
     <string name="reply_on_my_way">Ti chiamo più tardi.</string>
     <string name="reply_custom">Scrivi un messaggio…</string>
     <string name="reply_hint">Messaggio</string>
+    <string name="no_voicemail_number">Nessun numero di segreteria impostato per questa SIM. Puoi aggiungerlo nelle impostazioni chiamate.</string>
+    <string name="no_sim_voicemail">La segreteria richiede una SIM con un numero di segreteria.</string>
 </resources>

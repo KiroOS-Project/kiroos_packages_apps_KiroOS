@@ -12,4 +12,6 @@
     <string name="wallpaper">Sfondo</string>
     <string name="settings">Impostazioni</string>
     <string name="remove_widget">Rimuovi widget</string>
+    <string name="remove_clock">Rimuovi orologio</string>
+    <string name="show_clock">Mostra orologio</string>
 </resources>

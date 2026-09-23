@@ -28,9 +28,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Where every app sits on the home: pages of COLUMNS x ROWS cells and a dock of DOCK_SIZE
- * slots, each holding an app key ("package/.Class") or nothing, so apps keep the exact cell
- * the user dropped them in. Saved as JSON; the flat lists of Kiro Home 1.0 are migrated.
+ * Where every app sits on the home: pages of COLUMNS columns and up to MAX_ROWS rows, and a
+ * dock of DOCK_SIZE slots, each cell holding an app key ("package/.Class") or nothing, so
+ * apps keep the exact cell the user dropped them in. Saved as JSON.
+ *
+ * Rows count from the bottom (index = row * COLUMNS + column, row 0 right above the dock):
+ * the grid is anchored to the dock and a page shows as many rows as fit on it. The first
+ * page has fewer rows while the clock and the widgets sit at its top; the other pages reach
+ * the top of the screen. How many rows each page shows is told by the view (setRows); apps
+ * in rows that no longer fit move to the next free cell (fitRows).
  *
  * The first page stays calm: the dock holds the everyday apps, the first page a few, the
  * rest of the KiroOS suite waits on the second page and in the drawer.
@@ -38,13 +44,15 @@ import java.util.List;
 final class HomeModel {
 
     static final int COLUMNS = 4;
-    static final int ROWS = 4;
-    static final int PAGE_SIZE = COLUMNS * ROWS;
+    static final int MAX_ROWS = 6;
+    static final int PAGE_SIZE = COLUMNS * MAX_ROWS;
     static final int DOCK_SIZE = 4;
     /** container of a location: the dock, or a page index (0, 1, ...) */
     static final int DOCK = -1;
 
     private static final String KEY_LAYOUT = "layout";
+    /** 2: rows from the bottom, 24 cells a page (1: 4 x 4 from the top) */
+    private static final int VERSION = 2;
 
     private static final String[] DEFAULT_DOCK = {
             "com.kiroos.phone", "com.kiroos.messages", "com.kiroos.surge", "com.kiroos.camera",
@@ -53,7 +61,7 @@ final class HomeModel {
     private static final String[] DEFAULT_PAGE1 = {
             "com.kiroos.gallery", "com.kiroos.pulse", "com.kiroos.calendar", "com.kiroos.kai",
     };
-    /** second page, from the top: the tools */
+    /** second page, from its top row: the tools */
     private static final String[] DEFAULT_PAGE2 = {
             "com.kiroos.files", "com.kiroos.clock", "com.kiroos.calculator", "com.kiroos.contacts",
             "com.kiroos.recorder", "com.android.settings",
@@ -67,6 +75,14 @@ final class HomeModel {
         Loc(int container, int index) {
             this.container = container;
             this.index = index;
+        }
+
+        int row() {
+            return index / COLUMNS;
+        }
+
+        int column() {
+            return index % COLUMNS;
         }
 
         @Override
@@ -84,6 +100,9 @@ final class HomeModel {
     private final String[] mDock = new String[DOCK_SIZE];
     private final List<String[]> mPages = new ArrayList<>();
     private boolean mLoaded;
+    /** rows shown on the first page and on the others (until the view says, the classic 4) */
+    private int mFirstRows = 4;
+    private int mRows = 5;
 
     HomeModel(SharedPreferences prefs) {
         mPrefs = prefs;
@@ -92,6 +111,17 @@ final class HomeModel {
 
     int pageCount() {
         return mPages.size();
+    }
+
+    /** rows the given page shows */
+    int rows(int page) {
+        return page == 0 ? mFirstRows : mRows;
+    }
+
+    /** the view's grid: rows on the first page and on the others */
+    void setRows(int firstRows, int rows) {
+        mFirstRows = Math.max(1, Math.min(MAX_ROWS, firstRows));
+        mRows = Math.max(mFirstRows, Math.min(MAX_ROWS, rows));
     }
 
     String at(Loc loc) {
@@ -122,7 +152,7 @@ final class HomeModel {
     /**
      * Puts an app at a cell. If the app is already on the home it moves there; an app that
      * was in the target cell takes the place the moved app left (or, for a new app, the next
-     * free cell of that page).
+     * free cell).
      */
     void place(String key, Loc to) {
         ensurePage(to.container);
@@ -135,7 +165,7 @@ final class HomeModel {
         if (from != null) {
             set(from, displaced);
         } else if (!displaced.isEmpty()) {
-            final Loc free = firstFree(to.container == DOCK ? 0 : to.container);
+            final Loc free = firstFree(to.container == DOCK ? 0 : to.container, true);
             if (free != null) {
                 set(free, displaced);
             }
@@ -144,21 +174,19 @@ final class HomeModel {
         save();
     }
 
-    /** adds an app to the first free cell from the first page on; false if all are full */
+    /** adds an app to the first free cell from the first page on */
     boolean add(String key) {
         if (find(key) != null) {
             return true;
         }
-        for (int p = 0; p <= mPages.size(); p++) {
-            final Loc free = firstFree(p);
-            if (free != null) {
-                ensurePage(p);
-                set(free, key);
-                save();
-                return true;
-            }
+        final Loc free = firstFree(0, true);
+        if (free == null) {
+            return false;
         }
-        return false;
+        ensurePage(free.container);
+        set(free, key);
+        save();
+        return true;
     }
 
     void remove(String key) {
@@ -168,6 +196,33 @@ final class HomeModel {
             trimPages();
             save();
         }
+    }
+
+    /**
+     * Apps in rows a page no longer shows (the clock came back, a widget was added, a smaller
+     * screen) move to the next free cell; true if anything moved.
+     */
+    boolean fitRows() {
+        boolean moved = false;
+        for (int p = 0; p < mPages.size(); p++) {
+            final String[] page = mPages.get(p);
+            for (int i = rows(p) * COLUMNS; i < PAGE_SIZE; i++) {
+                if (page[i].isEmpty()) {
+                    continue;
+                }
+                final String key = page[i];
+                page[i] = "";
+                final Loc free = firstFree(p, true);
+                ensurePage(free.container);
+                set(free, key);
+                moved = true;
+            }
+        }
+        if (moved) {
+            trimPages();
+            save();
+        }
+        return moved;
     }
 
     /** empties cells whose app is gone (uninstalled or disabled) */
@@ -202,17 +257,27 @@ final class HomeModel {
         }
     }
 
-    private Loc firstFree(int p) {
-        if (p >= mPages.size()) {
-            return new Loc(p, 0);
-        }
-        final String[] page = mPages.get(p);
-        for (int i = 0; i < PAGE_SIZE; i++) {
-            if (page[i].isEmpty()) {
-                return new Loc(p, i);
+    /**
+     * The first free visible cell from page p on, reading order (top row first, left to
+     * right); with orNewPage the first cell of a new page when all are full.
+     */
+    private Loc firstFree(int p, boolean orNewPage) {
+        for (int page = Math.max(0, p); page < mPages.size(); page++) {
+            final String[] cells = mPages.get(page);
+            for (int row = rows(page) - 1; row >= 0; row--) {
+                for (int col = 0; col < COLUMNS; col++) {
+                    final int i = row * COLUMNS + col;
+                    if (cells[i].isEmpty()) {
+                        return new Loc(page, i);
+                    }
+                }
             }
         }
-        return null;
+        if (!orNewPage) {
+            return null;
+        }
+        final int page = Math.max(mPages.size(), p);
+        return new Loc(page, (rows(page) - 1) * COLUMNS);
     }
 
     private void set(Loc loc, String key) {
@@ -254,6 +319,7 @@ final class HomeModel {
         if (json != null) {
             try {
                 final JSONObject o = new JSONObject(json);
+                final int version = o.optInt("v", 1);
                 final JSONArray dock = o.getJSONArray("dock");
                 for (int i = 0; i < DOCK_SIZE && i < dock.length(); i++) {
                     mDock[i] = dock.getString(i);
@@ -262,12 +328,24 @@ final class HomeModel {
                 for (int p = 0; p < pages.length(); p++) {
                     final JSONArray cells = pages.getJSONArray(p);
                     final String[] page = new String[PAGE_SIZE];
-                    for (int i = 0; i < PAGE_SIZE; i++) {
-                        page[i] = i < cells.length() ? cells.getString(i) : "";
+                    Arrays.fill(page, "");
+                    for (int i = 0; i < cells.length(); i++) {
+                        final String key = cells.getString(i);
+                        if (version >= 2) {
+                            if (i < PAGE_SIZE) {
+                                page[i] = key;
+                            }
+                        } else if (i < 16) {
+                            // 1: 4 x 4 from the top, bottom-anchored: same place on screen
+                            page[(3 - i / COLUMNS) * COLUMNS + i % COLUMNS] = key;
+                        }
                     }
                     mPages.add(page);
                 }
                 trimPages();
+                if (version < VERSION) {
+                    save();
+                }
                 return;
             } catch (JSONException e) {
                 Arrays.fill(mDock, "");
@@ -284,34 +362,25 @@ final class HomeModel {
             mDock[i] = keyFor(repo, DEFAULT_DOCK[i]);
         }
         // first page: the bottom row, right above the dock
-        final int bottom = (ROWS - 1) * COLUMNS;
         for (int i = 0; i < DEFAULT_PAGE1.length; i++) {
-            mPages.get(0)[bottom + i] = keyFor(repo, DEFAULT_PAGE1[i]);
+            mPages.get(0)[i] = keyFor(repo, DEFAULT_PAGE1[i]);
         }
+        // second page: from its top row (fitRows moves them if the screen has fewer)
+        final int top = (mRows - 1) * COLUMNS;
         for (int i = 0; i < DEFAULT_PAGE2.length; i++) {
-            mPages.get(1)[i] = keyFor(repo, DEFAULT_PAGE2[i]);
+            final int row = i / COLUMNS;
+            mPages.get(1)[top - row * COLUMNS + i % COLUMNS] = keyFor(repo, DEFAULT_PAGE2[i]);
         }
         // Kiro Home 1.0 put everything on one page: keep the user's own apps (not the
         // suite, which now has its place) on the first page, from the row above
         final String old = mPrefs.getString("grid", "");
         if (!TextUtils.isEmpty(old)) {
-            int cell = bottom - COLUMNS;
             for (String k : old.split("\\|")) {
                 if (k.isEmpty() || k.startsWith("com.kiroos.") || find(k) != null
                         || repo.find(k) == null) {
                     continue;
                 }
-                while (cell >= 0 && !mPages.get(0)[cell].isEmpty()) {
-                    cell++;
-                }
-                if (cell < 0 || cell >= PAGE_SIZE) {
-                    add(k);
-                    continue;
-                }
-                mPages.get(0)[cell++] = k;
-                if (cell == bottom) {
-                    cell = bottom - 2 * COLUMNS; // row above is full: go one more up
-                }
+                add(k);
             }
             mPrefs.edit().remove("grid").remove("dock").remove("seeded").remove("placed").apply();
         }
@@ -334,6 +403,7 @@ final class HomeModel {
                 pages.put(new JSONArray(Arrays.asList(page)));
             }
             mPrefs.edit().putString(KEY_LAYOUT, new JSONObject()
+                    .put("v", VERSION)
                     .put("dock", new JSONArray(Arrays.asList(mDock)))
                     .put("pages", pages).toString()).apply();
         } catch (JSONException e) {

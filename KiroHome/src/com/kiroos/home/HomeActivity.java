@@ -77,6 +77,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     /** how long an app dragged to a side edge waits before the page turns */
     private static final long EDGE_PAGE_DELAY = 550;
     private static final String KEY_PAGE = "page";
+    /** the clock at the top of the first page (removable) */
+    private static final String KEY_CLOCK = "clock";
     /** page to show once the layout is bound (restored after the launcher was killed) */
     private int mStartPage;
 
@@ -91,6 +93,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     private Workspace mWorkspace;
     private PageIndicator mIndicator;
     private WallpaperManager mWallpaperManager;
+    /** the first page's header: the clock and the widgets */
+    private View mHeader;
+    private View mClock;
     private LinearLayout mDock;
     private View mDropHint;
     private View mDrawer;
@@ -138,8 +143,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mSearch = (EditText) findViewById(R.id.drawer_search);
 
         mWallpaperManager = WallpaperManager.getInstance(this);
-        final View clockBlock = findViewById(R.id.clock_block);
-        final View widgetStack = findViewById(R.id.widget_stack);
+        mHeader = findViewById(R.id.header);
+        mClock = findViewById(R.id.clock_block);
         mWorkspace.setListener(new Workspace.Listener() {
             @Override
             public void onPageScrolled(float position) {
@@ -147,16 +152,34 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 // the whole screen moves with the pages: the clock and the widgets belong to
                 // the first page, and the wallpaper follows at a slower pace
                 final float first = Math.max(0f, Math.min(1f, position)) * mRoot.getWidth();
-                clockBlock.setTranslationX(-first);
-                widgetStack.setTranslationX(-first);
-                final int pages = mWorkspace.pageCount();
+                mHeader.setTranslationX(-first);
+                // the wallpaper spans the real pages: the empty page a drag adds at the end
+                // must not move it
+                final int pages = mDrag != null ? mModel.pageCount() : mWorkspace.pageCount();
                 if (pages > 1 && mRoot.getWindowToken() != null) {
                     final float x = Math.max(0f, Math.min(1f, position / (pages - 1)));
                     mWallpaperManager.setWallpaperOffsetSteps(1f / (pages - 1), 1f);
                     mWallpaperManager.setWallpaperOffsets(mRoot.getWindowToken(), x, 0.5f);
                 }
             }
+
+            @Override
+            public void onRowsChanged(int firstRows, int rows) {
+                mModel.setRows(firstRows, rows);
+                if (mDrag == null && mModel.fitRows()) {
+                    bindHome();
+                }
+            }
         });
+        // the first page's grid starts below the clock and the widgets
+        mHeader.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int l, int t, int r, int b, int ol, int ot,
+                    int or, int ob) {
+                mWorkspace.setFirstPageTop(b - t);
+            }
+        });
+        showClock(getSharedPreferences("home", MODE_PRIVATE).getBoolean(KEY_CLOCK, true));
         // the page survives the launcher being killed while an app is open
         mStartPage = getSharedPreferences("home", MODE_PRIVATE).getInt(KEY_PAGE, 0);
 
@@ -190,6 +213,23 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 } catch (ActivityNotFoundException | SecurityException e) {
                     // no clock app
                 }
+            }
+        });
+        mClock.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                final PopupMenu menu = new PopupMenu(HomeActivity.this, v, Gravity.CENTER);
+                menu.getMenu().add(0, 1, 0, R.string.remove_clock);
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        showClock(false);
+                        return true;
+                    }
+                });
+                menu.show();
+                return true;
             }
         });
 
@@ -308,6 +348,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     public void onAppsChanged(List<AppInfo> apps) {
         mModel.load(mRepo);
         mModel.prune(mRepo);
+        mModel.fitRows();
         mDrawerAdapter.setApps(apps);
         mDrawerAdapter.filter(mSearch.getText().toString());
         if (mDrag == null) {
@@ -546,11 +587,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                     Math.max(0, Math.min(HomeModel.DOCK_SIZE - 1, slot)));
         }
         final Rect w = boundsInRoot(mWorkspace);
-        if (y < w.top + mWorkspace.gridTop() - mWorkspace.cellHeight() / 2f) {
-            return null; // over the clock and the widgets
-        }
-        final int index = mWorkspace.cellAt(x - w.left,
-                Math.max(0, Math.min(w.height() - 1, y - w.top)));
+        // anywhere above the page's top row (the clock area too) is its top row
+        final int index = mWorkspace.cellAt(x - w.left, Math.min(w.height() - 1, y - w.top));
         return index < 0 ? null : new HomeModel.Loc(mWorkspace.currentPage(), index);
     }
 
@@ -580,12 +618,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             cy = r.exactCenterY();
         } else {
             final Rect w = boundsInRoot(mWorkspace);
-            final int cw = mWorkspace.cellWidth();
-            final int ch = mWorkspace.cellHeight();
-            cx = w.left + mWorkspace.getPaddingLeft() + (loc.index % HomeModel.COLUMNS + 0.5f) * cw;
+            cx = w.left + mWorkspace.cellLeft(loc.index) + mWorkspace.cellWidth() / 2f;
             // the icon sits at the top of its cell (label below)
-            cy = w.top + mWorkspace.gridTop() + (loc.index / HomeModel.COLUMNS) * ch
-                    + mIcons.size() / 2f
+            cy = w.top + mWorkspace.cellTop(loc.container, loc.index) + mIcons.size() / 2f
                     + 6 * getResources().getDisplayMetrics().density;
         }
         final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mDropHint.getLayoutParams();
@@ -660,6 +695,11 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     @Override
     public void onPageRelease(float velocityX, float minFling) {
         mWorkspace.release(velocityX, minFling);
+    }
+
+    @Override
+    public boolean onTouchDown() {
+        return mDrag == null && !isDrawerOpen() && mWorkspace.catchScroll();
     }
 
     @Override
@@ -751,6 +791,16 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
     }
 
+    /**
+     * Shows or removes the clock of the first page. Its room goes to the apps: the first
+     * page gains a row at the top (the grid is anchored at the bottom, the apps stay put);
+     * when it comes back, apps in that row move on (Workspace.Listener.onRowsChanged).
+     */
+    private void showClock(boolean show) {
+        mClock.setVisibility(show ? View.VISIBLE : View.GONE);
+        getSharedPreferences("home", MODE_PRIVATE).edit().putBoolean(KEY_CLOCK, show).apply();
+    }
+
     @Override
     public void onEmptyLongPress(float x, float y) {
         mRoot.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
@@ -760,6 +810,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final PopupMenu menu = new PopupMenu(this, anchor);
         menu.getMenu().add(0, 1, 0, R.string.add_widget);
         menu.getMenu().add(0, 2, 0, R.string.wallpaper);
+        if (mClock.getVisibility() != View.VISIBLE) {
+            menu.getMenu().add(0, 4, 0, R.string.show_clock);
+        }
         menu.getMenu().add(0, 3, 0, R.string.settings);
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -767,6 +820,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 switch (item.getItemId()) {
                     case 1:
                         pickWidget();
+                        return true;
+                    case 4:
+                        showClock(true);
                         return true;
                     case 2:
                         startActivity(Intent.createChooser(new Intent(Intent.ACTION_SET_WALLPAPER),
