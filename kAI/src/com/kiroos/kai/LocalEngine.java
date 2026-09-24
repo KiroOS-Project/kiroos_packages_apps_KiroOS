@@ -208,6 +208,7 @@ final class LocalEngine {
         final List<BridgeClient.Message> msgs = new ArrayList<>(history);
         final Guardian guardian = new Guardian(h);
         guardian.start();
+        edgeGlow("kai_start");
         try {
             int r;
             for (;;) {
@@ -240,6 +241,7 @@ final class LocalEngine {
             }
         } finally {
             guardian.finish();
+            edgeGlow("kai_stop");
         }
     }
 
@@ -287,6 +289,14 @@ final class LocalEngine {
     }
 
     private static android.content.Context sApp;
+
+    /** Kiro Edge Glow (SystemUI): the screen edge glows while kAI writes */
+    private static void edgeGlow(String mode) {
+        if (sApp != null) {
+            sApp.sendBroadcast(new android.content.Intent("com.kiroos.intent.EDGE_GLOW")
+                    .setPackage("com.android.systemui").putExtra("mode", mode));
+        }
+    }
 
     static void init(android.content.Context app) {
         sApp = app;

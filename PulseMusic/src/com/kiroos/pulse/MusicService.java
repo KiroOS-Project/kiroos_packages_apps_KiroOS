@@ -531,10 +531,40 @@ public class MusicService extends Service implements Engine.Listener, Engine.Pcm
         });
     }
 
+    // Kiro Edge Glow: the bass energy of the music against its recent average; a clear jump is
+    // a beat, sent to SystemUI (a few per second at most)
+    private float mBass;
+    private float mEnergyAvg;
+    private long mLastBeat;
+
+    private void detectBeat(short[] pcm, int length, int channels, long now) {
+        double sum = 0;
+        final int frames = length / channels;
+        for (int f = 0; f < frames; f++) {
+            float v = 0;
+            for (int c = 0; c < channels; c++) {
+                v += pcm[f * channels + c];
+            }
+            // a one-pole low-pass keeps the kick and the bass
+            mBass += 0.06f * (v / channels / 32768f - mBass);
+            sum += mBass * mBass;
+        }
+        final float e = frames > 0 ? (float) (sum / frames) : 0f;
+        mEnergyAvg = mEnergyAvg == 0f ? e : mEnergyAvg * 0.96f + e * 0.04f;
+        if (e > mEnergyAvg * 1.6f && e > 1e-4f && now - mLastBeat > 220) {
+            mLastBeat = now;
+            final float level = Math.max(0.25f, Math.min(1f, (e / mEnergyAvg - 1f) / 2f));
+            sendBroadcast(new Intent("com.kiroos.intent.EDGE_GLOW")
+                    .setPackage("com.android.systemui")
+                    .putExtra("mode", "beat").putExtra("level", level));
+        }
+    }
+
     @Override
     public void onPcm(short[] pcm, int length, int channels) {
-        final WaveListener l = mWaveListener;
         final long now = SystemClock.uptimeMillis();
+        detectBeat(pcm, length, channels, now);
+        final WaveListener l = mWaveListener;
         if (l == null || now - mLastWave < 33) {
             return; // ~30 fps is enough for the eye
         }
