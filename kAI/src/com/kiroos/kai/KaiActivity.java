@@ -90,6 +90,8 @@ public class KaiActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kai);
         mPrefs = getSharedPreferences("kai", MODE_PRIVATE);
+        LocalEngine.init(getApplicationContext());
+        LocalEngine.select(mPrefs.getString("local_model", "base"));
         mMarkdown = new Markdown(getColor(R.color.code_bg), getColor(R.color.code_fg),
                 getColor(R.color.kiro_accent), getColor(R.color.kiro_text_secondary));
         mList = (ListView) findViewById(R.id.list);
@@ -154,7 +156,9 @@ public class KaiActivity extends Activity {
         findViewById(R.id.btn_settings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSettings();
+                if (!mBusy) {
+                    chooseModel();
+                }
             }
         });
         mStatus.setOnClickListener(new View.OnClickListener() {
@@ -247,7 +251,7 @@ public class KaiActivity extends Activity {
         }
         if (LocalEngine.available()) {
             if (!startLocal || LocalEngine.ensureRunning()) {
-                return new Target(BridgeClient.local(), LocalEngine.MODEL_NAME, true);
+                return new Target(BridgeClient.local(), LocalEngine.modelName(), true);
             }
         }
         throw pcError;
@@ -317,6 +321,16 @@ public class KaiActivity extends Activity {
         }
         mInput.setText("");
         mMessages.add(new BridgeClient.Message("user", text));
+        String done = PhoneActions.handle(this, text);
+        if (done == null) {
+            done = QuickMath.answer(text);   // exact arithmetic, instantly
+        }
+        if (done != null) {
+            mMessages.add(new BridgeClient.Message("assistant", done));
+            refresh();
+            save();
+            return;
+        }
         final BridgeClient.Message answer = new BridgeClient.Message("assistant", "");
         mMessages.add(answer);
         final boolean web = mPrefs.getBoolean("web", true) && online() && WebSearch.wanted(text);
@@ -557,6 +571,37 @@ public class KaiActivity extends Activity {
     }
 
     // --- settings ------------------------------------------------------------------------------
+
+    /** Keng 1.5 Lite / Base / Pro */
+    private void chooseModel() {
+        final String[] items = new String[LocalEngine.MODELS.length];
+        final String[] descs = getResources().getStringArray(R.array.model_descriptions);
+        int checked = 0;
+        for (int i = 0; i < items.length; i++) {
+            final LocalEngine.Model m = LocalEngine.MODELS[i];
+            items[i] = m.name + " \u2014 " + descs[i] + (m.installed() ? "" : " \u00b7 "
+                    + getString(R.string.model_missing));
+            if (m == LocalEngine.selected()) {
+                checked = i;
+            }
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.model_title)
+                .setSingleChoiceItems(items, checked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int which) {
+                        final LocalEngine.Model m = LocalEngine.MODELS[which];
+                        d.dismiss();
+                        if (m == LocalEngine.selected() || !m.installed()) {
+                            return;
+                        }
+                        mPrefs.edit().putString("local_model", m.id).apply();
+                        LocalEngine.select(m.id);
+                        checkBridge();   // loads it now, the status line says when it is ready
+                    }
+                })
+                .show();
+    }
 
     private void showSettings() {
         final View v = LayoutInflater.from(this).inflate(R.layout.dialog_settings, null);

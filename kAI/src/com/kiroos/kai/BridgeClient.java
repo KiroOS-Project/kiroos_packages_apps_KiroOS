@@ -222,77 +222,10 @@ final class BridgeClient {
         }
     }
 
-    /**
-     * The on-device server: POST /v1/chat/completions with stream=true answers server-sent
-     * events, "data: {choices:[{delta:{content}}]}" lines and a final "data: [DONE]".
-     */
+    /** The phone's own model, inside the app (LocalEngine / libkai_llm.so). */
     private void chatLocal(List<Message> history, Stream stream) {
         mCancelled = false;
-        HttpURLConnection c = null;
-        try {
-            final JSONArray msgs = new JSONArray();
-            for (Message m : history) {
-                msgs.put(new JSONObject().put("role", m.role).put("content", m.content));
-            }
-            final JSONObject body = new JSONObject().put("messages", msgs)
-                    .put("stream", true)
-                    // a phone-sized answer, and a small model repeats itself less when capped
-                    .put("max_tokens", 512)
-                    .put("temperature", 0.4);
-            c = (HttpURLConnection) new URL(mBase + "/v1/chat/completions").openConnection();
-            mActive = c;
-            c.setConnectTimeout(4000);
-            c.setReadTimeout(120000);
-            c.setDoOutput(true);
-            c.setRequestMethod("POST");
-            c.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            c.setChunkedStreamingMode(0);
-            try (OutputStream out = c.getOutputStream()) {
-                out.write(body.toString().getBytes(StandardCharsets.UTF_8));
-            }
-            final int code = c.getResponseCode();
-            if (code != 200) {
-                stream.onError(errorOf(c, code));
-                return;
-            }
-            try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream(),
-                    StandardCharsets.UTF_8))) {
-                String line;
-                while (!mCancelled && (line = r.readLine()) != null) {
-                    if (!line.startsWith("data:")) {
-                        continue;
-                    }
-                    final String data = line.substring(5).trim();
-                    if (data.equals("[DONE]")) {
-                        break;
-                    }
-                    final JSONObject o = new JSONObject(data);
-                    final JSONArray choices = o.optJSONArray("choices");
-                    if (choices == null || choices.length() == 0) {
-                        continue;
-                    }
-                    final JSONObject delta = choices.getJSONObject(0).optJSONObject("delta");
-                    final String text = delta != null ? delta.optString("content", "") : "";
-                    if (!text.isEmpty() && !"null".equals(text)) {
-                        stream.onDelta(text);
-                    }
-                }
-            }
-            stream.onDone();
-        } catch (JSONException e) {
-            stream.onError("bad answer from the model");
-        } catch (Exception e) {
-            if (mCancelled) {
-                stream.onDone();
-            } else {
-                stream.onError(e.getMessage() != null ? e.getMessage() : e.toString());
-            }
-        } finally {
-            if (c != null) {
-                c.disconnect();
-            }
-            mActive = null;
-        }
+        LocalEngine.generate(history, stream);
     }
 
     /** The server's own error message ({"error":"…"}) if it sent one, else "HTTP code". */
@@ -311,6 +244,10 @@ final class BridgeClient {
 
     void cancel() {
         mCancelled = true;
+        if (mLocal) {
+            LocalEngine.cancel();
+            return;
+        }
         final HttpURLConnection c = mActive;
         if (c != null) {
             c.disconnect();

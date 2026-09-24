@@ -94,8 +94,21 @@ final class WebSearch {
     /** true when the question is about facts the web knows better than the model */
     static boolean wanted(String text) {
         final String t = text.trim();
-        return t.length() >= 6 && !NO_WEB.matcher(t).matches();
+        return t.length() >= 6 && !NO_WEB.matcher(t).matches() && !MATH.matcher(t).find()
+                && !CODE.matcher(t).find();
     }
+
+    /** arithmetic ("17 per 23", "quanto fa 3+4", "radice di 81"): the model's own job */
+    private static final Pattern MATH = Pattern.compile(
+            "\\d\\s*([x×*/:+\\-^%]|per|diviso|pi[uù]|meno|times|plus|minus|divided by)\\s*\\d"
+                    + "|\\b(quanto fa|radice( quadrata)?( di)?|percentuale|equazione|derivata|"
+                    + "integrale|what is \\d|square root|equation)\\b",
+            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+    /** writing or explaining code needs no search either */
+    private static final Pattern CODE = Pattern.compile(
+            "\\b(codice|funzione|script|python|java|kotlin|javascript|html|css|sql|bash|"
+                    + "c\\+\\+|algoritmo|code|function|regex)\\b",
+            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 
     private static final Pattern ITALIAN = Pattern.compile(
             "\\b(il|lo|gli|che|di|del|della|dei|è|sono|quando|come|perch[eé]|cosa|quale|"

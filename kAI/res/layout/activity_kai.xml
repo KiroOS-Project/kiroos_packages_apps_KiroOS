@@ -51,12 +51,11 @@
 
         <ImageButton
             android:id="@+id/btn_settings"
-            android:visibility="gone"
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
-            android:contentDescription="@string/bridge"
-            android:src="@drawable/ic_settings" />
+            android:contentDescription="@string/model_title"
+            android:src="@drawable/ic_model" />
     </LinearLayout>
 
     <FrameLayout

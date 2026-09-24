@@ -32,4 +32,19 @@
     <string name="web_results">Risultati web</string>
     <string name="question">Domanda</string>
     <string name="model_loading">Caricamento del modello sul telefono…</string>
+    <string name="model_title">Modello di kAI</string>
+    <string name="model_missing">non installato</string>
+    <string name="act_torch_on">Torcia accesa.</string>
+    <string name="act_torch_off">Torcia spenta.</string>
+    <string name="act_wifi_on">Wi\u2011Fi attivato.</string>
+    <string name="act_wifi_off">Wi\u2011Fi disattivato.</string>
+    <string name="act_bt_on">Bluetooth attivato.</string>
+    <string name="act_bt_off">Bluetooth disattivato.</string>
+    <string name="act_profiles">Ecco i profili della batteria.</string>
+    <string name="act_failed">Non sono riuscito a farlo su questo telefono.</string>
+    <string-array name="model_descriptions">
+        <item>Istantaneo: calcoli veloci, definizioni brevi, comandi del telefono · SmolLM2 135M</item>
+        <item>Assistente di tutti i giorni: domande, riassunti · Qwen2.5 0.5B</item>
+        <item>Il pi\u00f9 capace: codice e ragionamenti passo passo (pi\u00f9 lento) · Llama 3.2 1B, Built with Llama</item>
+    </string-array>
 </resources>
