@@ -920,12 +920,27 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mDrawerProgress = p;
         final float h = mRoot.getHeight() > 0 ? mRoot.getHeight()
                 : getResources().getDisplayMetrics().heightPixels;
+        // While it moves, the drawer and the home fade and scale: as GPU textures (hardware
+        // layers) that costs one blend per frame instead of redrawing both view trees into
+        // an offscreen buffer every frame. At rest they are plain views again, and the home
+        // under an open drawer is not drawn at all.
+        final boolean moving = p > 0f && p < 1f;
+        setLayer(mDrawer, moving);
+        setLayer(mHomeContent, moving);
+        mHomeContent.setVisibility(p < 1f ? View.VISIBLE : View.INVISIBLE);
         mDrawer.setVisibility(p > 0f ? View.VISIBLE : View.INVISIBLE);
         mDrawer.setTranslationY((1f - p) * h * 0.35f);
         mDrawer.setAlpha(p);
         mHomeContent.setAlpha(1f - p);
         mHomeContent.setScaleX(1f - 0.06f * p);
         mHomeContent.setScaleY(1f - 0.06f * p);
+    }
+
+    private static void setLayer(View v, boolean hardware) {
+        final int type = hardware ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_NONE;
+        if (v.getLayerType() != type) {
+            v.setLayerType(type, null);
+        }
     }
 
     private void hideKeyboard() {
