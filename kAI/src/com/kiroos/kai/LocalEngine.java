@@ -172,6 +172,7 @@ final class LocalEngine {
     /** frees the model's memory */
     static synchronized void stop() {
         free();
+        Voice.release();
     }
 
     private static void free() {

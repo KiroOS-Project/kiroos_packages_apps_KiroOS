@@ -49,4 +49,8 @@
         <item>Everyday assistant: questions, summaries · Qwen2.5 0.5B</item>
         <item>The most capable: code and step-by-step reasoning (slower) · Llama 3.2 1B, Built with Llama</item>
     </string-array>
+    <string name="voice">Speak</string>
+    <string name="listening">Listening…</string>
+    <string name="transcribing">Understanding…</string>
+    <string name="voice_failed">The microphone is not available.</string>
 </resources>

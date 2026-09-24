@@ -34,9 +34,9 @@ import java.util.regex.Pattern;
 final class PhoneActions {
 
     private static final Pattern ON = Pattern.compile(
-            "\\b(accendi|attiva|abilita|apri|turn on|switch on|enable|on)\\b");
+            "\\b(accend[iae]\\w*|attiv[ai]\\w*|abilit[ai]\\w*|apri|turn on|switch on|enable|on)\\b");
     private static final Pattern OFF = Pattern.compile(
-            "\\b(spegni|disattiva|disabilita|chiudi|turn off|switch off|disable|off)\\b");
+            "\\b(spegn[iae]\\w*|disattiv[ai]\\w*|disabilit[ai]\\w*|chiudi|turn off|switch off|disable|off)\\b");
 
     private static boolean sTorch;
 

@@ -47,4 +47,8 @@
         <item>Assistente di tutti i giorni: domande, riassunti · Qwen2.5 0.5B</item>
         <item>Il pi\u00f9 capace: codice e ragionamenti passo passo (pi\u00f9 lento) · Llama 3.2 1B, Built with Llama</item>
     </string-array>
+    <string name="voice">Parla</string>
+    <string name="listening">Ti ascolto…</string>
+    <string name="transcribing">Sto capendo…</string>
+    <string name="voice_failed">Il microfono non è disponibile.</string>
 </resources>

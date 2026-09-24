@@ -129,6 +129,15 @@
             style="@style/Kiro.Field" />
 
         <ImageButton
+            android:id="@+id/btn_mic"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/voice"
+            android:src="@drawable/ic_mic" />
+
+        <ImageButton
             android:id="@+id/btn_send"
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"

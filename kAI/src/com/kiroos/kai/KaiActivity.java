@@ -84,6 +84,11 @@ public class KaiActivity extends Activity {
     private BridgeClient mClient;
     private boolean mBusy;
     private boolean mResumed;
+    private Voice mVoice;
+    private ImageButton mMic;
+    /** the question came by voice: the answer is read aloud */
+    private boolean mSpokenQuestion;
+    private java.util.Locale mSpokenLang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +148,16 @@ public class KaiActivity extends Activity {
             }
         });
         KiroTouch.apply(mSend);
+        mVoice = new Voice(this);
+        mMic = (ImageButton) findViewById(R.id.btn_mic);
+        mMic.setVisibility(Voice.available() ? View.VISIBLE : View.GONE);
+        mMic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleVoice();
+            }
+        });
+        KiroTouch.apply(mMic);
         findViewById(R.id.btn_new).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,6 +184,14 @@ public class KaiActivity extends Activity {
         });
         load();
         refresh();
+        if (getIntent().getBooleanExtra("from_power_key", false) && Voice.available()) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    toggleVoice();
+                }
+            }, 350);
+        }
         // shared text ("Share → kAI") becomes the prompt
         final String shared = getIntent().getStringExtra(Intent.EXTRA_TEXT);
         if (shared != null) {
@@ -326,6 +349,10 @@ public class KaiActivity extends Activity {
             done = QuickMath.answer(text);   // exact arithmetic, instantly
         }
         if (done != null) {
+            if (mSpokenQuestion) {
+                mVoice.speak(done, mSpokenLang);
+                mSpokenQuestion = false;
+            }
             mMessages.add(new BridgeClient.Message("assistant", done));
             refresh();
             save();
@@ -457,6 +484,10 @@ public class KaiActivity extends Activity {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
+                                if (mSpokenQuestion && !answer.content.isEmpty()) {
+                                    mVoice.speak(answer.content, mSpokenLang);
+                                }
+                                mSpokenQuestion = false;
                                 if (answer.content.isEmpty()) {
                                     mMessages.remove(answer);
                                 } else if (!sources.isEmpty()) {
@@ -571,6 +602,71 @@ public class KaiActivity extends Activity {
     }
 
     // --- settings ------------------------------------------------------------------------------
+
+    private void toggleVoice() {
+        if (mBusy) {
+            return;
+        }
+        if (mVoice.recording()) {
+            mVoice.stop();
+            return;
+        }
+        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+                != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {android.Manifest.permission.RECORD_AUDIO}, 7);
+            return;
+        }
+        mVoice.silence();
+        final java.util.Locale lang = getResources().getConfiguration().getLocales().get(0);
+        mMic.setColorFilter(getColor(R.color.kiro_accent));
+        mInput.setHint(R.string.listening);
+        mVoice.listen(lang, new Voice.Listener() {
+            @Override
+            public void onLevel(float level) {
+                mMic.setScaleX(1f + 0.25f * level);
+                mMic.setScaleY(1f + 0.25f * level);
+            }
+
+            @Override
+            public void onTranscribing() {
+                mMic.setScaleX(1f);
+                mMic.setScaleY(1f);
+                mInput.setHint(R.string.transcribing);
+            }
+
+            @Override
+            public void onText(String text) {
+                resetMic();
+                if (!text.isEmpty()) {
+                    mSpokenQuestion = true;
+                    mSpokenLang = WebSearch.looksItalian(text) ? java.util.Locale.ITALIAN : lang;
+                    mInput.setText(text);
+                    send();
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                resetMic();
+                Toast.makeText(KaiActivity.this, R.string.voice_failed, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void resetMic() {
+        mMic.clearColorFilter();
+        mMic.setScaleX(1f);
+        mMic.setScaleY(1f);
+        mInput.setHint(R.string.ask);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int code, String[] perms, int[] results) {
+        if (code == 7 && results.length > 0
+                && results[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            toggleVoice();
+        }
+    }
 
     /** Keng 1.5 Lite / Base / Pro */
     private void chooseModel() {
