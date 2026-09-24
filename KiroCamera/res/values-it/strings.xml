@@ -16,4 +16,14 @@
     <string name="video_error">Impossibile avviare la registrazione</string>
     <string name="timer">Timer</string>
     <string name="ratio">Formato foto</string>
+    <string name="mode_night">Notte</string>
+    <string name="mode_portrait">Ritratto</string>
+    <string name="log">LOG</string>
+    <string name="cinema">21:9</string>
+    <string name="log_on">Video LOG: profilo piatto per il color grading</string>
+    <string name="log_off">LOG disattivato</string>
+    <string name="cinema_on">Cinema: 21:9 fino a 60 Mbps</string>
+    <string name="cinema_off">Cinema disattivato</string>
+    <string name="night_hold">Tieni fermo…</string>
+    <string name="processing">Elaborazione…</string>
 </resources>

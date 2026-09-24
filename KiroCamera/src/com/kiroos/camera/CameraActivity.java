@@ -164,6 +164,19 @@ public class CameraActivity extends Activity {
     private Size mPreviewSize;
 
     private MediaRecorder mRecorder;
+    /** Kiro Camera 1.1: 0 photo, 1 night, 2 portrait */
+    private int mPhotoMode;
+    private static final int PHOTO = 0;
+    private static final int NIGHT = 1;
+    private static final int PORTRAIT = 2;
+    private static final int NIGHT_FRAMES = 5;
+    private final java.util.List<byte[]> mNightFrames = new java.util.ArrayList<>();
+    private boolean mProcessing;
+    private CinemaRecorder mCinema;
+    private TextView mModeNight;
+    private TextView mModePortrait;
+    private TextView mLogButton;
+    private TextView mCinemaButton;
     private File mVideoFile;
     private boolean mRecording;
     private long mRecordStart;
@@ -232,6 +245,11 @@ public class CameraActivity extends Activity {
         mRawButton = (TextView) findViewById(R.id.btn_raw);
         mModePhoto = (TextView) findViewById(R.id.mode_photo);
         mModeVideo = (TextView) findViewById(R.id.mode_video);
+        mModeNight = (TextView) findViewById(R.id.mode_night);
+        mModePortrait = (TextView) findViewById(R.id.mode_portrait);
+        mLogButton = (TextView) findViewById(R.id.btn_log);
+        mCinemaButton = (TextView) findViewById(R.id.btn_cinema);
+        mPhotoMode = getSharedPreferences("camera", MODE_PRIVATE).getInt("photo_mode", PHOTO);
         mRecTime = (TextView) findViewById(R.id.rec_time);
         mZoomText = (TextView) findViewById(R.id.zoom_text);
         m4kButton = (TextView) findViewById(R.id.btn_4k);
@@ -518,11 +536,45 @@ public class CameraActivity extends Activity {
         mModePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mVideoMode && !mRecording && !mCaptureIntent) {
-                    mVideoMode = false;
-                    updateControls();
-                    reopen();
+                selectPhotoMode(PHOTO);
+            }
+        });
+        mModeNight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPhotoMode(NIGHT);
+            }
+        });
+        mModePortrait.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPhotoMode(PORTRAIT);
+            }
+        });
+        mLogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mRecording) {
+                    return;
                 }
+                final boolean on = !mPrefs.getBoolean("log", false);
+                mPrefs.edit().putBoolean("log", on).apply();
+                Toast.makeText(CameraActivity.this, on ? R.string.log_on : R.string.log_off,
+                        Toast.LENGTH_SHORT).show();
+                reopen();       // the recorder bitrate follows
+            }
+        });
+        mCinemaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mRecording) {
+                    return;
+                }
+                final boolean on = !mPrefs.getBoolean("cinema", false);
+                mPrefs.edit().putBoolean("cinema", on).apply();
+                Toast.makeText(CameraActivity.this, on ? R.string.cinema_on : R.string.cinema_off,
+                        Toast.LENGTH_SHORT).show();
+                reopen();
             }
         });
         mModeVideo.setOnClickListener(new View.OnClickListener() {
@@ -572,15 +624,79 @@ public class CameraActivity extends Activity {
         updateControls();
     }
 
+    private void selectPhotoMode(int mode) {
+        if (mRecording || mCaptureIntent || mProcessing) {
+            return;
+        }
+        final boolean wasVideo = mVideoMode;
+        mVideoMode = false;
+        mPhotoMode = mode;
+        mPrefs.edit().putInt("photo_mode", mode).apply();
+        updateControls();
+        if (wasVideo) {
+            reopen();
+        }
+    }
+
+    private boolean logSupported() {
+        if (mChars == null) {
+            return false;
+        }
+        final int[] modes = mChars.get(CameraCharacteristics.TONEMAP_AVAILABLE_TONE_MAP_MODES);
+        if (modes != null) {
+            for (int m : modes) {
+                if (m == CameraMetadata.TONEMAP_MODE_CONTRAST_CURVE) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean logOn() {
+        return mVideoMode && mPrefs.getBoolean("log", false) && logSupported();
+    }
+
+    private boolean cinemaOn() {
+        return mVideoMode && !mCaptureIntent && mPrefs.getBoolean("cinema", false);
+    }
+
+    /** a flat logarithmic curve: shadows lifted, highlights compressed, for grading */
+    private static android.hardware.camera2.params.TonemapCurve logCurve(int points) {
+        final int n = Math.max(2, Math.min(32, points));
+        final float[] c = new float[n * 2];
+        final double a = 14.0;
+        for (int i = 0; i < n; i++) {
+            final float x = i / (float) (n - 1);
+            c[i * 2] = x;
+            c[i * 2 + 1] = (float) (0.06 + 0.88 * Math.log1p(a * x) / Math.log1p(a));
+        }
+        return new android.hardware.camera2.params.TonemapCurve(c, c, c);
+    }
+
     private void updateControls() {
-        mModePhoto.setSelected(!mVideoMode);
+        mModeNight.setSelected(!mVideoMode && mPhotoMode == NIGHT);
+        mModePortrait.setSelected(!mVideoMode && mPhotoMode == PORTRAIT);
+        mModeNight.setVisibility(mCaptureIntent ? View.GONE : View.VISIBLE);
+        mModePortrait.setVisibility(mCaptureIntent ? View.GONE : View.VISIBLE);
+        mLogButton.setVisibility(mVideoMode && logSupported() ? View.VISIBLE : View.GONE);
+        mLogButton.setSelected(mPrefs.getBoolean("log", false));
+        mLogButton.setTextColor(getColor(mPrefs.getBoolean("log", false) ? R.color.kiro_on_accent
+                : R.color.kiro_text));
+        mCinemaButton.setVisibility(mVideoMode && !mCaptureIntent ? View.VISIBLE : View.GONE);
+        mCinemaButton.setSelected(mPrefs.getBoolean("cinema", false));
+        mCinemaButton.setTextColor(getColor(mPrefs.getBoolean("cinema", false)
+                ? R.color.kiro_on_accent : R.color.kiro_text));
+        updateCinemaBands();
+        mModePhoto.setSelected(!mVideoMode && mPhotoMode == PHOTO);
         mModeVideo.setSelected(mVideoMode);
         mShutter.setImageResource(mVideoMode ? (mRecording ? R.drawable.shutter_stop
                 : R.drawable.shutter_video) : R.drawable.shutter_photo);
         mFlashButton.setImageResource(mFlash == FLASH_OFF ? R.drawable.ic_flash_off
                 : mFlash == FLASH_ON ? R.drawable.ic_flash_on : R.drawable.ic_flash_auto);
         mFlashButton.setVisibility(mVideoMode || !mFlashSupported ? View.INVISIBLE : View.VISIBLE);
-        mRawButton.setVisibility(!mVideoMode && mRawSupported ? View.VISIBLE : View.GONE);
+        mRawButton.setVisibility(!mVideoMode && mRawSupported && mPhotoMode == PHOTO
+                ? View.VISIBLE : View.GONE);
         mRawButton.setSelected(mRawEnabled);
         mRawButton.setTextColor(getColor(mRawEnabled ? R.color.kiro_on_accent : R.color.kiro_text));
         m4kButton.setVisibility(mVideoMode && supports4k() ? View.VISIBLE : View.GONE);
@@ -942,7 +1058,13 @@ public class CameraActivity extends Activity {
             mPreviewRequest.addTarget(preview);
             if (mVideoMode) {
                 prepareRecorder();
-                if (mRecorder != null) {
+                if (mRecorder != null && cinemaOn()) {
+                    mCinema = new CinemaRecorder(mRecorder.getSurface(), 1920, 1080);
+                    if (mCinema.input() != null) {
+                        outputs.add(mCinema.input());
+                        mPreviewRequest.addTarget(mCinema.input());
+                    }
+                } else if (mRecorder != null) {
                     outputs.add(mRecorder.getSurface());
                     mPreviewRequest.addTarget(mRecorder.getSurface());
                 }
@@ -1014,6 +1136,11 @@ public class CameraActivity extends Activity {
         b.set(CaptureRequest.CONTROL_AE_ANTIBANDING_MODE,
                 CaptureRequest.CONTROL_AE_ANTIBANDING_MODE_AUTO);
         b.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, mExposure);
+        if (logOn()) {
+            final Integer max = mChars.get(CameraCharacteristics.TONEMAP_MAX_CURVE_POINTS);
+            b.set(CaptureRequest.TONEMAP_MODE, CaptureRequest.TONEMAP_MODE_CONTRAST_CURVE);
+            b.set(CaptureRequest.TONEMAP_CURVE, logCurve(max != null ? max : 32));
+        }
     }
 
     /** Full post-processing for a still: the HAL's best noise reduction, sharpening, tone. */
@@ -1234,6 +1361,10 @@ public class CameraActivity extends Activity {
             b.set(CaptureRequest.JPEG_ORIENTATION, jpegOrientation());
             mPendingOrientation = jpegOrientation();
             mSession.stopRepeating();
+            if (mPhotoMode == NIGHT && !mCaptureIntent) {
+                captureNight(b);
+                return;
+            }
             mSession.capture(b.build(), new CameraCaptureSession.CaptureCallback() {
                 @Override
                 public void onCaptureStarted(CameraCaptureSession s, CaptureRequest q,
@@ -1271,6 +1402,133 @@ public class CameraActivity extends Activity {
         }
     }
 
+    /** Night: a burst of frames, aligned and averaged afterwards (PhotoModes.night) */
+    private void captureNight(CaptureRequest.Builder b) throws CameraAccessException {
+        synchronized (mNightFrames) {
+            mNightFrames.clear();
+        }
+        // one frame at a time: a 5 x 16 MP burst made the Exynos HAL time out (drain error);
+        // each capture starts when the previous one completes
+        final CaptureRequest request = b.build();
+        mSound.play(MediaActionSound.SHUTTER_CLICK);
+        showProcessing(true);
+        mSession.capture(request, new CameraCaptureSession.CaptureCallback() {
+            private int mDone;
+
+            @Override
+            public void onCaptureCompleted(CameraCaptureSession s, CaptureRequest q,
+                    TotalCaptureResult r) {
+                if (++mDone < NIGHT_FRAMES) {
+                    try {
+                        s.capture(request, this, mCamHandler);
+                        return;
+                    } catch (CameraAccessException | IllegalStateException e) {
+                        Log.w(TAG, "night frame " + mDone + " failed", e);
+                    }
+                }
+                unlockFocus();
+            }
+
+            @Override
+            public void onCaptureFailed(CameraCaptureSession s, CaptureRequest q,
+                    android.hardware.camera2.CaptureFailure f) {
+                unlockFocus();
+                showProcessing(false);
+            }
+        }, mCamHandler);
+    }
+    private void showProcessing(final boolean on) {
+        mProcessing = on;
+        mMain.post(new Runnable() {
+            @Override
+            public void run() {
+                mShutter.setEnabled(!on);
+                mShutter.setAlpha(on ? 0.4f : 1f);
+                if (on) {
+                    Toast.makeText(CameraActivity.this, mPhotoMode == NIGHT
+                            ? R.string.night_hold : R.string.processing, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /** Night and Portrait: processed on their own thread, then saved like a normal photo */
+    private void processAndSave(final java.util.List<byte[]> frames, final int mode) {
+        showProcessing(true);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final byte[] first = frames.get(0);
+                int exif = ExifInterface.ORIENTATION_NORMAL;
+                try {
+                    exif = new ExifInterface(new java.io.ByteArrayInputStream(first))
+                            .getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                                    ExifInterface.ORIENTATION_NORMAL);
+                } catch (IOException e) {
+                    // no EXIF: the pixels are upright
+                }
+                final int degrees = exif == ExifInterface.ORIENTATION_ROTATE_90 ? 90
+                        : exif == ExifInterface.ORIENTATION_ROTATE_180 ? 180
+                        : exif == ExifInterface.ORIENTATION_ROTATE_270 ? 270 : 0;
+                final File file = Storage.newFile("IMG", ".jpg");
+                final long t0 = SystemClock.elapsedRealtime();
+                final boolean ok = mode == NIGHT ? PhotoModes.night(frames, file, exif)
+                        : PhotoModes.portrait(first, file, exif, degrees);
+                Log.i(TAG, (mode == NIGHT ? "night" : "portrait") + " processed in "
+                        + (SystemClock.elapsedRealtime() - t0) + " ms, ok " + ok);
+                showProcessing(false);
+                if (!ok) {
+                    file.delete();
+                    saveJpeg(first);    // the plain photo rather than nothing
+                    return;
+                }
+                final BitmapFactory.Options o = new BitmapFactory.Options();
+                o.inSampleSize = 16;
+                final Bitmap thumb = BitmapFactory.decodeFile(file.getAbsolutePath(), o);
+                Storage.scan(CameraActivity.this, file, "image/jpeg", new Storage.Scanned() {
+                    @Override
+                    public void onScanned(final Uri uri) {
+                        mMain.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                showThumb(thumb, uri, degrees, "image/*");
+                            }
+                        });
+                    }
+                });
+            }
+        }, "KiroPhotoMode").start();
+    }
+
+    private void updateCinemaBands() {
+        final View top = findViewById(R.id.cinema_top);
+        final View bottom = findViewById(R.id.cinema_bottom);
+        final boolean on = cinemaOn();
+        top.setVisibility(on ? View.VISIBLE : View.GONE);
+        bottom.setVisibility(on ? View.VISIBLE : View.GONE);
+        if (on) {
+            // the viewfinder is the sensor frame turned upright: the recorded 2.35:1 band
+            // (816 of the 1080 sensor rows) is the middle 75.6% of its width
+            final View box = findViewById(R.id.preview_box);
+            box.post(new Runnable() {
+                @Override
+                public void run() {
+                    final int side = Math.round(box.getWidth()
+                            * (1f - CinemaRecorder.HEIGHT / 1080f) / 2f);
+                    setSide(top, side, true);
+                    setSide(bottom, side, false);
+                }
+            });
+        }
+    }
+    private static void setSide(View v, int width, boolean start) {
+        final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) v.getLayoutParams();
+        lp.width = width;
+        lp.height = FrameLayout.LayoutParams.MATCH_PARENT;
+        lp.gravity = start ? android.view.Gravity.START : android.view.Gravity.END;
+        v.setLayoutParams(lp);
+    }
+
     private void unlockFocus() {
         try {
             mPreviewRequest.set(CaptureRequest.CONTROL_AF_TRIGGER,
@@ -1297,7 +1555,19 @@ public class CameraActivity extends Activity {
                     final byte[] bytes = new byte[buf.remaining()];
                     buf.get(bytes);
                     image.close();
-                    saveJpeg(bytes);
+                    if (mCaptureIntent || mPhotoMode == PHOTO) {
+                        saveJpeg(bytes);
+                    } else if (mPhotoMode == PORTRAIT) {
+                        processAndSave(java.util.Collections.singletonList(bytes), PORTRAIT);
+                    } else {
+                        synchronized (mNightFrames) {
+                            mNightFrames.add(bytes);
+                            if (mNightFrames.size() == NIGHT_FRAMES) {
+                                processAndSave(new java.util.ArrayList<>(mNightFrames), NIGHT);
+                                mNightFrames.clear();
+                            }
+                        }
+                    }
                 }
             };
 
@@ -1496,6 +1766,14 @@ public class CameraActivity extends Activity {
             quality = CamcorderProfile.QUALITY_HIGH;
         }
         final CamcorderProfile p = CamcorderProfile.get(cam, quality);
+        if (cinemaOn()) {
+            p.videoFrameWidth = CinemaRecorder.WIDTH;
+            p.videoFrameHeight = CinemaRecorder.HEIGHT;
+            p.videoBitRate = mPrefs.getInt("cinema_bitrate", 60000000);
+        } else if (logOn()) {
+            // a flat picture keeps more for grading when the encoder has room
+            p.videoBitRate = Math.min(60000000, p.videoBitRate * 2);
+        }
         mRecorder = new MediaRecorder();
         try {
             mRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
@@ -1514,6 +1792,11 @@ public class CameraActivity extends Activity {
         } catch (IOException | RuntimeException e) {
             Log.w(TAG, "recorder setup failed", e);
             releaseRecorder();
+            if (cinemaOn() && mPrefs.getInt("cinema_bitrate", 60000000) > 40000000) {
+                // the encoder refused 60 Mbps: 40 from now on
+                mPrefs.edit().putInt("cinema_bitrate", 40000000).apply();
+                prepareRecorder();
+            }
         }
     }
 
@@ -1600,6 +1883,10 @@ public class CameraActivity extends Activity {
     }
 
     private void releaseRecorder() {
+        if (mCinema != null) {
+            mCinema.release();
+            mCinema = null;
+        }
         if (mRecorder != null) {
             mRecorder.reset();
             mRecorder.release();

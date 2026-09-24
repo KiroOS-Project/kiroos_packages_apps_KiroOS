@@ -16,6 +16,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <!-- Cinema: the 2.35:1 frame that is recorded, shown with black bands -->
+        <View
+            android:id="@+id/cinema_top"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="top"
+            android:background="#E6000000"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/cinema_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:background="#E6000000"
+            android:visibility="gone" />
+
         <!-- the last frame, frozen over the viewfinder while the camera switches (no black
              gap), fading out on the first new frame -->
         <ImageView
@@ -119,6 +136,16 @@
             android:id="@+id/btn_raw"
             android:text="@string/raw"
             style="@style/ToggleChip" />
+
+        <TextView
+            android:id="@+id/btn_log"
+            android:text="@string/log"
+            style="@style/ToggleChip" />
+
+        <TextView
+            android:id="@+id/btn_cinema"
+            android:text="@string/cinema"
+            style="@style/ToggleChip" />
     </LinearLayout>
 
     <TextView
@@ -208,8 +235,20 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/mode_night"
+                android:layout_marginEnd="8dp"
+                android:text="@string/mode_night"
+                style="@style/ModeChip" />
+
+            <TextView
                 android:id="@+id/mode_photo"
                 android:text="@string/photo"
+                style="@style/ModeChip" />
+
+            <TextView
+                android:id="@+id/mode_portrait"
+                android:layout_marginStart="8dp"
+                android:text="@string/mode_portrait"
                 style="@style/ModeChip" />
 
             <TextView
