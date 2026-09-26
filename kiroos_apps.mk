@@ -19,7 +19,8 @@ PRODUCT_PACKAGES += \
     KiroClock \
     KiroRecorder \
     KiroCamera \
-    kAI
+    kAI \
+    KeurStore
 
 # Stock apps replaced by the suite (PRODUCT_PACKAGES_REMOVE is applied in build/core/main.mk
 # after all inherited product makefiles, so nothing can bring them back)

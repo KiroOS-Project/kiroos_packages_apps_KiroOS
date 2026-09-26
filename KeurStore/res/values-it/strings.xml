@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KeurStore</string>
+    <string name="subtitle">App ufficiali, ottimizzate per KiroOS</string>
+    <string name="section_featured">In evidenza</string>
+    <string name="section_games">Giochi</string>
+    <string name="section_utility">Utility</string>
+    <string name="section_kiro">App Kiro</string>
+    <string name="get">Ottieni</string>
+    <string name="open">Apri</string>
+    <string name="downloading">…</string>
+    <string name="installed">Installata e ottimizzata per KiroOS</string>
+    <string name="install_failed">Non sono riuscito a installarla: riprova più tardi</string>
+    <string name="badge_optimized">Ottimizzata per KiroOS</string>
+    <string name="badge_kiro">App KiroOS</string>
+</resources>

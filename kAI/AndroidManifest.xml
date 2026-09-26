@@ -2,7 +2,7 @@
 <!-- kAI: chat with a model on the phone or the PC, with web search -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.kai"
-    android:versionCode="28"
+    android:versionCode="110"
     android:versionName="1.1">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />

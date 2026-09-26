@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Kiro Clock v1.0: alarms, world clock, timer, stopwatch -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.kiroos.clock">
+    package="com.kiroos.clock"
+    android:versionCode="110"
+    android:versionName="1.1">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 

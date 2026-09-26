@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KeurStore 1.1: the KiroOS app store (a curated catalogue installed from the official sources) -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kiroos.store"
+    android:versionCode="110"
+    android:versionName="1.1">
+
+    <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher_store"
+        android:theme="@style/Theme.Kiro"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".StoreActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- installs finish here (PackageInstaller session status) -->
+        <receiver android:name=".Installer$Result" android:exported="false" />
+
+        <!-- once a day: updates of the apps installed from their official download -->
+        <service
+            android:name=".UpdateJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <receiver android:name=".UpdateJob$Boot">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

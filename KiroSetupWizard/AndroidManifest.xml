@@ -3,6 +3,8 @@
      until setup is complete; then it disables itself. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.setupwizard"
+    android:versionCode="110"
+    android:versionName="1.1"
     android:sharedUserId="android.uid.system">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />

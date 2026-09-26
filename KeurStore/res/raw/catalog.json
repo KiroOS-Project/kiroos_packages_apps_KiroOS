@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "note": "KeurStore catalogue: apps are installed from their official source only (Google Play, or the developer's own download). Refreshed from <OTA server>/store/catalog.json when reachable.",
+  "sections": [
+    {"id": "featured", "apps": [
+      {"pkg": "org.telegram.messenger", "name": "Telegram", "desc": "Messaggi veloci e sicuri", "desc_en": "Fast, secure messaging", "source": "apk:https://telegram.org/dl/android/apk"},
+      {"pkg": "org.thoughtcrime.securesms", "name": "Signal", "desc": "Chat private con crittografia end-to-end", "desc_en": "Private end-to-end encrypted chats", "source": "signal"},
+      {"pkg": "com.whatsapp", "name": "WhatsApp", "desc": "Messaggi e chiamate", "desc_en": "Messages and calls", "source": "play"},
+      {"pkg": "org.videolan.vlc", "name": "VLC", "desc": "Riproduce qualsiasi video", "desc_en": "Plays any video", "source": "play"},
+      {"pkg": "com.spotify.music", "name": "Spotify", "desc": "Musica e podcast", "desc_en": "Music and podcasts", "source": "play"},
+      {"pkg": "org.mozilla.firefox", "name": "Firefox", "desc": "Browser di Mozilla", "desc_en": "Mozilla's browser", "source": "play"}
+    ]},
+    {"id": "games", "apps": [
+      {"pkg": "com.kiloo.subwaysurf", "name": "Subway Surfers", "desc": "Corri e schiva i treni", "desc_en": "Run and dodge the trains", "source": "play"},
+      {"pkg": "com.supercell.clashroyale", "name": "Clash Royale", "desc": "Strategia in tempo reale", "desc_en": "Real-time strategy", "source": "play"},
+      {"pkg": "com.supercell.brawlstars", "name": "Brawl Stars", "desc": "Sfide 3 contro 3", "desc_en": "3 vs 3 battles", "source": "play"},
+      {"pkg": "com.innersloth.spacemafia", "name": "Among Us", "desc": "Trova l'impostore", "desc_en": "Find the impostor", "source": "play"},
+      {"pkg": "com.robtopx.geometryjumplite", "name": "Geometry Dash Lite", "desc": "Ritmo e riflessi", "desc_en": "Rhythm and reflexes", "source": "play"},
+      {"pkg": "com.chess", "name": "Chess.com", "desc": "Scacchi online", "desc_en": "Online chess", "source": "play"}
+    ]},
+    {"id": "utility", "apps": [
+      {"pkg": "com.google.android.apps.maps", "name": "Google Maps", "desc": "Mappe e navigatore", "desc_en": "Maps and navigation", "source": "play"},
+      {"pkg": "com.google.android.apps.translate", "name": "Google Traduttore", "desc": "Traduzioni anche offline", "desc_en": "Translations, offline too", "source": "play"},
+      {"pkg": "org.zwanoo.android.speedtest", "name": "Speedtest", "desc": "Misura la tua connessione", "desc_en": "Measure your connection", "source": "play"},
+      {"pkg": "flar2.devcheck", "name": "DevCheck", "desc": "Informazioni sull'hardware", "desc_en": "Hardware information", "source": "play"},
+      {"pkg": "com.cpuid.cpu_z", "name": "CPU-Z", "desc": "Processore, memoria e sensori", "desc_en": "Processor, memory and sensors", "source": "play"},
+      {"pkg": "ch.protonvpn.android", "name": "Proton VPN", "desc": "VPN gratuita e senza log", "desc_en": "Free no-log VPN", "source": "play"}
+    ]},
+    {"id": "kiro", "apps": [
+      {"pkg": "com.kiroos.kai", "name": "kAI", "desc": "Assistente sul telefono, anche offline", "desc_en": "On-device assistant, offline too", "source": "system"},
+      {"pkg": "com.kiroos.camera", "name": "Kiro Camera", "desc": "Notte, Ritratto, LOG e Cinema 21:9", "desc_en": "Night, Portrait, LOG and 21:9 Cinema", "source": "system"},
+      {"pkg": "com.kiroos.pulse", "name": "Pulse Music", "desc": "Musica con equalizzatore a 10 bande", "desc_en": "Music with a 10-band equalizer", "source": "system"},
+      {"pkg": "com.kiroos.surge", "name": "Surge Browser", "desc": "Browser veloce con blocco annunci", "desc_en": "Fast browser with ad blocking", "source": "system"},
+      {"pkg": "com.kiroos.gallery", "name": "Galleria", "desc": "Foto e video", "desc_en": "Photos and videos", "source": "system"},
+      {"pkg": "com.kiroos.files", "name": "File", "desc": "I tuoi documenti", "desc_en": "Your documents", "source": "system"}
+    ]}
+  ]
+}
