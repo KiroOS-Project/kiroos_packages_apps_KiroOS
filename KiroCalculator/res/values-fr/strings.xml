@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (fr). Source: kai/l10n/fr.txt -->
+<resources>
+    <string name="app_name">Calculatrice</string>
+    <string name="history">Historique</string>
+    <string name="no_history">Aucun calcul pour l\'instant</string>
+    <string name="clear_history">Effacer</string>
+    <string name="copied">Copié</string>
+    <string name="error_syntax">Expression non valide</string>
+    <string name="error_div_zero">Division par zéro impossible</string>
+    <string name="error_domain">Ce n\'est pas un nombre réel</string>
+    <string name="desc_clear">Effacer</string>
+    <string name="desc_backspace">Supprimer</string>
+    <string name="desc_divide">Divisé par</string>
+    <string name="desc_times">Multiplié par</string>
+    <string name="desc_minus">Moins</string>
+    <string name="desc_plus">Plus</string>
+    <string name="desc_equals">Égal</string>
+    <string name="desc_negate">Changer de signe</string>
+    <string name="desc_parens">Parenthèses</string>
+    <string name="desc_sqrt">Racine carrée</string>
+</resources>

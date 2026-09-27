@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (fr). Source: kai/l10n/fr.txt -->
+<resources>
+    <string name="app_name">Fichiers</string>
+    <string name="back">Retour</string>
+    <string name="more">Plus d\'options</string>
+    <string name="internal_storage">Stockage interne</string>
+    <string name="sd_card">Carte SD</string>
+    <string name="root_folder">Racine (/)</string>
+    <string name="storage_used">%1$s utilisés sur %2$s</string>
+    <string name="locations">Emplacements</string>
+    <string name="downloads">Téléchargements</string>
+    <string name="images">Images</string>
+    <string name="videos">Vidéos</string>
+    <string name="documents">Documents</string>
+    <string name="empty_folder">Ce dossier est vide</string>
+    <string name="no_access">Accès refusé. Activez l\'accès root dans le menu pour ouvrir les dossiers système.</string>
+    <string name="open_with">Ouvrir avec</string>
+    <string name="no_app">Aucune application ne peut ouvrir ce fichier</string>
+    <string name="selected">%d sélectionné(s)</string>
+    <string name="copy">Copier</string>
+    <string name="cut">Couper</string>
+    <string name="share">Partager</string>
+    <string name="delete">Supprimer</string>
+    <string name="rename">Renommer</string>
+    <string name="details">Détails</string>
+    <string name="paste">Coller</string>
+    <string name="copied_n">%d copié(s) : ouvrez un dossier et collez</string>
+    <string name="cut_n">%d coupé(s) : ouvrez un dossier et collez</string>
+    <string name="copy_here">Copier %d ici</string>
+    <string name="move_here">Déplacer %d ici</string>
+    <string name="nothing_to_share">Les dossiers ne peuvent pas être partagés</string>
+    <string name="delete_one">Supprimer %s ?</string>
+    <string name="delete_many">Supprimer %d éléments ?</string>
+    <string name="rename_failed">Impossible de renommer : le nom est déjà pris ou l\'emplacement est en lecture seule</string>
+    <string name="new_folder">Nouveau dossier</string>
+    <string name="folder_name">Nom du dossier</string>
+    <string name="mkdir_failed">Impossible de créer le dossier ici</string>
+    <string name="copying">Copie…</string>
+    <string name="moving">Déplacement…</string>
+    <string name="deleting">Suppression…</string>
+    <string name="op_failed">%d éléments n\'ont pas pu être traités</string>
+    <string name="sort_name">Trier par nom</string>
+    <string name="sort_date">Trier par date</string>
+    <string name="sort_size">Trier par taille</string>
+    <string name="show_hidden">Afficher les fichiers cachés</string>
+    <string name="root_access">Accès root</string>
+    <string name="root_on">Accès root activé. Attention aux fichiers système.</string>
+    <string name="root_missing">Root n\'est pas disponible (pas de su, ou il a été refusé)</string>
+    <string name="info_path">Chemin : %s</string>
+    <string name="info_modified">Modifié : %s</string>
+    <string name="info_type">Type : %s</string>
+    <string name="info_items">%d éléments</string>
+    <string name="info_size">Taille : %s</string>
+</resources>

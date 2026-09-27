@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="url_hint">Введите запрос или адрес</string>
+    <string name="new_tab">Новая вкладка</string>
+    <string name="tabs">Вкладки</string>
+    <string name="tabs_hint">Нажмите, чтобы переключиться · удерживайте, чтобы закрыть</string>
+    <string name="menu">Меню</string>
+    <string name="forward">Вперёд</string>
+    <string name="reload">Обновить</string>
+    <string name="add_bookmark">Добавить закладку</string>
+    <string name="bookmarks">Закладки</string>
+    <string name="history">История</string>
+    <string name="share">Поделиться</string>
+    <string name="desktop_site">Версия для ПК</string>
+    <string name="adblock">Блокировать рекламу и трекеры</string>
+    <string name="search_engine">Поисковая система</string>
+    <string name="clear_data">Очистить данные браузера</string>
+    <string name="clear_data_confirm">Удалить файлы cookie, кеш, данные сайтов и историю?</string>
+    <string name="clear">Очистить</string>
+    <string name="cleared">Данные браузера удалены</string>
+    <string name="blocked_here">Заблокировано рекламы и трекеров на этой странице: %d</string>
+    <string name="no_app">Нет приложения, чтобы открыть эту ссылку</string>
+    <string name="open_new_tab">Открыть в новой вкладке</string>
+    <string name="opened_in_background">Открыто в новой вкладке</string>
+    <string name="copy_link">Копировать ссылку</string>
+    <string name="share_link">Поделиться ссылкой</string>
+    <string name="download_image">Скачать изображение</string>
+    <string name="copied">Скопировано</string>
+    <string name="downloading">Скачивание %s</string>
+    <string name="download_failed">Не удаётся скачать этот файл</string>
+    <string name="location_prompt">%s запрашивает доступ к местоположению</string>
+    <string name="media_prompt">%s запрашивает доступ к камере или микрофону</string>
+    <string name="allow">Разрешить</string>
+    <string name="deny">Запретить</string>
+    <string name="start_hint">Приватность по умолчанию: реклама и трекеры блокируются.</string>
+    <string name="already_bookmarked">Уже в закладках</string>
+    <string name="bookmarked">Закладка добавлена</string>
+    <string name="no_bookmarks">Закладок пока нет</string>
+    <string name="no_history">История пуста</string>
+    <string name="edit_bookmarks">Удалить…</string>
+    <string name="remove_bookmarks">Удалить закладки</string>
+    <string name="remove">Удалить</string>
+</resources>

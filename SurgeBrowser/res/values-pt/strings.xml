@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (pt). Source: kai/l10n/pt.txt -->
+<resources>
+    <string name="url_hint">Pesquise ou digite um endereço</string>
+    <string name="new_tab">Nova guia</string>
+    <string name="tabs">Guias</string>
+    <string name="tabs_hint">Toque para trocar · toque e segure para fechar</string>
+    <string name="forward">Avançar</string>
+    <string name="reload">Recarregar</string>
+    <string name="add_bookmark">Adicionar favorito</string>
+    <string name="bookmarks">Favoritos</string>
+    <string name="history">Histórico</string>
+    <string name="share">Compartilhar</string>
+    <string name="desktop_site">Versão para computador</string>
+    <string name="adblock">Bloquear anúncios e rastreadores</string>
+    <string name="search_engine">Mecanismo de pesquisa</string>
+    <string name="clear_data">Limpar dados de navegação</string>
+    <string name="clear_data_confirm">Excluir cookies, cache, dados de sites e histórico?</string>
+    <string name="clear">Limpar</string>
+    <string name="cleared">Dados de navegação limpos</string>
+    <string name="blocked_here">%d anúncios e rastreadores bloqueados nesta página</string>
+    <string name="no_app">Nenhum app pode abrir este link</string>
+    <string name="open_new_tab">Abrir em nova guia</string>
+    <string name="opened_in_background">Aberto em uma nova guia</string>
+    <string name="copy_link">Copiar link</string>
+    <string name="share_link">Compartilhar link</string>
+    <string name="download_image">Baixar imagem</string>
+    <string name="copied">Copiado</string>
+    <string name="downloading">Baixando %s</string>
+    <string name="download_failed">Não é possível baixar este arquivo</string>
+    <string name="location_prompt">%s quer usar sua localização</string>
+    <string name="media_prompt">%s quer usar a câmera ou o microfone</string>
+    <string name="allow">Permitir</string>
+    <string name="deny">Negar</string>
+    <string name="start_hint">Privado por padrão: anúncios e rastreadores são bloqueados.</string>
+    <string name="already_bookmarked">Já está nos favoritos</string>
+    <string name="bookmarked">Favorito adicionado</string>
+    <string name="no_bookmarks">Nenhum favorito ainda</string>
+    <string name="no_history">Nenhum histórico</string>
+    <string name="edit_bookmarks">Remover…</string>
+    <string name="remove_bookmarks">Remover favoritos</string>
+    <string name="remove">Remover</string>
+</resources>

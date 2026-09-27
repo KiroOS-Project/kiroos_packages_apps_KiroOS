@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="app_name">Reloj</string>
+    <string name="tab_alarms">Alarmas</string>
+    <string name="tab_world">Reloj mundial</string>
+    <string name="tab_timer">Temporizador</string>
+    <string name="tab_stopwatch">Cronómetro</string>
+    <string name="alarm">Alarma</string>
+    <string name="no_alarms">No hay alarmas</string>
+    <string name="add_alarm">Añadir alarma</string>
+    <string name="alarm_set">Alarma programada para %s</string>
+    <string name="alarm_in_minutes">Alarma en %d min</string>
+    <string name="alarm_in_hours">Alarma en %1$d h %2$d min</string>
+    <string name="alarm_in_days">Alarma en %1$d d %2$d h</string>
+    <string name="once">Una vez</string>
+    <string name="every_day">Todos los días</string>
+    <string name="weekdays">De lunes a viernes</string>
+    <string name="weekend">Fin de semana</string>
+    <string name="snoozed_until">Pospuesta hasta %s</string>
+    <string name="label">Etiqueta</string>
+    <string name="sound">Sonido de alarma</string>
+    <string name="default_sound">Sonido predeterminado</string>
+    <string name="silent">Silencio</string>
+    <string name="vibrate">Vibrar</string>
+    <string name="save">Guardar</string>
+    <string name="delete">Eliminar</string>
+    <string name="snooze">Posponer</string>
+    <string name="snooze_minutes">Posponer %d min</string>
+    <string name="dismiss">Descartar</string>
+    <string name="missed_alarm">Alarma perdida</string>
+    <string name="timer">Temporizador</string>
+    <string name="timer_done">Se acabó el tiempo</string>
+    <string name="timer_paused">En pausa · quedan %s</string>
+    <string name="stop">Detener</string>
+    <string name="start">Iniciar</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Reanudar</string>
+    <string name="reset">Restablecer</string>
+    <string name="lap">Vuelta</string>
+    <string name="lap_row">Vuelta %1$d    %2$s    %3$s</string>
+    <string name="add_city">Añadir ciudad</string>
+    <string name="search_city">Buscar ciudad</string>
+    <string name="remove_city">¿Quitar %s?</string>
+    <string name="same_time">Misma hora</string>
+</resources>

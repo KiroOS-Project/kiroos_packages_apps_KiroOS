@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (fr). Source: kai/l10n/fr.txt -->
+<resources>
+    <string name="app_name">Dictaphone</string>
+    <string name="file_prefix">Enregistrement</string>
+    <string name="record">Enregistrer</string>
+    <string name="recording">Enregistrement</string>
+    <string name="paused">En pause</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Reprendre</string>
+    <string name="stop">Arrêter</string>
+    <string name="no_recordings">Aucun enregistrement pour l\'instant</string>
+    <string name="need_permissions">Le micro et le stockage sont nécessaires pour enregistrer</string>
+    <string name="cannot_play">Impossible de lire ce fichier</string>
+    <string name="share">Partager</string>
+    <string name="rename">Renommer</string>
+    <string name="rename_failed">Un enregistrement porte déjà ce nom</string>
+    <string name="delete">Supprimer</string>
+    <string name="delete_confirm">Supprimer %s ?</string>
+</resources>

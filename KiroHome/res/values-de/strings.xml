@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="search_apps">Apps suchen</string>
+    <string name="app_not_available">App nicht verfügbar</string>
+    <string name="remove_from_home">Vom Startbildschirm entfernen</string>
+    <string name="add_to_home">Zum Startbildschirm hinzufügen</string>
+    <string name="app_info">App-Info</string>
+    <string name="uninstall">Deinstallieren</string>
+    <string name="home_full">Der Startbildschirm ist voll</string>
+    <string name="add_widget">Widget hinzufügen</string>
+    <string name="wallpaper">Hintergrund</string>
+    <string name="settings">Einstellungen</string>
+    <string name="remove_widget">Widget entfernen</string>
+    <string name="remove_clock">Uhr entfernen</string>
+    <string name="show_clock">Uhr anzeigen</string>
+    <string name="folder_default">Ordner</string>
+</resources>

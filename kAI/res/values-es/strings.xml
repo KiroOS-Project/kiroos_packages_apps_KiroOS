@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="ask">Pregunta a kAI</string>
+    <string name="send">Enviar</string>
+    <string name="stop">Detener</string>
+    <string name="new_chat">Nuevo chat</string>
+    <string name="copied">Copiado</string>
+    <string name="welcome">Tu asistente, incluso sin conexión</string>
+    <string name="welcome_hint">kAI responde directamente en el teléfono, incluso sin conexión, y busca datos recientes en la web (el globo lo desactiva).</string>
+    <string name="on_device">En el teléfono · %s</string>
+    <string name="bridge">Conexión con el PC</string>
+    <string name="bridge_help">USB: ejecuta \"Start kAI\" en el PC y deja 127.0.0.1 y el puerto 11434. Wi-Fi: la dirección del PC, con Ollama abierto a la red.</string>
+    <string name="host">Dirección (127.0.0.1)</string>
+    <string name="port">Puerto (11434)</string>
+    <string name="model_hint">Modelo (vacío = el primero instalado)</string>
+    <string name="save">Guardar</string>
+    <string name="connecting">Conectando…</string>
+    <string name="connected">Conectado · %s</string>
+    <string name="default_model">modelo predeterminado</string>
+    <string name="not_connected">kAI no pudo iniciar el modelo · inténtalo de nuevo en un momento</string>
+    <string name="no_model">No hay ningún modelo disponible · inténtalo de nuevo en un momento</string>
+    <string name="error_answer">⚠ Sin respuesta: %s</string>
+    <string name="searching">Buscando en la web…</string>
+    <string name="reading">Leyendo %s…</string>
+    <string name="sources">Fuentes</string>
+    <string name="web_on">Búsqueda web activada</string>
+    <string name="web_off">Búsqueda web desactivada</string>
+    <string name="writing">Escribiendo la respuesta…</string>
+    <string name="system_prompt">Eres kAI, el asistente de KiroOS en un Samsung Galaxy S6. Responde de forma clara y breve, en el idioma del usuario, usando Markdown cuando ayude. Hoy es %s.</string>
+    <string name="web_instruction">Responde usando los resultados web que acompañan a la pregunta, son más recientes que lo que sabes, y cita las fuentes así: [1].</string>
+    <string name="web_system">Eres kAI. Responde brevemente, en el idioma de la pregunta, usando los resultados web proporcionados, y cita las fuentes así: [1].</string>
+    <string name="web_results">Resultados web</string>
+    <string name="question">Pregunta</string>
+    <string name="model_loading">Cargando el modelo en el dispositivo…</string>
+    <string name="model_title">Modelo de kAI</string>
+    <string name="model_missing">no instalado</string>
+    <string name="act_torch_on">Linterna encendida.</string>
+    <string name="act_torch_off">Linterna apagada.</string>
+    <string name="act_wifi_on">Wi‑Fi activado.</string>
+    <string name="act_wifi_off">Wi‑Fi desactivado.</string>
+    <string name="act_bt_on">Bluetooth activado.</string>
+    <string name="act_bt_off">Bluetooth desactivado.</string>
+    <string name="act_profiles">Aquí están los perfiles de batería.</string>
+    <string name="act_failed">No he podido hacerlo en este teléfono.</string>
+    <string-array name="model_descriptions">
+        <item>Instantáneo: cálculos rápidos, definiciones breves, comandos del teléfono · SmolLM2 135M</item>
+        <item>Asistente diario: preguntas, resúmenes · Qwen2.5 0.5B</item>
+        <item>El más capaz: código y razonamiento paso a paso (más lento) · Llama 3.2 1B, Built with Llama</item>
+    </string-array>
+    <string name="voice">Hablar</string>
+    <string name="listening">Escuchando…</string>
+    <string name="transcribing">Entendiendo…</string>
+    <string name="voice_failed">El micrófono no está disponible.</string>
+</resources>

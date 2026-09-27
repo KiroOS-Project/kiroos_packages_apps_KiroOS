@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (fr). Source: kai/l10n/fr.txt -->
+<resources>
+    <string name="url_hint">Rechercher ou saisir une adresse</string>
+    <string name="new_tab">Nouvel onglet</string>
+    <string name="tabs">Onglets</string>
+    <string name="tabs_hint">Appuyez pour changer · appui long pour fermer</string>
+    <string name="menu">Menu</string>
+    <string name="forward">Suivant</string>
+    <string name="reload">Actualiser</string>
+    <string name="add_bookmark">Ajouter un favori</string>
+    <string name="bookmarks">Favoris</string>
+    <string name="history">Historique</string>
+    <string name="share">Partager</string>
+    <string name="desktop_site">Version pour ordinateur</string>
+    <string name="adblock">Bloquer les pubs et les traceurs</string>
+    <string name="search_engine">Moteur de recherche</string>
+    <string name="clear_data">Effacer les données de navigation</string>
+    <string name="clear_data_confirm">Supprimer les cookies, le cache, les données des sites et l\'historique ?</string>
+    <string name="clear">Effacer</string>
+    <string name="cleared">Données de navigation effacées</string>
+    <string name="blocked_here">%d pubs et traceurs bloqués sur cette page</string>
+    <string name="no_app">Aucune application ne peut ouvrir ce lien</string>
+    <string name="open_new_tab">Ouvrir dans un nouvel onglet</string>
+    <string name="opened_in_background">Ouvert dans un nouvel onglet</string>
+    <string name="copy_link">Copier le lien</string>
+    <string name="share_link">Partager le lien</string>
+    <string name="download_image">Télécharger l\'image</string>
+    <string name="copied">Copié</string>
+    <string name="downloading">Téléchargement de %s</string>
+    <string name="download_failed">Impossible de télécharger ce fichier</string>
+    <string name="location_prompt">%s veut utiliser votre position</string>
+    <string name="media_prompt">%s veut utiliser l\'appareil photo ou le micro</string>
+    <string name="allow">Autoriser</string>
+    <string name="deny">Refuser</string>
+    <string name="start_hint">Privé par défaut : les pubs et les traceurs sont bloqués.</string>
+    <string name="already_bookmarked">Déjà dans les favoris</string>
+    <string name="bookmarked">Favori ajouté</string>
+    <string name="no_bookmarks">Aucun favori pour l\'instant</string>
+    <string name="no_history">Aucun historique</string>
+    <string name="edit_bookmarks">Supprimer…</string>
+    <string name="remove_bookmarks">Supprimer des favoris</string>
+    <string name="remove">Supprimer</string>
+</resources>

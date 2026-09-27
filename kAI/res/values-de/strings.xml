@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="ask">kAI fragen</string>
+    <string name="send">Senden</string>
+    <string name="stop">Stopp</string>
+    <string name="new_chat">Neuer Chat</string>
+    <string name="copied">Kopiert</string>
+    <string name="welcome">Dein Assistent, auch offline</string>
+    <string name="welcome_hint">kAI antwortet direkt auf dem Telefon, auch offline, und sucht aktuelle Infos im Web (der Globus schaltet das aus).</string>
+    <string name="on_device">Auf dem Telefon · %s</string>
+    <string name="bridge">PC-Verbindung</string>
+    <string name="bridge_help">USB: Starte „Start kAI“ auf dem PC und behalte 127.0.0.1 und Port 11434. WLAN: die Adresse des PCs, mit Ollama im Netzwerk freigegeben.</string>
+    <string name="host">Adresse (127.0.0.1)</string>
+    <string name="model_hint">Modell (leer = das erste installierte)</string>
+    <string name="save">Speichern</string>
+    <string name="connecting">Verbindung wird hergestellt…</string>
+    <string name="connected">Verbunden · %s</string>
+    <string name="default_model">Standardmodell</string>
+    <string name="not_connected">kAI konnte das Modell nicht starten · gleich noch einmal versuchen</string>
+    <string name="no_model">Kein Modell verfügbar · gleich noch einmal versuchen</string>
+    <string name="error_answer">⚠ Keine Antwort: %s</string>
+    <string name="searching">Websuche läuft…</string>
+    <string name="reading">%s wird gelesen…</string>
+    <string name="sources">Quellen</string>
+    <string name="web_on">Websuche an</string>
+    <string name="web_off">Websuche aus</string>
+    <string name="writing">Antwort wird geschrieben…</string>
+    <string name="system_prompt">Du bist kAI, der Assistent von KiroOS auf einem Samsung Galaxy S6. Antworte klar und kurz, in der Sprache des Nutzers, und verwende Markdown, wenn es hilft. Heute ist %s.</string>
+    <string name="web_instruction">Antworte mit den Web-Ergebnissen, die mit der Frage kommen, sie sind aktueller als dein Wissen, und nenne die Quellen wie [1].</string>
+    <string name="web_system">Du bist kAI. Antworte kurz, in der Sprache der Frage, mit den gegebenen Web-Ergebnissen, und nenne die Quellen wie [1].</string>
+    <string name="web_results">Web-Ergebnisse</string>
+    <string name="question">Frage</string>
+    <string name="model_loading">Das Modell auf dem Gerät wird geladen…</string>
+    <string name="model_title">kAI-Modell</string>
+    <string name="model_missing">nicht installiert</string>
+    <string name="act_torch_on">Taschenlampe an.</string>
+    <string name="act_torch_off">Taschenlampe aus.</string>
+    <string name="act_wifi_on">WLAN an.</string>
+    <string name="act_wifi_off">WLAN aus.</string>
+    <string name="act_bt_on">Bluetooth an.</string>
+    <string name="act_bt_off">Bluetooth aus.</string>
+    <string name="act_profiles">Hier sind die Akkuprofile.</string>
+    <string name="act_failed">Das konnte ich auf diesem Telefon nicht tun.</string>
+    <string-array name="model_descriptions">
+        <item>Sofort: schnelle Rechnungen, kurze Definitionen, Telefonbefehle · SmolLM2 135M</item>
+        <item>Alltagsassistent: Fragen, Zusammenfassungen · Qwen2.5 0.5B</item>
+        <item>Der Leistungsstärkste: Code und schrittweises Denken (langsamer) · Llama 3.2 1B, Built with Llama</item>
+    </string-array>
+    <string name="voice">Sprechen</string>
+    <string name="listening">Hört zu…</string>
+    <string name="transcribing">Wird verstanden…</string>
+    <string name="voice_failed">Das Mikrofon ist nicht verfügbar.</string>
+</resources>

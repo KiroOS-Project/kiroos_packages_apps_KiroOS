@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Сообщения</string>
+    <string name="search">Поиск сообщений</string>
+    <string name="make_default">Kiro Messages не является приложением для SMS. Нажмите, чтобы сделать его приложением по умолчанию и отправлять и получать сообщения здесь.</string>
+    <string name="no_conversations">Нет переписок</string>
+    <string name="no_results">Ничего не найдено</string>
+    <string name="new_message">Новое сообщение</string>
+    <string name="picture">Изображение</string>
+    <string name="delete_conversation">Удалить переписку</string>
+    <string name="delete_conversation_confirm">Удалить все сообщения с %s?</string>
+    <string name="delete">Удалить</string>
+    <string name="back">Назад</string>
+    <string name="call">Позвонить</string>
+    <string name="to_hint">Кому: имя или номер</string>
+    <string name="remove_attachment">Убрать изображение</string>
+    <string name="attach">Прикрепить изображение</string>
+    <string name="compose_hint">Сообщение</string>
+    <string name="send">Отправить</string>
+    <string name="me">Я</string>
+    <string name="reply">Ответить</string>
+    <string name="mark_read">Отметить как прочитанное</string>
+    <string name="send_failed_title">Сообщение не отправлено</string>
+    <string name="send_failed_text">Откройте переписку и нажмите на сообщение, чтобы повторить попытку.</string>
+    <string name="download_failed_title">MMS не загружено</string>
+    <string name="download_failed_text">Для загрузки MMS нужна мобильная передача данных. Оператор повторит попытку.</string>
+    <string name="no_recipients">Добавьте получателя</string>
+    <string name="not_default">Сделайте Kiro Messages приложением для SMS по умолчанию, чтобы отправлять сообщения</string>
+    <string name="copy_text">Копировать текст</string>
+    <string name="forward">Переслать</string>
+    <string name="resend">Отправить ещё раз</string>
+    <string name="copied">Скопировано</string>
+    <string name="not_sent_retry">Не отправлено · нажмите, чтобы повторить</string>
+    <string name="sending">Отправка…</string>
+    <string name="received">Получено</string>
+    <string name="sent">Отправлено</string>
+</resources>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="app_name">Saat</string>
+    <string name="tab_alarms">Alarmlar</string>
+    <string name="tab_world">Dünya saati</string>
+    <string name="tab_timer">Zamanlayıcı</string>
+    <string name="tab_stopwatch">Kronometre</string>
+    <string name="no_alarms">Alarm yok</string>
+    <string name="add_alarm">Alarm ekle</string>
+    <string name="alarm_set">Alarm %s için kuruldu</string>
+    <string name="alarm_in_minutes">Alarm %d dk sonra</string>
+    <string name="alarm_in_hours">Alarm %1$d sa %2$d dk sonra</string>
+    <string name="alarm_in_days">Alarm %1$d gün %2$d sa sonra</string>
+    <string name="once">Bir kez</string>
+    <string name="every_day">Her gün</string>
+    <string name="weekdays">Pazartesi - Cuma</string>
+    <string name="weekend">Hafta sonu</string>
+    <string name="snoozed_until">%s saatine kadar ertelendi</string>
+    <string name="label">Etiket</string>
+    <string name="sound">Alarm sesi</string>
+    <string name="default_sound">Varsayılan ses</string>
+    <string name="silent">Sessiz</string>
+    <string name="vibrate">Titreşim</string>
+    <string name="save">Kaydet</string>
+    <string name="delete">Sil</string>
+    <string name="snooze">Ertele</string>
+    <string name="snooze_minutes">%d dk ertele</string>
+    <string name="dismiss">Kapat</string>
+    <string name="missed_alarm">Kaçırılan alarm</string>
+    <string name="timer">Zamanlayıcı</string>
+    <string name="timer_done">Süre doldu</string>
+    <string name="timer_paused">Duraklatıldı · %s kaldı</string>
+    <string name="add_minute">+1 dk</string>
+    <string name="stop">Durdur</string>
+    <string name="start">Başlat</string>
+    <string name="pause">Duraklat</string>
+    <string name="resume">Devam et</string>
+    <string name="reset">Sıfırla</string>
+    <string name="lap">Tur</string>
+    <string name="lap_row">Tur %1$d    %2$s    %3$s</string>
+    <string name="unit_h">sa</string>
+    <string name="unit_min">dk</string>
+    <string name="unit_s">sn</string>
+    <string name="add_city">Şehir ekle</string>
+    <string name="search_city">Şehir ara</string>
+    <string name="remove_city">%s kaldırılsın mı?</string>
+    <string name="same_time">Aynı saat</string>
+    <string name="offset_h">%1$s%2$d sa</string>
+    <string name="offset_h_min">%1$s%2$d sa %3$d dk</string>
+</resources>

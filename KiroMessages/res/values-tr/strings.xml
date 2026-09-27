@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="app_name">Mesajlar</string>
+    <string name="search">Mesajlarda ara</string>
+    <string name="make_default">Kiro Messages SMS uygulamanız değil. Varsayılan yapmak ve mesajları burada gönderip almak için dokunun.</string>
+    <string name="no_conversations">Görüşme yok</string>
+    <string name="no_results">Hiçbir şey bulunamadı</string>
+    <string name="new_message">Yeni mesaj</string>
+    <string name="picture">Resim</string>
+    <string name="delete_conversation">Görüşmeyi sil</string>
+    <string name="delete_conversation_confirm">%s ile tüm mesajlar silinsin mi?</string>
+    <string name="delete">Sil</string>
+    <string name="back">Geri</string>
+    <string name="call">Ara</string>
+    <string name="to_hint">Kime: ad veya numara</string>
+    <string name="remove_attachment">Resmi kaldır</string>
+    <string name="attach">Resim ekle</string>
+    <string name="compose_hint">Mesaj</string>
+    <string name="send">Gönder</string>
+    <string name="me">Ben</string>
+    <string name="reply">Yanıtla</string>
+    <string name="mark_read">Okundu olarak işaretle</string>
+    <string name="send_failed_title">Mesaj gönderilmedi</string>
+    <string name="send_failed_text">Tekrar denemek için görüşmeyi açın ve mesaja dokunun.</string>
+    <string name="download_failed_title">Resimli mesaj indirilmedi</string>
+    <string name="download_failed_text">MMS indirmek için mobil veri gerekir. Operatör tekrar deneyecek.</string>
+    <string name="no_recipients">Bir alıcı ekleyin</string>
+    <string name="not_default">Mesaj göndermek için Kiro Messages\'ı varsayılan SMS uygulaması yapın</string>
+    <string name="copy_text">Metni kopyala</string>
+    <string name="forward">İlet</string>
+    <string name="resend">Tekrar gönder</string>
+    <string name="copied">Kopyalandı</string>
+    <string name="not_sent_retry">Gönderilmedi · tekrar denemek için dokunun</string>
+    <string name="sending">Gönderiliyor…</string>
+    <string name="received">Alındı</string>
+    <string name="sent">Gönderildi</string>
+</resources>

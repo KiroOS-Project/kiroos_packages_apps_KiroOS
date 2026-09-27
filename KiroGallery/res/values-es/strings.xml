@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="app_name">Galería</string>
+    <string name="choose">Elegir</string>
+    <string name="photos">Fotos</string>
+    <string name="albums">Álbumes</string>
+    <string name="camera">Cámara</string>
+    <string name="nothing_here">No hay fotos ni vídeos</string>
+    <string name="back">Atrás</string>
+    <string name="share">Compartir</string>
+    <string name="edit">Editar</string>
+    <string name="details">Detalles</string>
+    <string name="delete">Eliminar</string>
+    <string name="set_as">Establecer como</string>
+    <string name="play">Reproducir</string>
+    <string name="no_editor">No hay ningún editor de fotos instalado</string>
+    <string name="delete_photo">¿Eliminar esta foto?</string>
+    <string name="delete_video">¿Eliminar este vídeo?</string>
+    <string name="delete_failed">No se pudo eliminar</string>
+    <string name="cannot_play">No se puede reproducir este vídeo</string>
+    <string name="info_name">Nombre: %s</string>
+    <string name="info_date">Fecha: %s</string>
+    <string name="info_size">Tamaño: %1$d × %2$d · %3$s</string>
+    <string name="info_length">Duración: %s</string>
+    <string name="info_path">Ruta: %s</string>
+</resources>

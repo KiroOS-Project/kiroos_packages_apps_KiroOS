@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="app_name">Kişiler</string>
+    <string name="choose">Bir kişi seçin</string>
+    <string name="search">Kişilerde ara</string>
+    <string name="no_contacts">Kişi yok</string>
+    <string name="no_results">Hiçbir şey bulunamadı</string>
+    <string name="no_name">(Adsız)</string>
+    <string name="favourites">Favoriler</string>
+    <string name="favourite">Favori</string>
+    <string name="new_contact">Yeni kişi</string>
+    <string name="more">Diğer seçenekler</string>
+    <string name="back">Geri</string>
+    <string name="edit">Düzenle</string>
+    <string name="call">Ara</string>
+    <string name="message">Mesaj</string>
+    <string name="email">E-posta</string>
+    <string name="phone">Telefon</string>
+    <string name="company">Şirket</string>
+    <string name="website">Web sitesi</string>
+    <string name="note">Not</string>
+    <string name="nickname">Takma ad</string>
+    <string name="address">Adres</string>
+    <string name="birthday">Doğum günü</string>
+    <string name="ringtone">Zil sesi</string>
+    <string name="set_ringtone">Zil sesi ayarla</string>
+    <string name="share">Paylaş</string>
+    <string name="delete">Sil</string>
+    <string name="remove">Kaldır</string>
+    <string name="delete_confirm">%s silinsin mi?</string>
+    <string name="contact_missing">Bu kişi artık yok</string>
+    <string name="no_app">Bunu yapabilecek bir uygulama yok</string>
+    <string name="save">Kaydet</string>
+    <string name="first_name">Ad</string>
+    <string name="last_name">Soyadı</string>
+    <string name="add_phone">+ Telefon ekle</string>
+    <string name="add_email">+ E-posta ekle</string>
+    <string name="more_fields">Daha fazla</string>
+    <string name="change_photo">Fotoğrafı değiştir</string>
+    <string name="photo_failed">Bu resim kullanılamıyor</string>
+    <string name="empty_contact">Bir ad veya numara girin</string>
+    <string name="save_failed">Kişi kaydedilemedi</string>
+    <string name="create_new">Yeni kişi oluştur</string>
+    <string name="add_to_existing">Mevcut bir kişiye ekle</string>
+    <string name="import_vcf">.vcf dosyasından içe aktar</string>
+    <string name="export_vcf">.vcf dosyasına dışa aktar</string>
+    <string name="accounts">Hesaplar</string>
+    <string name="importing">Kişiler içe aktarılıyor…</string>
+    <string name="imported">%d kişi içe aktarıldı</string>
+    <string name="import_failed">Bu dosya içe aktarılamadı</string>
+    <string name="exported">Kişiler Download/%s konumuna kaydedildi</string>
+    <string name="export_failed">Kişiler dışa aktarılamadı</string>
+</resources>

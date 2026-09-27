@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (fr). Source: kai/l10n/fr.txt -->
+<resources>
+    <string name="subtitle">Applications officielles, optimisées pour KiroOS</string>
+    <string name="section_featured">À la une</string>
+    <string name="section_games">Jeux</string>
+    <string name="section_utility">Utilitaires</string>
+    <string name="section_kiro">Applications Kiro</string>
+    <string name="get">Obtenir</string>
+    <string name="open">Ouvrir</string>
+    <string name="installed">Installée et optimisée pour KiroOS</string>
+    <string name="install_failed">Installation impossible : réessayez plus tard</string>
+    <string name="badge_optimized">Optimisée pour KiroOS</string>
+    <string name="badge_kiro">Application KiroOS</string>
+</resources>

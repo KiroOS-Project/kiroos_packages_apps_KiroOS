@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (pt). Source: kai/l10n/pt.txt -->
+<resources>
+    <string name="app_name">Relógio</string>
+    <string name="tab_alarms">Alarmes</string>
+    <string name="tab_world">Relógio mundial</string>
+    <string name="tab_timer">Timer</string>
+    <string name="tab_stopwatch">Cronômetro</string>
+    <string name="alarm">Alarme</string>
+    <string name="no_alarms">Nenhum alarme</string>
+    <string name="add_alarm">Adicionar alarme</string>
+    <string name="alarm_set">Alarme definido para %s</string>
+    <string name="alarm_in_minutes">Alarme em %d min</string>
+    <string name="alarm_in_hours">Alarme em %1$d h %2$d min</string>
+    <string name="alarm_in_days">Alarme em %1$d d %2$d h</string>
+    <string name="once">Uma vez</string>
+    <string name="every_day">Todos os dias</string>
+    <string name="weekdays">De segunda a sexta</string>
+    <string name="weekend">Fim de semana</string>
+    <string name="snoozed_until">Adiado até %s</string>
+    <string name="label">Marcador</string>
+    <string name="sound">Som do alarme</string>
+    <string name="default_sound">Som padrão</string>
+    <string name="silent">Silencioso</string>
+    <string name="vibrate">Vibrar</string>
+    <string name="save">Salvar</string>
+    <string name="delete">Excluir</string>
+    <string name="snooze">Soneca</string>
+    <string name="snooze_minutes">Soneca de %d min</string>
+    <string name="dismiss">Dispensar</string>
+    <string name="missed_alarm">Alarme perdido</string>
+    <string name="timer">Timer</string>
+    <string name="timer_done">O tempo acabou</string>
+    <string name="timer_paused">Pausado · faltam %s</string>
+    <string name="stop">Parar</string>
+    <string name="start">Iniciar</string>
+    <string name="pause">Pausar</string>
+    <string name="resume">Retomar</string>
+    <string name="reset">Redefinir</string>
+    <string name="lap">Volta</string>
+    <string name="lap_row">Volta %1$d    %2$s    %3$s</string>
+    <string name="add_city">Adicionar cidade</string>
+    <string name="search_city">Pesquisar cidade</string>
+    <string name="remove_city">Remover %s?</string>
+    <string name="same_time">Mesmo horário</string>
+</resources>

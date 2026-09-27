@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="app_name">Nachrichten</string>
+    <string name="search">Nachrichten suchen</string>
+    <string name="make_default">Kiro Messages ist nicht deine SMS-App. Tippe hier, um sie als Standard festzulegen und Nachrichten hier zu senden und zu empfangen.</string>
+    <string name="no_conversations">Keine Unterhaltungen</string>
+    <string name="no_results">Nichts gefunden</string>
+    <string name="new_message">Neue Nachricht</string>
+    <string name="picture">Bild</string>
+    <string name="delete_conversation">Unterhaltung löschen</string>
+    <string name="delete_conversation_confirm">Alle Nachrichten mit %s löschen?</string>
+    <string name="delete">Löschen</string>
+    <string name="back">Zurück</string>
+    <string name="call">Anrufen</string>
+    <string name="to_hint">An: Name oder Nummer</string>
+    <string name="remove_attachment">Bild entfernen</string>
+    <string name="attach">Bild anhängen</string>
+    <string name="compose_hint">Nachricht</string>
+    <string name="send">Senden</string>
+    <string name="me">Ich</string>
+    <string name="reply">Antworten</string>
+    <string name="mark_read">Als gelesen markieren</string>
+    <string name="send_failed_title">Nachricht nicht gesendet</string>
+    <string name="send_failed_text">Öffne die Unterhaltung und tippe auf die Nachricht, um es erneut zu versuchen.</string>
+    <string name="download_failed_title">Bildnachricht nicht heruntergeladen</string>
+    <string name="download_failed_text">Zum Herunterladen von MMS sind mobile Daten nötig. Der Mobilfunkanbieter versucht es erneut.</string>
+    <string name="no_recipients">Empfänger hinzufügen</string>
+    <string name="not_default">Lege Kiro Messages als Standard-SMS-App fest, um Nachrichten zu senden</string>
+    <string name="copy_text">Text kopieren</string>
+    <string name="forward">Weiterleiten</string>
+    <string name="resend">Erneut senden</string>
+    <string name="copied">Kopiert</string>
+    <string name="not_sent_retry">Nicht gesendet · zum Wiederholen tippen</string>
+    <string name="sending">Wird gesendet…</string>
+    <string name="received">Empfangen</string>
+    <string name="sent">Gesendet</string>
+</resources>

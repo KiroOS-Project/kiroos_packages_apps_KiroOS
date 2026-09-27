@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="search_apps">Поиск приложений</string>
+    <string name="app_not_available">Приложение недоступно</string>
+    <string name="remove_from_home">Убрать с главного экрана</string>
+    <string name="add_to_home">Добавить на главный экран</string>
+    <string name="app_info">О приложении</string>
+    <string name="uninstall">Удалить</string>
+    <string name="home_full">На главном экране нет места</string>
+    <string name="add_widget">Добавить виджет</string>
+    <string name="wallpaper">Обои</string>
+    <string name="settings">Настройки</string>
+    <string name="remove_widget">Убрать виджет</string>
+    <string name="remove_clock">Убрать часы</string>
+    <string name="show_clock">Показать часы</string>
+    <string name="folder_default">Папка</string>
+</resources>

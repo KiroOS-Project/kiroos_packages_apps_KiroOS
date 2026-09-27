@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Календарь</string>
+    <string name="today">Сегодня</string>
+    <string name="previous_month">Предыдущий месяц</string>
+    <string name="next_month">Следующий месяц</string>
+    <string name="no_events">Нет событий</string>
+    <string name="new_event">Новое событие</string>
+    <string name="no_title">(Без названия)</string>
+    <string name="all_day">Весь день</string>
+    <string name="back">Назад</string>
+    <string name="edit">Изменить</string>
+    <string name="delete">Удалить</string>
+    <string name="save">Сохранить</string>
+    <string name="dismiss">Закрыть</string>
+    <string name="event_missing">Это событие больше не существует</string>
+    <string name="delete_event">Удалить это событие?</string>
+    <string name="delete_series">Удалить это событие и все его повторения?</string>
+    <string name="no_maps">Нет приложения карт</string>
+    <string name="title_hint">Название</string>
+    <string name="location_hint">Место</string>
+    <string name="description_hint">Заметки</string>
+    <string name="repeat">Повтор</string>
+    <string name="reminder">Напоминание</string>
+    <string name="calendar">Календарь</string>
+    <string name="repeat_none">Не повторяется</string>
+    <string name="repeat_daily">Каждый день</string>
+    <string name="repeat_weekly">Каждую неделю</string>
+    <string name="repeat_monthly">Каждый месяц</string>
+    <string name="repeat_yearly">Каждый год</string>
+    <string name="no_reminder">Без напоминания</string>
+    <string name="at_start">В начале</string>
+    <string name="minutes_before">За %d мин.</string>
+    <string name="hours_before">За %d ч</string>
+    <string name="days_before">За %d дн.</string>
+    <string name="weeks_before">За %d нед.</string>
+    <string name="phone_calendar">Телефон</string>
+    <string name="no_calendar">Нет календаря, доступного для записи. Разрешите доступ к Календарю и повторите попытку.</string>
+    <string name="save_failed">Не удалось сохранить событие</string>
+</resources>

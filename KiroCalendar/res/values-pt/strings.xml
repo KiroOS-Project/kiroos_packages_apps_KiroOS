@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (pt). Source: kai/l10n/pt.txt -->
+<resources>
+    <string name="app_name">Agenda</string>
+    <string name="today">Hoje</string>
+    <string name="previous_month">Mês anterior</string>
+    <string name="next_month">Próximo mês</string>
+    <string name="no_events">Nenhum evento</string>
+    <string name="new_event">Novo evento</string>
+    <string name="no_title">(Sem título)</string>
+    <string name="all_day">Dia inteiro</string>
+    <string name="back">Voltar</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Excluir</string>
+    <string name="save">Salvar</string>
+    <string name="dismiss">Fechar</string>
+    <string name="event_missing">Este evento não existe mais</string>
+    <string name="delete_event">Excluir este evento?</string>
+    <string name="delete_series">Excluir este evento e todas as repetições?</string>
+    <string name="no_maps">Nenhum app de mapas</string>
+    <string name="title_hint">Título</string>
+    <string name="location_hint">Local</string>
+    <string name="description_hint">Notas</string>
+    <string name="repeat">Repetir</string>
+    <string name="reminder">Lembrete</string>
+    <string name="calendar">Agenda</string>
+    <string name="repeat_none">Não se repete</string>
+    <string name="repeat_daily">Todos os dias</string>
+    <string name="repeat_weekly">Toda semana</string>
+    <string name="repeat_monthly">Todo mês</string>
+    <string name="repeat_yearly">Todo ano</string>
+    <string name="no_reminder">Sem lembrete</string>
+    <string name="at_start">No início</string>
+    <string name="minutes_before">%d minutos antes</string>
+    <string name="hours_before">%d horas antes</string>
+    <string name="days_before">%d dias antes</string>
+    <string name="weeks_before">%d semanas antes</string>
+    <string name="phone_calendar">Telefone</string>
+    <string name="no_calendar">Nenhuma agenda pode ser gravada. Permita o acesso à Agenda e tente novamente.</string>
+    <string name="save_failed">Não foi possível salvar o evento</string>
+</resources>

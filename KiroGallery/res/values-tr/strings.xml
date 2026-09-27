@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="app_name">Galeri</string>
+    <string name="choose">Seç</string>
+    <string name="photos">Fotoğraflar</string>
+    <string name="albums">Albümler</string>
+    <string name="camera">Kamera</string>
+    <string name="nothing_here">Fotoğraf veya video yok</string>
+    <string name="back">Geri</string>
+    <string name="share">Paylaş</string>
+    <string name="edit">Düzenle</string>
+    <string name="details">Ayrıntılar</string>
+    <string name="delete">Sil</string>
+    <string name="set_as">Şu şekilde ayarla</string>
+    <string name="play">Oynat</string>
+    <string name="no_editor">Yüklü fotoğraf düzenleyici yok</string>
+    <string name="delete_photo">Bu fotoğraf silinsin mi?</string>
+    <string name="delete_video">Bu video silinsin mi?</string>
+    <string name="delete_failed">Silinemedi</string>
+    <string name="cannot_play">Bu video oynatılamıyor</string>
+    <string name="info_name">Ad: %s</string>
+    <string name="info_date">Tarih: %s</string>
+    <string name="info_size">Boyut: %1$d × %2$d · %3$s</string>
+    <string name="info_length">Süre: %s</string>
+    <string name="info_path">Yol: %s</string>
+</resources>

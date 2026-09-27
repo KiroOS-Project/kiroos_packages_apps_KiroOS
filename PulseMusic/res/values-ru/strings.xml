@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="songs">Треки</string>
+    <string name="albums">Альбомы</string>
+    <string name="artists">Исполнители</string>
+    <string name="streams">Потоки</string>
+    <string name="stream">Поток</string>
+    <string name="unknown">Неизвестно</string>
+    <string name="no_music">На телефоне не найдено музыки</string>
+    <string name="no_streams">Добавьте интернет-радио или прямую ссылку на аудио (MP3, AAC, FLAC, OGG или плейлисты .m3u / .pls)</string>
+    <string name="stream_hint">Ссылка на поток (https://…)</string>
+    <string name="stream_name">Название</string>
+    <string name="save_stream">Сохранить этот поток?</string>
+    <string name="save_and_play">Сохранить и воспроизвести</string>
+    <string name="just_play">Только воспроизвести</string>
+    <string name="remove_stream">Удалить %s?</string>
+    <string name="remove">Удалить</string>
+    <string name="bad_url">Можно воспроизводить только ссылки http и https</string>
+    <string name="play">Воспроизвести</string>
+    <string name="pause">Пауза</string>
+    <string name="next">Следующий</string>
+    <string name="previous">Предыдущий</string>
+    <string name="shuffle">Перемешать</string>
+    <string name="repeat">Повтор</string>
+    <string name="close">Закрыть</string>
+    <string name="back">Назад</string>
+    <string name="buffering">Буферизация…</string>
+    <string name="live">В эфире</string>
+    <string name="mono">моно</string>
+    <string name="stereo">стерео</string>
+    <string name="play_error">Не удаётся воспроизвести: %s</string>
+    <string name="equalizer">Эквалайзер</string>
+    <string name="preamp">Предусилитель</string>
+    <string name="preamp_hint">Уменьшите его, когда поднимаете полосы, чтобы избежать искажений</string>
+    <string name="preset_flat">Ровный</string>
+    <string name="preset_bass">Басы</string>
+    <string name="preset_vocal">Вокал</string>
+    <string name="preset_treble">Высокие</string>
+    <string name="preset_rock">Рок</string>
+    <string name="preset_pop">Поп</string>
+    <string name="preset_classical">Классика</string>
+    <string name="preset_electronic">Электроника</string>
+    <plurals name="songs">
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d трека</item>
+    </plurals>
+</resources>

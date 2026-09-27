@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Галерея</string>
+    <string name="choose">Выбрать</string>
+    <string name="photos">Фото</string>
+    <string name="albums">Альбомы</string>
+    <string name="camera">Камера</string>
+    <string name="nothing_here">Нет фото и видео</string>
+    <string name="back">Назад</string>
+    <string name="share">Поделиться</string>
+    <string name="edit">Изменить</string>
+    <string name="details">Сведения</string>
+    <string name="delete">Удалить</string>
+    <string name="set_as">Установить как</string>
+    <string name="play">Воспроизвести</string>
+    <string name="no_editor">Не установлен фоторедактор</string>
+    <string name="delete_photo">Удалить это фото?</string>
+    <string name="delete_video">Удалить это видео?</string>
+    <string name="delete_failed">Не удалось удалить</string>
+    <string name="cannot_play">Не удаётся воспроизвести это видео</string>
+    <string name="info_name">Имя: %s</string>
+    <string name="info_date">Дата: %s</string>
+    <string name="info_size">Размер: %1$d × %2$d · %3$s</string>
+    <string name="info_length">Длительность: %s</string>
+    <string name="info_path">Путь: %s</string>
+</resources>

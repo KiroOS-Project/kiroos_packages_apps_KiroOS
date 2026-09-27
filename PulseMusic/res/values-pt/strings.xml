@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (pt). Source: kai/l10n/pt.txt -->
+<resources>
+    <string name="songs">Músicas</string>
+    <string name="albums">Álbuns</string>
+    <string name="artists">Artistas</string>
+    <string name="unknown">Desconhecido</string>
+    <string name="no_music">Nenhuma música encontrada no telefone</string>
+    <string name="no_streams">Adicione uma rádio web ou um link de áudio direto (MP3, AAC, FLAC, OGG ou playlists .m3u / .pls)</string>
+    <string name="stream_hint">Link do stream (https://…)</string>
+    <string name="stream_name">Nome</string>
+    <string name="save_stream">Salvar este stream?</string>
+    <string name="save_and_play">Salvar e reproduzir</string>
+    <string name="just_play">Só reproduzir</string>
+    <string name="remove_stream">Remover %s?</string>
+    <string name="remove">Remover</string>
+    <string name="bad_url">Só links http e https podem ser transmitidos</string>
+    <string name="play">Reproduzir</string>
+    <string name="pause">Pausar</string>
+    <string name="next">Próxima</string>
+    <string name="previous">Anterior</string>
+    <string name="shuffle">Aleatório</string>
+    <string name="repeat">Repetir</string>
+    <string name="close">Fechar</string>
+    <string name="back">Voltar</string>
+    <string name="buffering">Carregando…</string>
+    <string name="live">Ao vivo</string>
+    <string name="stereo">estéreo</string>
+    <string name="play_error">Não é possível reproduzir: %s</string>
+    <string name="equalizer">Equalizador</string>
+    <string name="preamp">Pré-amplificador</string>
+    <string name="preamp_hint">Abaixe-o ao aumentar as bandas para evitar distorção</string>
+    <string name="preset_flat">Neutro</string>
+    <string name="preset_bass">Graves</string>
+    <string name="preset_treble">Agudos</string>
+    <string name="preset_classical">Clássica</string>
+    <string name="preset_electronic">Eletrônica</string>
+    <plurals name="songs">
+        <item quantity="one">%d música</item>
+        <item quantity="other">%d músicas</item>
+    </plurals>
+</resources>

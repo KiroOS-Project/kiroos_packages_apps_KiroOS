@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (fr). Source: kai/l10n/fr.txt -->
+<resources>
+    <string name="app_name">Messages</string>
+    <string name="search">Rechercher des messages</string>
+    <string name="make_default">Kiro Messages n\'est pas votre application SMS. Appuyez pour la définir par défaut et envoyer et recevoir vos messages ici.</string>
+    <string name="no_conversations">Aucune conversation</string>
+    <string name="no_results">Aucun résultat</string>
+    <string name="new_message">Nouveau message</string>
+    <string name="picture">Image</string>
+    <string name="delete_conversation">Supprimer la conversation</string>
+    <string name="delete_conversation_confirm">Supprimer tous les messages avec %s ?</string>
+    <string name="delete">Supprimer</string>
+    <string name="back">Retour</string>
+    <string name="call">Appeler</string>
+    <string name="to_hint">À : nom ou numéro</string>
+    <string name="remove_attachment">Retirer l\'image</string>
+    <string name="attach">Joindre une image</string>
+    <string name="compose_hint">Message</string>
+    <string name="send">Envoyer</string>
+    <string name="me">Moi</string>
+    <string name="reply">Répondre</string>
+    <string name="mark_read">Marquer comme lu</string>
+    <string name="send_failed_title">Message non envoyé</string>
+    <string name="send_failed_text">Ouvrez la conversation et appuyez sur le message pour réessayer.</string>
+    <string name="download_failed_title">Message image non téléchargé</string>
+    <string name="download_failed_text">Les données mobiles sont nécessaires pour télécharger les MMS. L\'opérateur réessaiera.</string>
+    <string name="no_recipients">Ajoutez un destinataire</string>
+    <string name="not_default">Définissez Kiro Messages comme application SMS par défaut pour envoyer des messages</string>
+    <string name="copy_text">Copier le texte</string>
+    <string name="forward">Transférer</string>
+    <string name="resend">Renvoyer</string>
+    <string name="copied">Copié</string>
+    <string name="not_sent_retry">Non envoyé · appuyez pour réessayer</string>
+    <string name="sending">Envoi…</string>
+    <string name="received">Reçu</string>
+    <string name="sent">Envoyé</string>
+</resources>

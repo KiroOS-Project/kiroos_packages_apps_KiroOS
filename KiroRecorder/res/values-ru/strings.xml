@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Диктофон</string>
+    <string name="file_prefix">Запись</string>
+    <string name="record">Записать</string>
+    <string name="recording">Запись</string>
+    <string name="paused">Пауза</string>
+    <string name="pause">Пауза</string>
+    <string name="resume">Продолжить</string>
+    <string name="stop">Стоп</string>
+    <string name="no_recordings">Записей пока нет</string>
+    <string name="need_permissions">Для записи нужен доступ к микрофону и памяти</string>
+    <string name="cannot_play">Не удаётся воспроизвести этот файл</string>
+    <string name="share">Поделиться</string>
+    <string name="rename">Переименовать</string>
+    <string name="rename_failed">Запись с таким именем уже существует</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_confirm">Удалить %s?</string>
+</resources>

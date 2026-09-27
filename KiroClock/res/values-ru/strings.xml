@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Часы</string>
+    <string name="tab_alarms">Будильники</string>
+    <string name="tab_world">Мировое время</string>
+    <string name="tab_timer">Таймер</string>
+    <string name="tab_stopwatch">Секундомер</string>
+    <string name="alarm">Будильник</string>
+    <string name="no_alarms">Нет будильников</string>
+    <string name="add_alarm">Добавить будильник</string>
+    <string name="alarm_set">Будильник установлен на %s</string>
+    <string name="alarm_in_minutes">Будильник через %d мин</string>
+    <string name="alarm_in_hours">Будильник через %1$d ч %2$d мин</string>
+    <string name="alarm_in_days">Будильник через %1$d дн. %2$d ч</string>
+    <string name="once">Однократно</string>
+    <string name="every_day">Каждый день</string>
+    <string name="weekdays">С понедельника по пятницу</string>
+    <string name="weekend">Выходные</string>
+    <string name="snoozed_until">Отложено до %s</string>
+    <string name="label">Метка</string>
+    <string name="sound">Звук будильника</string>
+    <string name="default_sound">Звук по умолчанию</string>
+    <string name="silent">Без звука</string>
+    <string name="vibrate">Вибрация</string>
+    <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="snooze">Отложить</string>
+    <string name="snooze_minutes">Отложить на %d мин</string>
+    <string name="dismiss">Выключить</string>
+    <string name="missed_alarm">Пропущенный будильник</string>
+    <string name="timer">Таймер</string>
+    <string name="timer_done">Время вышло</string>
+    <string name="timer_paused">Пауза · осталось %s</string>
+    <string name="add_minute">+1 мин</string>
+    <string name="stop">Стоп</string>
+    <string name="start">Старт</string>
+    <string name="pause">Пауза</string>
+    <string name="resume">Продолжить</string>
+    <string name="reset">Сбросить</string>
+    <string name="lap">Круг</string>
+    <string name="lap_row">Круг %1$d    %2$s    %3$s</string>
+    <string name="unit_h">ч</string>
+    <string name="unit_min">мин</string>
+    <string name="unit_s">с</string>
+    <string name="add_city">Добавить город</string>
+    <string name="search_city">Найти город</string>
+    <string name="remove_city">Удалить %s?</string>
+    <string name="same_time">То же время</string>
+    <string name="offset_h">%1$s%2$d ч</string>
+    <string name="offset_h_min">%1$s%2$d ч %3$d мин</string>
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="songs">Titel</string>
+    <string name="albums">Alben</string>
+    <string name="artists">Künstler</string>
+    <string name="unknown">Unbekannt</string>
+    <string name="no_music">Keine Musik auf dem Telefon gefunden</string>
+    <string name="no_streams">Füge ein Webradio oder einen direkten Audiolink hinzu (MP3, AAC, FLAC, OGG oder .m3u-/.pls-Playlists)</string>
+    <string name="stream_hint">Stream-Link (https://…)</string>
+    <string name="stream_name">Name</string>
+    <string name="save_stream">Diesen Stream speichern?</string>
+    <string name="save_and_play">Speichern und abspielen</string>
+    <string name="just_play">Nur abspielen</string>
+    <string name="remove_stream">%s entfernen?</string>
+    <string name="remove">Entfernen</string>
+    <string name="bad_url">Nur http- und https-Links können gestreamt werden</string>
+    <string name="play">Abspielen</string>
+    <string name="pause">Pause</string>
+    <string name="next">Weiter</string>
+    <string name="previous">Zurück</string>
+    <string name="shuffle">Zufällig</string>
+    <string name="repeat">Wiederholen</string>
+    <string name="close">Schließen</string>
+    <string name="back">Zurück</string>
+    <string name="buffering">Puffern…</string>
+    <string name="play_error">Wiedergabe nicht möglich: %s</string>
+    <string name="preamp">Vorverstärker</string>
+    <string name="preamp_hint">Senke ihn, wenn du Bänder anhebst, um Verzerrungen zu vermeiden</string>
+    <string name="preset_flat">Neutral</string>
+    <string name="preset_vocal">Gesang</string>
+    <string name="preset_treble">Höhen</string>
+    <string name="preset_classical">Klassik</string>
+    <string name="preset_electronic">Elektronisch</string>
+    <plurals name="songs">
+        <item quantity="one">%d Titel</item>
+        <item quantity="other">%d Titel</item>
+    </plurals>
+</resources>

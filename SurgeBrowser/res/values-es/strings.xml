@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="url_hint">Busca o escribe una dirección</string>
+    <string name="new_tab">Nueva pestaña</string>
+    <string name="tabs">Pestañas</string>
+    <string name="tabs_hint">Toca para cambiar · mantén pulsado para cerrar</string>
+    <string name="menu">Menú</string>
+    <string name="forward">Adelante</string>
+    <string name="reload">Recargar</string>
+    <string name="add_bookmark">Añadir marcador</string>
+    <string name="bookmarks">Marcadores</string>
+    <string name="history">Historial</string>
+    <string name="share">Compartir</string>
+    <string name="desktop_site">Versión para ordenador</string>
+    <string name="adblock">Bloquear anuncios y rastreadores</string>
+    <string name="search_engine">Motor de búsqueda</string>
+    <string name="clear_data">Borrar datos de navegación</string>
+    <string name="clear_data_confirm">¿Eliminar cookies, caché, datos de sitios e historial?</string>
+    <string name="clear">Borrar</string>
+    <string name="cleared">Datos de navegación borrados</string>
+    <string name="blocked_here">%d anuncios y rastreadores bloqueados en esta página</string>
+    <string name="no_app">Ninguna app puede abrir este enlace</string>
+    <string name="open_new_tab">Abrir en una pestaña nueva</string>
+    <string name="opened_in_background">Abierto en una pestaña nueva</string>
+    <string name="copy_link">Copiar enlace</string>
+    <string name="share_link">Compartir enlace</string>
+    <string name="download_image">Descargar imagen</string>
+    <string name="copied">Copiado</string>
+    <string name="downloading">Descargando %s</string>
+    <string name="download_failed">No se puede descargar este archivo</string>
+    <string name="location_prompt">%s quiere usar tu ubicación</string>
+    <string name="media_prompt">%s quiere usar la cámara o el micrófono</string>
+    <string name="allow">Permitir</string>
+    <string name="deny">Denegar</string>
+    <string name="start_hint">Privado por defecto: los anuncios y rastreadores se bloquean.</string>
+    <string name="already_bookmarked">Ya está en marcadores</string>
+    <string name="bookmarked">Marcador añadido</string>
+    <string name="no_bookmarks">Aún no hay marcadores</string>
+    <string name="no_history">No hay historial</string>
+    <string name="edit_bookmarks">Quitar…</string>
+    <string name="remove_bookmarks">Quitar marcadores</string>
+    <string name="remove">Quitar</string>
+</resources>

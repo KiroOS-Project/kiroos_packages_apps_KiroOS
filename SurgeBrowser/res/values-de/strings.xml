@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="url_hint">Suchen oder Adresse eingeben</string>
+    <string name="new_tab">Neuer Tab</string>
+    <string name="tabs">Tabs</string>
+    <string name="tabs_hint">Tippen zum Wechseln · lange drücken zum Schließen</string>
+    <string name="menu">Menü</string>
+    <string name="forward">Vorwärts</string>
+    <string name="reload">Neu laden</string>
+    <string name="add_bookmark">Lesezeichen hinzufügen</string>
+    <string name="bookmarks">Lesezeichen</string>
+    <string name="history">Verlauf</string>
+    <string name="share">Teilen</string>
+    <string name="desktop_site">Desktop-Version</string>
+    <string name="adblock">Werbung und Tracker blockieren</string>
+    <string name="search_engine">Suchmaschine</string>
+    <string name="clear_data">Browserdaten löschen</string>
+    <string name="clear_data_confirm">Cookies, Cache, Websitedaten und Verlauf löschen?</string>
+    <string name="clear">Löschen</string>
+    <string name="cleared">Browserdaten gelöscht</string>
+    <string name="blocked_here">%d Werbeanzeigen und Tracker auf dieser Seite blockiert</string>
+    <string name="no_app">Keine App kann diesen Link öffnen</string>
+    <string name="open_new_tab">In neuem Tab öffnen</string>
+    <string name="opened_in_background">In einem neuen Tab geöffnet</string>
+    <string name="copy_link">Link kopieren</string>
+    <string name="share_link">Link teilen</string>
+    <string name="download_image">Bild herunterladen</string>
+    <string name="copied">Kopiert</string>
+    <string name="downloading">%s wird heruntergeladen</string>
+    <string name="download_failed">Diese Datei kann nicht heruntergeladen werden</string>
+    <string name="location_prompt">%s möchte deinen Standort verwenden</string>
+    <string name="media_prompt">%s möchte die Kamera oder das Mikrofon verwenden</string>
+    <string name="allow">Zulassen</string>
+    <string name="deny">Ablehnen</string>
+    <string name="start_hint">Standardmäßig privat: Werbung und Tracker werden blockiert.</string>
+    <string name="already_bookmarked">Bereits in den Lesezeichen</string>
+    <string name="bookmarked">Lesezeichen hinzugefügt</string>
+    <string name="no_bookmarks">Noch keine Lesezeichen</string>
+    <string name="no_history">Kein Verlauf</string>
+    <string name="edit_bookmarks">Entfernen…</string>
+    <string name="remove_bookmarks">Lesezeichen entfernen</string>
+    <string name="remove">Entfernen</string>
+</resources>

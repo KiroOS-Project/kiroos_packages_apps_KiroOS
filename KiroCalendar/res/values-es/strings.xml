@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="app_name">Calendario</string>
+    <string name="today">Hoy</string>
+    <string name="previous_month">Mes anterior</string>
+    <string name="next_month">Mes siguiente</string>
+    <string name="no_events">No hay eventos</string>
+    <string name="new_event">Nuevo evento</string>
+    <string name="no_title">(Sin título)</string>
+    <string name="all_day">Todo el día</string>
+    <string name="back">Atrás</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="save">Guardar</string>
+    <string name="dismiss">Cerrar</string>
+    <string name="event_missing">Este evento ya no existe</string>
+    <string name="delete_event">¿Eliminar este evento?</string>
+    <string name="delete_series">¿Eliminar este evento y todas sus repeticiones?</string>
+    <string name="no_maps">No hay ninguna app de mapas</string>
+    <string name="title_hint">Título</string>
+    <string name="location_hint">Lugar</string>
+    <string name="description_hint">Notas</string>
+    <string name="repeat">Repetir</string>
+    <string name="reminder">Recordatorio</string>
+    <string name="calendar">Calendario</string>
+    <string name="repeat_none">No se repite</string>
+    <string name="repeat_daily">Cada día</string>
+    <string name="repeat_weekly">Cada semana</string>
+    <string name="repeat_monthly">Cada mes</string>
+    <string name="repeat_yearly">Cada año</string>
+    <string name="no_reminder">Sin recordatorio</string>
+    <string name="at_start">Al empezar</string>
+    <string name="minutes_before">%d minutos antes</string>
+    <string name="hours_before">%d horas antes</string>
+    <string name="days_before">%d días antes</string>
+    <string name="weeks_before">%d semanas antes</string>
+    <string name="phone_calendar">Teléfono</string>
+    <string name="no_calendar">No se puede escribir en ningún calendario. Permite el acceso al Calendario y vuelve a intentarlo.</string>
+    <string name="save_failed">No se pudo guardar el evento</string>
+</resources>

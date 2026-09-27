@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="songs">Şarkılar</string>
+    <string name="albums">Albümler</string>
+    <string name="artists">Sanatçılar</string>
+    <string name="streams">Yayınlar</string>
+    <string name="stream">Yayın</string>
+    <string name="unknown">Bilinmiyor</string>
+    <string name="no_music">Telefonda müzik bulunamadı</string>
+    <string name="no_streams">Bir web radyosu veya doğrudan ses bağlantısı ekleyin (MP3, AAC, FLAC, OGG veya .m3u / .pls çalma listeleri)</string>
+    <string name="stream_hint">Yayın bağlantısı (https://…)</string>
+    <string name="stream_name">Ad</string>
+    <string name="save_stream">Bu yayın kaydedilsin mi?</string>
+    <string name="save_and_play">Kaydet ve oynat</string>
+    <string name="just_play">Sadece oynat</string>
+    <string name="remove_stream">%s kaldırılsın mı?</string>
+    <string name="remove">Kaldır</string>
+    <string name="bad_url">Yalnızca http ve https bağlantıları oynatılabilir</string>
+    <string name="play">Oynat</string>
+    <string name="pause">Duraklat</string>
+    <string name="next">Sonraki</string>
+    <string name="previous">Önceki</string>
+    <string name="shuffle">Karıştır</string>
+    <string name="repeat">Tekrarla</string>
+    <string name="close">Kapat</string>
+    <string name="back">Geri</string>
+    <string name="buffering">Arabelleğe alınıyor…</string>
+    <string name="live">Canlı</string>
+    <string name="play_error">Oynatılamıyor: %s</string>
+    <string name="equalizer">Ekolayzer</string>
+    <string name="preamp">Ön yükseltici</string>
+    <string name="preamp_hint">Bantları yükseltirken bozulmayı önlemek için bunu düşürün</string>
+    <string name="preset_flat">Düz</string>
+    <string name="preset_bass">Bas</string>
+    <string name="preset_vocal">Vokal</string>
+    <string name="preset_treble">Tiz</string>
+    <string name="preset_classical">Klasik</string>
+    <string name="preset_electronic">Elektronik</string>
+    <plurals name="songs">
+        <item quantity="one">%d şarkı</item>
+        <item quantity="other">%d şarkı</item>
+    </plurals>
+</resources>

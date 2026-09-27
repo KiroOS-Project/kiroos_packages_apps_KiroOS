@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="app_name">Archivos</string>
+    <string name="back">Atrás</string>
+    <string name="more">Más opciones</string>
+    <string name="internal_storage">Almacenamiento interno</string>
+    <string name="sd_card">Tarjeta SD</string>
+    <string name="root_folder">Raíz (/)</string>
+    <string name="storage_used">%1$s usados de %2$s</string>
+    <string name="locations">Ubicaciones</string>
+    <string name="downloads">Descargas</string>
+    <string name="images">Imágenes</string>
+    <string name="videos">Vídeos</string>
+    <string name="documents">Documentos</string>
+    <string name="empty_folder">Esta carpeta está vacía</string>
+    <string name="no_access">Sin acceso. Activa el acceso root en el menú para abrir las carpetas del sistema.</string>
+    <string name="open_with">Abrir con</string>
+    <string name="no_app">Ninguna app puede abrir este archivo</string>
+    <string name="selected">%d seleccionados</string>
+    <string name="copy">Copiar</string>
+    <string name="cut">Cortar</string>
+    <string name="share">Compartir</string>
+    <string name="delete">Eliminar</string>
+    <string name="rename">Cambiar nombre</string>
+    <string name="details">Detalles</string>
+    <string name="paste">Pegar</string>
+    <string name="copied_n">%d copiados: abre una carpeta y pega</string>
+    <string name="cut_n">%d cortados: abre una carpeta y pega</string>
+    <string name="copy_here">Copiar %d aquí</string>
+    <string name="move_here">Mover %d aquí</string>
+    <string name="nothing_to_share">Las carpetas no se pueden compartir</string>
+    <string name="delete_one">¿Eliminar %s?</string>
+    <string name="delete_many">¿Eliminar %d elementos?</string>
+    <string name="rename_failed">No se puede cambiar el nombre: ya existe o la ubicación es de solo lectura</string>
+    <string name="new_folder">Nueva carpeta</string>
+    <string name="folder_name">Nombre de la carpeta</string>
+    <string name="mkdir_failed">No se puede crear la carpeta aquí</string>
+    <string name="copying">Copiando…</string>
+    <string name="moving">Moviendo…</string>
+    <string name="deleting">Eliminando…</string>
+    <string name="op_failed">No se pudieron procesar %d elementos</string>
+    <string name="sort_name">Ordenar por nombre</string>
+    <string name="sort_date">Ordenar por fecha</string>
+    <string name="sort_size">Ordenar por tamaño</string>
+    <string name="show_hidden">Mostrar archivos ocultos</string>
+    <string name="root_access">Acceso root</string>
+    <string name="root_on">Acceso root activado. Ten cuidado con los archivos del sistema.</string>
+    <string name="root_missing">Root no está disponible (no hay su o se ha denegado)</string>
+    <string name="info_path">Ruta: %s</string>
+    <string name="info_modified">Modificado: %s</string>
+    <string name="info_type">Tipo: %s</string>
+    <string name="info_items">%d elementos</string>
+    <string name="info_size">Tamaño: %s</string>
+</resources>

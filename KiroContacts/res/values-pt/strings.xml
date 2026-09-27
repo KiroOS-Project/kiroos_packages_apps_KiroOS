@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (pt). Source: kai/l10n/pt.txt -->
+<resources>
+    <string name="app_name">Contatos</string>
+    <string name="choose">Escolha um contato</string>
+    <string name="search">Pesquisar contatos</string>
+    <string name="no_contacts">Nenhum contato</string>
+    <string name="no_results">Nada encontrado</string>
+    <string name="no_name">(Sem nome)</string>
+    <string name="favourites">Favoritos</string>
+    <string name="favourite">Favorito</string>
+    <string name="new_contact">Novo contato</string>
+    <string name="more">Mais opções</string>
+    <string name="back">Voltar</string>
+    <string name="edit">Editar</string>
+    <string name="call">Ligar</string>
+    <string name="message">Mensagem</string>
+    <string name="email">E-mail</string>
+    <string name="phone">Telefone</string>
+    <string name="company">Empresa</string>
+    <string name="website">Site</string>
+    <string name="note">Nota</string>
+    <string name="nickname">Apelido</string>
+    <string name="address">Endereço</string>
+    <string name="birthday">Aniversário</string>
+    <string name="ringtone">Toque</string>
+    <string name="set_ringtone">Definir toque</string>
+    <string name="share">Compartilhar</string>
+    <string name="delete">Excluir</string>
+    <string name="remove">Remover</string>
+    <string name="delete_confirm">Excluir %s?</string>
+    <string name="contact_missing">Este contato não existe mais</string>
+    <string name="no_app">Nenhum app pode fazer isso</string>
+    <string name="save">Salvar</string>
+    <string name="first_name">Nome</string>
+    <string name="last_name">Sobrenome</string>
+    <string name="add_phone">+ Adicionar telefone</string>
+    <string name="add_email">+ Adicionar e-mail</string>
+    <string name="more_fields">Mais</string>
+    <string name="change_photo">Alterar foto</string>
+    <string name="photo_failed">Não é possível usar esta imagem</string>
+    <string name="empty_contact">Digite um nome ou um número</string>
+    <string name="save_failed">Não foi possível salvar o contato</string>
+    <string name="create_new">Criar novo contato</string>
+    <string name="add_to_existing">Adicionar a um contato existente</string>
+    <string name="import_vcf">Importar de arquivo .vcf</string>
+    <string name="export_vcf">Exportar para arquivo .vcf</string>
+    <string name="accounts">Contas</string>
+    <string name="importing">Importando contatos…</string>
+    <string name="imported">%d contatos importados</string>
+    <string name="import_failed">Não foi possível importar este arquivo</string>
+    <string name="exported">Contatos salvos em Download/%s</string>
+    <string name="export_failed">Não foi possível exportar os contatos</string>
+</resources>

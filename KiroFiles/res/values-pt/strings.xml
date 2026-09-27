@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (pt). Source: kai/l10n/pt.txt -->
+<resources>
+    <string name="app_name">Arquivos</string>
+    <string name="back">Voltar</string>
+    <string name="more">Mais opções</string>
+    <string name="internal_storage">Armazenamento interno</string>
+    <string name="sd_card">Cartão SD</string>
+    <string name="root_folder">Raiz (/)</string>
+    <string name="storage_used">%1$s usados de %2$s</string>
+    <string name="locations">Locais</string>
+    <string name="images">Imagens</string>
+    <string name="videos">Vídeos</string>
+    <string name="audio">Áudio</string>
+    <string name="documents">Documentos</string>
+    <string name="empty_folder">Esta pasta está vazia</string>
+    <string name="no_access">Sem acesso. Ative o acesso root no menu para abrir as pastas do sistema.</string>
+    <string name="open_with">Abrir com</string>
+    <string name="no_app">Nenhum app pode abrir este arquivo</string>
+    <string name="selected">%d selecionados</string>
+    <string name="copy">Copiar</string>
+    <string name="cut">Recortar</string>
+    <string name="share">Compartilhar</string>
+    <string name="delete">Excluir</string>
+    <string name="rename">Renomear</string>
+    <string name="details">Detalhes</string>
+    <string name="paste">Colar</string>
+    <string name="copied_n">%d copiados: abra uma pasta e cole</string>
+    <string name="cut_n">%d recortados: abra uma pasta e cole</string>
+    <string name="copy_here">Copiar %d aqui</string>
+    <string name="move_here">Mover %d aqui</string>
+    <string name="nothing_to_share">Não é possível compartilhar pastas</string>
+    <string name="delete_one">Excluir %s?</string>
+    <string name="delete_many">Excluir %d itens?</string>
+    <string name="rename_failed">Não é possível renomear: o nome já existe ou o local é somente leitura</string>
+    <string name="new_folder">Nova pasta</string>
+    <string name="folder_name">Nome da pasta</string>
+    <string name="mkdir_failed">Não é possível criar a pasta aqui</string>
+    <string name="copying">Copiando…</string>
+    <string name="moving">Movendo…</string>
+    <string name="deleting">Excluindo…</string>
+    <string name="op_failed">Não foi possível processar %d itens</string>
+    <string name="sort_name">Ordenar por nome</string>
+    <string name="sort_date">Ordenar por data</string>
+    <string name="sort_size">Ordenar por tamanho</string>
+    <string name="show_hidden">Mostrar arquivos ocultos</string>
+    <string name="root_access">Acesso root</string>
+    <string name="root_on">Acesso root ativado. Cuidado com os arquivos do sistema.</string>
+    <string name="root_missing">O root não está disponível (sem su, ou foi negado)</string>
+    <string name="info_path">Caminho: %s</string>
+    <string name="info_modified">Modificado: %s</string>
+    <string name="info_type">Tipo: %s</string>
+    <string name="info_items">%d itens</string>
+    <string name="info_size">Tamanho: %s</string>
+</resources>

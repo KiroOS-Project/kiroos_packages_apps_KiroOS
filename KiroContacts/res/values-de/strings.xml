@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="app_name">Kontakte</string>
+    <string name="choose">Kontakt auswählen</string>
+    <string name="search">Kontakte suchen</string>
+    <string name="no_contacts">Keine Kontakte</string>
+    <string name="no_results">Nichts gefunden</string>
+    <string name="no_name">(Kein Name)</string>
+    <string name="favourites">Favoriten</string>
+    <string name="favourite">Favorit</string>
+    <string name="new_contact">Neuer Kontakt</string>
+    <string name="more">Weitere Optionen</string>
+    <string name="back">Zurück</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="call">Anrufen</string>
+    <string name="message">Nachricht</string>
+    <string name="email">E-Mail</string>
+    <string name="phone">Telefon</string>
+    <string name="company">Firma</string>
+    <string name="website">Website</string>
+    <string name="note">Notiz</string>
+    <string name="nickname">Spitzname</string>
+    <string name="address">Adresse</string>
+    <string name="birthday">Geburtstag</string>
+    <string name="ringtone">Klingelton</string>
+    <string name="set_ringtone">Klingelton festlegen</string>
+    <string name="share">Teilen</string>
+    <string name="delete">Löschen</string>
+    <string name="remove">Entfernen</string>
+    <string name="delete_confirm">%s löschen?</string>
+    <string name="contact_missing">Dieser Kontakt existiert nicht mehr</string>
+    <string name="no_app">Keine App kann das</string>
+    <string name="save">Speichern</string>
+    <string name="first_name">Vorname</string>
+    <string name="last_name">Nachname</string>
+    <string name="add_phone">+ Telefon hinzufügen</string>
+    <string name="add_email">+ E-Mail hinzufügen</string>
+    <string name="more_fields">Mehr</string>
+    <string name="change_photo">Foto ändern</string>
+    <string name="photo_failed">Dieses Bild kann nicht verwendet werden</string>
+    <string name="empty_contact">Gib einen Namen oder eine Nummer ein</string>
+    <string name="save_failed">Der Kontakt konnte nicht gespeichert werden</string>
+    <string name="create_new">Neuen Kontakt erstellen</string>
+    <string name="add_to_existing">Zu vorhandenem Kontakt hinzufügen</string>
+    <string name="import_vcf">Aus .vcf-Datei importieren</string>
+    <string name="export_vcf">In .vcf-Datei exportieren</string>
+    <string name="accounts">Konten</string>
+    <string name="importing">Kontakte werden importiert…</string>
+    <string name="imported">%d Kontakte importiert</string>
+    <string name="import_failed">Diese Datei konnte nicht importiert werden</string>
+    <string name="exported">Kontakte in Download/%s gespeichert</string>
+    <string name="export_failed">Kontakte konnten nicht exportiert werden</string>
+</resources>

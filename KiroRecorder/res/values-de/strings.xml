@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="app_name">Rekorder</string>
+    <string name="file_prefix">Aufnahme</string>
+    <string name="record">Aufnehmen</string>
+    <string name="recording">Aufnahme läuft</string>
+    <string name="paused">Pausiert</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Fortsetzen</string>
+    <string name="stop">Stopp</string>
+    <string name="no_recordings">Noch keine Aufnahmen</string>
+    <string name="need_permissions">Zum Aufnehmen werden das Mikrofon und der Speicher benötigt</string>
+    <string name="cannot_play">Diese Datei kann nicht abgespielt werden</string>
+    <string name="share">Teilen</string>
+    <string name="rename">Umbenennen</string>
+    <string name="rename_failed">Eine Aufnahme mit diesem Namen existiert bereits</string>
+    <string name="delete">Löschen</string>
+    <string name="delete_confirm">%s löschen?</string>
+</resources>

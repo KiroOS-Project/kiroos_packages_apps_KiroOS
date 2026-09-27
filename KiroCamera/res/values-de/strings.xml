@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="app_name">Kamera</string>
+    <string name="photo">Foto</string>
+    <string name="video">Video</string>
+    <string name="shutter">Auslöser</string>
+    <string name="flash">Blitz</string>
+    <string name="grid">Raster</string>
+    <string name="raw_on">RAW an: Jedes Foto wird zusätzlich als DNG gespeichert</string>
+    <string name="raw_off">RAW aus</string>
+    <string name="last_photo">Letztes Foto</string>
+    <string name="switch_camera">Kamera wechseln</string>
+    <string name="need_camera">Kiro Camera benötigt die Kameraberechtigung</string>
+    <string name="camera_error">Die Kamera ist nicht verfügbar</string>
+    <string name="save_failed">Das Foto konnte nicht gespeichert werden</string>
+    <string name="video_error">Die Aufnahme konnte nicht gestartet werden</string>
+    <string name="timer">Selbstauslöser</string>
+    <string name="ratio">Fotoformat</string>
+    <string name="mode_night">Nacht</string>
+    <string name="mode_portrait">Porträt</string>
+    <string name="log_on">LOG-Video: flaches Profil für das Color Grading</string>
+    <string name="log_off">LOG aus</string>
+    <string name="cinema_on">Kino: 21:9 mit bis zu 60 Mbit/s</string>
+    <string name="cinema_off">Kino aus</string>
+    <string name="night_hold">Still halten…</string>
+    <string name="processing">Wird verarbeitet…</string>
+</resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="next">Weiter</string>
+    <string name="back">Zurück</string>
+    <string name="skip">Überspringen</string>
+    <string name="start">Los geht\'s</string>
+    <string name="language_title">Willkommen bei KiroOS</string>
+    <string name="language_summary">Wähle die Sprache deines Galaxy.</string>
+    <string name="wifi_title">Mit WLAN verbinden</string>
+    <string name="wifi_summary">Updates, Apps und deine Konten benötigen eine Internetverbindung.</string>
+    <string name="wifi_turning_on">WLAN wird aktiviert…</string>
+    <string name="wifi_choose">Netzwerk auswählen</string>
+    <string name="wifi_connected_to">Verbunden mit %1$s</string>
+    <string name="wifi_connecting">Verbindung mit %1$s wird hergestellt…</string>
+    <string name="wifi_failed">Netzwerk konnte nicht hinzugefügt werden, prüfe das Passwort</string>
+    <string name="wifi_state_connected">Verbunden</string>
+    <string name="wifi_secured">Gesichert</string>
+    <string name="wifi_open">Offenes Netzwerk</string>
+    <string name="wifi_password">Passwort</string>
+    <string name="wifi_connect">Verbinden</string>
+    <string name="mobile_title">Mobilfunknetz</string>
+    <string name="mobile_summary">Anrufe, Nachrichten und mobile Daten.</string>
+    <string name="mobile_no_sim">Keine SIM-Karte eingelegt</string>
+    <string name="mobile_sim_locked">Die SIM ist gesperrt: Entsperre sie mit ihrer PIN</string>
+    <string name="mobile_operator">Anbieter: %1$s</string>
+    <string name="mobile_searching">Netz wird gesucht…</string>
+    <string name="mobile_data">Mobile Daten</string>
+    <string name="mobile_data_summary">Internet, wenn du nicht im WLAN bist</string>
+    <string name="mobile_roaming_summary">Mobile Daten im Ausland (es können zusätzliche Kosten anfallen)</string>
+    <string name="fingerprint_title">Fingerabdruck</string>
+    <string name="fingerprint_summary">Entsperre dein Telefon mit einer Berührung der Home-Taste.</string>
+    <string name="fingerprint_add">Fingerabdruck hinzufügen</string>
+    <string name="fingerprint_add_another">Weiteren Fingerabdruck hinzufügen</string>
+    <string name="fingerprint_none">Noch kein Fingerabdruck hinzugefügt. Zuerst wird eine Displaysperre (PIN, Muster oder Passwort) eingerichtet.</string>
+    <string name="fingerprint_unavailable">Die Fingerabdruck-Einrichtung ist auf diesem Gerät nicht verfügbar</string>
+    <string name="stats_title">Gerätestatistiken</string>
+    <string name="stats_summary">Hilf mitzuzählen, wie viele Telefone KiroOS nutzen und mit welchen Versionen.</string>
+    <string name="stats_switch">Gerätestatistiken teilen</string>
+    <string name="stats_switch_summary">Modell, KiroOS- und Android-Version, Sprache, Land und Mobilfunkanbieter</string>
+    <string name="stats_note">Wird mit einem Zufallscode bei der Suche nach Updates gesendet. Niemals die IMEI oder die Seriennummer. Du kannst das später im Bildschirm „KiroOS-Update“ ändern.</string>
+    <string name="done_title">Alles bereit</string>
+    <string name="done_summary">Dein Galaxy ist bereit. Viel Spaß mit KiroOS.</string>
+    <plurals name="fingerprint_enrolled">
+        <item quantity="one">Ein Fingerabdruck hinzugefügt</item>
+        <item quantity="other">%d Fingerabdrücke hinzugefügt</item>
+    </plurals>
+</resources>

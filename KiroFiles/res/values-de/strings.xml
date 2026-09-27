@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="app_name">Dateien</string>
+    <string name="back">Zurück</string>
+    <string name="more">Weitere Optionen</string>
+    <string name="internal_storage">Interner Speicher</string>
+    <string name="sd_card">SD-Karte</string>
+    <string name="root_folder">Stammverzeichnis (/)</string>
+    <string name="storage_used">%1$s von %2$s belegt</string>
+    <string name="locations">Orte</string>
+    <string name="images">Bilder</string>
+    <string name="documents">Dokumente</string>
+    <string name="empty_folder">Dieser Ordner ist leer</string>
+    <string name="no_access">Kein Zugriff. Aktiviere den Root-Zugriff im Menü, um Systemordner zu öffnen.</string>
+    <string name="open_with">Öffnen mit</string>
+    <string name="no_app">Keine App kann diese Datei öffnen</string>
+    <string name="selected">%d ausgewählt</string>
+    <string name="copy">Kopieren</string>
+    <string name="cut">Ausschneiden</string>
+    <string name="share">Teilen</string>
+    <string name="delete">Löschen</string>
+    <string name="rename">Umbenennen</string>
+    <string name="paste">Einfügen</string>
+    <string name="copied_n">%d kopiert: Ordner öffnen und einfügen</string>
+    <string name="cut_n">%d ausgeschnitten: Ordner öffnen und einfügen</string>
+    <string name="copy_here">%d hierher kopieren</string>
+    <string name="move_here">%d hierher verschieben</string>
+    <string name="nothing_to_share">Ordner können nicht geteilt werden</string>
+    <string name="delete_one">%s löschen?</string>
+    <string name="delete_many">%d Elemente löschen?</string>
+    <string name="rename_failed">Umbenennen nicht möglich: Der Name ist vergeben oder der Ort ist schreibgeschützt</string>
+    <string name="new_folder">Neuer Ordner</string>
+    <string name="folder_name">Ordnername</string>
+    <string name="mkdir_failed">Der Ordner kann hier nicht erstellt werden</string>
+    <string name="copying">Wird kopiert…</string>
+    <string name="moving">Wird verschoben…</string>
+    <string name="deleting">Wird gelöscht…</string>
+    <string name="op_failed">%d Elemente konnten nicht verarbeitet werden</string>
+    <string name="sort_name">Nach Name sortieren</string>
+    <string name="sort_date">Nach Datum sortieren</string>
+    <string name="sort_size">Nach Größe sortieren</string>
+    <string name="show_hidden">Versteckte Dateien anzeigen</string>
+    <string name="root_access">Root-Zugriff</string>
+    <string name="root_on">Root-Zugriff aktiviert. Vorsicht mit Systemdateien.</string>
+    <string name="root_missing">Root ist nicht verfügbar (kein su oder es wurde verweigert)</string>
+    <string name="info_path">Pfad: %s</string>
+    <string name="info_modified">Geändert: %s</string>
+    <string name="info_type">Typ: %s</string>
+    <string name="info_items">%d Elemente</string>
+    <string name="info_size">Größe: %s</string>
+</resources>

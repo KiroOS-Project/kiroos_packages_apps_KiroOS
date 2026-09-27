@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="next">İleri</string>
+    <string name="back">Geri</string>
+    <string name="skip">Atla</string>
+    <string name="start">Başla</string>
+    <string name="language_title">KiroOS\'a hoş geldiniz</string>
+    <string name="language_summary">Galaxy\'nizin dilini seçin.</string>
+    <string name="wifi_title">Wi-Fi\'ye bağlanın</string>
+    <string name="wifi_summary">Güncellemeler, uygulamalar ve hesaplarınız için internet bağlantısı gerekir.</string>
+    <string name="wifi_turning_on">Wi-Fi açılıyor…</string>
+    <string name="wifi_choose">Bir ağ seçin</string>
+    <string name="wifi_connected_to">%1$s ağına bağlandı</string>
+    <string name="wifi_connecting">%1$s ağına bağlanılıyor…</string>
+    <string name="wifi_failed">Ağ eklenemedi, şifreyi kontrol edin</string>
+    <string name="wifi_state_connected">Bağlı</string>
+    <string name="wifi_secured">Güvenli</string>
+    <string name="wifi_open">Açık ağ</string>
+    <string name="wifi_password">Şifre</string>
+    <string name="wifi_connect">Bağlan</string>
+    <string name="mobile_title">Mobil ağ</string>
+    <string name="mobile_summary">Aramalar, mesajlar ve mobil veri.</string>
+    <string name="mobile_no_sim">SIM kart takılı değil</string>
+    <string name="mobile_sim_locked">SIM kilitli: PIN koduyla kilidini açın</string>
+    <string name="mobile_operator">Operatör: %1$s</string>
+    <string name="mobile_searching">Ağ aranıyor…</string>
+    <string name="mobile_data">Mobil veri</string>
+    <string name="mobile_data_summary">Wi-Fi\'de değilken internet</string>
+    <string name="mobile_roaming">Dolaşım</string>
+    <string name="mobile_roaming_summary">Yurt dışında mobil veri (ek ücretler uygulanabilir)</string>
+    <string name="fingerprint_title">Parmak izi</string>
+    <string name="fingerprint_summary">Telefonunuzun kilidini ana ekran tuşuna dokunarak açın.</string>
+    <string name="fingerprint_add">Parmak izi ekle</string>
+    <string name="fingerprint_add_another">Başka bir parmak izi ekle</string>
+    <string name="fingerprint_none">Henüz parmak izi eklenmedi. Önce bir ekran kilidi (PIN, desen veya şifre) ayarlanır.</string>
+    <string name="fingerprint_unavailable">Parmak izi kurulumu bu cihazda kullanılamıyor</string>
+    <string name="stats_title">Cihaz istatistikleri</string>
+    <string name="stats_summary">Kaç telefonun KiroOS kullandığını ve hangi sürümleri çalıştırdığını saymaya yardım edin.</string>
+    <string name="stats_switch">Cihaz istatistiklerini paylaş</string>
+    <string name="stats_switch_summary">Model, KiroOS ve Android sürümü, dil, ülke ve operatör</string>
+    <string name="stats_note">Güncellemeler denetlenirken rastgele bir kodla gönderilir. Asla IMEI veya seri numarası gönderilmez. Bunu daha sonra KiroOS Güncelleme ekranından değiştirebilirsiniz.</string>
+    <string name="done_title">Her şey hazır</string>
+    <string name="done_summary">Galaxy\'niz hazır. KiroOS\'un keyfini çıkarın.</string>
+    <plurals name="fingerprint_enrolled">
+        <item quantity="one">Bir parmak izi eklendi</item>
+        <item quantity="other">%d parmak izi eklendi</item>
+    </plurals>
+</resources>

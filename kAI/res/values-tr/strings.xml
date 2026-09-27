@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="ask">kAI\'ye sorun</string>
+    <string name="send">Gönder</string>
+    <string name="stop">Durdur</string>
+    <string name="new_chat">Yeni sohbet</string>
+    <string name="copied">Kopyalandı</string>
+    <string name="welcome">Çevrimdışıyken bile asistanınız</string>
+    <string name="welcome_hint">kAI doğrudan telefonda, çevrimdışıyken bile yanıt verir ve güncel bilgileri web\'de arar (dünya simgesi bunu kapatır).</string>
+    <string name="on_device">Telefonda · %s</string>
+    <string name="bridge">PC bağlantısı</string>
+    <string name="bridge_help">USB: PC\'de \"Start kAI\" çalıştırın ve 127.0.0.1 ile 11434 bağlantı noktasını koruyun. Wi-Fi: PC\'nin adresi, Ollama ağa açık olarak.</string>
+    <string name="host">Adres (127.0.0.1)</string>
+    <string name="port">Bağlantı noktası (11434)</string>
+    <string name="model_hint">Model (boş = ilk yüklenen)</string>
+    <string name="save">Kaydet</string>
+    <string name="connecting">Bağlanılıyor…</string>
+    <string name="connected">Bağlandı · %s</string>
+    <string name="default_model">varsayılan model</string>
+    <string name="not_connected">kAI modeli başlatamadı · birazdan tekrar deneyin</string>
+    <string name="no_model">Kullanılabilir model yok · birazdan tekrar deneyin</string>
+    <string name="error_answer">⚠ Yanıt yok: %s</string>
+    <string name="searching">Web\'de aranıyor…</string>
+    <string name="reading">%s okunuyor…</string>
+    <string name="sources">Kaynaklar</string>
+    <string name="web_on">Web araması açık</string>
+    <string name="web_off">Web araması kapalı</string>
+    <string name="writing">Yanıt yazılıyor…</string>
+    <string name="system_prompt">Sen kAI\'sin, Samsung Galaxy S6 üzerindeki KiroOS asistanısın. Kullanıcının dilinde açık ve kısa yanıt ver, yararlı olduğunda Markdown kullan. Bugün %s.</string>
+    <string name="web_instruction">Soruyla birlikte verilen web sonuçlarını kullanarak yanıt ver, bunlar bildiklerinden daha güncel, ve kaynakları [1] gibi belirt.</string>
+    <string name="web_system">Sen kAI\'sin. Sorunun dilinde, verilen web sonuçlarını kullanarak kısaca yanıt ver ve kaynakları [1] gibi belirt.</string>
+    <string name="web_results">Web sonuçları</string>
+    <string name="question">Soru</string>
+    <string name="model_loading">Cihazdaki model yükleniyor…</string>
+    <string name="model_title">kAI modeli</string>
+    <string name="model_missing">yüklü değil</string>
+    <string name="act_torch_on">El feneri açık.</string>
+    <string name="act_torch_off">El feneri kapalı.</string>
+    <string name="act_wifi_on">Wi‑Fi açık.</string>
+    <string name="act_wifi_off">Wi‑Fi kapalı.</string>
+    <string name="act_bt_on">Bluetooth açık.</string>
+    <string name="act_bt_off">Bluetooth kapalı.</string>
+    <string name="act_profiles">İşte pil profilleri.</string>
+    <string name="act_failed">Bunu bu telefonda yapamadım.</string>
+    <string-array name="model_descriptions">
+        <item>Anında: hızlı hesaplamalar, kısa tanımlar, telefon komutları · SmolLM2 135M</item>
+        <item>Günlük asistan: sorular, özetler · Qwen2.5 0.5B</item>
+        <item>En yetenekli: kod ve adım adım akıl yürütme (daha yavaş) · Llama 3.2 1B, Built with Llama</item>
+    </string-array>
+    <string name="voice">Konuş</string>
+    <string name="listening">Dinleniyor…</string>
+    <string name="transcribing">Anlaşılıyor…</string>
+    <string name="voice_failed">Mikrofon kullanılamıyor.</string>
+</resources>

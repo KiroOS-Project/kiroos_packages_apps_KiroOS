@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="app_name">Grabadora</string>
+    <string name="file_prefix">Grabación</string>
+    <string name="record">Grabar</string>
+    <string name="recording">Grabando</string>
+    <string name="paused">En pausa</string>
+    <string name="pause">Pausa</string>
+    <string name="resume">Reanudar</string>
+    <string name="stop">Detener</string>
+    <string name="no_recordings">Aún no hay grabaciones</string>
+    <string name="need_permissions">Se necesitan el micrófono y el almacenamiento para grabar</string>
+    <string name="cannot_play">No se puede reproducir este archivo</string>
+    <string name="share">Compartir</string>
+    <string name="rename">Cambiar nombre</string>
+    <string name="rename_failed">Ya existe una grabación con este nombre</string>
+    <string name="delete">Eliminar</string>
+    <string name="delete_confirm">¿Eliminar %s?</string>
+</resources>

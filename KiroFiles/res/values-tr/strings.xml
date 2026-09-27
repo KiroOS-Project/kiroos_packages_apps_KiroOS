@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="app_name">Dosyalar</string>
+    <string name="back">Geri</string>
+    <string name="more">Diğer seçenekler</string>
+    <string name="internal_storage">Dahili depolama</string>
+    <string name="sd_card">SD kart</string>
+    <string name="root_folder">Kök (/)</string>
+    <string name="storage_used">%2$s alanın %1$s kadarı kullanılıyor</string>
+    <string name="locations">Konumlar</string>
+    <string name="downloads">İndirilenler</string>
+    <string name="images">Resimler</string>
+    <string name="videos">Videolar</string>
+    <string name="audio">Ses</string>
+    <string name="documents">Belgeler</string>
+    <string name="empty_folder">Bu klasör boş</string>
+    <string name="no_access">Erişim yok. Sistem klasörlerini açmak için menüden root erişimini etkinleştirin.</string>
+    <string name="open_with">Birlikte aç</string>
+    <string name="no_app">Bu dosyayı açabilecek bir uygulama yok</string>
+    <string name="selected">%d seçildi</string>
+    <string name="copy">Kopyala</string>
+    <string name="cut">Kes</string>
+    <string name="share">Paylaş</string>
+    <string name="delete">Sil</string>
+    <string name="rename">Yeniden adlandır</string>
+    <string name="details">Ayrıntılar</string>
+    <string name="paste">Yapıştır</string>
+    <string name="copied_n">%d kopyalandı: bir klasör açın ve yapıştırın</string>
+    <string name="cut_n">%d kesildi: bir klasör açın ve yapıştırın</string>
+    <string name="copy_here">%d öğeyi buraya kopyala</string>
+    <string name="move_here">%d öğeyi buraya taşı</string>
+    <string name="nothing_to_share">Klasörler paylaşılamaz</string>
+    <string name="delete_one">%s silinsin mi?</string>
+    <string name="delete_many">%d öğe silinsin mi?</string>
+    <string name="rename_failed">Yeniden adlandırılamıyor: ad kullanılıyor veya konum salt okunur</string>
+    <string name="new_folder">Yeni klasör</string>
+    <string name="folder_name">Klasör adı</string>
+    <string name="mkdir_failed">Klasör burada oluşturulamıyor</string>
+    <string name="copying">Kopyalanıyor…</string>
+    <string name="moving">Taşınıyor…</string>
+    <string name="deleting">Siliniyor…</string>
+    <string name="op_failed">%d öğe işlenemedi</string>
+    <string name="sort_name">Ada göre sırala</string>
+    <string name="sort_date">Tarihe göre sırala</string>
+    <string name="sort_size">Boyuta göre sırala</string>
+    <string name="show_hidden">Gizli dosyaları göster</string>
+    <string name="root_access">Root erişimi</string>
+    <string name="root_on">Root erişimi açık. Sistem dosyalarına dikkat edin.</string>
+    <string name="root_missing">Root kullanılamıyor (su yok veya reddedildi)</string>
+    <string name="info_path">Yol: %s</string>
+    <string name="info_modified">Değiştirilme: %s</string>
+    <string name="info_type">Tür: %s</string>
+    <string name="info_items">%d öğe</string>
+    <string name="info_size">Boyut: %s</string>
+</resources>

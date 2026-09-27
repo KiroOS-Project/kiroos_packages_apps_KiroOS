@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="app_name">Takvim</string>
+    <string name="today">Bugün</string>
+    <string name="previous_month">Önceki ay</string>
+    <string name="next_month">Sonraki ay</string>
+    <string name="no_events">Etkinlik yok</string>
+    <string name="new_event">Yeni etkinlik</string>
+    <string name="no_title">(Başlıksız)</string>
+    <string name="all_day">Tüm gün</string>
+    <string name="back">Geri</string>
+    <string name="edit">Düzenle</string>
+    <string name="delete">Sil</string>
+    <string name="save">Kaydet</string>
+    <string name="dismiss">Kapat</string>
+    <string name="event_missing">Bu etkinlik artık yok</string>
+    <string name="delete_event">Bu etkinlik silinsin mi?</string>
+    <string name="delete_series">Bu etkinlik ve tüm tekrarları silinsin mi?</string>
+    <string name="no_maps">Harita uygulaması yok</string>
+    <string name="title_hint">Başlık</string>
+    <string name="location_hint">Yer</string>
+    <string name="description_hint">Notlar</string>
+    <string name="repeat">Tekrarla</string>
+    <string name="reminder">Hatırlatıcı</string>
+    <string name="calendar">Takvim</string>
+    <string name="repeat_none">Tekrarlanmaz</string>
+    <string name="repeat_daily">Her gün</string>
+    <string name="repeat_weekly">Her hafta</string>
+    <string name="repeat_monthly">Her ay</string>
+    <string name="repeat_yearly">Her yıl</string>
+    <string name="no_reminder">Hatırlatıcı yok</string>
+    <string name="at_start">Başladığında</string>
+    <string name="minutes_before">%d dakika önce</string>
+    <string name="hours_before">%d saat önce</string>
+    <string name="days_before">%d gün önce</string>
+    <string name="weeks_before">%d hafta önce</string>
+    <string name="phone_calendar">Telefon</string>
+    <string name="no_calendar">Yazılabilecek bir takvim yok. Takvim erişimine izin verin ve tekrar deneyin.</string>
+    <string name="save_failed">Etkinlik kaydedilemedi</string>
+</resources>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="ask">Спросите kAI</string>
+    <string name="send">Отправить</string>
+    <string name="stop">Стоп</string>
+    <string name="new_chat">Новый чат</string>
+    <string name="copied">Скопировано</string>
+    <string name="welcome">Ваш ассистент, даже офлайн</string>
+    <string name="welcome_hint">kAI отвечает прямо на телефоне, даже без интернета, и ищет свежие данные в сети (глобус это отключает).</string>
+    <string name="on_device">На телефоне · %s</string>
+    <string name="bridge">Подключение к ПК</string>
+    <string name="bridge_help">USB: запустите «Start kAI» на ПК и оставьте 127.0.0.1 и порт 11434. Wi-Fi: адрес ПК, с Ollama, открытым для сети.</string>
+    <string name="host">Адрес (127.0.0.1)</string>
+    <string name="port">Порт (11434)</string>
+    <string name="model_hint">Модель (пусто = первая установленная)</string>
+    <string name="save">Сохранить</string>
+    <string name="connecting">Подключение…</string>
+    <string name="connected">Подключено · %s</string>
+    <string name="default_model">модель по умолчанию</string>
+    <string name="not_connected">kAI не удалось запустить модель · повторите чуть позже</string>
+    <string name="no_model">Нет доступной модели · повторите чуть позже</string>
+    <string name="error_answer">⚠ Нет ответа: %s</string>
+    <string name="searching">Поиск в интернете…</string>
+    <string name="reading">Читаю %s…</string>
+    <string name="sources">Источники</string>
+    <string name="web_on">Поиск в интернете включён</string>
+    <string name="web_off">Поиск в интернете выключен</string>
+    <string name="writing">Пишу ответ…</string>
+    <string name="system_prompt">Ты kAI, ассистент KiroOS на Samsung Galaxy S6. Отвечай ясно и кратко, на языке пользователя, используя Markdown, когда это полезно. Сегодня %s.</string>
+    <string name="web_instruction">Отвечай, используя результаты поиска, приложенные к вопросу: они новее твоих знаний. Указывай источники так: [1].</string>
+    <string name="web_system">Ты kAI. Отвечай кратко, на языке вопроса, используя приведённые результаты поиска, и указывай источники так: [1].</string>
+    <string name="web_results">Результаты поиска</string>
+    <string name="question">Вопрос</string>
+    <string name="model_loading">Загрузка модели на устройстве…</string>
+    <string name="model_title">Модель kAI</string>
+    <string name="model_missing">не установлена</string>
+    <string name="act_torch_on">Фонарик включён.</string>
+    <string name="act_torch_off">Фонарик выключен.</string>
+    <string name="act_wifi_on">Wi‑Fi включён.</string>
+    <string name="act_wifi_off">Wi‑Fi выключен.</string>
+    <string name="act_bt_on">Bluetooth включён.</string>
+    <string name="act_bt_off">Bluetooth выключен.</string>
+    <string name="act_profiles">Вот профили батареи.</string>
+    <string name="act_failed">Не удалось сделать это на этом телефоне.</string>
+    <string-array name="model_descriptions">
+        <item>Мгновенная: быстрые вычисления, короткие определения, команды телефона · SmolLM2 135M</item>
+        <item>Ассистент на каждый день: вопросы, пересказы · Qwen2.5 0.5B</item>
+        <item>Самая способная: код и пошаговые рассуждения (медленнее) · Llama 3.2 1B, Built with Llama</item>
+    </string-array>
+    <string name="voice">Говорить</string>
+    <string name="listening">Слушаю…</string>
+    <string name="transcribing">Распознаю…</string>
+    <string name="voice_failed">Микрофон недоступен.</string>
+</resources>

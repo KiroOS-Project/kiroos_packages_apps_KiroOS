@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Калькулятор</string>
+    <string name="history">История</string>
+    <string name="no_history">Вычислений пока нет</string>
+    <string name="clear_history">Очистить</string>
+    <string name="copied">Скопировано</string>
+    <string name="error_syntax">Недопустимое выражение</string>
+    <string name="error_div_zero">Делить на ноль нельзя</string>
+    <string name="error_domain">Не является действительным числом</string>
+    <string name="desc_clear">Очистить</string>
+    <string name="desc_backspace">Удалить</string>
+    <string name="desc_divide">Разделить на</string>
+    <string name="desc_times">Умножить на</string>
+    <string name="desc_minus">Минус</string>
+    <string name="desc_plus">Плюс</string>
+    <string name="desc_equals">Равно</string>
+    <string name="desc_negate">Сменить знак</string>
+    <string name="desc_parens">Скобки</string>
+    <string name="desc_sqrt">Квадратный корень</string>
+</resources>

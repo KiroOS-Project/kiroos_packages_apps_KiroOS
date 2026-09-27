@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (fr). Source: kai/l10n/fr.txt -->
+<resources>
+    <string name="songs">Titres</string>
+    <string name="albums">Albums</string>
+    <string name="artists">Artistes</string>
+    <string name="streams">Flux</string>
+    <string name="stream">Flux</string>
+    <string name="unknown">Inconnu</string>
+    <string name="no_music">Aucune musique trouvée sur le téléphone</string>
+    <string name="no_streams">Ajoutez une radio web ou un lien audio direct (MP3, AAC, FLAC, OGG, ou playlists .m3u / .pls)</string>
+    <string name="stream_hint">Lien du flux (https://…)</string>
+    <string name="stream_name">Nom</string>
+    <string name="save_stream">Enregistrer ce flux ?</string>
+    <string name="save_and_play">Enregistrer et lire</string>
+    <string name="just_play">Lire seulement</string>
+    <string name="remove_stream">Supprimer %s ?</string>
+    <string name="remove">Supprimer</string>
+    <string name="bad_url">Seuls les liens http et https peuvent être lus en streaming</string>
+    <string name="play">Lecture</string>
+    <string name="pause">Pause</string>
+    <string name="next">Suivant</string>
+    <string name="previous">Précédent</string>
+    <string name="shuffle">Aléatoire</string>
+    <string name="repeat">Répéter</string>
+    <string name="close">Fermer</string>
+    <string name="back">Retour</string>
+    <string name="buffering">Mise en mémoire tampon…</string>
+    <string name="live">En direct</string>
+    <string name="stereo">stéréo</string>
+    <string name="play_error">Lecture impossible : %s</string>
+    <string name="equalizer">Égaliseur</string>
+    <string name="preamp">Préampli</string>
+    <string name="preamp_hint">Baissez-le quand vous augmentez des bandes pour éviter la distorsion</string>
+    <string name="preset_flat">Neutre</string>
+    <string name="preset_bass">Basses</string>
+    <string name="preset_vocal">Voix</string>
+    <string name="preset_treble">Aigus</string>
+    <string name="preset_classical">Classique</string>
+    <string name="preset_electronic">Électro</string>
+    <plurals name="songs">
+        <item quantity="one">%d titre</item>
+        <item quantity="other">%d titres</item>
+    </plurals>
+</resources>

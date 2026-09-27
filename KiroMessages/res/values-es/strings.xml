@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="app_name">Mensajes</string>
+    <string name="search">Buscar mensajes</string>
+    <string name="make_default">Kiro Messages no es tu app de SMS. Toca para hacerla predeterminada y enviar y recibir mensajes aquí.</string>
+    <string name="no_conversations">No hay conversaciones</string>
+    <string name="no_results">No se ha encontrado nada</string>
+    <string name="new_message">Nuevo mensaje</string>
+    <string name="picture">Imagen</string>
+    <string name="delete_conversation">Eliminar conversación</string>
+    <string name="delete_conversation_confirm">¿Eliminar todos los mensajes con %s?</string>
+    <string name="delete">Eliminar</string>
+    <string name="back">Atrás</string>
+    <string name="call">Llamar</string>
+    <string name="to_hint">Para: nombre o número</string>
+    <string name="remove_attachment">Quitar imagen</string>
+    <string name="attach">Adjuntar imagen</string>
+    <string name="compose_hint">Mensaje</string>
+    <string name="send">Enviar</string>
+    <string name="me">Yo</string>
+    <string name="reply">Responder</string>
+    <string name="mark_read">Marcar como leído</string>
+    <string name="send_failed_title">Mensaje no enviado</string>
+    <string name="send_failed_text">Abre la conversación y toca el mensaje para volver a intentarlo.</string>
+    <string name="download_failed_title">Mensaje con imagen no descargado</string>
+    <string name="download_failed_text">Se necesitan datos móviles para descargar MMS. El operador lo volverá a intentar.</string>
+    <string name="no_recipients">Añade un destinatario</string>
+    <string name="not_default">Haz que Kiro Messages sea la app de SMS predeterminada para enviar mensajes</string>
+    <string name="copy_text">Copiar texto</string>
+    <string name="forward">Reenviar</string>
+    <string name="resend">Volver a enviar</string>
+    <string name="copied">Copiado</string>
+    <string name="not_sent_retry">No enviado · toca para reintentar</string>
+    <string name="sending">Enviando…</string>
+    <string name="received">Recibido</string>
+    <string name="sent">Enviado</string>
+</resources>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Контакты</string>
+    <string name="choose">Выберите контакт</string>
+    <string name="search">Поиск контактов</string>
+    <string name="no_contacts">Нет контактов</string>
+    <string name="no_results">Ничего не найдено</string>
+    <string name="no_name">(Без имени)</string>
+    <string name="favourites">Избранное</string>
+    <string name="favourite">Избранный</string>
+    <string name="new_contact">Новый контакт</string>
+    <string name="more">Другие параметры</string>
+    <string name="back">Назад</string>
+    <string name="edit">Изменить</string>
+    <string name="call">Позвонить</string>
+    <string name="message">Сообщение</string>
+    <string name="email">Эл. почта</string>
+    <string name="phone">Телефон</string>
+    <string name="company">Компания</string>
+    <string name="website">Сайт</string>
+    <string name="note">Заметка</string>
+    <string name="nickname">Псевдоним</string>
+    <string name="address">Адрес</string>
+    <string name="birthday">День рождения</string>
+    <string name="ringtone">Рингтон</string>
+    <string name="set_ringtone">Установить рингтон</string>
+    <string name="share">Поделиться</string>
+    <string name="delete">Удалить</string>
+    <string name="remove">Убрать</string>
+    <string name="delete_confirm">Удалить контакт %s?</string>
+    <string name="contact_missing">Этот контакт больше не существует</string>
+    <string name="no_app">Нет приложения для этого действия</string>
+    <string name="save">Сохранить</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="add_phone">+ Добавить телефон</string>
+    <string name="add_email">+ Добавить эл. почту</string>
+    <string name="more_fields">Ещё</string>
+    <string name="change_photo">Изменить фото</string>
+    <string name="photo_failed">Не удаётся использовать это изображение</string>
+    <string name="empty_contact">Введите имя или номер</string>
+    <string name="save_failed">Не удалось сохранить контакт</string>
+    <string name="create_new">Создать новый контакт</string>
+    <string name="add_to_existing">Добавить к существующему контакту</string>
+    <string name="import_vcf">Импорт из файла .vcf</string>
+    <string name="export_vcf">Экспорт в файл .vcf</string>
+    <string name="accounts">Аккаунты</string>
+    <string name="importing">Импорт контактов…</string>
+    <string name="imported">Импортировано контактов: %d</string>
+    <string name="import_failed">Не удалось импортировать этот файл</string>
+    <string name="exported">Контакты сохранены в Download/%s</string>
+    <string name="export_failed">Не удалось экспортировать контакты</string>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (fr). Source: kai/l10n/fr.txt -->
+<resources>
+    <string name="app_name">Agenda</string>
+    <string name="today">Aujourd\'hui</string>
+    <string name="previous_month">Mois précédent</string>
+    <string name="next_month">Mois suivant</string>
+    <string name="no_events">Aucun événement</string>
+    <string name="new_event">Nouvel événement</string>
+    <string name="no_title">(Sans titre)</string>
+    <string name="all_day">Toute la journée</string>
+    <string name="back">Retour</string>
+    <string name="edit">Modifier</string>
+    <string name="delete">Supprimer</string>
+    <string name="save">Enregistrer</string>
+    <string name="dismiss">Fermer</string>
+    <string name="event_missing">Cet événement n\'existe plus</string>
+    <string name="delete_event">Supprimer cet événement ?</string>
+    <string name="delete_series">Supprimer cet événement et toutes ses répétitions ?</string>
+    <string name="no_maps">Aucune application de cartes</string>
+    <string name="title_hint">Titre</string>
+    <string name="location_hint">Lieu</string>
+    <string name="description_hint">Notes</string>
+    <string name="repeat">Répéter</string>
+    <string name="reminder">Rappel</string>
+    <string name="calendar">Agenda</string>
+    <string name="repeat_none">Ne se répète pas</string>
+    <string name="repeat_daily">Tous les jours</string>
+    <string name="repeat_weekly">Toutes les semaines</string>
+    <string name="repeat_monthly">Tous les mois</string>
+    <string name="repeat_yearly">Tous les ans</string>
+    <string name="no_reminder">Aucun rappel</string>
+    <string name="at_start">Au début</string>
+    <string name="minutes_before">%d minutes avant</string>
+    <string name="hours_before">%d heures avant</string>
+    <string name="days_before">%d jours avant</string>
+    <string name="weeks_before">%d semaines avant</string>
+    <string name="phone_calendar">Téléphone</string>
+    <string name="no_calendar">Aucun agenda n\'est modifiable. Autorisez l\'accès à l\'Agenda et réessayez.</string>
+    <string name="save_failed">Impossible d\'enregistrer l\'événement</string>
+</resources>

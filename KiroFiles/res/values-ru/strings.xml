@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Файлы</string>
+    <string name="back">Назад</string>
+    <string name="more">Другие параметры</string>
+    <string name="internal_storage">Внутренняя память</string>
+    <string name="sd_card">SD-карта</string>
+    <string name="root_folder">Корень (/)</string>
+    <string name="storage_used">Занято %1$s из %2$s</string>
+    <string name="locations">Места</string>
+    <string name="downloads">Загрузки</string>
+    <string name="images">Изображения</string>
+    <string name="videos">Видео</string>
+    <string name="audio">Аудио</string>
+    <string name="documents">Документы</string>
+    <string name="empty_folder">Эта папка пуста</string>
+    <string name="no_access">Нет доступа. Включите root-доступ в меню, чтобы открывать системные папки.</string>
+    <string name="open_with">Открыть с помощью</string>
+    <string name="no_app">Нет приложения, чтобы открыть этот файл</string>
+    <string name="selected">Выбрано: %d</string>
+    <string name="copy">Копировать</string>
+    <string name="cut">Вырезать</string>
+    <string name="share">Поделиться</string>
+    <string name="delete">Удалить</string>
+    <string name="rename">Переименовать</string>
+    <string name="details">Сведения</string>
+    <string name="paste">Вставить</string>
+    <string name="copied_n">Скопировано: %d. Откройте папку и вставьте</string>
+    <string name="cut_n">Вырезано: %d. Откройте папку и вставьте</string>
+    <string name="copy_here">Копировать сюда (%d)</string>
+    <string name="move_here">Переместить сюда (%d)</string>
+    <string name="nothing_to_share">Папками нельзя поделиться</string>
+    <string name="delete_one">Удалить %s?</string>
+    <string name="delete_many">Удалить элементы (%d)?</string>
+    <string name="rename_failed">Не удаётся переименовать: имя занято или место только для чтения</string>
+    <string name="new_folder">Новая папка</string>
+    <string name="folder_name">Имя папки</string>
+    <string name="mkdir_failed">Не удаётся создать папку здесь</string>
+    <string name="copying">Копирование…</string>
+    <string name="moving">Перемещение…</string>
+    <string name="deleting">Удаление…</string>
+    <string name="op_failed">Не удалось обработать элементов: %d</string>
+    <string name="sort_name">Сортировать по имени</string>
+    <string name="sort_date">Сортировать по дате</string>
+    <string name="sort_size">Сортировать по размеру</string>
+    <string name="show_hidden">Показывать скрытые файлы</string>
+    <string name="root_access">Root-доступ</string>
+    <string name="root_on">Root-доступ включён. Осторожнее с системными файлами.</string>
+    <string name="root_missing">Root недоступен (нет su или доступ запрещён)</string>
+    <string name="info_path">Путь: %s</string>
+    <string name="info_modified">Изменён: %s</string>
+    <string name="info_type">Тип: %s</string>
+    <string name="info_items">Элементов: %d</string>
+    <string name="info_size">Размер: %s</string>
+</resources>

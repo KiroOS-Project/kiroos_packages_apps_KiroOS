@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="app_name">Камера</string>
+    <string name="photo">Фото</string>
+    <string name="video">Видео</string>
+    <string name="shutter">Затвор</string>
+    <string name="flash">Вспышка</string>
+    <string name="grid">Сетка</string>
+    <string name="raw_on">RAW включён: каждое фото также сохраняется в DNG</string>
+    <string name="raw_off">RAW выключен</string>
+    <string name="last_photo">Последнее фото</string>
+    <string name="switch_camera">Сменить камеру</string>
+    <string name="need_camera">Kiro Camera нужно разрешение на доступ к камере</string>
+    <string name="camera_error">Камера недоступна</string>
+    <string name="save_failed">Не удалось сохранить фото</string>
+    <string name="video_error">Не удалось начать запись</string>
+    <string name="timer">Таймер</string>
+    <string name="ratio">Формат фото</string>
+    <string name="mode_night">Ночь</string>
+    <string name="mode_portrait">Портрет</string>
+    <string name="log_on">Видео LOG: плоский профиль для цветокоррекции</string>
+    <string name="log_off">LOG выключен</string>
+    <string name="cinema_on">Кино: 21:9 до 60 Мбит/с</string>
+    <string name="cinema_off">Кино выключено</string>
+    <string name="night_hold">Не двигайтесь…</string>
+    <string name="processing">Обработка…</string>
+</resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (de). Source: kai/l10n/de.txt -->
+<resources>
+    <string name="app_name">Uhr</string>
+    <string name="tab_alarms">Wecker</string>
+    <string name="tab_world">Weltuhr</string>
+    <string name="tab_timer">Timer</string>
+    <string name="tab_stopwatch">Stoppuhr</string>
+    <string name="alarm">Wecker</string>
+    <string name="no_alarms">Keine Wecker</string>
+    <string name="add_alarm">Wecker hinzufügen</string>
+    <string name="alarm_set">Wecker gestellt auf %s</string>
+    <string name="alarm_in_minutes">Wecker in %d Min.</string>
+    <string name="alarm_in_hours">Wecker in %1$d Std. %2$d Min.</string>
+    <string name="alarm_in_days">Wecker in %1$d T. %2$d Std.</string>
+    <string name="once">Einmalig</string>
+    <string name="every_day">Täglich</string>
+    <string name="weekdays">Montag bis Freitag</string>
+    <string name="weekend">Wochenende</string>
+    <string name="snoozed_until">Schlummern bis %s</string>
+    <string name="label">Bezeichnung</string>
+    <string name="sound">Weckton</string>
+    <string name="default_sound">Standardton</string>
+    <string name="silent">Lautlos</string>
+    <string name="vibrate">Vibration</string>
+    <string name="save">Speichern</string>
+    <string name="delete">Löschen</string>
+    <string name="snooze">Schlummern</string>
+    <string name="snooze_minutes">%d Min. schlummern</string>
+    <string name="dismiss">Beenden</string>
+    <string name="missed_alarm">Verpasster Wecker</string>
+    <string name="timer">Timer</string>
+    <string name="timer_done">Die Zeit ist um</string>
+    <string name="timer_paused">Pausiert · noch %s</string>
+    <string name="add_minute">+1 Min.</string>
+    <string name="stop">Stopp</string>
+    <string name="start">Start</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Fortsetzen</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="lap">Runde</string>
+    <string name="lap_row">Runde %1$d    %2$s    %3$s</string>
+    <string name="add_city">Stadt hinzufügen</string>
+    <string name="search_city">Stadt suchen</string>
+    <string name="remove_city">%s entfernen?</string>
+    <string name="same_time">Gleiche Uhrzeit</string>
+</resources>

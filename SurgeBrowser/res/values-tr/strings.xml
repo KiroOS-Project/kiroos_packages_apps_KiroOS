@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="url_hint">Arayın veya adres yazın</string>
+    <string name="new_tab">Yeni sekme</string>
+    <string name="tabs">Sekmeler</string>
+    <string name="tabs_hint">Geçmek için dokunun · kapatmak için basılı tutun</string>
+    <string name="menu">Menü</string>
+    <string name="forward">İleri</string>
+    <string name="reload">Yeniden yükle</string>
+    <string name="add_bookmark">Yer işareti ekle</string>
+    <string name="bookmarks">Yer işaretleri</string>
+    <string name="history">Geçmiş</string>
+    <string name="share">Paylaş</string>
+    <string name="desktop_site">Masaüstü sitesi</string>
+    <string name="adblock">Reklamları ve izleyicileri engelle</string>
+    <string name="search_engine">Arama motoru</string>
+    <string name="clear_data">Tarama verilerini temizle</string>
+    <string name="clear_data_confirm">Çerezler, önbellek, site verileri ve geçmiş silinsin mi?</string>
+    <string name="clear">Temizle</string>
+    <string name="cleared">Tarama verileri temizlendi</string>
+    <string name="blocked_here">Bu sayfada %d reklam ve izleyici engellendi</string>
+    <string name="no_app">Bu bağlantıyı açabilecek bir uygulama yok</string>
+    <string name="open_new_tab">Yeni sekmede aç</string>
+    <string name="opened_in_background">Yeni bir sekmede açıldı</string>
+    <string name="copy_link">Bağlantıyı kopyala</string>
+    <string name="share_link">Bağlantıyı paylaş</string>
+    <string name="download_image">Resmi indir</string>
+    <string name="copied">Kopyalandı</string>
+    <string name="downloading">%s indiriliyor</string>
+    <string name="download_failed">Bu dosya indirilemiyor</string>
+    <string name="location_prompt">%s konumunuzu kullanmak istiyor</string>
+    <string name="media_prompt">%s kamerayı veya mikrofonu kullanmak istiyor</string>
+    <string name="allow">İzin ver</string>
+    <string name="deny">Reddet</string>
+    <string name="start_hint">Varsayılan olarak gizli: reklamlar ve izleyiciler engellenir.</string>
+    <string name="already_bookmarked">Zaten yer işaretlerinde</string>
+    <string name="bookmarked">Yer işareti eklendi</string>
+    <string name="no_bookmarks">Henüz yer işareti yok</string>
+    <string name="no_history">Geçmiş yok</string>
+    <string name="edit_bookmarks">Kaldır…</string>
+    <string name="remove_bookmarks">Yer işaretlerini kaldır</string>
+    <string name="remove">Kaldır</string>
+</resources>

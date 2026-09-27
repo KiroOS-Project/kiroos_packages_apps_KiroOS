@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (es). Source: kai/l10n/es.txt -->
+<resources>
+    <string name="songs">Canciones</string>
+    <string name="albums">Álbumes</string>
+    <string name="artists">Artistas</string>
+    <string name="unknown">Desconocido</string>
+    <string name="no_music">No se ha encontrado música en el teléfono</string>
+    <string name="no_streams">Añade una radio web o un enlace de audio directo (MP3, AAC, FLAC, OGG o listas .m3u / .pls)</string>
+    <string name="stream_hint">Enlace del stream (https://…)</string>
+    <string name="stream_name">Nombre</string>
+    <string name="save_stream">¿Guardar este stream?</string>
+    <string name="save_and_play">Guardar y reproducir</string>
+    <string name="just_play">Solo reproducir</string>
+    <string name="remove_stream">¿Quitar %s?</string>
+    <string name="remove">Quitar</string>
+    <string name="bad_url">Solo se pueden reproducir enlaces http y https</string>
+    <string name="play">Reproducir</string>
+    <string name="pause">Pausa</string>
+    <string name="next">Siguiente</string>
+    <string name="previous">Anterior</string>
+    <string name="shuffle">Aleatorio</string>
+    <string name="repeat">Repetir</string>
+    <string name="close">Cerrar</string>
+    <string name="back">Atrás</string>
+    <string name="buffering">Cargando…</string>
+    <string name="live">En directo</string>
+    <string name="stereo">estéreo</string>
+    <string name="play_error">No se puede reproducir: %s</string>
+    <string name="equalizer">Ecualizador</string>
+    <string name="preamp">Preamplificador</string>
+    <string name="preamp_hint">Bájalo al subir bandas para evitar distorsión</string>
+    <string name="preset_flat">Plano</string>
+    <string name="preset_bass">Graves</string>
+    <string name="preset_vocal">Voces</string>
+    <string name="preset_treble">Agudos</string>
+    <string name="preset_classical">Clásica</string>
+    <string name="preset_electronic">Electrónica</string>
+    <plurals name="songs">
+        <item quantity="one">%d canción</item>
+        <item quantity="other">%d canciones</item>
+    </plurals>
+</resources>

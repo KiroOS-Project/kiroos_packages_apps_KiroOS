@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<resources>
+    <string name="next">Далее</string>
+    <string name="back">Назад</string>
+    <string name="skip">Пропустить</string>
+    <string name="start">Начать</string>
+    <string name="language_title">Добро пожаловать в KiroOS</string>
+    <string name="language_summary">Выберите язык вашего Galaxy.</string>
+    <string name="wifi_title">Подключение к Wi-Fi</string>
+    <string name="wifi_summary">Для обновлений, приложений и аккаунтов нужно подключение к интернету.</string>
+    <string name="wifi_turning_on">Включение Wi-Fi…</string>
+    <string name="wifi_choose">Выберите сеть</string>
+    <string name="wifi_connected_to">Подключено к %1$s</string>
+    <string name="wifi_connecting">Подключение к %1$s…</string>
+    <string name="wifi_failed">Не удалось добавить сеть, проверьте пароль</string>
+    <string name="wifi_state_connected">Подключено</string>
+    <string name="wifi_secured">Защищённая</string>
+    <string name="wifi_open">Открытая сеть</string>
+    <string name="wifi_password">Пароль</string>
+    <string name="wifi_connect">Подключить</string>
+    <string name="mobile_title">Мобильная сеть</string>
+    <string name="mobile_summary">Звонки, сообщения и мобильный интернет.</string>
+    <string name="mobile_no_sim">SIM-карта не вставлена</string>
+    <string name="mobile_sim_locked">SIM-карта заблокирована: разблокируйте её PIN-кодом</string>
+    <string name="mobile_operator">Оператор: %1$s</string>
+    <string name="mobile_searching">Поиск сети…</string>
+    <string name="mobile_data">Мобильный интернет</string>
+    <string name="mobile_data_summary">Интернет, когда нет Wi-Fi</string>
+    <string name="mobile_roaming">Роуминг</string>
+    <string name="mobile_roaming_summary">Мобильный интернет за границей (может взиматься дополнительная плата)</string>
+    <string name="fingerprint_title">Отпечаток пальца</string>
+    <string name="fingerprint_summary">Разблокируйте телефон касанием кнопки «Домой».</string>
+    <string name="fingerprint_add">Добавить отпечаток</string>
+    <string name="fingerprint_add_another">Добавить ещё один отпечаток</string>
+    <string name="fingerprint_none">Отпечатки ещё не добавлены. Сначала задаётся блокировка экрана (PIN-код, графический ключ или пароль).</string>
+    <string name="fingerprint_unavailable">Настройка отпечатка недоступна на этом устройстве</string>
+    <string name="stats_title">Статистика устройства</string>
+    <string name="stats_summary">Помогите подсчитать, сколько телефонов работает на KiroOS и на каких версиях.</string>
+    <string name="stats_switch">Отправлять статистику устройства</string>
+    <string name="stats_switch_summary">Модель, версия KiroOS и Android, язык, страна и оператор</string>
+    <string name="stats_note">Отправляется со случайным кодом при проверке обновлений. Никогда не IMEI и не серийный номер. Это можно изменить позже на экране «Обновление KiroOS».</string>
+    <string name="done_title">Всё готово</string>
+    <string name="done_summary">Ваш Galaxy готов. Приятного использования KiroOS.</string>
+    <plurals name="fingerprint_enrolled">
+        <item quantity="one">Добавлен %d отпечаток</item>
+        <item quantity="few">Добавлено %d отпечатка</item>
+        <item quantity="many">Добавлено %d отпечатков</item>
+        <item quantity="other">Добавлено %d отпечатка</item>
+    </plurals>
+</resources>

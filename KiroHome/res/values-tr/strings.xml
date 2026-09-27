@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="search_apps">Uygulama ara</string>
+    <string name="app_not_available">Uygulama kullanılamıyor</string>
+    <string name="remove_from_home">Ana ekrandan kaldır</string>
+    <string name="add_to_home">Ana ekrana ekle</string>
+    <string name="app_info">Uygulama bilgileri</string>
+    <string name="uninstall">Kaldır</string>
+    <string name="home_full">Ana ekran dolu</string>
+    <string name="add_widget">Widget ekle</string>
+    <string name="wallpaper">Duvar kağıdı</string>
+    <string name="settings">Ayarlar</string>
+    <string name="remove_widget">Widget\'ı kaldır</string>
+    <string name="remove_clock">Saati kaldır</string>
+    <string name="show_clock">Saati göster</string>
+    <string name="folder_default">Klasör</string>
+</resources>

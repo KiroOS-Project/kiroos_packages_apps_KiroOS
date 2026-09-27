@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 translation (tr). Source: kai/l10n/tr.txt -->
+<resources>
+    <string name="app_name">Ses Kaydedici</string>
+    <string name="file_prefix">Kayıt</string>
+    <string name="record">Kaydet</string>
+    <string name="recording">Kaydediliyor</string>
+    <string name="paused">Duraklatıldı</string>
+    <string name="pause">Duraklat</string>
+    <string name="resume">Devam et</string>
+    <string name="stop">Durdur</string>
+    <string name="no_recordings">Henüz kayıt yok</string>
+    <string name="need_permissions">Kayıt için mikrofon ve depolama gerekir</string>
+    <string name="cannot_play">Bu dosya oynatılamıyor</string>
+    <string name="share">Paylaş</string>
+    <string name="rename">Yeniden adlandır</string>
+    <string name="rename_failed">Bu adda bir kayıt zaten var</string>
+    <string name="delete">Sil</string>
+    <string name="delete_confirm">%s silinsin mi?</string>
+</resources>
