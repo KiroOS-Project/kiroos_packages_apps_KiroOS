@@ -29,6 +29,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/icon_button_bg"
             android:contentDescription="@string/more_options"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_more" />
     </LinearLayout>
 

@@ -75,6 +75,7 @@
             android:layout_margin="20dp"
             android:contentDescription="@string/new_message"
             android:elevation="6dp"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_add" />
     </FrameLayout>
 </LinearLayout>

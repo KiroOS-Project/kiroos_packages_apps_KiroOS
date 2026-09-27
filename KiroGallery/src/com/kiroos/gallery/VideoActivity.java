@@ -33,6 +33,12 @@ import android.widget.VideoView;
  */
 public class VideoActivity extends Activity {
 
+    /** always dark, whatever the system theme */
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.kiroos.ui.KiroTheme.dark(base));
+    }
+
     private VideoView mVideo;
     private int mPosition;
 

@@ -43,6 +43,12 @@ import java.util.List;
  */
 public class SetupActivity extends Activity {
 
+    /** always dark, whatever the system theme */
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.kiroos.ui.KiroTheme.dark(base));
+    }
+
     private static final String STATE_PAGE = "page";
     /**
      * Developer preview on an already set up phone (adb shell am start -n

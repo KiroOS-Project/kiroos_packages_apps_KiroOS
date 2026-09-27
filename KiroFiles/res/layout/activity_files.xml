@@ -20,6 +20,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/back"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_back"
             android:visibility="gone" />
 
@@ -54,6 +55,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/more"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_more" />
     </LinearLayout>
 
@@ -185,6 +187,7 @@
             android:layout_margin="20dp"
             android:contentDescription="@string/new_folder"
             android:elevation="6dp"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_new_folder"
             android:visibility="gone" />
     </FrameLayout>
@@ -238,19 +241,24 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <ImageButton android:id="@+id/act_copy" android:src="@drawable/ic_copy"
+        <ImageButton android:id="@+id/act_copy" android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_copy"
             android:contentDescription="@string/copy" style="@style/BarButton" />
 
-        <ImageButton android:id="@+id/act_cut" android:src="@drawable/ic_cut"
+        <ImageButton android:id="@+id/act_cut" android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_cut"
             android:contentDescription="@string/cut" style="@style/BarButton" />
 
-        <ImageButton android:id="@+id/act_share" android:src="@drawable/ic_share"
+        <ImageButton android:id="@+id/act_share" android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_share"
             android:contentDescription="@string/share" style="@style/BarButton" />
 
-        <ImageButton android:id="@+id/act_delete" android:src="@drawable/ic_delete"
+        <ImageButton android:id="@+id/act_delete" android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_delete"
             android:contentDescription="@string/delete" style="@style/BarButton" />
 
-        <ImageButton android:id="@+id/act_more" android:src="@drawable/ic_more"
+        <ImageButton android:id="@+id/act_more" android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_more"
             android:contentDescription="@string/more" style="@style/BarButton" />
     </LinearLayout>
 </LinearLayout>

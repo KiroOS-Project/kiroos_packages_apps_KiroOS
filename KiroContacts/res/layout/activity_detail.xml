@@ -20,6 +20,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/back"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_back" />
 
         <Space
@@ -33,6 +34,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/favourite"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_star_border" />
 
         <ImageButton
@@ -41,6 +43,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/edit"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_edit" />
 
         <ImageButton
@@ -49,6 +52,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/more"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_more" />
     </LinearLayout>
 

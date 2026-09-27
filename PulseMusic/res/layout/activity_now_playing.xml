@@ -22,6 +22,7 @@
             android:layout_marginStart="-12dp"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/close"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_expand_more" />
 
         <TextView
@@ -42,6 +43,7 @@
             android:layout_marginEnd="-12dp"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/equalizer"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_equalizer" />
     </LinearLayout>
 
@@ -125,6 +127,7 @@
             android:layout_weight="1"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/shuffle"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_shuffle" />
 
         <ImageButton
@@ -134,6 +137,7 @@
             android:layout_weight="1"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/previous"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_previous" />
 
         <ImageButton
@@ -141,6 +145,7 @@
             android:layout_width="76dp"
             android:layout_height="76dp"
             android:contentDescription="@string/play"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_play" />
 
         <ImageButton
@@ -150,6 +155,7 @@
             android:layout_weight="1"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/next"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_next" />
 
         <ImageButton
@@ -159,6 +165,7 @@
             android:layout_weight="1"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/repeat"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_repeat" />
     </LinearLayout>
 </LinearLayout>

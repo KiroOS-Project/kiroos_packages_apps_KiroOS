@@ -73,6 +73,12 @@ import java.util.List;
 public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         AppRepository.Listener {
 
+    /** always dark, whatever the system theme */
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.kiroos.ui.KiroTheme.dark(base));
+    }
+
     private static final int REQUEST_PICK_WIDGET = 1;
     private static final int REQUEST_CONFIGURE_WIDGET = 2;
     /** how long an app dragged to a side edge waits before the page turns */

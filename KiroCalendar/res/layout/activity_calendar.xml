@@ -29,6 +29,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/today"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_today" />
 
         <ImageButton
@@ -37,6 +38,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/previous_month"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_chevron_left" />
 
         <ImageButton
@@ -45,6 +47,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/next_month"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_chevron_right" />
     </LinearLayout>
 
@@ -101,6 +104,7 @@
             android:layout_margin="20dp"
             android:contentDescription="@string/new_event"
             android:elevation="6dp"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_add" />
     </FrameLayout>
 </LinearLayout>

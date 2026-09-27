@@ -51,6 +51,12 @@ import java.util.List;
  */
 public class ViewerActivity extends Activity implements SwipePager.Adapter {
 
+    /** always dark, whatever the system theme */
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.kiroos.ui.KiroTheme.dark(base));
+    }
+
     static final String EXTRA_BUCKET = "bucket";
     static final String EXTRA_FILTER = "filter";
     static final String EXTRA_POSITION = "position";

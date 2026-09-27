@@ -20,6 +20,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/back"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_back" />
 
         <LinearLayout
@@ -53,6 +54,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/call"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_call" />
     </LinearLayout>
 
@@ -162,6 +164,7 @@
                 android:layout_width="@dimen/kiro_touch_target"
                 android:layout_height="@dimen/kiro_touch_target"
                 android:contentDescription="@string/send"
+                android:tint="?android:attr/textColorPrimary"
                 android:src="@drawable/ic_send" />
         </LinearLayout>
     </LinearLayout>

@@ -46,6 +46,12 @@ import java.util.List;
  */
 public class GalleryActivity extends Activity {
 
+    /** always dark, whatever the system theme */
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.kiroos.ui.KiroTheme.dark(base));
+    }
+
     private final Handler mHandler = new Handler();
     private GridView mGrid;
     private TextView mTitle;

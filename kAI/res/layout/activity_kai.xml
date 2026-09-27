@@ -39,6 +39,7 @@
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_web" />
 
         <ImageButton
@@ -47,6 +48,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/new_chat"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_add" />
 
         <ImageButton
@@ -55,6 +57,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/model_title"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_model" />
     </LinearLayout>
 
@@ -135,6 +138,7 @@
             android:layout_marginEnd="8dp"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/voice"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_mic" />
 
         <ImageButton
@@ -142,6 +146,7 @@
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"
             android:contentDescription="@string/send"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_send" />
     </LinearLayout>
 </LinearLayout>

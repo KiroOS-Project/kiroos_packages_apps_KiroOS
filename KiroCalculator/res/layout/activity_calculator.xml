@@ -50,6 +50,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/history"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_history" />
     </LinearLayout>
 

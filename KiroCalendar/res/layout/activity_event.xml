@@ -20,6 +20,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/back"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_back" />
 
         <Space
@@ -33,6 +34,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/edit"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_edit" />
 
         <ImageButton
@@ -41,6 +43,7 @@
             android:layout_height="@dimen/kiro_touch_target"
             android:background="@drawable/kiro_icon_button"
             android:contentDescription="@string/delete"
+            android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_delete" />
     </LinearLayout>
 
@@ -73,28 +76,33 @@
                 style="@style/Kiro.Body" />
 
             <LinearLayout android:id="@+id/row_repeat" style="@style/DetailRow">
-                <ImageView android:src="@drawable/ic_repeat" style="@style/DetailIcon" />
+                <ImageView android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_repeat" style="@style/DetailIcon" />
                 <TextView android:id="@+id/repeat" style="@style/DetailText" />
             </LinearLayout>
 
             <LinearLayout android:id="@+id/row_location" style="@style/DetailRow"
                 android:background="@drawable/kiro_row">
-                <ImageView android:src="@drawable/ic_place" style="@style/DetailIcon" />
+                <ImageView android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_place" style="@style/DetailIcon" />
                 <TextView android:id="@+id/location" style="@style/DetailText" />
             </LinearLayout>
 
             <LinearLayout android:id="@+id/row_reminder" style="@style/DetailRow">
-                <ImageView android:src="@drawable/ic_alarm" style="@style/DetailIcon" />
+                <ImageView android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_alarm" style="@style/DetailIcon" />
                 <TextView android:id="@+id/reminder" style="@style/DetailText" />
             </LinearLayout>
 
             <LinearLayout android:id="@+id/row_calendar" style="@style/DetailRow">
-                <ImageView android:src="@drawable/ic_event" style="@style/DetailIcon" />
+                <ImageView android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_event" style="@style/DetailIcon" />
                 <TextView android:id="@+id/calendar" style="@style/DetailText" />
             </LinearLayout>
 
             <LinearLayout android:id="@+id/row_description" style="@style/DetailRow">
-                <ImageView android:src="@drawable/ic_info" style="@style/DetailIcon" />
+                <ImageView android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_info" style="@style/DetailIcon" />
                 <TextView android:id="@+id/description" android:autoLink="web|email|phone"
                     style="@style/DetailText" />
             </LinearLayout>

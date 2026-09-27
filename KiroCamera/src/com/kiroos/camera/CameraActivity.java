@@ -91,6 +91,12 @@ import java.util.List;
  */
 public class CameraActivity extends Activity {
 
+    /** always dark, whatever the system theme */
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.kiroos.ui.KiroTheme.dark(base));
+    }
+
     private static final String TAG = "KiroCamera";
 
     private static final int STATE_PREVIEW = 0;

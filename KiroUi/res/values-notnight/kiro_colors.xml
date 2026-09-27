@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS 2.1 light palette (Settings > Display > Theme: Light). The names are the dark
+     theme's: "kiro_black" is the background colour of either theme. -->
+<resources>
+    <color name="kiro_black">#FFFFFFFF</color>
+    <color name="kiro_surface">#FFF2F2F7</color>
+    <color name="kiro_surface_raised">#FFE9E9EF</color>
+    <color name="kiro_surface_pressed">#FFDCDCE3</color>
+    <color name="kiro_divider">#1F000000</color>
+    <color name="kiro_text">#FF111114</color>
+    <color name="kiro_text_secondary">#FF5E5E66</color>
+    <color name="kiro_text_tertiary">#FF9A9AA2</color>
+    <color name="kiro_accent">#FF2F7BDA</color>
+    <color name="kiro_accent_pressed">#FF2466B8</color>
+    <color name="kiro_on_accent">#FFFFFFFF</color>
+    <color name="kiro_positive">#FF1FA54B</color>
+    <color name="kiro_negative">#FFE0342B</color>
+    <color name="kiro_warning">#FFE08A00</color>
+    <color name="kiro_ripple">#1F000000</color>
+</resources>
