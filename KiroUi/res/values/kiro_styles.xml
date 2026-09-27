@@ -21,6 +21,7 @@
         <!-- lists and grids cascade in when they first show their content -->
         <item name="android:listViewStyle">@style/Kiro.ListView</item>
         <item name="android:gridViewStyle">@style/Kiro.GridView</item>
+        <item name="android:imageButtonStyle">@style/Kiro.ImageButton</item>
     </style>
 
     <style name="Theme.Kiro.Dialog" parent="@android:style/Theme.Material.Dialog.Alert">
@@ -36,6 +37,11 @@
 
     <style name="Kiro.GridView" parent="@android:style/Widget.Material.GridView">
         <item name="android:layoutAnimation">@anim/kiro_grid_enter</item>
+    </style>
+
+    <!-- icon buttons dip while pressed (KiroOS 2.1) -->
+    <style name="Kiro.ImageButton" parent="@android:style/Widget.Material.ImageButton">
+        <item name="android:stateListAnimator">@animator/kiro_press</item>
     </style>
 
     <style name="Kiro.Animation.Dialog" parent="@android:style/Animation.Dialog">

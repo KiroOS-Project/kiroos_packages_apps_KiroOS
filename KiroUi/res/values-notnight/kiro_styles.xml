@@ -22,6 +22,7 @@
         <!-- lists and grids cascade in when they first show their content -->
         <item name="android:listViewStyle">@style/Kiro.ListView</item>
         <item name="android:gridViewStyle">@style/Kiro.GridView</item>
+        <item name="android:imageButtonStyle">@style/Kiro.ImageButton</item>
     </style>
 
     <style name="Theme.Kiro.Dialog" parent="@android:style/Theme.Material.Light.Dialog.Alert">

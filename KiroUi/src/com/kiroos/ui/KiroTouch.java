@@ -29,7 +29,7 @@ import android.view.animation.PathInterpolator;
 public final class KiroTouch {
 
     public static final TimeInterpolator EASE = new PathInterpolator(0.2f, 0.9f, 0.1f, 1f);
-    private static final TimeInterpolator RELEASE = new OvershootInterpolator(2.2f);
+    private static final TimeInterpolator RELEASE = new OvershootInterpolator(1.6f);
     private static final float PRESSED_SCALE = 0.94f;
 
     private KiroTouch() {
@@ -39,6 +39,8 @@ public final class KiroTouch {
     public static void apply(View... views) {
         for (View v : views) {
             if (v != null) {
+                // the theme's icon-button press animation would fight over the scale
+                v.setStateListAnimator(null);
                 v.setOnTouchListener(LISTENER);
             }
         }
