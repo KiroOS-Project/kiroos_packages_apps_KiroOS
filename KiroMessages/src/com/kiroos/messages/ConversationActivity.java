@@ -741,10 +741,10 @@ public class ConversationActivity extends Activity {
                 meta.setTextColor(getColor(R.color.kiro_negative));
             } else if (m.status == MessageStore.STATUS_SENDING) {
                 meta.setText(getString(R.string.sending));
-                meta.setTextColor(getColor(R.color.meta_text));
+                meta.setTextColor(getColor(m.incoming ? R.color.meta_text_in : R.color.meta_text));
             } else {
                 meta.setText(time);
-                meta.setTextColor(getColor(R.color.meta_text));
+                meta.setTextColor(getColor(m.incoming ? R.color.meta_text_in : R.color.meta_text));
             }
             row.setContentDescription((m.incoming ? getString(R.string.received)
                     : getString(R.string.sent)) + ", " + time + ", " + m.body);

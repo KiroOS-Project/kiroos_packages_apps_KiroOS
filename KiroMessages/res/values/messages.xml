@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="meta_text">#8CFFFFFF</color>
+    <!-- time / status on the received bubbles (theme colour: readable in both themes) -->
+    <color name="meta_text_in">@color/kiro_text_secondary</color>
     <dimen name="bubble_max_width">272dp</dimen>
     <dimen name="bubble_image">200dp</dimen>
 </resources>
