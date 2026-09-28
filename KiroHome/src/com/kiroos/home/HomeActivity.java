@@ -170,18 +170,14 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 if (Math.abs(position - Math.round(position)) < 0.001f) {
                     schedulePublishIcons(150);
                 }
-                // the whole screen moves with the pages: the clock and the widgets belong to
-                // the first page, and the wallpaper follows at a slower pace
+                // the clock and the widgets belong to the first page and move with it
                 final float first = Math.max(0f, Math.min(1f, position)) * mRoot.getWidth();
                 mHeader.setTranslationX(-first);
-                // the wallpaper spans the real pages: the empty page a drag adds at the end
-                // must not move it
-                final int pages = mDrag != null ? mModel.pageCount() : mWorkspace.pageCount();
-                if (pages > 1 && mRoot.getWindowToken() != null) {
-                    final float x = Math.max(0f, Math.min(1f, position / (pages - 1)));
-                    mWallpaperManager.setWallpaperOffsetSteps(1f / (pages - 1), 1f);
-                    mWallpaperManager.setWallpaperOffsets(mRoot.getWindowToken(), x, 0.5f);
-                }
+                // the wallpaper stays still while the pages glide over it, like on the phones
+                // the user compares with: moved by the window manager in its own transaction,
+                // up to 1440 px across the pages (its surface is 2160 px wide at 720p), it ran
+                // as fast as the icons or faster and a frame apart from them
+                centerWallpaper();
             }
 
             @Override
@@ -422,6 +418,19 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             publishIcons();
         }
     };
+
+    private android.os.IBinder mWallpaperCentered;
+
+    /** the wallpaper's middle, set once per window (not on every frame of a page swipe) */
+    private void centerWallpaper() {
+        final android.os.IBinder token = mRoot.getWindowToken();
+        if (token == null || token == mWallpaperCentered) {
+            return;
+        }
+        mWallpaperCentered = token;
+        mWallpaperManager.setWallpaperOffsetSteps(0f, 0f);
+        mWallpaperManager.setWallpaperOffsets(token, 0.5f, 0.5f);
+    }
 
     private void schedulePublishIcons(long delayMs) {
         mHandler.removeCallbacks(mPublishIcons);
