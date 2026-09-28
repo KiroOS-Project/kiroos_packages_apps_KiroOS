@@ -226,11 +226,116 @@ final class Voice {
 
     // ------------------------------------------------------------------ text to speech
 
-    void speak(final String text, final Locale lang) {
-        final String clean = text.replaceAll("```[\\s\\S]*?```", " ")
+    private static String clean(String text) {
+        return text.replaceAll("```[\\s\\S]*?```", " ")
                 .replaceAll("[*_#`>|]", "")
                 .replaceAll("\\[([^\\]]+)\\]\\([^)]+\\)", "$1")
                 .replaceAll("🔎.*$", "").trim();
+    }
+
+    // --- Live: the answer is read a sentence at a time while it is being written ------------
+
+    /** sentences queued / read for the answer being spoken; mEnded once its last one is in */
+    private int mQueued;
+    private int mSpokenCount;
+    private boolean mEnded;
+    private Runnable mOnSpoken;
+    private boolean mListening;
+
+    /**
+     * Queues one sentence of an answer that is still being written. With last = true, when
+     * everything queued has been said, onSpoken runs (on the main thread).
+     */
+    void speakChunk(final String text, final Locale lang, final boolean last,
+            final Runnable onSpoken) {
+        if (mQueued == mSpokenCount && !mEnded && mOnSpoken == null) {
+            // a new answer
+            mQueued = 0;
+            mSpokenCount = 0;
+        }
+        final String clean = clean(text);
+        if (last) {
+            mEnded = true;
+            mOnSpoken = onSpoken;
+        }
+        if (clean.isEmpty()) {
+            checkSpoken();
+            return;
+        }
+        final String id = "kai-live-" + (++mQueued);
+        if (mTts == null) {
+            mTts = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    mTtsReady = status == TextToSpeech.SUCCESS;
+                    if (mTtsReady) {
+                        listenToTts();
+                        queue(clean, lang, id);
+                    } else {
+                        mSpokenCount = mQueued;
+                        checkSpoken();
+                    }
+                }
+            });
+        } else if (mTtsReady) {
+            listenToTts();
+            queue(clean, lang, id);
+        } else {
+            mSpokenCount++;             // the engine is still starting and will take this one
+        }
+    }
+
+    private void queue(String text, Locale lang, String id) {
+        mTts.setLanguage(lang);
+        mTts.speak(text.length() > 3500 ? text.substring(0, 3500) : text,
+                TextToSpeech.QUEUE_ADD, new android.os.Bundle(), id);
+    }
+
+    private void listenToTts() {
+        if (mListening) {
+            return;
+        }
+        mListening = true;
+        mTts.setOnUtteranceProgressListener(new android.speech.tts.UtteranceProgressListener() {
+            @Override
+            public void onStart(String id) {
+            }
+
+            @Override
+            public void onDone(final String id) {
+                if (!id.startsWith("kai-live-")) {
+                    return;
+                }
+                mMain.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSpokenCount++;
+                        checkSpoken();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String id) {
+                onDone(id);
+            }
+        });
+    }
+
+    private void checkSpoken() {
+        if (mEnded && mSpokenCount >= mQueued) {
+            mEnded = false;
+            mQueued = 0;
+            mSpokenCount = 0;
+            final Runnable r = mOnSpoken;
+            mOnSpoken = null;
+            if (r != null) {
+                r.run();
+            }
+        }
+    }
+    void speak(final String text, final Locale lang) {
+        final String clean = clean(text);
         if (clean.isEmpty()) {
             return;
         }
@@ -256,6 +361,10 @@ final class Voice {
     }
 
     void silence() {
+        mOnSpoken = null;
+        mEnded = false;
+        mQueued = 0;
+        mSpokenCount = 0;
         if (mTts != null) {
             mTts.stop();
         }

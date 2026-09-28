@@ -50,6 +50,11 @@ import java.util.Locale;
  * kAI aura glowing behind it. From the Power key it listens right away; the answer is
  * written in the card (read aloud when the question was spoken) and added to the kAI chat,
  * which "Continue in kAI" opens. Everything runs on the phone.
+ *
+ * Keng 1.5 Flash-Lite Live: the card always talks with the Live model. A spoken question
+ * starts a Live conversation: the answer is read a sentence at a time while it is written,
+ * then kAI listens again, and the conversation goes on (with the last turns as memory) until
+ * nobody speaks for a few seconds or the card is closed.
  */
 public class KaiOverlayActivity extends Activity {
 
@@ -79,6 +84,15 @@ public class KaiOverlayActivity extends Activity {
     private boolean mSpoken;
     private Locale mSpokenLang;
     private final StringBuilder mText = new StringBuilder();
+    /** the model the card talks with: Flash-Lite Live when this build has it */
+    private LocalEngine.Model mModel;
+    /** Live: a spoken conversation goes on by itself (listen, answer aloud, listen again) */
+    private boolean mLive;
+    /** the answer being written is read aloud, up to mSpokenUpTo characters so far */
+    private boolean mSpeakAnswer;
+    private int mSpokenUpTo;
+    /** the last questions and answers of this conversation, the model's short memory */
+    private final List<String[]> mTurns = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +101,7 @@ public class KaiOverlayActivity extends Activity {
         mPrefs = getSharedPreferences("kai", MODE_PRIVATE);
         LocalEngine.init(getApplicationContext());
         LocalEngine.select(mPrefs.getString("local_model", "base"));
+        mModel = LocalEngine.LIVE.installed() ? LocalEngine.LIVE : LocalEngine.selected();
         LocalEngine.sOverlayShowing = true;
         mMarkdown = new Markdown(getColor(R.color.code_bg), getColor(R.color.code_fg),
                 getColor(R.color.kiro_accent), getColor(R.color.kiro_text_secondary));
@@ -151,7 +166,7 @@ public class KaiOverlayActivity extends Activity {
                 close();
             }
         });
-        mStatus.setText(LocalEngine.modelName());
+        mStatus.setText(mModel.name);
         enter();
         start(getIntent());
     }
@@ -181,7 +196,7 @@ public class KaiOverlayActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LocalEngine.ensureRunning();
+                LocalEngine.ensureRunning(mModel);
             }
         }, "kAI-warm").start();
     }
@@ -308,10 +323,14 @@ public class KaiOverlayActivity extends Activity {
                 }
                 if (!text.isEmpty()) {
                     mSpoken = true;
+                    mLive = true;
                     mSpokenLang = WebSearch.looksItalian(text) ? Locale.ITALIAN : lang;
                     mInput.setText(text);
                     send();
                 } else {
+                    // nobody spoke: a Live conversation ends here
+                    mLive = false;
+                    mStatus.setText(mModel.name);
                     mAura.setMode(KaiAuraView.IDLE);
                 }
             }
@@ -362,6 +381,12 @@ public class KaiOverlayActivity extends Activity {
         mInput.setText("");
         hideKeyboard();
         showQuestion(text);
+        mSpeakAnswer = mSpoken;
+        mSpoken = false;
+        mSpokenUpTo = 0;
+        if (!mSpeakAnswer) {
+            mLive = false;          // a typed question ends a Live conversation
+        }
         String done = PhoneActions.handle(this, text);
         if (done == null) {
             done = QuickMath.answer(text);   // exact arithmetic, instantly
@@ -385,28 +410,40 @@ public class KaiOverlayActivity extends Activity {
         conf.setLocale(lang);
         final Context lc = createConfigurationContext(conf);
         final boolean web = mPrefs.getBoolean("web", true) && online() && WebSearch.wanted(text);
+        final boolean live = mLive;
+        final List<String[]> turns = new ArrayList<>(mTurns);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 final List<BridgeClient.Message> history = new ArrayList<>();
                 String prompt = text;
                 String system = lc.getString(R.string.system_prompt, WebSearch.today(lang));
+                boolean searched = false;
                 if (web) {
                     status(getString(R.string.searching));
+                    // Live keeps it quick: two results are enough to ground a spoken answer
                     final List<WebSearch.Result> results = WebSearch.search(
-                            text.length() > 200 ? text.substring(0, 200) : text, 4, lang);
+                            text.length() > 200 ? text.substring(0, 200) : text,
+                            live ? 2 : 4, lang);
                     if (!results.isEmpty()) {
                         // the phone's own model gets the snippets and the question alone
                         system = lc.getString(R.string.web_system);
                         prompt = WebSearch.prompt(text, results, "",
                                 lc.getString(R.string.web_results), lc.getString(R.string.question));
+                        searched = true;
                     }
                 }
                 history.add(new BridgeClient.Message("system", system));
+                if (!searched) {
+                    // the conversation so far, so "and how far is Mars?" makes sense
+                    for (String[] t : turns) {
+                        history.add(new BridgeClient.Message("user", t[0]));
+                        history.add(new BridgeClient.Message("assistant", t[1]));
+                    }
+                }
                 history.add(new BridgeClient.Message("user", prompt));
-                status(LocalEngine.loading() ? getString(R.string.model_loading)
-                        : LocalEngine.modelName());
-                LocalEngine.generate(history, new BridgeClient.Stream() {
+                status(LocalEngine.loading() ? getString(R.string.model_loading) : label());
+                LocalEngine.generate(mModel, history, new BridgeClient.Stream() {
                     private long mLastUi;
 
                     @Override
@@ -421,6 +458,7 @@ public class KaiOverlayActivity extends Activity {
                                 @Override
                                 public void run() {
                                     render();
+                                    speakReady(false);
                                 }
                             });
                         }
@@ -444,6 +482,8 @@ public class KaiOverlayActivity extends Activity {
                             @Override
                             public void run() {
                                 setBusy(false);
+                                mLive = false;
+                                mSpeakAnswer = false;
                                 mAura.setMode(KaiAuraView.IDLE);
                                 if (mText.length() == 0) {
                                     mAnswer.setText(getString(R.string.error_answer, message));
@@ -501,14 +541,86 @@ public class KaiOverlayActivity extends Activity {
             answer = mText.toString().trim();
         }
         mAura.setMode(KaiAuraView.IDLE);
-        mStatus.setText(LocalEngine.modelName());
+        mStatus.setText(label());
         if (answer.isEmpty()) {
+            if (mSpeakAnswer) {
+                mSpeakAnswer = false;
+                continueLive();
+            }
             return;
         }
         ChatStore.append(this, question, answer);
-        if (mSpoken) {
-            mVoice.speak(answer, mSpokenLang);
-            mSpoken = false;
+        mTurns.add(new String[] {question, answer});
+        while (mTurns.size() > 3) {
+            mTurns.remove(0);
+        }
+        if (mSpeakAnswer) {
+            speakReady(true);
+            mSpeakAnswer = false;
+        }
+    }
+
+    /** the model's name, or "Live conversation" while one goes on */
+    private String label() {
+        return mLive ? getString(R.string.live_conversation) + " · " + mModel.name : mModel.name;
+    }
+
+    /**
+     * Reads aloud the sentences of the answer that are complete (done: all the rest). When the
+     * whole answer has been said, a Live conversation listens again.
+     */
+    private void speakReady(boolean done) {
+        if (!mSpeakAnswer || mClosing) {
+            return;
+        }
+        final String s;
+        synchronized (mText) {
+            s = mText.toString();
+        }
+        int end = done ? s.length() : sentenceEnd(s, mSpokenUpTo);
+        if (end > mSpokenUpTo) {
+            final String chunk = s.substring(mSpokenUpTo, end);
+            mSpokenUpTo = end;
+            mVoice.speakChunk(chunk, mSpokenLang, done, done ? mAfterSpoken : null);
+        } else if (done) {
+            mVoice.speakChunk("", mSpokenLang, true, mAfterSpoken);
+        }
+    }
+
+    /** the end of the last complete sentence after from, or -1 */
+    private static int sentenceEnd(String s, int from) {
+        int end = -1;
+        for (int i = Math.max(0, from); i < s.length() - 1; i++) {
+            final char c = s.charAt(i);
+            if ((c == '.' || c == '!' || c == '?' || c == ';' || c == ':' || c == '\n')
+                    && Character.isWhitespace(s.charAt(i + 1))) {
+                end = i + 1;
+            }
+        }
+        return end;
+    }
+
+    private final Runnable mAfterSpoken = new Runnable() {
+        @Override
+        public void run() {
+            continueLive();
+        }
+    };
+
+    private final Runnable mListenAgain = new Runnable() {
+        @Override
+        public void run() {
+            if (mLive && !mClosing && !mBusy && !mVoice.recording()) {
+                toggleVoice();
+            }
+        }
+    };
+
+    /** Live: after the answer has been said, kAI listens again */
+    private void continueLive() {
+        if (mLive && !mClosing) {
+            mStatus.setText(label());
+            mHandler.postDelayed(mListenAgain, 350);
         }
     }
 

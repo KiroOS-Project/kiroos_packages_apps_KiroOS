@@ -68,6 +68,14 @@ Java_com_kiroos_kai_NativeWhisper_nativeTranscribe(JNIEnv *env, jclass, jlong h,
     p.print_realtime = false;
     p.print_timestamps = false;
     p.suppress_blank = true;
+    /* KiroOS Live: the encoder looks only at the audio there is (50 frames a second plus a
+     * margin) instead of a fixed 30 s window. Never under 512 frames: smaller windows made
+     * the decoder ramble. Same text on the Italian test phrases, about 3x faster (PC: encode
+     * 820 -> 240 ms for a 3-5 s question). No retries at higher temperatures either. */
+    const int frames = (int) ((long long) n * 50 / WHISPER_SAMPLE_RATE) + 128;
+    p.audio_ctx = frames < 512 ? 512 : (frames >= 1500 ? 0 : frames);
+    p.temperature_inc = 0.0f;
+    p.no_context = true;
 
     std::string text;
     if (whisper_full(ctx, p, pcm, n) == 0) {

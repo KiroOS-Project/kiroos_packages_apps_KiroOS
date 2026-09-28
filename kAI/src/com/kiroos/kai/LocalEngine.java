@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * kAI 1.1 on-device models, run inside the app by llama.cpp (libkai_llm.so, see NativeLlm).
  *
- * Three models ("Keng 1.5"), all 4-bit (Q4_K_M) GGUF files shipped in the ROM under
+ * Four models ("Keng 1.5"), all 4-bit (Q4_K_M) GGUF files shipped in the ROM under
  * /system/usr/share/kai and linked from /data/kiroos/models (a file placed there with the same
  * name takes precedence). The chosen one is loaded when kAI opens (memory-mapped: a few
  * seconds) and freed a few minutes after kAI goes to the background.
@@ -58,14 +58,22 @@ final class LocalEngine {
         final int ctx;
         final float temperature;
         final int maxTokens;
+        /** Qwen3: asked to answer straight away ("/no_think"); its empty think block is dropped */
+        final boolean noThink;
 
         Model(String id, String name, String file, int ctx, float temperature, int maxTokens) {
+            this(id, name, file, ctx, temperature, maxTokens, false);
+        }
+
+        Model(String id, String name, String file, int ctx, float temperature, int maxTokens,
+                boolean noThink) {
             this.id = id;
             this.name = name;
             this.file = file;
             this.ctx = ctx;
             this.temperature = temperature;
             this.maxTokens = maxTokens;
+            this.noThink = noThink;
         }
 
         File path() {
@@ -81,7 +89,16 @@ final class LocalEngine {
     /** 4 GB phones (S6 edge+) can give Pro a longer memory */
     private static final boolean BIG_RAM = totalRamKb() > 3500L * 1024;
 
+    /**
+     * Keng 1.5 Flash-Lite Live: Qwen3 0.6B without its thinking step, low temperature. The
+     * voice of kAI (hold Power): on the PC it reads a question twice as fast as Pro and writes
+     * 1.8x as fast, with short, correct answers in Italian and English.
+     */
+    static final Model LIVE = new Model("live", "Keng 1.5 Flash-Lite Live",
+            "qwen3-0.6b-q4_k_m.gguf", 2048, 0.2f, 320, true);
+
     static final Model[] MODELS = {
+        LIVE,
         // SmolLM2 135M: instant, arithmetic, definitions, phone settings
         new Model("lite", "Keng 1.5 Lite", "smollm2-135m-instruct-q4_k_m.gguf", 2048, 0.2f, 384),
         // Qwen2.5 0.5B: everyday assistant
@@ -92,7 +109,8 @@ final class LocalEngine {
                 BIG_RAM ? 2048 : 1024, 0.5f, 640),
     };
 
-    private static volatile Model sSelected = MODELS[1];
+    private static final Model DEFAULT = MODELS[2];   // Base
+    private static volatile Model sSelected = DEFAULT;
     private static Model sLoaded;
     private static long sHandle;
     private static volatile boolean sLoading;
@@ -122,7 +140,7 @@ final class LocalEngine {
                 return m;
             }
         }
-        return MODELS[1];
+        return DEFAULT;
     }
 
     static void select(String id) {
@@ -153,16 +171,24 @@ final class LocalEngine {
 
     /** true when this build ships the engine and the chosen model */
     static boolean available() {
-        return library() && sSelected.installed();
+        return available(sSelected);
+    }
+
+    static boolean available(Model m) {
+        return library() && m.installed();
     }
 
     /** Loads the chosen model if it is not the one in memory. Blocking: a worker thread. */
-    static synchronized boolean ensureRunning() {
-        final Model want = sSelected;
+    static boolean ensureRunning() {
+        return ensureRunning(sSelected);
+    }
+
+    /** Loads the given model if it is not the one in memory. Blocking: a worker thread. */
+    static synchronized boolean ensureRunning(Model want) {
         if (sHandle != 0 && sLoaded == want) {
             return true;
         }
-        if (!available()) {
+        if (!available(want)) {
             return false;
         }
         free();
@@ -225,11 +251,17 @@ final class LocalEngine {
      * does not fit the model's context.
      */
     static void generate(List<BridgeClient.Message> history, final BridgeClient.Stream stream) {
+        generate(sSelected, history, stream);
+    }
+
+    /** the same, with a given model (the voice overlay always talks with Flash-Lite Live) */
+    static void generate(Model model, List<BridgeClient.Message> history,
+            final BridgeClient.Stream out) {
         final long h;
         final Model m;
         synchronized (LocalEngine.class) {
-            if (!ensureRunning()) {
-                stream.onError("model");
+            if (!ensureRunning(model)) {
+                out.onError("model");
                 return;
             }
             h = sHandle;
@@ -237,6 +269,17 @@ final class LocalEngine {
             sActive++;
         }
         final List<BridgeClient.Message> msgs = new ArrayList<>(history);
+        final BridgeClient.Stream stream = m.noThink ? new NoThink(out) : out;
+        if (m.noThink) {
+            // Qwen3's own switch, on the last question: answer at once, no reasoning first
+            for (int i = msgs.size() - 1; i >= 0; i--) {
+                final BridgeClient.Message q = msgs.get(i);
+                if ("user".equals(q.role)) {
+                    msgs.set(i, new BridgeClient.Message("user", q.content + " /no_think"));
+                    break;
+                }
+            }
+        }
         final Guardian guardian = new Guardian(h);
         guardian.start();
         edgeGlow("kai_start");
@@ -276,6 +319,67 @@ final class LocalEngine {
             synchronized (LocalEngine.class) {
                 sActive--;
             }
+        }
+    }
+
+    /**
+     * Drops the (empty) think block Qwen3 writes before its answer, and the blank lines after
+     * it, so the chat and the voice get the answer only.
+     */
+    private static final class NoThink implements BridgeClient.Stream {
+        private final BridgeClient.Stream mOut;
+        private final StringBuilder mHead = new StringBuilder();
+        private boolean mPassing;
+
+        NoThink(BridgeClient.Stream out) {
+            mOut = out;
+        }
+
+        @Override
+        public void onDelta(String delta) {
+            if (mPassing) {
+                mOut.onDelta(delta);
+                return;
+            }
+            mHead.append(delta);
+            final String h = mHead.toString();
+            final String lead = h.replaceFirst("^\\s+", "");
+            if (lead.isEmpty() || "<think>".startsWith(lead.length() > 7 ? "~" : lead)) {
+                return;                                  // could still be the think tag
+            }
+            String rest;
+            if (lead.startsWith("<think>")) {
+                final int end = lead.indexOf("</think>");
+                if (end < 0) {
+                    return;                              // still inside the block
+                }
+                rest = lead.substring(end + "</think>".length());
+            } else {
+                rest = lead;
+            }
+            rest = rest.replaceFirst("^\\s+", "");
+            if (rest.isEmpty()) {
+                return;
+            }
+            mPassing = true;
+            mOut.onDelta(rest);
+        }
+
+        @Override
+        public void onDone() {
+            if (!mPassing) {
+                // a short answer that never got past the check above
+                final String lead = mHead.toString().trim();
+                if (!lead.isEmpty() && !lead.startsWith("<think>")) {
+                    mOut.onDelta(lead);
+                }
+            }
+            mOut.onDone();
+        }
+
+        @Override
+        public void onError(String message) {
+            mOut.onError(message);
         }
     }
 

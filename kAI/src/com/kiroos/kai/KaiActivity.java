@@ -656,35 +656,19 @@ public class KaiActivity extends Activity {
         }
     }
 
-    /** Keng 1.5 Lite / Base / Pro */
+    /** Keng 1.5 Flash-Lite Live / Lite / Base / Pro, in a sheet from the bottom */
     private void chooseModel() {
-        final String[] items = new String[LocalEngine.MODELS.length];
-        final String[] descs = getResources().getStringArray(R.array.model_descriptions);
-        int checked = 0;
-        for (int i = 0; i < items.length; i++) {
-            final LocalEngine.Model m = LocalEngine.MODELS[i];
-            items[i] = m.name + " \u2014 " + descs[i] + (m.installed() ? "" : " \u00b7 "
-                    + getString(R.string.model_missing));
-            if (m == LocalEngine.selected()) {
-                checked = i;
+        KaiModelSheet.show(this, new KaiModelSheet.Listener() {
+            @Override
+            public void onPicked(LocalEngine.Model m) {
+                if (m == LocalEngine.selected()) {
+                    return;
+                }
+                mPrefs.edit().putString("local_model", m.id).apply();
+                LocalEngine.select(m.id);
+                checkBridge();   // loads it now, the status line says when it is ready
             }
-        }
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.model_title)
-                .setSingleChoiceItems(items, checked, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface d, int which) {
-                        final LocalEngine.Model m = LocalEngine.MODELS[which];
-                        d.dismiss();
-                        if (m == LocalEngine.selected() || !m.installed()) {
-                            return;
-                        }
-                        mPrefs.edit().putString("local_model", m.id).apply();
-                        LocalEngine.select(m.id);
-                        checkBridge();   // loads it now, the status line says when it is ready
-                    }
-                })
-                .show();
+        });
     }
 
     private void showSettings() {

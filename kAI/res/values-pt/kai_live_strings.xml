@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- kAI: Keng 1.5 Flash-Lite Live and the model sheet -->
+<resources>
+    <string name="live_conversation">Conversa Live</string>
+    <string name="model_sheet_title">Escolha um modelo</string>
+    <string name="model_speed">Velocidade</string>
+    <string name="model_smarts">Conhecimento</string>
+    <string name="model_desc_live">Voz e respostas rápidas, usado ao segurar o botão Ligar · Qwen3 0.6B</string>
+    <string name="model_desc_lite">Instantâneo, para coisas simples · SmolLM2 135M</string>
+    <string name="model_desc_base">Assistente do dia a dia · Qwen2.5 0.5B</string>
+    <string name="model_desc_pro">Código e raciocínio passo a passo (mais lento) · Llama 3.2 1B, Built with Llama</string>
+    <string name="model_in_use">Em uso</string>
+</resources>
