@@ -435,7 +435,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
      */
     private void publishIcons() {
         if (mRoot.getWindowToken() == null || mDrag != null || isDrawerOpen()
-                || mWorkspace.getScrollX() != mWorkspace.currentPage() * mWorkspace.getWidth()) {
+                || mWorkspace.scroll() != mWorkspace.currentPage() * mWorkspace.getWidth()) {
             return;
         }
         final StringBuilder sb = new StringBuilder();

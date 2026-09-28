@@ -69,6 +69,12 @@ public class Workspace extends ViewGroup {
     private int mCurrentPage;
     private float mDragStartScroll;
     private ValueAnimator mSettle;
+    /**
+     * Where the pages are, to the fraction of a pixel. The view scrolls by whole pixels only:
+     * the rest is a translation, so a page gliding to a stop moves smoothly instead of in
+     * steps of 2 real pixels (the UI runs at 720p on the 1440p panel).
+     */
+    private float mScroll;
     private Listener mListener;
 
     public Workspace(Context context, AttributeSet attrs) {
@@ -157,20 +163,32 @@ public class Workspace extends ViewGroup {
      * A finger touches down: a glide in progress stops right there, under the finger.
      * True if the pages were moving (the touch then drives them at once, no slop).
      */
+    /** the pages' position, to the fraction of a pixel */
+    float scroll() {
+        return mScroll;
+    }
+
+    private void setScroll(float x) {
+        mScroll = x;
+        final int whole = (int) Math.floor(x);
+        scrollTo(whole, 0);
+        setTranslationX(whole - x);
+    }
+
     boolean catchScroll() {
         final boolean moving = mSettle != null && mSettle.isRunning();
         if (moving) {
             mSettle.cancel();
-            mCurrentPage = Math.round(getScrollX() / (float) Math.max(1, getWidth()));
+            mCurrentPage = Math.round(mScroll / Math.max(1, getWidth()));
         }
-        return moving || getScrollX() != mCurrentPage * getWidth();
+        return moving || mScroll != mCurrentPage * getWidth();
     }
 
     void beginDrag() {
         if (mSettle != null) {
             mSettle.cancel();
         }
-        mDragStartScroll = getScrollX();
+        mDragStartScroll = mScroll;
     }
 
     /** dx: finger travel since beginDrag (right = positive) */
@@ -183,14 +201,14 @@ public class Workspace extends ViewGroup {
         } else if (target > max) {
             target = max + (target - max) / 3f;
         }
-        scrollTo(Math.round(target), 0);
+        setScroll(target);
         notifyScroll();
     }
 
     /** finger up: settle on the page the fling or the position points to */
     void release(float velocityX, float minFling) {
         final int w = Math.max(1, getWidth());
-        final float pos = getScrollX() / (float) w;
+        final float pos = mScroll / w;
         int page = Math.round(pos);
         if (velocityX < -minFling) {
             page = (int) Math.floor(pos) + 1;
@@ -198,13 +216,13 @@ public class Workspace extends ViewGroup {
             page = (int) Math.ceil(pos) - 1;
         }
         page = Math.max(0, Math.min(mPageCount - 1, page));
-        final float distance = Math.abs(page * w - getScrollX());
+        final float distance = Math.abs(page * w - mScroll);
         if (distance < 1) {
             snapTo(page, false);
             return;
         }
         // the pages carry on at the finger's own speed and ease into place
-        final float toward = Math.signum(page * w - getScrollX()) == Math.signum(-velocityX)
+        final float toward = Math.signum(page * w - mScroll) == Math.signum(-velocityX)
                 ? Math.abs(velocityX) : 0; // px/s in the direction of the page
         final float seconds = toward > minFling
                 ? Math.max(0.16f, Math.min(0.36f, 2 * distance / toward))
@@ -237,8 +255,8 @@ public class Workspace extends ViewGroup {
         if ((mSettle != null && mSettle.isRunning()) || getWidth() == 0) {
             return;
         }
-        if (getScrollX() != mCurrentPage * getWidth()) {
-            snapTo(Math.round(getScrollX() / (float) getWidth()), true);
+        if (mScroll != mCurrentPage * getWidth()) {
+            snapTo(Math.round(mScroll / getWidth()), true);
         }
     }
 
@@ -250,11 +268,11 @@ public class Workspace extends ViewGroup {
             mSettle.cancel();
         }
         if (!animate || getWidth() == 0) {
-            scrollTo(target, 0);
+            setScroll(target);
             notifyScroll();
             return;
         }
-        animateTo(page, Math.min(400, 200 + Math.abs(target - getScrollX()) / 4),
+        animateTo(page, Math.min(400, 200 + (long) Math.abs(target - mScroll) / 4),
                 KiroTouch.EASE);
     }
 
@@ -264,13 +282,13 @@ public class Workspace extends ViewGroup {
         if (mSettle != null) {
             mSettle.cancel();
         }
-        mSettle = ValueAnimator.ofInt(getScrollX(), target);
+        mSettle = ValueAnimator.ofFloat(mScroll, target);
         mSettle.setDuration(duration);
         mSettle.setInterpolator(curve);
         mSettle.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator a) {
-                scrollTo((int) a.getAnimatedValue(), 0);
+                setScroll((float) a.getAnimatedValue());
                 notifyScroll();
             }
         });
@@ -280,7 +298,7 @@ public class Workspace extends ViewGroup {
     /** tells the listener where the pages are (the wallpaper needs it once the window is up) */
     void notifyScroll() {
         if (mListener != null && getWidth() > 0) {
-            mListener.onPageScrolled(getScrollX() / (float) getWidth());
+            mListener.onPageScrolled(mScroll / getWidth());
         }
     }
 
@@ -337,7 +355,7 @@ public class Workspace extends ViewGroup {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        scrollTo(mCurrentPage * w, 0);
+        setScroll(mCurrentPage * w);
         notifyScroll();
     }
 
