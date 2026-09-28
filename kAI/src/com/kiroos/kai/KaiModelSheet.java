@@ -54,7 +54,6 @@ final class KaiModelSheet {
 
     private static int speed(LocalEngine.Model m) {
         switch (m.id) {
-            case "live": return 5;
             case "lite": return 5;
             case "base": return 4;
             default: return 2;
@@ -63,16 +62,14 @@ final class KaiModelSheet {
 
     private static int smarts(LocalEngine.Model m) {
         switch (m.id) {
-            case "live": return 3;
             case "lite": return 1;
-            case "base": return 2;
+            case "base": return 3;
             default: return 4;
         }
     }
 
     private static int desc(LocalEngine.Model m) {
         switch (m.id) {
-            case "live": return R.string.model_desc_live;
             case "lite": return R.string.model_desc_lite;
             case "base": return R.string.model_desc_base;
             default: return R.string.model_desc_pro;
@@ -82,7 +79,6 @@ final class KaiModelSheet {
     /** the badge colours: one gradient per model */
     private static int[] colors(LocalEngine.Model m) {
         switch (m.id) {
-            case "live": return new int[] {0xFF3987E5, 0xFF8E5CF5};
             case "lite": return new int[] {0xFF22B8A6, 0xFF3FD08A};
             case "base": return new int[] {0xFF2F7BDA, 0xFF45B3F0};
             default: return new int[] {0xFFF08A3C, 0xFFE8526E};
@@ -91,8 +87,7 @@ final class KaiModelSheet {
 
     private static String tag(LocalEngine.Model m) {
         switch (m.id) {
-            case "live": return "LIVE";
-            case "lite": return "LITE";
+            case "lite": return "FLASH";
             case "base": return "BASE";
             default: return "PRO";
         }

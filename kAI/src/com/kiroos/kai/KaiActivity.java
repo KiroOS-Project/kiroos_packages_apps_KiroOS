@@ -384,6 +384,8 @@ public class KaiActivity extends Activity {
         // a short follow-up ("and when?") is searched together with the question before it
         final String query = previousQuestion != null && text.split("\\s+").length < 5
                 ? previousQuestion + " " + text : text;
+        // a spoken question gets its answer from the voice, Flash-Lite Live
+        final boolean spoken = mSpokenQuestion;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -446,7 +448,7 @@ public class KaiActivity extends Activity {
                     }
                 }
                 final List<WebSearch.Result> sources = results;
-                t.client.chat(t.model, history, new BridgeClient.Stream() {
+                final BridgeClient.Stream stream = new BridgeClient.Stream() {
                     private long mLastUi;
 
                     @Override
@@ -493,7 +495,12 @@ public class KaiActivity extends Activity {
                     public void onError(final String message) {
                         postError(answer, message);
                     }
-                });
+                };
+                if (t.local && spoken && LocalEngine.LIVE.installed()) {
+                    LocalEngine.generate(LocalEngine.LIVE, history, stream);
+                } else {
+                    t.client.chat(t.model, history, stream);
+                }
             }
         }, "kAI-chat").start();
     }

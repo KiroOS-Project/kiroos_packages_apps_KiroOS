@@ -97,19 +97,22 @@ final class LocalEngine {
     static final Model LIVE = new Model("live", "Keng 1.5 Flash-Lite Live",
             "qwen3-0.6b-q4_k_m.gguf", 2048, 0.2f, 320, true);
 
+    /** the models of the app's model sheet; the voice (LIVE) is not one of them */
     static final Model[] MODELS = {
-        LIVE,
         // SmolLM2 135M: instant, arithmetic, definitions, phone settings
-        new Model("lite", "Keng 1.5 Lite", "smollm2-135m-instruct-q4_k_m.gguf", 2048, 0.2f, 384),
+        new Model("lite", "Keng 1.5 Flash Lite", "smollm2-135m-instruct-q4_k_m.gguf", 2048, 0.2f,
+                384),
+        // Qwen3 0.6B, the same file as Flash-Lite Live, set for chatting (longer answers)
+        new Model("base", "Keng 1.5 Base", "qwen3-0.6b-q4_k_m.gguf", 2048, 0.4f, 512, true),
         // Llama 3.2 1B: code and step-by-step reasoning; the context is capped so the KV cache
         // cannot push a 3 GB phone out of memory
         new Model("pro", "Keng 1.5 Pro", "llama-3.2-1b-instruct-q4_k_m.gguf",
                 BIG_RAM ? 2048 : 1024, 0.5f, 640),
     };
 
-    // Flash-Lite Live took the place of Base (Qwen2.5 0.5B) in the ROM: faster and more
-    // accurate, and the OTA zip has to stay under 2 GiB
-    private static final Model DEFAULT = LIVE;
+    // Base runs Qwen3 0.6B (it replaced Qwen2.5 0.5B in the ROM: faster and more accurate,
+    // and the OTA zip has to stay under 2 GiB)
+    private static final Model DEFAULT = MODELS[1];
     private static volatile Model sSelected = DEFAULT;
     private static Model sLoaded;
     private static long sHandle;
@@ -185,7 +188,8 @@ final class LocalEngine {
 
     /** Loads the given model if it is not the one in memory. Blocking: a worker thread. */
     static synchronized boolean ensureRunning(Model want) {
-        if (sHandle != 0 && sLoaded == want) {
+        if (sHandle != 0 && sLoaded != null && (sLoaded == want
+                || (sLoaded.file.equals(want.file) && sLoaded.ctx == want.ctx))) {
             return true;
         }
         if (!available(want)) {
@@ -265,7 +269,7 @@ final class LocalEngine {
                 return;
             }
             h = sHandle;
-            m = sLoaded;
+            m = model;
             sActive++;
         }
         final List<BridgeClient.Message> msgs = new ArrayList<>(history);

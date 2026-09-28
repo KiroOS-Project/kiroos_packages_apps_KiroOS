@@ -75,6 +75,8 @@ final class Installer {
         Sources.Release r = null;
         try {
             r = Sources.latest(app);
+            Log.i(TAG, app.pkg + ": latest " + r.versionName + " (" + r.versionCode + "), "
+                    + r.urls.size() + " file(s)");
             result = FAILED;
             for (String url : r.urls) {
                 result = installOne(c, app, url, p);
@@ -102,7 +104,9 @@ final class Installer {
             throws Exception {
         final File apk = new File(c.getCacheDir(), app.pkg + ".apk");
         try {
+            Log.i(TAG, app.pkg + ": downloading " + url);
             download(url, apk, p);
+            Log.i(TAG, app.pkg + ": downloaded " + apk.length() + " bytes, installing");
             if (p != null) {
                 p.onProgress(-1);
             }

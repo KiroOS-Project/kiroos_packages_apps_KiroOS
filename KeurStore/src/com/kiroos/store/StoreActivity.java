@@ -93,8 +93,6 @@ public class StoreActivity extends Activity {
     private String mQuery = "";
     private boolean mItalian;
 
-    /** download percent per app (0-100), -1 while Android installs it */
-    private final Map<String, Integer> mProgress = new HashMap<>();
     /** the latest build at the source, per app (known after a check) */
     private final Map<String, Sources.Release> mReleases = new HashMap<>();
     private final Set<String> mUpdates = new HashSet<>();
@@ -115,12 +113,17 @@ public class StoreActivity extends Activity {
     private int mRaised;
     private int mRipple;
 
-    private final BroadcastReceiver mDone = new BroadcastReceiver() {
+    /** the installs (kept by Installs for the whole app, so a rotation loses none) */
+    private final Installs.Listener mInstalls = new Installs.Listener() {
         @Override
-        public void onReceive(Context c, Intent i) {
-            final String pkg = i.getStringExtra("pkg");
-            final int result = i.getIntExtra("result", Installer.FAILED);
-            mProgress.remove(pkg);
+        public void onChanged(String pkg, int result) {
+            if (result < 0) {
+                final Catalog.App a = app(pkg);
+                if (a != null) {
+                    refreshActions(pkg, a);
+                }
+                return;
+            }
             if (result == Installer.OK) {
                 final boolean wasUpdate = mUpdates.remove(pkg);
                 toast(wasUpdate ? R.string.updated : R.string.installed);
@@ -197,7 +200,7 @@ public class StoreActivity extends Activity {
             }
         });
 
-        registerReceiver(mDone, new IntentFilter(Installer.ACTION_DONE));
+        Installs.listen(mInstalls);
         UpdateJob.schedule(this);
         updateTabs();
         render(true);
@@ -230,8 +233,17 @@ public class StoreActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        unregisterReceiver(mDone);
+        Installs.unlisten(mInstalls);
         super.onDestroy();
+    }
+
+    private Catalog.App app(String pkg) {
+        for (Catalog.App a : Catalog.all(mCatalog)) {
+            if (a.pkg.equals(pkg)) {
+                return a;
+            }
+        }
+        return null;
     }
 
     private int dp(float v) {
@@ -485,9 +497,7 @@ public class StoreActivity extends Activity {
             @Override
             public void onClick(View v) {
                 for (Catalog.App a : ups) {
-                    if (!mProgress.containsKey(a.pkg)) {
-                        install(a);
-                    }
+                    Installs.start(StoreActivity.this, a);
                 }
             }
         });
@@ -597,7 +607,7 @@ public class StoreActivity extends Activity {
         if (!views.contains(b)) {
             views.add(b);
         }
-        final Integer p = mProgress.get(a.pkg);
+        final Integer p = Installs.progress(a.pkg);
         final PackageInfo have = a.installed(mPm);
         if (p != null) {
             b.setText(p >= 0 ? p + "%" : getString(R.string.installing));
@@ -647,7 +657,7 @@ public class StoreActivity extends Activity {
     }
 
     private void act(Catalog.App a) {
-        if (mProgress.containsKey(a.pkg)) {
+        if (Installs.progress(a.pkg) != null) {
             return;
         }
         final PackageInfo have = a.installed(mPm);
@@ -659,32 +669,8 @@ public class StoreActivity extends Activity {
             return;
         }
         if (a.direct()) {
-            install(a);
+            Installs.start(this, a);
         }
-    }
-
-    private void install(final Catalog.App a) {
-        mProgress.put(a.pkg, 0);
-        refreshActions(a.pkg, a);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Installer.install(StoreActivity.this, a, new Installer.Progress() {
-                    @Override
-                    public void onProgress(final int percent) {
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mProgress.containsKey(a.pkg)) {
-                                    mProgress.put(a.pkg, percent);
-                                    refreshActions(a.pkg, a);
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }, "KeurStore-install").start();
     }
 
     // --- detail sheet ----------------------------------------------------------------------------

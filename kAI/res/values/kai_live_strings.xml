@@ -7,7 +7,7 @@
     <string name="model_smarts">Knowledge</string>
     <string name="model_desc_live">Everyday answers and voice, used when you hold Power · Qwen3 0.6B</string>
     <string name="model_desc_lite">Instant, for simple things · SmolLM2 135M</string>
-    <string name="model_desc_base">Everyday assistant · Qwen2.5 0.5B</string>
+    <string name="model_desc_base">Everyday assistant · Qwen3 0.6B</string>
     <string name="model_desc_pro">Code and step-by-step reasoning (slower) · Llama 3.2 1B, Built with Llama</string>
     <string name="model_in_use">In use</string>
 </resources>
