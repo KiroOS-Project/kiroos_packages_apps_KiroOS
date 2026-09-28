@@ -3,4 +3,19 @@
     <color name="code_bg">#FF1C1C1F</color>
     <color name="code_fg">#FF9CDCFE</color>
     <dimen name="bubble_max">300dp</dimen>
+
+    <!-- the overlay (hold Power) -->
+    <color name="kai_overlay_card">#FF141416</color>
+    <color name="kai_overlay_dim">#73000000</color>
+
+    <style name="Theme.Kai.Overlay" parent="@style/Theme.Kiro">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <!-- the card animates itself in and out -->
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 </resources>

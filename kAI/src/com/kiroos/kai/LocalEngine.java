@@ -97,6 +97,21 @@ final class LocalEngine {
     private static long sHandle;
     private static volatile boolean sLoading;
     private static Boolean sLibrary;
+    /** answers being written: the model is never freed under one (guarded by the class) */
+    private static int sActive;
+    private static final android.os.Handler sMain =
+            new android.os.Handler(android.os.Looper.getMainLooper());
+    private static final Runnable sRelease = new Runnable() {
+        @Override
+        public void run() {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    stop();
+                }
+            }, "kAI-release").start();
+        }
+    };
 
     private LocalEngine() {
     }
@@ -169,10 +184,24 @@ final class LocalEngine {
         return sLoading;
     }
 
-    /** frees the model's memory */
+    /** frees the model's memory (not while an answer is being written) */
     static synchronized void stop() {
+        if (sActive > 0) {
+            return;
+        }
         free();
         Voice.release();
+    }
+
+    /** the model's memory goes back a few minutes after kAI was last used */
+    static void releaseLater() {
+        sMain.removeCallbacks(sRelease);
+        sMain.postDelayed(sRelease, 3 * 60 * 1000);
+    }
+
+    /** kAI is in use again: keep the model */
+    static void keep() {
+        sMain.removeCallbacks(sRelease);
     }
 
     private static void free() {
@@ -205,6 +234,7 @@ final class LocalEngine {
             }
             h = sHandle;
             m = sLoaded;
+            sActive++;
         }
         final List<BridgeClient.Message> msgs = new ArrayList<>(history);
         final Guardian guardian = new Guardian(h);
@@ -243,6 +273,9 @@ final class LocalEngine {
         } finally {
             guardian.finish();
             edgeGlow("kai_stop");
+            synchronized (LocalEngine.class) {
+                sActive--;
+            }
         }
     }
 

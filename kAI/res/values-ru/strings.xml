@@ -52,4 +52,5 @@
     <string name="listening">Слушаю…</string>
     <string name="transcribing">Распознаю…</string>
     <string name="voice_failed">Микрофон недоступен.</string>
+    <string name="open_chat">Продолжить в kAI</string>
 </resources>

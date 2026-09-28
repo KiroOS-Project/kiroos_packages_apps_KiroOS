@@ -52,4 +52,5 @@
     <string name="listening">Dinleniyor…</string>
     <string name="transcribing">Anlaşılıyor…</string>
     <string name="voice_failed">Mikrofon kullanılamıyor.</string>
+    <string name="open_chat">kAI\'de devam et</string>
 </resources>

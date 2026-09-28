@@ -43,13 +43,6 @@ import android.widget.Toast;
 import com.kiroos.ui.KiroTouch;
 import com.kiroos.ui.SquircleDrawable;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -57,9 +50,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * kAI: chat with a language model running on the PC through the kAI bridge (USB via adb
- * reverse, or LAN). Answers stream in and are rendered as Markdown. The conversation is
- * kept on the phone.
+ * kAI: chat with the Keng 1.5 models running on the phone (LocalEngine), with optional web
+ * search. Answers stream in and are rendered as Markdown. The conversation is kept on the
+ * phone (ChatStore), shared with the overlay that holding Power opens.
  */
 public class KaiActivity extends Activity {
 
@@ -204,6 +197,13 @@ public class KaiActivity extends Activity {
         super.onResume();
         mResumed = true;
         mHandler.removeCallbacks(mStopLocal);
+        LocalEngine.keep();
+        // questions asked from the overlay (hold Power) were added to the chat on disk
+        if (!mBusy) {
+            mMessages.clear();
+            load();
+            refresh();
+        }
         checkBridge();
     }
 
@@ -264,20 +264,14 @@ public class KaiActivity extends Activity {
      * only when neither can answer.
      */
     private Target resolve(boolean startLocal) throws Exception {
-        final BridgeClient pc = client();
-        final String preferred = mPrefs.getString("model", "");
-        Exception pcError;
-        try {
-            return new Target(pc, pc.health(preferred), false);
-        } catch (Exception e) {
-            pcError = e;
+        // KiroOS 2.1: kAI runs on the phone only, no PC and no cloud
+        if (!LocalEngine.available()) {
+            throw new BridgeClient.NoModelException();
         }
-        if (LocalEngine.available()) {
-            if (!startLocal || LocalEngine.ensureRunning()) {
-                return new Target(BridgeClient.local(), LocalEngine.modelName(), true);
-            }
+        if (!startLocal || LocalEngine.ensureRunning()) {
+            return new Target(BridgeClient.local(), LocalEngine.modelName(), true);
         }
-        throw pcError;
+        throw new Exception("loading");
     }
 
     private void checkBridge() {
@@ -310,11 +304,6 @@ public class KaiActivity extends Activity {
                     mStatus.setText(getString(t.local ? R.string.on_device : R.string.connected,
                             t.model.isEmpty() ? getString(R.string.default_model) : t.model));
                     mStatus.setTextColor(getColor(R.color.kiro_positive));
-                    if (t.local && mResumed) {
-                        // the PC may be plugged in later: look again now and then
-                        mHandler.removeCallbacks(mRetry);
-                        mHandler.postDelayed(mRetry, 15000);
-                    }
                 } else if (mLoading) {
                     // the phone's own model is still loading: not an error, look again soon
                     mStatus.setText(R.string.model_loading);
@@ -326,8 +315,7 @@ public class KaiActivity extends Activity {
                 } else {
                     mStatus.setText(mNoModel ? R.string.no_model : R.string.not_connected);
                     mStatus.setTextColor(getColor(R.color.kiro_negative));
-                    // keep trying while the app is open: plugging the phone in (or starting
-                    // kAI on the PC) connects without a tap
+                    // keep trying while the app is open (the model may still be starting)
                     mHandler.removeCallbacks(mRetry);
                     if (mResumed) {
                         mHandler.postDelayed(mRetry, 4000);
@@ -731,47 +719,12 @@ public class KaiActivity extends Activity {
 
     // --- persistence ---------------------------------------------------------------------------
 
-    private File file() {
-        return new File(getFilesDir(), "conversation.json");
-    }
-
     private void save() {
-        try {
-            final JSONArray a = new JSONArray();
-            for (BridgeClient.Message m : mMessages) {
-                a.put(new JSONObject().put("role", m.role).put("content", m.content));
-            }
-            try (FileOutputStream out = new FileOutputStream(file())) {
-                out.write(a.toString().getBytes(StandardCharsets.UTF_8));
-            }
-        } catch (Exception e) {
-            // not fatal: the chat just won't survive a restart
-        }
+        ChatStore.save(this, mMessages);
     }
 
     private void load() {
-        final File f = file();
-        if (!f.exists()) {
-            return;
-        }
-        try (FileInputStream in = new FileInputStream(f)) {
-            final byte[] data = new byte[(int) f.length()];
-            int off = 0;
-            while (off < data.length) {
-                final int n = in.read(data, off, data.length - off);
-                if (n < 0) {
-                    break;
-                }
-                off += n;
-            }
-            final JSONArray a = new JSONArray(new String(data, 0, off, StandardCharsets.UTF_8));
-            for (int i = 0; i < a.length(); i++) {
-                final JSONObject o = a.getJSONObject(i);
-                mMessages.add(new BridgeClient.Message(o.getString("role"), o.getString("content")));
-            }
-        } catch (Exception e) {
-            mMessages.clear();
-        }
+        mMessages.addAll(ChatStore.load(this));
     }
 
     // --- list -----------------------------------------------------------------------------------
