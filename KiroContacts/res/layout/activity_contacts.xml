@@ -80,7 +80,7 @@
             android:layout_margin="20dp"
             android:contentDescription="@string/new_contact"
             android:elevation="6dp"
-            android:tint="?android:attr/textColorPrimary"
+            android:tint="@color/kiro_on_accent"
             android:src="@drawable/ic_person_add" />
     </FrameLayout>
 </LinearLayout>

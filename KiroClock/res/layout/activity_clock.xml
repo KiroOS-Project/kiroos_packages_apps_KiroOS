@@ -50,7 +50,7 @@
                 android:layout_margin="20dp"
                 android:contentDescription="@string/add_alarm"
                 android:elevation="6dp"
-                android:tint="?android:attr/textColorPrimary"
+                android:tint="@color/kiro_on_accent"
                 android:src="@drawable/ic_add" />
         </FrameLayout>
 
@@ -104,7 +104,7 @@
                 android:layout_margin="20dp"
                 android:contentDescription="@string/add_city"
                 android:elevation="6dp"
-                android:tint="?android:attr/textColorPrimary"
+                android:tint="@color/kiro_on_accent"
                 android:src="@drawable/ic_add" />
         </FrameLayout>
 

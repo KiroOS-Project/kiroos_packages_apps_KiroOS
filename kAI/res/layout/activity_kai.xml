@@ -146,7 +146,7 @@
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"
             android:contentDescription="@string/send"
-            android:tint="?android:attr/textColorPrimary"
+            android:tint="@color/kiro_on_accent"
             android:src="@drawable/ic_send" />
     </LinearLayout>
 </LinearLayout>
