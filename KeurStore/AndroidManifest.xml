@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KeurStore 1.1: the KiroOS app store (a curated catalogue installed from the official sources) -->
+<!-- KeurStore 2.0: the KiroOS app store (a curated catalogue installed and updated right here,
+     from the developers' own downloads and F-Droid) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.store"
-    android:versionCode="110"
-    android:versionName="1.1">
+    android:versionCode="200"
+    android:versionName="2.0">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 

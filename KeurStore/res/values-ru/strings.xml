@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KiroOS 2.1 translation (ru). Source: kai/l10n/ru.txt -->
+<!-- KeurStore 2.0 -->
 <resources>
-    <string name="subtitle">Официальные приложения, оптимизированные для KiroOS</string>
-    <string name="section_featured">Рекомендуемые</string>
+    <string name="subtitle">Официальные и открытые приложения, установка прямо здесь</string>
+    <string name="section_featured">Рекомендуем</string>
     <string name="section_games">Игры</string>
     <string name="section_utility">Утилиты</string>
     <string name="section_kiro">Приложения Kiro</string>
-    <string name="get">Установить</string>
+    <string name="search_hint">Поиск приложений</string>
+    <string name="tab_discover">Обзор</string>
+    <string name="tab_updates">Обновления</string>
+    <string name="tab_installed">Установленные</string>
+    <string name="install">Установить</string>
     <string name="open">Открыть</string>
+    <string name="update">Обновить</string>
+    <string name="update_all">Обновить все</string>
+    <string name="installing">Установка…</string>
+    <string name="up_to_date">Всё обновлено</string>
+    <string name="checking_updates">Проверка обновлений…</string>
+    <string name="no_results">Приложения не найдены</string>
+    <string name="nothing_installed">Здесь появятся приложения, установленные из KeurStore</string>
+    <string name="source_official">Официально · %1$s</string>
+    <string name="source_fdroid">F-Droid · открытый код</string>
+    <string name="source_kiro">Приложение KiroOS</string>
+    <string name="from_play">Из Google Play, обновляется там</string>
+    <string name="version_fmt">Версия %1$s</string>
+    <string name="installed_version_fmt">Установлено: %1$s</string>
+    <string name="uninstall">Удалить</string>
+    <string name="hero_title">Приложения прямо из источника</string>
+    <string name="hero_text">Официальные загрузки и F-Droid, установка и обновление здесь. Без Google Play.</string>
     <string name="installed">Установлено и оптимизировано для KiroOS</string>
-    <string name="install_failed">Не удалось установить: повторите попытку позже</string>
-    <string name="badge_optimized">Оптимизировано для KiroOS</string>
-    <string name="badge_kiro">Приложение KiroOS</string>
+    <string name="install_failed">Не удалось установить: попробуйте позже</string>
+    <string name="incompatible">Это приложение не работает на этом телефоне</string>
+    <string name="no_network">Нет соединения: попробуйте позже</string>
+    <string name="updated">Обновлено</string>
 </resources>

@@ -24,20 +24,13 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.content.pm.PackageInfo;
 import android.util.Log;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
 /**
- * Silent background updates of the apps KeurStore installed from their official download,
- * once a day on Wi-Fi while charging. An app is downloaded again only when the file on the
- * developer's server changed (ETag / Last-Modified / size); Android then accepts the update
- * only if it is signed like the installed app. Play apps are updated by Google Play.
+ * Silent background updates of the catalogue apps on the phone, once a day on Wi-Fi while
+ * charging: the ones KeurStore can update (same package, a newer build at the official
+ * source). Android accepts an update only if it is signed like the installed app.
  */
 public class UpdateJob extends JobService {
 
@@ -76,57 +69,23 @@ public class UpdateJob extends JobService {
 
     static void update(Context c) {
         Catalog.refresh(c);
-        final SharedPreferences prefs = c.getSharedPreferences("updates", MODE_PRIVATE);
-        final Map<String, List<Catalog.App>> cat = Catalog.load(c, true);
-        for (List<Catalog.App> apps : cat.values()) {
-            for (Catalog.App app : apps) {
-                if (!app.direct() || !installed(c, app.pkg)) {
-                    continue;
-                }
-                try {
-                    final String url = Installer.resolve(app.source);
-                    final String tag = fingerprint(url);
-                    final String last = prefs.getString(app.pkg, null);
-                    if (tag.equals(last)) {
-                        continue;
-                    }
-                    if (last == null) {
-                        // first check after installing: this is the installed version
-                        prefs.edit().putString(app.pkg, tag).apply();
-                        continue;
-                    }
-                    Log.i(TAG, "updating " + app.pkg);
-                    if (Installer.install(c, app, null)) {
-                        prefs.edit().putString(app.pkg, tag).apply();
-                    }
-                } catch (Exception e) {
-                    Log.i(TAG, "update check of " + app.pkg + " failed: " + e.getMessage());
-                }
+        for (Catalog.App app : Catalog.all(Catalog.load(c, true))) {
+            if (!app.direct()) {
+                continue;
             }
-        }
-    }
-
-    private static String fingerprint(String url) throws Exception {
-        final HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
-        c.setRequestMethod("HEAD");
-        c.setInstanceFollowRedirects(true);
-        c.setConnectTimeout(6000);
-        c.setReadTimeout(8000);
-        try {
-            c.getResponseCode();
-            return c.getHeaderField("ETag") + "|" + c.getHeaderField("Last-Modified") + "|"
-                    + c.getContentLengthLong() + "|" + c.getURL();
-        } finally {
-            c.disconnect();
-        }
-    }
-
-    private static boolean installed(Context c, String pkg) {
-        try {
-            c.getPackageManager().getPackageInfo(pkg, 0);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
+            final PackageInfo have = app.installed(c.getPackageManager());
+            if (have == null) {
+                continue;
+            }
+            try {
+                final Sources.Release r = Sources.latest(app);
+                if (Sources.hasUpdate(c, app, have, r)) {
+                    Log.i(TAG, "updating " + app.pkg);
+                    Installer.install(c, app, null);
+                }
+            } catch (Exception e) {
+                Log.i(TAG, "update check of " + app.pkg + " failed: " + e.getMessage());
+            }
         }
     }
 

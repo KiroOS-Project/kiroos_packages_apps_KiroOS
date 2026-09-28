@@ -17,6 +17,8 @@
 package com.kiroos.store;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.SystemProperties;
 import android.util.Log;
 
@@ -37,31 +39,88 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The KeurStore catalogue: a curated list of apps with their official source. Shipped in the
- * app (res/raw/catalog.json) and refreshed from the KiroOS update server
- * (<server>/store/catalog.json) when it answers.
+ * The KeurStore catalogue: a curated list of apps, each with its official source. Shipped in
+ * the app (res/raw/catalog.json) and refreshed from the KiroOS update server
+ * (<server>/store/catalog.json) when it answers with a catalogue at least as new.
  *
- * Sources: "play" (Google Play page), "apk:<url>" (the developer's own download, installed
- * and kept up to date by KeurStore), "signal" (Signal's official APK feed), "system" (a
- * KiroOS app already in the ROM).
+ * Sources, all installed and updated right here:
+ *   "apk:<url>"  the developer's own download (Telegram)
+ *   "signal"     Signal's official APK feed (with its version)
+ *   "whatsapp"   WhatsApp's official APK
+ *   "fdroid"     F-Droid, for open-source apps (its API gives the version)
+ *   "system"     a KiroOS app already in the ROM
+ * Google Play apps cannot be installed outside Google Play: a catalogue entry with a "play"
+ * source (older catalogues) is left out.
  */
 final class Catalog {
 
     static final class App {
         final String pkg;
+        /** other packages of the same app (Telegram from Google Play is another package) */
+        final String[] also;
         final String name;
         final String desc;
         final String source;
+        final String icon;
+        final String site;
+        final String section;
 
-        App(String pkg, String name, String desc, String source) {
+        App(String pkg, String[] also, String name, String desc, String source, String icon,
+                String site, String section) {
             this.pkg = pkg;
+            this.also = also;
             this.name = name;
             this.desc = desc;
             this.source = source;
+            this.icon = icon;
+            this.site = site;
+            this.section = section;
         }
 
         boolean direct() {
-            return source.startsWith("apk:") || source.equals("signal");
+            return source.startsWith("apk:") || source.equals("signal")
+                    || source.equals("whatsapp") || source.equals("fdroid");
+        }
+
+        boolean fdroid() {
+            return source.equals("fdroid");
+        }
+
+        boolean system() {
+            return source.equals("system");
+        }
+
+        /** where its picture comes from until it is installed */
+        String iconUrl() {
+            if (icon != null && !icon.isEmpty()) {
+                return icon;
+            }
+            return fdroid() ? "https://f-droid.org/repo/" + pkg + "/en-US/icon.png" : null;
+        }
+
+        /** the installed package of this app (this one or one of the others), or null */
+        PackageInfo installed(PackageManager pm) {
+            final PackageInfo p = info(pm, pkg);
+            if (p != null) {
+                return p;
+            }
+            if (also != null) {
+                for (String a : also) {
+                    final PackageInfo q = info(pm, a);
+                    if (q != null) {
+                        return q;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static PackageInfo info(PackageManager pm, String pkg) {
+            try {
+                return pm.getPackageInfo(pkg, 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                return null;
+            }
         }
     }
 
@@ -73,23 +132,39 @@ final class Catalog {
 
     /** section id -> apps, in the catalogue's order */
     static Map<String, List<App>> load(Context c, boolean italian) {
-        String json = null;
+        String bundled;
+        try (InputStream in = c.getResources().openRawResource(R.raw.catalog)) {
+            bundled = read(in);
+        } catch (Exception e) {
+            return new LinkedHashMap<>();
+        }
+        String json = bundled;
         final File cached = new File(c.getFilesDir(), CACHE);
         if (cached.canRead()) {
             try (InputStream in = new FileInputStream(cached)) {
-                json = read(in);
+                final String fresh = read(in);
+                // an older server catalogue never replaces the one in this app
+                if (version(fresh) >= version(bundled)) {
+                    json = fresh;
+                }
             } catch (Exception e) {
-                json = null;
+                json = bundled;
             }
         }
-        if (json == null) {
-            try (InputStream in = c.getResources().openRawResource(R.raw.catalog)) {
-                json = read(in);
-            } catch (Exception e) {
-                return new LinkedHashMap<>();
-            }
+        try {
+            return parse(json, italian);
+        } catch (IllegalArgumentException e) {
+            return parse(bundled, italian);
         }
-        return parse(json, italian);
+    }
+
+    /** every app, in order */
+    static List<App> all(Map<String, List<App>> cat) {
+        final List<App> out = new ArrayList<>();
+        for (List<App> l : cat.values()) {
+            out.addAll(l);
+        }
+        return out;
     }
 
     /** Blocking: the latest catalogue from the update server, kept for next time. */
@@ -126,21 +201,44 @@ final class Catalog {
         }
     }
 
+    private static int version(String json) {
+        try {
+            return new JSONObject(json).optInt("version", 1);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     private static Map<String, List<App>> parse(String json, boolean italian) {
         final Map<String, List<App>> out = new LinkedHashMap<>();
         try {
             final JSONArray sections = new JSONObject(json).getJSONArray("sections");
             for (int i = 0; i < sections.length(); i++) {
                 final JSONObject s = sections.getJSONObject(i);
+                final String section = s.getString("id");
                 final JSONArray apps = s.getJSONArray("apps");
                 final List<App> list = new ArrayList<>();
                 for (int j = 0; j < apps.length(); j++) {
                     final JSONObject a = apps.getJSONObject(j);
-                    list.add(new App(a.getString("pkg"), a.getString("name"),
-                            italian ? a.optString("desc") : a.optString("desc_en", a.optString("desc")),
-                            a.optString("source", "play")));
+                    final String source = a.optString("source", "play");
+                    if (source.equals("play")) {
+                        continue;                 // not installable outside Google Play
+                    }
+                    final JSONArray alsoJ = a.optJSONArray("also");
+                    String[] also = null;
+                    if (alsoJ != null) {
+                        also = new String[alsoJ.length()];
+                        for (int k = 0; k < also.length; k++) {
+                            also[k] = alsoJ.getString(k);
+                        }
+                    }
+                    list.add(new App(a.getString("pkg"), also, a.getString("name"),
+                            italian ? a.optString("desc")
+                                    : a.optString("desc_en", a.optString("desc")),
+                            source, a.optString("icon", null), a.optString("site", null),
+                            section));
                 }
-                out.put(s.getString("id"), list);
+                out.put(section, list);
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("bad catalogue", e);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KeurStore: title, section chips, the apps of the section -->
+<!-- KeurStore 2.0: title, search, Discover / Updates / Installed, the list (built in code) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,45 +8,72 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="18dp"
         android:text="@string/app_name"
         style="@style/Kiro.Headline" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="2dp"
         android:text="@string/subtitle"
         style="@style/Kiro.Caption" />
 
-    <HorizontalScrollView
+    <EditText
+        android:id="@+id/search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="46dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="14dp"
+        android:background="@drawable/store_search_bg"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/store_ic_search"
+        android:hint="@string/search_hint"
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingEnd="16dp"
+        android:paddingStart="14dp"
+        android:textColor="@color/kiro_text"
+        android:textColorHint="@color/kiro_text_secondary"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/store_tabs_bg"
+        android:orientation="horizontal"
+        android:padding="4dp" />
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:clipToPadding="false"
-        android:paddingEnd="20dp"
-        android:paddingStart="20dp"
+        android:fadingEdgeLength="16dp"
+        android:paddingBottom="24dp"
+        android:requiresFadingEdge="vertical"
         android:scrollbars="none">
 
         <LinearLayout
-            android:id="@+id/sections"
-            android:layout_width="wrap_content"
+            android:id="@+id/content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
-
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:divider="@null"
-        android:paddingBottom="16dp"
-        style="@style/Kiro.ListView" />
+            android:orientation="vertical"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp" />
+    </ScrollView>
 </LinearLayout>

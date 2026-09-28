@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- KeurStore 2.0 -->
 <resources>
-    <string name="app_name">KeurStore</string>
-    <string name="subtitle">App ufficiali, ottimizzate per KiroOS</string>
+    <string name="subtitle">App ufficiali e open source, installate direttamente qui</string>
     <string name="section_featured">In evidenza</string>
     <string name="section_games">Giochi</string>
-    <string name="section_utility">Utility</string>
+    <string name="section_utility">Utilità</string>
     <string name="section_kiro">App Kiro</string>
-    <string name="get">Ottieni</string>
+    <string name="search_hint">Cerca app</string>
+    <string name="tab_discover">Scopri</string>
+    <string name="tab_updates">Aggiornamenti</string>
+    <string name="tab_installed">Installate</string>
+    <string name="install">Installa</string>
     <string name="open">Apri</string>
-    <string name="downloading">…</string>
+    <string name="update">Aggiorna</string>
+    <string name="update_all">Aggiorna tutto</string>
+    <string name="installing">Installazione…</string>
+    <string name="up_to_date">Tutto aggiornato</string>
+    <string name="checking_updates">Controllo aggiornamenti…</string>
+    <string name="no_results">Nessuna app trovata</string>
+    <string name="nothing_installed">Le app che installi da KeurStore compaiono qui</string>
+    <string name="source_official">Ufficiale · %1$s</string>
+    <string name="source_fdroid">F-Droid · open source</string>
+    <string name="source_kiro">App KiroOS</string>
+    <string name="from_play">Dal Play Store, aggiornata lì</string>
+    <string name="version_fmt">Versione %1$s</string>
+    <string name="installed_version_fmt">Installata: %1$s</string>
+    <string name="uninstall">Disinstalla</string>
+    <string name="hero_title">App, direttamente dalla fonte</string>
+    <string name="hero_text">Download ufficiali e F-Droid, installati e aggiornati qui. Senza Play Store.</string>
     <string name="installed">Installata e ottimizzata per KiroOS</string>
-    <string name="install_failed">Non sono riuscito a installarla: riprova più tardi</string>
-    <string name="badge_optimized">Ottimizzata per KiroOS</string>
-    <string name="badge_kiro">App KiroOS</string>
+    <string name="install_failed">Installazione non riuscita: riprova più tardi</string>
+    <string name="incompatible">Questa app non funziona su questo telefono</string>
+    <string name="no_network">Nessuna connessione: riprova più tardi</string>
+    <string name="updated">Aggiornata</string>
 </resources>
