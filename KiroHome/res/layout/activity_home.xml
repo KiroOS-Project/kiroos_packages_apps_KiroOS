@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Kiro Home: clock, widgets, favourites grid and dock; the drawer slides over them -->
+<!-- Kiro Home: clock, widgets, favourites grid and dock (just the icons, no bar behind them); the drawer slides over them -->
 <com.kiroos.home.HomeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
@@ -98,7 +98,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:background="@drawable/dock_bg"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingBottom="10dp"
