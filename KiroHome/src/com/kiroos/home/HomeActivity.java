@@ -615,9 +615,10 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     }
 
     /**
-     * Opens the app out of its icon: the icon's picture goes with the launch, so the framework
-     * grows it with the app window and dissolves it into the app (AppTransition, KiroOS icon
-     * thumbnail). Without a picture: the plain zoom from the icon.
+     * Opens the app out of its icon: the framework grows the app window from the icon's square
+     * (AppTransition, KiroOS launch zoom) while the home steps back. The icon's picture no
+     * longer goes along as a thumbnail layer: over the window it showed as a large dark
+     * square with dark icons (TikTok), split from the app by the home stepping back.
      */
     void launch(AppInfo app, View from) {
         Bundle opts = null;
@@ -626,33 +627,13 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             final int[] loc = new int[2];
             from.getLocationOnScreen(loc);
             bounds = new Rect(loc[0], loc[1], loc[0] + from.getWidth(), loc[1] + from.getHeight());
-            final android.graphics.Bitmap picture = iconPicture(from);
-            opts = (picture != null
-                    ? ActivityOptions.makeThumbnailScaleUpAnimation(from, picture, 0, 0)
-                    : ActivityOptions.makeScaleUpAnimation(from, 0, 0,
-                            from.getWidth(), from.getHeight())).toBundle();
+            opts = ActivityOptions.makeScaleUpAnimation(from, 0, 0,
+                    from.getWidth(), from.getHeight()).toBundle();
         }
         try {
             mRepo.launcherApps().startMainActivity(app.component, app.user, bounds, opts);
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /** the icon as it is drawn on the home, at its size on screen */
-    private static android.graphics.Bitmap iconPicture(View icon) {
-        final int w = icon.getWidth();
-        final int h = icon.getHeight();
-        if (w <= 0 || h <= 0) {
-            return null;
-        }
-        try {
-            final android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(w, h,
-                    android.graphics.Bitmap.Config.ARGB_8888);
-            icon.draw(new android.graphics.Canvas(b));
-            return b;
-        } catch (OutOfMemoryError e) {
-            return null;
         }
     }
 
