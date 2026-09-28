@@ -324,9 +324,12 @@ final class LocalEngine {
 
     private static android.content.Context sApp;
 
+    /** the overlay (hold Power) is showing: its aura is the light, no Edge Glow as well */
+    static volatile boolean sOverlayShowing;
+
     /** Kiro Edge Glow (SystemUI): the screen edge glows while kAI writes */
     private static void edgeGlow(String mode) {
-        if (sApp != null) {
+        if (sApp != null && !sOverlayShowing) {
             sApp.sendBroadcast(new android.content.Intent("com.kiroos.intent.EDGE_GLOW")
                     .setPackage("com.android.systemui").putExtra("mode", mode));
         }

@@ -7,6 +7,7 @@
     <!-- the overlay (hold Power) -->
     <color name="kai_overlay_card">#FF141416</color>
     <color name="kai_overlay_dim">#73000000</color>
+    <color name="kai_overlay_card_edge">#1AFFFFFF</color>
 
     <style name="Theme.Kai.Overlay" parent="@style/Theme.Kiro">
         <item name="android:windowIsTranslucent">true</item>

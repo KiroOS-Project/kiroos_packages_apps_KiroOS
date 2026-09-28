@@ -46,8 +46,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * kAI over the current app (hold the Power button): a card at the bottom of the screen with a
- * light running round its edge. From the Power key it listens right away; the answer is
+ * kAI over the current app (hold the Power button): a card at the bottom of the screen with the
+ * kAI aura glowing behind it. From the Power key it listens right away; the answer is
  * written in the card (read aloud when the question was spoken) and added to the kAI chat,
  * which "Continue in kAI" opens. Everything runs on the phone.
  */
@@ -61,7 +61,10 @@ public class KaiOverlayActivity extends Activity {
     private Markdown mMarkdown;
     private View mDim;
     private View mFrame;
-    private GlowBorderView mGlow;
+    private KaiAuraView mAura;
+    private View mVoiceRow;
+    private KaiWaveView mWave;
+    private TextView mVoiceLabel;
     private AnswerScroll mScroll;
     private TextView mQuestion;
     private TextView mAnswer;
@@ -84,11 +87,15 @@ public class KaiOverlayActivity extends Activity {
         mPrefs = getSharedPreferences("kai", MODE_PRIVATE);
         LocalEngine.init(getApplicationContext());
         LocalEngine.select(mPrefs.getString("local_model", "base"));
+        LocalEngine.sOverlayShowing = true;
         mMarkdown = new Markdown(getColor(R.color.code_bg), getColor(R.color.code_fg),
                 getColor(R.color.kiro_accent), getColor(R.color.kiro_text_secondary));
         mDim = findViewById(R.id.dim);
         mFrame = findViewById(R.id.frame);
-        mGlow = (GlowBorderView) findViewById(R.id.glow);
+        mAura = (KaiAuraView) findViewById(R.id.aura);
+        mVoiceRow = findViewById(R.id.voice_row);
+        mWave = (KaiWaveView) findViewById(R.id.wave);
+        mVoiceLabel = (TextView) findViewById(R.id.voice_label);
         mScroll = (AnswerScroll) findViewById(R.id.scroll);
         mQuestion = (TextView) findViewById(R.id.question);
         mAnswer = (TextView) findViewById(R.id.answer);
@@ -168,7 +175,7 @@ public class KaiOverlayActivity extends Activity {
                 }
             }, 260);
         } else {
-            mGlow.setMode(GlowBorderView.IDLE);
+            mAura.setMode(KaiAuraView.IDLE);
         }
         // warm the model up while the question is being asked
         new Thread(new Runnable() {
@@ -188,6 +195,8 @@ public class KaiOverlayActivity extends Activity {
     private void enter() {
         mDim.setAlpha(0f);
         mDim.animate().alpha(1f).setDuration(220).start();
+        mAura.setTranslationY(dp(60));
+        mAura.animate().translationY(0f).setInterpolator(EASE).setDuration(600).start();
         mFrame.setAlpha(0f);
         mFrame.setTranslationY(dp(96));
         mFrame.setScaleX(0.94f);
@@ -209,8 +218,9 @@ public class KaiOverlayActivity extends Activity {
         }
         mVoice.silence();
         hideKeyboard();
-        mGlow.setMode(GlowBorderView.OFF);
+        mAura.setMode(KaiAuraView.OFF);
         mDim.animate().alpha(0f).setDuration(200).start();
+        mAura.animate().translationY(dp(80)).setDuration(260).start();
         mFrame.animate().alpha(0f).translationY(dp(72)).scaleX(0.96f).scaleY(0.96f)
                 .setInterpolator(EXIT).setDuration(220)
                 .setListener(new AnimatorListenerAdapter() {
@@ -243,6 +253,7 @@ public class KaiOverlayActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        LocalEngine.sOverlayShowing = false;
         LocalEngine.releaseLater();
         super.onDestroy();
     }
@@ -270,20 +281,23 @@ public class KaiOverlayActivity extends Activity {
         mVoice.silence();
         hideKeyboard();
         final Locale lang = getResources().getConfiguration().getLocales().get(0);
-        mMic.setColorFilter(getColor(R.color.kiro_accent));
-        mInput.setHint(R.string.listening);
-        mGlow.setMode(GlowBorderView.LISTENING);
+        showVoice(true);
+        mWave.setMode(KaiWaveView.LISTENING);
+        mVoiceLabel.setText(R.string.listening);
+        mAura.setMode(KaiAuraView.LISTENING);
         mVoice.listen(lang, new Voice.Listener() {
             @Override
             public void onLevel(float level) {
-                mGlow.setLevel(level);
+                mAura.setLevel(level);
+                mWave.setLevel(level);
             }
 
             @Override
             public void onTranscribing() {
-                mGlow.setLevel(0f);
-                mGlow.setMode(GlowBorderView.THINKING);
-                mInput.setHint(R.string.transcribing);
+                mAura.setLevel(0f);
+                mAura.setMode(KaiAuraView.THINKING);
+                mWave.setMode(KaiWaveView.THINKING);
+                mVoiceLabel.setText(R.string.transcribing);
             }
 
             @Override
@@ -298,7 +312,7 @@ public class KaiOverlayActivity extends Activity {
                     mInput.setText(text);
                     send();
                 } else {
-                    mGlow.setMode(GlowBorderView.IDLE);
+                    mAura.setMode(KaiAuraView.IDLE);
                 }
             }
 
@@ -306,7 +320,7 @@ public class KaiOverlayActivity extends Activity {
             public void onError(String message) {
                 resetMic();
                 if (!mClosing) {
-                    mGlow.setMode(GlowBorderView.IDLE);
+                    mAura.setMode(KaiAuraView.IDLE);
                     mInput.setHint(R.string.voice_failed);
                 }
             }
@@ -314,8 +328,21 @@ public class KaiOverlayActivity extends Activity {
     }
 
     private void resetMic() {
-        mMic.clearColorFilter();
+        showVoice(false);
         mInput.setHint(R.string.ask);
+    }
+
+    /** while kAI listens the field shows the voice, and the microphone turns blue */
+    private void showVoice(boolean on) {
+        mVoiceRow.setVisibility(on ? View.VISIBLE : View.GONE);
+        mInput.setVisibility(on ? View.INVISIBLE : View.VISIBLE);
+        mMic.setBackgroundResource(on ? R.drawable.kai_mic_listening : R.drawable.kiro_icon_button);
+        mMic.setColorFilter(on ? getColor(R.color.kiro_on_accent)
+                : getColor(R.color.kiro_text), android.graphics.PorterDuff.Mode.SRC_IN);
+        if (on) {
+            mVoiceRow.setAlpha(0f);
+            mVoiceRow.animate().alpha(1f).setDuration(180).start();
+        }
     }
 
     @Override
@@ -347,7 +374,7 @@ public class KaiOverlayActivity extends Activity {
             return;
         }
         setBusy(true);
-        mGlow.setMode(GlowBorderView.THINKING);
+        mAura.setMode(KaiAuraView.THINKING);
         mText.setLength(0);
         mAnswer.setText("…");
 
@@ -417,7 +444,7 @@ public class KaiOverlayActivity extends Activity {
                             @Override
                             public void run() {
                                 setBusy(false);
-                                mGlow.setMode(GlowBorderView.IDLE);
+                                mAura.setMode(KaiAuraView.IDLE);
                                 if (mText.length() == 0) {
                                     mAnswer.setText(getString(R.string.error_answer, message));
                                 } else {
@@ -473,7 +500,7 @@ public class KaiOverlayActivity extends Activity {
         synchronized (mText) {
             answer = mText.toString().trim();
         }
-        mGlow.setMode(GlowBorderView.IDLE);
+        mAura.setMode(KaiAuraView.IDLE);
         mStatus.setText(LocalEngine.modelName());
         if (answer.isEmpty()) {
             return;
