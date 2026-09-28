@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * kAI 1.1 on-device models, run inside the app by llama.cpp (libkai_llm.so, see NativeLlm).
  *
- * Four models ("Keng 1.5"), all 4-bit (Q4_K_M) GGUF files shipped in the ROM under
+ * Three models ("Keng 1.5"), all 4-bit (Q4_K_M) GGUF files shipped in the ROM under
  * /system/usr/share/kai and linked from /data/kiroos/models (a file placed there with the same
  * name takes precedence). The chosen one is loaded when kAI opens (memory-mapped: a few
  * seconds) and freed a few minutes after kAI goes to the background.
@@ -91,8 +91,8 @@ final class LocalEngine {
 
     /**
      * Keng 1.5 Flash-Lite Live: Qwen3 0.6B without its thinking step, low temperature. The
-     * voice of kAI (hold Power): on the PC it reads a question twice as fast as Pro and writes
-     * 1.8x as fast, with short, correct answers in Italian and English.
+     * everyday model and the voice of kAI (hold Power): on the PC it reads a question twice as
+     * fast as Pro and writes 1.8x as fast, with short, correct answers in Italian and English.
      */
     static final Model LIVE = new Model("live", "Keng 1.5 Flash-Lite Live",
             "qwen3-0.6b-q4_k_m.gguf", 2048, 0.2f, 320, true);
@@ -101,15 +101,15 @@ final class LocalEngine {
         LIVE,
         // SmolLM2 135M: instant, arithmetic, definitions, phone settings
         new Model("lite", "Keng 1.5 Lite", "smollm2-135m-instruct-q4_k_m.gguf", 2048, 0.2f, 384),
-        // Qwen2.5 0.5B: everyday assistant
-        new Model("base", "Keng 1.5 Base", "qwen2.5-0.5b-instruct-q4_k_m.gguf", 4096, 0.4f, 512),
         // Llama 3.2 1B: code and step-by-step reasoning; the context is capped so the KV cache
         // cannot push a 3 GB phone out of memory
         new Model("pro", "Keng 1.5 Pro", "llama-3.2-1b-instruct-q4_k_m.gguf",
                 BIG_RAM ? 2048 : 1024, 0.5f, 640),
     };
 
-    private static final Model DEFAULT = MODELS[2];   // Base
+    // Flash-Lite Live took the place of Base (Qwen2.5 0.5B) in the ROM: faster and more
+    // accurate, and the OTA zip has to stay under 2 GiB
+    private static final Model DEFAULT = LIVE;
     private static volatile Model sSelected = DEFAULT;
     private static Model sLoaded;
     private static long sHandle;
