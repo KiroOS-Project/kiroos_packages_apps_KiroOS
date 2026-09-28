@@ -132,6 +132,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     /** the open folder and its key, or null */
     private FolderView mFolderView;
     private String mOpenFolder;
+    /** the icon positions last published for the close-to-icon animation */
+    private String mPublishedIcons;
+    private final int[] mIconLoc = new int[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +167,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             @Override
             public void onPageScrolled(float position) {
                 mIndicator.setPosition(position);
+                if (Math.abs(position - Math.round(position)) < 0.001f) {
+                    schedulePublishIcons(150);
+                }
                 // the whole screen moves with the pages: the clock and the widgets belong to
                 // the first page, and the wallpaper follows at a slower pace
                 final float first = Math.max(0f, Math.min(1f, position)) * mRoot.getWidth();
@@ -319,6 +325,12 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        schedulePublishIcons(700);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         mWidgets.stopListening();
@@ -401,6 +413,65 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             mDock.addView(cell, new LinearLayout.LayoutParams(0,
                     bound != null ? ViewGroup.LayoutParams.WRAP_CONTENT : 1, 1f));
         }
+        schedulePublishIcons(300);
+    }
+
+    private final Runnable mPublishIcons = new Runnable() {
+        @Override
+        public void run() {
+            publishIcons();
+        }
+    };
+
+    private void schedulePublishIcons(long delayMs) {
+        mHandler.removeCallbacks(mPublishIcons);
+        mHandler.postDelayed(mPublishIcons, delayMs);
+    }
+
+    /**
+     * Tells the system where each app's icon is on screen (the current page and the dock; the
+     * apps of a folder point at the folder), so a closing app shrinks back into its icon
+     * wherever it was opened from (AppTransition, Settings.Global kiroos_home_icons).
+     */
+    private void publishIcons() {
+        if (mRoot.getWindowToken() == null || mDrag != null || isDrawerOpen()
+                || mWorkspace.getScrollX() != mWorkspace.currentPage() * mWorkspace.getWidth()) {
+            return;
+        }
+        final StringBuilder sb = new StringBuilder();
+        final int page = mWorkspace.currentPage();
+        for (int i = 0; i < mWorkspace.getChildCount(); i++) {
+            final View c = mWorkspace.getChildAt(i);
+            if (((Workspace.LayoutParams) c.getLayoutParams()).page == page) {
+                appendIcons(sb, c);
+            }
+        }
+        for (int i = 0; i < mDock.getChildCount(); i++) {
+            appendIcons(sb, mDock.getChildAt(i));
+        }
+        final String icons = sb.toString();
+        if (!icons.equals(mPublishedIcons)) {
+            mPublishedIcons = icons;
+            try {
+                Settings.Global.putString(getContentResolver(), "kiroos_home_icons", icons);
+            } catch (SecurityException e) {
+                // not the system build: apps close into the icon they were opened from
+            }
+        }
+    }
+
+    private void appendIcons(StringBuilder sb, View cell) {
+        final Object tag = cell.getTag(R.id.kiro_icon_packages);
+        final View icon = cell.findViewById(R.id.app_icon);
+        if (!(tag instanceof String[]) || icon == null || icon.getWidth() == 0) {
+            return;
+        }
+        icon.getLocationOnScreen(mIconLoc);
+        final String rect = ":" + mIconLoc[0] + "," + mIconLoc[1] + ","
+                + (mIconLoc[0] + icon.getWidth()) + "," + (mIconLoc[1] + icon.getHeight()) + ";";
+        for (String pkg : (String[]) tag) {
+            sb.append(pkg).append(rect);
+        }
     }
 
     /** the view of a cell: an app, a folder, or null when the cell is empty */
@@ -434,7 +505,13 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
         final View v = inflater.inflate(R.layout.item_app, parent, false);
         final ImageView icon = (ImageView) v.findViewById(R.id.app_icon);
-        icon.setImageDrawable(mIcons.folderIcon(folderApps(f)));
+        final List<AppInfo> inside = folderApps(f);
+        icon.setImageDrawable(mIcons.folderIcon(inside));
+        final String[] pkgs = new String[inside.size()];
+        for (int i = 0; i < pkgs.length; i++) {
+            pkgs[i] = inside.get(i).component.getPackageName();
+        }
+        v.setTag(R.id.kiro_icon_packages, pkgs);
         final TextView label = (TextView) v.findViewById(R.id.app_label);
         final String name = TextUtils.isEmpty(f.name) ? getString(R.string.folder_default)
                 : f.name;
@@ -515,6 +592,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final View v = inflater.inflate(R.layout.item_app, parent, false);
         final ImageView icon = (ImageView) v.findViewById(R.id.app_icon);
         icon.setImageDrawable(mIcons.icon(app));
+        v.setTag(R.id.kiro_icon_packages, new String[] {app.component.getPackageName()});
         final TextView label = (TextView) v.findViewById(R.id.app_label);
         label.setText(app.label);
         label.setVisibility(withLabel ? View.VISIBLE : View.GONE);

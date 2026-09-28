@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the packages of a home cell (an app, or the apps of a folder): published for the
+         system's close-to-icon animation -->
+    <item type="id" name="kiro_icon_packages" />
+</resources>

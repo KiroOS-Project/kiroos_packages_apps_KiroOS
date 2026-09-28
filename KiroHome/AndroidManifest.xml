@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- where the icons are, so the system closes apps back into them (kiroos_home_icons) -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <!-- the clock opens the alarms (AlarmClock.ACTION_SHOW_ALARMS) -->
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
