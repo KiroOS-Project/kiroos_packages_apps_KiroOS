@@ -1,7 +1,8 @@
 LOCAL_PATH := $(call my-dir)
 
 # kAI's on-device engine: llama.cpp built with the NDK (-O3, arm64-v8a) into one JNI library,
-# see jni/kai_llm.cpp and /home/icholas/kai/kiro_kai_jni.sh
+# see jni/kai_llm.cpp and /home/icholas/kai/kiro_kai_jni.sh. x86_64 is for the KiroOS emulator
+# (/home/icholas/kai/kiro_kai_jni_x86_64.sh).
 include $(CLEAR_VARS)
 LOCAL_MODULE := libkai_llm
 LOCAL_MODULE_TAGS := optional
@@ -9,6 +10,7 @@ LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 LOCAL_MODULE_SUFFIX := .so
 LOCAL_MULTILIB := 64
 LOCAL_SRC_FILES_arm64 := jni/prebuilt/arm64-v8a/libkai_llm.so
+LOCAL_SRC_FILES_x86_64 := jni/prebuilt/x86_64/libkai_llm.so
 LOCAL_STRIP_MODULE := false
 include $(BUILD_PREBUILT)
 
@@ -19,6 +21,7 @@ LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 LOCAL_MODULE_SUFFIX := .so
 LOCAL_MULTILIB := 64
 LOCAL_SRC_FILES_arm64 := jni/prebuilt/arm64-v8a/libkai_whisper.so
+LOCAL_SRC_FILES_x86_64 := jni/prebuilt/x86_64/libkai_whisper.so
 LOCAL_STRIP_MODULE := false
 include $(BUILD_PREBUILT)
 
