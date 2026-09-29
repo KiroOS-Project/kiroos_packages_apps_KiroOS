@@ -120,21 +120,26 @@ final class Installer {
             synchronized (sWaiting) {
                 sWaiting.put(id, w);
             }
-            try (PackageInstaller.Session s = pi.openSession(id);
-                 InputStream in = new FileInputStream(apk);
-                 OutputStream out = s.openWrite("base.apk", 0, apk.length())) {
-                final byte[] buf = new byte[65536];
-                int n;
-                while ((n = in.read(buf)) > 0) {
-                    out.write(buf, 0, n);
+            try (PackageInstaller.Session s = pi.openSession(id)) {
+                // the file goes in and its stream is closed exactly once, before the commit: a
+                // second close wrote to the closed session pipe (EBADF) after the commit, so the
+                // install went on in Android while KeurStore reported it had failed
+                try (InputStream in = new FileInputStream(apk);
+                     OutputStream out = s.openWrite("base.apk", 0, apk.length())) {
+                    final byte[] buf = new byte[65536];
+                    int n;
+                    while ((n = in.read(buf)) > 0) {
+                        out.write(buf, 0, n);
+                    }
+                    s.fsync(out);
                 }
-                s.fsync(out);
-                out.close();
                 final Intent done = new Intent(c, Result.class).putExtra("pkg", app.pkg);
                 s.commit(PendingIntent.getBroadcast(c, id, done,
                         PendingIntent.FLAG_UPDATE_CURRENT).getIntentSender());
+                Log.i(TAG, app.pkg + ": committed, Android is installing it");
             }
-            // Android answers in a few seconds; big games may take longer
+            // Android answers in a few seconds (the Play Protect check can hold it ~10 s more);
+            // big games may take longer
             w.latch.await(3, TimeUnit.MINUTES);
             synchronized (sWaiting) {
                 sWaiting.remove(id);
