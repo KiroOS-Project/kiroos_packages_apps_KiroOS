@@ -362,8 +362,7 @@ public class KaiActivity extends Activity {
         conf.setLocale(lang);
         final android.content.Context pc = createConfigurationContext(conf);
         final List<BridgeClient.Message> history = new ArrayList<>();
-        history.add(new BridgeClient.Message("system",
-                pc.getString(R.string.system_prompt, WebSearch.today(lang))));
+        history.add(new BridgeClient.Message("system", systemPrompt(pc, lang)));
         // the last 20 turns keep context without overflowing small local models (fewer when
         // web results take room)
         final int from = Math.max(0, mMessages.size() - 1 - (web ? 8 : 20));
@@ -503,6 +502,17 @@ public class KaiActivity extends Activity {
                 }
             }
         }, "kAI-chat").start();
+    }
+
+    /**
+     * The system prompt in the answer language, naming the model kAI runs on: every
+     * translation says "Samsung Galaxy S6", which becomes the S6 edge / edge+ on those phones.
+     */
+    static String systemPrompt(android.content.Context c, java.util.Locale lang) {
+        final String prompt = c.getString(R.string.system_prompt, WebSearch.today(lang));
+        final String model = android.os.Build.MODEL;
+        return model.startsWith("Galaxy S6 ")
+                ? prompt.replace("Samsung Galaxy S6", "Samsung " + model) : prompt;
     }
 
     /** the placeholder of an answer that has no text yet (null: the plain "…") */

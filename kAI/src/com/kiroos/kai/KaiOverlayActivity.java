@@ -417,7 +417,7 @@ public class KaiOverlayActivity extends Activity {
             public void run() {
                 final List<BridgeClient.Message> history = new ArrayList<>();
                 String prompt = text;
-                String system = lc.getString(R.string.system_prompt, WebSearch.today(lang));
+                String system = KaiActivity.systemPrompt(lc, lang);
                 boolean searched = false;
                 if (web) {
                     status(getString(R.string.searching));
