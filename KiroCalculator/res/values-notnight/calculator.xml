@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS light theme: the keys were the dark theme's (#161618 / #2A2A2E) under the light
+     theme's dark digits, which could not be read. Operators stay blue with white signs. -->
+<resources>
+    <color name="key_fill">#FFF2F2F7</color>
+    <color name="fn_fill">#FFE3E3EA</color>
+</resources>

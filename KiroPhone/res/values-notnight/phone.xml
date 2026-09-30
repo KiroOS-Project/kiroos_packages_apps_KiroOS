@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS light theme: the dial pad keys were the dark theme's #141417 under dark digits -->
+<resources>
+    <color name="key_fill">#FFF2F2F7</color>
+</resources>
