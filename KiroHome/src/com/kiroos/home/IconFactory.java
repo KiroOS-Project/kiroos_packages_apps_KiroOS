@@ -63,8 +63,11 @@ final class IconFactory {
     private static final float SQUIRCLE_CORNER = 1.19f;
     private static final int LIGHT_TOP = 0xFFFAFAFC;
     private static final int LIGHT_BOTTOM = 0xFFE6E7EC;
+    /** the dark theme: other apps' icons a little darker (KiroOS icons have dark twins) */
+    private static final int DARK_DIM = 0x29000000;
 
     private final Context mContext;
+    private final boolean mDark;
     private final int mSize;
     private final int mDensity;
     private final Path mSquircle = new Path();
@@ -78,6 +81,10 @@ final class IconFactory {
 
     IconFactory(Context context) {
         mContext = context;
+        // the factory lives with the activity, which is recreated when the theme changes
+        mDark = (context.getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+                == android.content.res.Configuration.UI_MODE_NIGHT_YES;
         mSize = context.getResources().getDimensionPixelSize(R.dimen.icon_size);
         mDensity = context.getResources().getDisplayMetrics().densityDpi;
         buildSquircle(mSquircle, mSize);
@@ -161,10 +168,16 @@ final class IconFactory {
         Bitmap b = mCache.get(key);
         if (b == null) {
             // the xxxhdpi icon: zoomed round icons stay sharp
-            b = render(app.info.getBadgedIcon(Math.max(mDensity, DisplayMetrics.DENSITY_XXXHIGH)));
+            b = render(app.info.getBadgedIcon(Math.max(mDensity, DisplayMetrics.DENSITY_XXXHIGH)),
+                    mDark && !hasDarkTwin(app.info.getComponentName().getPackageName()));
             mCache.put(key, b);
         }
         return b;
+    }
+
+    /** the KiroOS suite and Settings ship their own dark-theme icons (drawable-night) */
+    private static boolean hasDarkTwin(String packageName) {
+        return packageName.startsWith("com.kiroos.") || "com.android.settings".equals(packageName);
     }
 
     private static String key(AppInfo app) {
@@ -180,7 +193,7 @@ final class IconFactory {
     }
 
     /** Serialized: the main thread and the prewarm thread share the paints and the path. */
-    private synchronized Bitmap render(Drawable source) {
+    private synchronized Bitmap render(Drawable source, boolean dim) {
         final Bitmap raw = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
         final Canvas rc = new Canvas(raw);
         source.setBounds(0, 0, mSize, mSize);
@@ -230,6 +243,9 @@ final class IconFactory {
                     : INNER_FIT * mSize / Math.max(box.width(), box.height());
             final float s = Math.min(fit, 1.4f);
             drawScaled(c, source, s, half - box.exactCenterX(), half - box.exactCenterY());
+        }
+        if (dim) {
+            c.drawColor(DARK_DIM, android.graphics.PorterDuff.Mode.SRC_ATOP);
         }
         c.drawRect(0, 0, mSize, mSize * 0.6f, mSheen);
         final Bitmap out = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
