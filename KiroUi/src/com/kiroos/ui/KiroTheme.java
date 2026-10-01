@@ -30,8 +30,8 @@ public final class KiroTheme {
 
     /**
      * For screens that are always dark whatever the theme (the camera viewfinder, the photo
-     * viewer, the home over the wallpaper, the first-boot setup): call it from
-     * Activity.attachBaseContext().
+     * viewer, the home over the wallpaper): call it from Activity.attachBaseContext(). The
+     * first-boot setup follows the theme since 2.1.1 (light on a new phone).
      */
     public static Context dark(Context base) {
         final Configuration c = new Configuration(base.getResources().getConfiguration());

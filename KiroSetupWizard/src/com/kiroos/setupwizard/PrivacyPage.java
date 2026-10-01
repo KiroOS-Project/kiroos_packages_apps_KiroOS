@@ -18,46 +18,56 @@ package com.kiroos.setupwizard;
 
 import android.provider.Settings;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
-import android.widget.TextView;
 
 /**
- * Step 5: device statistics. The KiroOS updater sends model, version, language, country and
- * carrier with a random id when it checks for updates (never IMEI or serial). The choice is
- * Settings.Global kiroos_share_stats, which the updater in Settings reads.
+ * Location and privacy: location services (Settings > Location, high accuracy or off) and
+ * the KiroOS device statistics. The statistics are sent by the updater in Settings with a
+ * random id when it checks for updates (never IMEI or serial): Settings.Global
+ * kiroos_share_stats.
  */
-class StatsPage extends SetupPage {
+class PrivacyPage extends SetupPage {
 
     static final String SHARE_STATS = "kiroos_share_stats";
 
-    StatsPage(SetupActivity activity) {
+    private Switch mLocation;
+
+    PrivacyPage(SetupActivity activity) {
         super(activity);
     }
 
     @Override
     int iconRes() {
-        return R.drawable.ic_stats;
+        return R.drawable.ic_location;
     }
 
     @Override
     int titleRes() {
-        return R.string.stats_title;
+        return R.string.privacy_title;
     }
 
     @Override
     int summaryRes() {
-        return R.string.stats_summary;
+        return R.string.privacy_summary;
     }
 
     @Override
     void onCreateContent(LayoutInflater inflater, ViewGroup content) {
-        final View row = inflater.inflate(R.layout.row_switch, content, false);
-        ((TextView) row.findViewById(R.id.row_title)).setText(R.string.stats_switch);
-        ((TextView) row.findViewById(R.id.row_summary)).setText(R.string.stats_switch_summary);
-        final Switch share = (Switch) row.findViewById(R.id.row_switch);
+        mLocation = addSwitch(content, R.string.location_switch, R.string.location_switch_summary);
+        mLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton button, boolean checked) {
+                // Settings.Secure turns LOCATION_MODE into the providers (gps, network)
+                Settings.Secure.putInt(mActivity.getContentResolver(), Settings.Secure.LOCATION_MODE,
+                        checked ? Settings.Secure.LOCATION_MODE_HIGH_ACCURACY
+                                : Settings.Secure.LOCATION_MODE_OFF);
+            }
+        });
+
+        addHeading(content, R.string.stats_title);
+        final Switch share = addSwitch(content, R.string.stats_switch, R.string.stats_switch_summary);
         share.setChecked(Settings.Global.getInt(mActivity.getContentResolver(), SHARE_STATS, 1) == 1);
         share.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -65,10 +75,17 @@ class StatsPage extends SetupPage {
                 Settings.Global.putInt(mActivity.getContentResolver(), SHARE_STATS, checked ? 1 : 0);
             }
         });
-        content.addView(row);
-        final TextView note = (TextView) inflater.inflate(R.layout.status_line, content, false);
-        note.setText(R.string.stats_note);
-        content.addView(note);
+        addStatus(content).setText(R.string.stats_note);
+    }
+
+    @Override
+    void onShown() {
+        if (mLocation != null) {
+            // the switch follows the system (Google's location consent may change it)
+            mLocation.setChecked(Settings.Secure.getInt(mActivity.getContentResolver(),
+                    Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF)
+                    != Settings.Secure.LOCATION_MODE_OFF);
+        }
     }
 
     @Override

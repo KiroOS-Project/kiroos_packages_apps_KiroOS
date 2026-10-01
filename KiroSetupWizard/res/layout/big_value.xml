@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A large live value at the top of a page (the date and time) -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Kiro.Headline"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
+    android:textColor="@color/kiro_accent" />

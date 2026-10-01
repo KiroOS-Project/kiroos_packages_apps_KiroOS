@@ -36,18 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Kiro Setup Wizard v1.0. Pages: language, Wi-Fi, mobile network, fingerprint, device
- * statistics, done. It is the home activity until setup completes; finishing sets
- * DEVICE_PROVISIONED and USER_SETUP_COMPLETE and disables this component, so the next
- * home is Kiro Home.
+ * Kiro Setup Wizard 1.2. Pages: language, Wi-Fi, mobile network, date and time, Google
+ * account (with Play services), location and privacy, screen lock and fingerprint,
+ * appearance, kAI, what's in KiroOS, done. It follows the system theme (light on a new
+ * phone; the appearance page changes it and the wizard redraws on the same page). It is the
+ * home activity until setup completes; finishing sets DEVICE_PROVISIONED and
+ * USER_SETUP_COMPLETE and disables this component, so the next home is Kiro Home.
  */
 public class SetupActivity extends Activity {
-
-    /** always dark, whatever the system theme */
-    @Override
-    protected void attachBaseContext(android.content.Context base) {
-        super.attachBaseContext(com.kiroos.ui.KiroTheme.dark(base));
-    }
 
     private static final String STATE_PAGE = "page";
     /**
@@ -86,8 +82,17 @@ public class SetupActivity extends Activity {
         mPages.add(new LanguagePage(this));
         mPages.add(new WifiPage(this));
         mPages.add(new MobilePage(this));
-        mPages.add(new FingerprintPage(this));
-        mPages.add(new StatsPage(this));
+        mPages.add(new DateTimePage(this));
+        if (GooglePage.available(this)) {
+            mPages.add(new GooglePage(this));
+        }
+        mPages.add(new PrivacyPage(this));
+        mPages.add(new SecurityPage(this));
+        mPages.add(new AppearancePage(this));
+        if (KaiPage.available(this)) {
+            mPages.add(new KaiPage(this));
+        }
+        mPages.add(new HighlightsPage(this));
         mPages.add(new DonePage(this));
         buildDots();
 
