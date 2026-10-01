@@ -47,7 +47,7 @@ import java.util.List;
 
 /**
  * Full screen photos and videos: swipe between them, pinch or double-tap to zoom, tap to
- * hide the bars. Share, edit, set as, details, delete.
+ * hide the bars. Favourite (1.2), share, edit, set as, details, delete.
  */
 public class ViewerActivity extends Activity implements SwipePager.Adapter {
 
@@ -106,6 +106,22 @@ public class ViewerActivity extends Activity implements SwipePager.Adapter {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        findViewById(R.id.btn_favourite).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Media.Item i = current();
+                if (i == null || i.id < 0) {
+                    return;
+                }
+                Favourites.set(ViewerActivity.this, i, !Favourites.is(ViewerActivity.this, i));
+                updateFavourite(i);
+                // a little beat of the heart
+                v.setScaleX(0.7f);
+                v.setScaleY(0.7f);
+                v.animate().scaleX(1f).scaleY(1f).setDuration(320)
+                        .setInterpolator(new android.view.animation.OvershootInterpolator(3f)).start();
             }
         });
         findViewById(R.id.btn_share).setOnClickListener(new View.OnClickListener() {
@@ -179,7 +195,12 @@ public class ViewerActivity extends Activity implements SwipePager.Adapter {
             @Override
             protected Integer doInBackground(Void... params) {
                 if (data == null) {
-                    mLoaded = Media.query(ViewerActivity.this, bucket, filter);
+                    if (bucket == Favourites.ALBUM_ID) {
+                        mLoaded = Favourites.filter(Media.query(ViewerActivity.this, 0, filter),
+                                Favourites.all(ViewerActivity.this));
+                    } else {
+                        mLoaded = Media.query(ViewerActivity.this, bucket, filter);
+                    }
                     return position;
                 }
                 // a MediaStore item: open its album so the neighbours can be swiped to
@@ -230,6 +251,7 @@ public class ViewerActivity extends Activity implements SwipePager.Adapter {
                 final boolean external = mExternal != null;
                 findViewById(R.id.btn_delete).setVisibility(external ? View.GONE : View.VISIBLE);
                 findViewById(R.id.btn_info).setVisibility(external ? View.GONE : View.VISIBLE);
+                findViewById(R.id.btn_favourite).setVisibility(external ? View.GONE : View.VISIBLE);
                 mPager.setAdapter(ViewerActivity.this, pos);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -332,6 +354,15 @@ public class ViewerActivity extends Activity implements SwipePager.Adapter {
                 DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_YEAR
                         | DateUtils.FORMAT_ABBREV_MONTH) : i.name);
         findViewById(R.id.btn_set_as).setVisibility(i.video ? View.GONE : View.VISIBLE);
+        updateFavourite(i);
+    }
+
+    /** 1.2: the heart, filled red for a favourite */
+    private void updateFavourite(Media.Item i) {
+        final android.widget.ImageButton b = (android.widget.ImageButton) findViewById(R.id.btn_favourite);
+        final boolean fav = Favourites.is(this, i);
+        b.setImageResource(fav ? R.drawable.ic_favourite : R.drawable.ic_favourite_border);
+        b.setContentDescription(getString(fav ? R.string.remove_favourite : R.string.add_favourite));
     }
 
     /** picture at up to twice the screen size (sharp when zoomed), upright */

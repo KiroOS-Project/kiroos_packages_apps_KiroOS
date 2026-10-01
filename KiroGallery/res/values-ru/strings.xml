@@ -24,4 +24,8 @@
     <string name="info_size">Размер: %1$d × %2$d · %3$s</string>
     <string name="info_length">Длительность: %s</string>
     <string name="info_path">Путь: %s</string>
+    <!-- 1.2 -->
+    <string name="favourites">Избранное</string>
+    <string name="add_favourite">Добавить в избранное</string>
+    <string name="remove_favourite">Убрать из избранного</string>
 </resources>

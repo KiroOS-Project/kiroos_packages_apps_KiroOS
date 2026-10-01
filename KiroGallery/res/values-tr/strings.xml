@@ -24,4 +24,8 @@
     <string name="info_size">Boyut: %1$d × %2$d · %3$s</string>
     <string name="info_length">Süre: %s</string>
     <string name="info_path">Yol: %s</string>
+    <!-- 1.2 -->
+    <string name="favourites">Favoriler</string>
+    <string name="add_favourite">Favorilere ekle</string>
+    <string name="remove_favourite">Favorilerden kaldır</string>
 </resources>

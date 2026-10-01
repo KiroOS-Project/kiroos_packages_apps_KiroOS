@@ -23,4 +23,8 @@
     <string name="info_size">Size: %1$d × %2$d · %3$s</string>
     <string name="info_length">Length: %s</string>
     <string name="info_path">Path: %s</string>
+    <!-- 1.2 -->
+    <string name="favourites">Favourites</string>
+    <string name="add_favourite">Add to favourites</string>
+    <string name="remove_favourite">Remove from favourites</string>
 </resources>

@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Photos (everything, newest first) and Albums. Also the picker other apps open with
- * GET_CONTENT / PICK for an image or a video.
+ * GET_CONTENT / PICK for an image or a video. 1.2: the Favourites album (Favourites).
  */
 public class GalleryActivity extends Activity {
 
@@ -227,7 +227,18 @@ public class GalleryActivity extends Activity {
             mGrid.setVerticalSpacing(Math.round(16 * d));
             mGrid.setPadding(Math.round(16 * d), 0, Math.round(16 * d), Math.round(16 * d));
             mGrid.setAdapter(mAlbumAdapter);
-            mAlbumAdapter.set(Media.albums(mAll));
+            final List<Media.Album> albums = Media.albums(mAll);
+            // 1.2: Favourites first, when there are some
+            final List<Media.Item> favourites = Favourites.filter(mAll, Favourites.all(this));
+            if (!favourites.isEmpty()) {
+                final Media.Album fav = new Media.Album();
+                fav.id = Favourites.ALBUM_ID;
+                fav.name = getString(R.string.favourites);
+                fav.cover = favourites.get(0);
+                fav.count = favourites.size();
+                albums.add(0, fav);
+            }
+            mAlbumAdapter.set(albums);
             mEmpty.setVisibility(mAlbumAdapter.getCount() == 0 ? View.VISIBLE : View.GONE);
         } else {
             mGrid.setNumColumns(getResources().getInteger(R.integer.grid_columns));
@@ -238,6 +249,8 @@ public class GalleryActivity extends Activity {
             final List<Media.Item> shown;
             if (mBucket == 0) {
                 shown = mAll;
+            } else if (mBucket == Favourites.ALBUM_ID) {
+                shown = Favourites.filter(mAll, Favourites.all(this));
             } else {
                 shown = new ArrayList<>();
                 for (Media.Item i : mAll) {

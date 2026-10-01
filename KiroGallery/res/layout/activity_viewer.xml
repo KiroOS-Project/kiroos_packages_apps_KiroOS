@@ -57,6 +57,12 @@
         android:paddingTop="24dp">
 
         <ImageButton
+            android:id="@+id/btn_favourite"
+            android:contentDescription="@string/add_favourite"
+            android:src="@drawable/ic_favourite_border"
+            style="@style/ViewerButton" />
+
+        <ImageButton
             android:id="@+id/btn_share"
             android:contentDescription="@string/share"
             android:src="@drawable/ic_share"

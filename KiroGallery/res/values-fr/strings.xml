@@ -24,4 +24,8 @@
     <string name="info_size">Taille : %1$d × %2$d · %3$s</string>
     <string name="info_length">Durée : %s</string>
     <string name="info_path">Chemin : %s</string>
+    <!-- 1.2 -->
+    <string name="favourites">Favoris</string>
+    <string name="add_favourite">Ajouter aux favoris</string>
+    <string name="remove_favourite">Retirer des favoris</string>
 </resources>
