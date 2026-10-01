@@ -47,7 +47,10 @@ import com.kiroos.ui.KiroTouch;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Kiro Phone: Keypad, Recents and Contacts. Handles DIAL / tel: / call log intents. */
+/**
+ * Kiro Phone: Keypad, Recents and Contacts. Handles DIAL / tel: / call log intents.
+ * 1.2: speed dial (SpeedDial).
+ */
 public class PhoneActivity extends Activity {
 
     /** set by the in-call screen's "Add call" */
@@ -267,6 +270,7 @@ public class PhoneActivity extends Activity {
         if (!CallList.get().isEmpty()) {
             menu.getMenu().add(0, 1, 0, R.string.return_to_call);
         }
+        menu.getMenu().add(0, 6, 0, R.string.speed_dial);
         menu.getMenu().add(0, 2, 0, R.string.call_settings);
         menu.getMenu().add(0, 3, 0, R.string.calling_accounts);
         menu.getMenu().add(0, 4, 0, R.string.blocked_numbers);
@@ -290,6 +294,9 @@ public class PhoneActivity extends Activity {
                         return true;
                     case 5:
                         confirmClearHistory();
+                        return true;
+                    case 6:
+                        SpeedDial.showManager(PhoneActivity.this);
                         return true;
                     default:
                         return false;
@@ -330,6 +337,14 @@ public class PhoneActivity extends Activity {
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final int key = requestCode - SpeedDial.REQUEST_BASE;
+        if (key >= 2 && key <= 9 && resultCode == RESULT_OK && data != null) {
+            SpeedDial.onPicked(this, key, data.getData());
+        }
     }
 
     // --- permissions ----------------------------------------------------------------------

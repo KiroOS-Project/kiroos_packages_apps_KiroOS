@@ -73,4 +73,13 @@
     <string name="reply_hint">Mesaj</string>
     <string name="no_voicemail_number">Bu SIM için sesli mesaj numarası ayarlanmamış. Arama ayarlarından ekleyebilirsiniz.</string>
     <string name="no_sim_voicemail">Sesli mesaj için sesli mesaj numarası olan bir SIM kart gerekir.</string>
+    <!-- 1.2 -->
+    <string name="speed_dial">Hızlı arama</string>
+    <string name="speed_dial_row">%1$d  ·  %2$s</string>
+    <string name="speed_dial_none">Atanmadı</string>
+    <string name="speed_dial_free">Hızlı arama %d boş. Bir kişi atansın mı? Sonra aramak için tuşu basılı tutun.</string>
+    <string name="speed_dial_set">Hızlı arama %1$d: %2$s</string>
+    <string name="assign">Ata</string>
+    <string name="change">Değiştir</string>
+    <string name="remove">Kaldır</string>
 </resources>

@@ -88,4 +88,13 @@
     <string name="reply_hint">Message</string>
     <string name="no_voicemail_number">No voicemail number is set for this SIM. You can add it in the call settings.</string>
     <string name="no_sim_voicemail">The voicemail needs a SIM card with a voicemail number.</string>
+    <!-- 1.2 -->
+    <string name="speed_dial">Speed dial</string>
+    <string name="speed_dial_row">%1$d  ·  %2$s</string>
+    <string name="speed_dial_none">Not assigned</string>
+    <string name="speed_dial_free">Speed dial %d is free. Give it a contact? Then hold the key to call.</string>
+    <string name="speed_dial_set">Speed dial %1$d: %2$s</string>
+    <string name="assign">Assign</string>
+    <string name="change">Change</string>
+    <string name="remove">Remove</string>
 </resources>

@@ -73,4 +73,13 @@
     <string name="reply_hint">Сообщение</string>
     <string name="no_voicemail_number">Для этой SIM не задан номер голосовой почты. Его можно добавить в настройках вызовов.</string>
     <string name="no_sim_voicemail">Для голосовой почты нужна SIM-карта с номером голосовой почты.</string>
+    <!-- 1.2 -->
+    <string name="speed_dial">Быстрый набор</string>
+    <string name="speed_dial_row">%1$d  ·  %2$s</string>
+    <string name="speed_dial_none">Не назначен</string>
+    <string name="speed_dial_free">Быстрый набор %d свободен. Назначить контакт? Потом удерживайте клавишу, чтобы позвонить.</string>
+    <string name="speed_dial_set">Быстрый набор %1$d: %2$s</string>
+    <string name="assign">Назначить</string>
+    <string name="change">Изменить</string>
+    <string name="remove">Убрать</string>
 </resources>

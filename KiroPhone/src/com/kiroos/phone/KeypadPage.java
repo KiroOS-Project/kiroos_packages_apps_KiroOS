@@ -45,7 +45,7 @@ import java.util.Locale;
 /**
  * The keypad page: typed number with live formatting, contact suggestions (T9), local DTMF
  * feedback tones, call / add contact / voicemail, and the long-press shortcuts
- * (0 = +, 1 = voicemail, * = pause, # = wait).
+ * (0 = +, 1 = voicemail, 2-9 = speed dial, * = pause, # = wait).
  */
 final class KeypadPage implements DialpadView.Listener, ContactIndex.Listener {
 
@@ -219,6 +219,28 @@ final class KeypadPage implements DialpadView.Listener, ContactIndex.Listener {
                     return true;
                 }
                 return false;
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                // 1.2: speed dial, a key held on its own
+                if (!CallStarter.dialable(mDigits.getText().toString()).equals(String.valueOf(key))) {
+                    return false;
+                }
+                mDigits.getText().clear();
+                final int n = key - '0';
+                final String number = SpeedDial.number(mActivity, n);
+                if (number == null) {
+                    SpeedDial.offer(mActivity, n);
+                } else if (CallStarter.call(mActivity, number)
+                        && mActivity instanceof PhoneActivity) {
+                    ((PhoneActivity) mActivity).onCallPlaced();
+                }
+                return true;
             default:
                 return false;
         }

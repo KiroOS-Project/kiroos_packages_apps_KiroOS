@@ -73,4 +73,13 @@
     <string name="reply_hint">Mensagem</string>
     <string name="no_voicemail_number">Nenhum número de correio de voz definido para este SIM. Você pode adicioná-lo nas configurações de chamada.</string>
     <string name="no_sim_voicemail">O correio de voz precisa de um chip com número de correio de voz.</string>
+    <!-- 1.2 -->
+    <string name="speed_dial">Discagem rápida</string>
+    <string name="speed_dial_row">%1$d  ·  %2$s</string>
+    <string name="speed_dial_none">Não atribuída</string>
+    <string name="speed_dial_free">A discagem rápida %d está livre. Atribuir um contato? Depois é só manter a tecla pressionada para ligar.</string>
+    <string name="speed_dial_set">Discagem rápida %1$d: %2$s</string>
+    <string name="assign">Atribuir</string>
+    <string name="change">Alterar</string>
+    <string name="remove">Remover</string>
 </resources>

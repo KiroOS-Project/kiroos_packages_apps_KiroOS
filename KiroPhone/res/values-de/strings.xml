@@ -72,4 +72,13 @@
     <string name="reply_hint">Nachricht</string>
     <string name="no_voicemail_number">Für diese SIM ist keine Mailbox-Nummer festgelegt. Du kannst sie in den Anrufeinstellungen hinzufügen.</string>
     <string name="no_sim_voicemail">Die Mailbox benötigt eine SIM-Karte mit Mailbox-Nummer.</string>
+    <!-- 1.2 -->
+    <string name="speed_dial">Kurzwahl</string>
+    <string name="speed_dial_row">%1$d  ·  %2$s</string>
+    <string name="speed_dial_none">Nicht belegt</string>
+    <string name="speed_dial_free">Kurzwahl %d ist frei. Einen Kontakt zuweisen? Dann die Taste gedrückt halten, um anzurufen.</string>
+    <string name="speed_dial_set">Kurzwahl %1$d: %2$s</string>
+    <string name="assign">Zuweisen</string>
+    <string name="change">Ändern</string>
+    <string name="remove">Entfernen</string>
 </resources>

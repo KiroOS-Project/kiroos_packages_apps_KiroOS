@@ -80,4 +80,13 @@
     <string name="reply_hint">Messaggio</string>
     <string name="no_voicemail_number">Nessun numero di segreteria impostato per questa SIM. Puoi aggiungerlo nelle impostazioni chiamate.</string>
     <string name="no_sim_voicemail">La segreteria richiede una SIM con un numero di segreteria.</string>
+    <!-- 1.2 -->
+    <string name="speed_dial">Chiamata rapida</string>
+    <string name="speed_dial_row">%1$d  ·  %2$s</string>
+    <string name="speed_dial_none">Non assegnato</string>
+    <string name="speed_dial_free">La chiamata rapida %d è libera. Le assegni un contatto? Poi tieni premuto il tasto per chiamarlo.</string>
+    <string name="speed_dial_set">Chiamata rapida %1$d: %2$s</string>
+    <string name="assign">Assegna</string>
+    <string name="change">Cambia</string>
+    <string name="remove">Rimuovi</string>
 </resources>

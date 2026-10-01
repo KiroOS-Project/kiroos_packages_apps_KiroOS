@@ -72,4 +72,13 @@
     <string name="reply_hint">Mensaje</string>
     <string name="no_voicemail_number">No hay ningún número de buzón de voz para esta SIM. Puedes añadirlo en los ajustes de llamadas.</string>
     <string name="no_sim_voicemail">El buzón de voz necesita una tarjeta SIM con un número de buzón.</string>
+    <!-- 1.2 -->
+    <string name="speed_dial">Marcación rápida</string>
+    <string name="speed_dial_row">%1$d  ·  %2$s</string>
+    <string name="speed_dial_none">Sin asignar</string>
+    <string name="speed_dial_free">La marcación rápida %d está libre. ¿Le asignas un contacto? Luego mantén pulsada la tecla para llamar.</string>
+    <string name="speed_dial_set">Marcación rápida %1$d: %2$s</string>
+    <string name="assign">Asignar</string>
+    <string name="change">Cambiar</string>
+    <string name="remove">Quitar</string>
 </resources>
