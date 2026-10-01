@@ -24,6 +24,15 @@
             style="@style/Kiro.Title" />
 
         <ImageButton
+            android:id="@+id/btn_upcoming"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/upcoming"
+            android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_upcoming" />
+
+        <ImageButton
             android:id="@+id/btn_today"
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"

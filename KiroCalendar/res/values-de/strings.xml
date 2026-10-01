@@ -38,4 +38,10 @@
     <string name="phone_calendar">Telefon</string>
     <string name="no_calendar">In keinen Kalender kann geschrieben werden. Erlaube den Zugriff auf den Kalender und versuche es erneut.</string>
     <string name="save_failed">Der Termin konnte nicht gespeichert werden</string>
+    <!-- 1.2 -->
+    <string name="upcoming">Demnächst</string>
+    <string name="search_events">Termine suchen</string>
+    <string name="no_upcoming">Nichts geplant in den nächsten 12 Monaten</string>
+    <string name="no_results">Nichts gefunden</string>
+    <string name="tomorrow">Morgen</string>
 </resources>

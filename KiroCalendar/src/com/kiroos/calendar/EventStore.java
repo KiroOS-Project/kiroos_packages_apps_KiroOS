@@ -41,6 +41,8 @@ final class EventStore {
         boolean allDay;
         String title;
         String location;
+        /** the notes (searched by the Upcoming screen) */
+        String description;
         int color;
     }
 
@@ -80,7 +82,8 @@ final class EventStore {
         ContentUris.appendId(b, to);
         try (Cursor c = context.getContentResolver().query(b.build(), new String[] {
                 Instances.EVENT_ID, Instances.BEGIN, Instances.END, Instances.ALL_DAY,
-                Instances.TITLE, Instances.EVENT_LOCATION, Instances.DISPLAY_COLOR},
+                Instances.TITLE, Instances.EVENT_LOCATION, Instances.DISPLAY_COLOR,
+                Instances.DESCRIPTION},
                 Instances.VISIBLE + "=1", null, Instances.BEGIN + " ASC")) {
             while (c != null && c.moveToNext()) {
                 final Instance i = new Instance();
@@ -91,6 +94,7 @@ final class EventStore {
                 i.title = c.getString(4);
                 i.location = c.getString(5);
                 i.color = c.getInt(6);
+                i.description = c.getString(7);
                 if (i.allDay) {
                     // all-day events are stored in UTC: show them on their local day
                     final int offset = TimeZone.getDefault().getOffset(i.begin);

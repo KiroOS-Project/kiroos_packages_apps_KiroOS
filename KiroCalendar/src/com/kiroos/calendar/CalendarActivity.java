@@ -48,7 +48,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-/** Month grid with event dots and the agenda of the selected day. */
+/**
+ * Month grid with event dots and the agenda of the selected day; 1.2: the Upcoming list
+ * with search (UpcomingActivity).
+ */
 public class CalendarActivity extends Activity implements MonthView.Listener {
 
     private final Handler mHandler = new Handler();
@@ -99,6 +102,12 @@ public class CalendarActivity extends Activity implements MonthView.Listener {
             @Override
             public void onClick(View v) {
                 onMonthSwipe(1);
+            }
+        });
+        findViewById(R.id.btn_upcoming).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CalendarActivity.this, UpcomingActivity.class));
             }
         });
         findViewById(R.id.btn_today).setOnClickListener(new View.OnClickListener() {

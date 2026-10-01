@@ -37,4 +37,10 @@
     <string name="phone_calendar">Phone</string>
     <string name="no_calendar">No calendar can be written. Allow Calendar access and try again.</string>
     <string name="save_failed">The event could not be saved</string>
+    <!-- 1.2 -->
+    <string name="upcoming">Upcoming</string>
+    <string name="search_events">Search events</string>
+    <string name="no_upcoming">Nothing planned in the next 12 months</string>
+    <string name="no_results">Nothing found</string>
+    <string name="tomorrow">Tomorrow</string>
 </resources>

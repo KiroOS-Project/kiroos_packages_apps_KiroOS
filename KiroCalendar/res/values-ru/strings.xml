@@ -38,4 +38,10 @@
     <string name="phone_calendar">Телефон</string>
     <string name="no_calendar">Нет календаря, доступного для записи. Разрешите доступ к Календарю и повторите попытку.</string>
     <string name="save_failed">Не удалось сохранить событие</string>
+    <!-- 1.2 -->
+    <string name="upcoming">Предстоящие</string>
+    <string name="search_events">Поиск событий</string>
+    <string name="no_upcoming">Ничего не запланировано на ближайшие 12 месяцев</string>
+    <string name="no_results">Ничего не найдено</string>
+    <string name="tomorrow">Завтра</string>
 </resources>

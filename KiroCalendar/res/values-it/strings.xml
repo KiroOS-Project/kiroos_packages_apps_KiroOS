@@ -37,4 +37,10 @@
     <string name="phone_calendar">Telefono</string>
     <string name="no_calendar">Nessun calendario scrivibile. Consenti l\'accesso al Calendario e riprova.</string>
     <string name="save_failed">Impossibile salvare l\'evento</string>
+    <!-- 1.2 -->
+    <string name="upcoming">Prossimi</string>
+    <string name="search_events">Cerca negli eventi</string>
+    <string name="no_upcoming">Niente in programma nei prossimi 12 mesi</string>
+    <string name="no_results">Nessun risultato</string>
+    <string name="tomorrow">Domani</string>
 </resources>

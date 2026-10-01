@@ -38,4 +38,10 @@
     <string name="phone_calendar">Telefon</string>
     <string name="no_calendar">Yazılabilecek bir takvim yok. Takvim erişimine izin verin ve tekrar deneyin.</string>
     <string name="save_failed">Etkinlik kaydedilemedi</string>
+    <!-- 1.2 -->
+    <string name="upcoming">Yaklaşanlar</string>
+    <string name="search_events">Etkinliklerde ara</string>
+    <string name="no_upcoming">Önümüzdeki 12 ayda planlanmış bir şey yok</string>
+    <string name="no_results">Sonuç bulunamadı</string>
+    <string name="tomorrow">Yarın</string>
 </resources>

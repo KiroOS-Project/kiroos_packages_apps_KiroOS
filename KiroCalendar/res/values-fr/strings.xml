@@ -38,4 +38,10 @@
     <string name="phone_calendar">Téléphone</string>
     <string name="no_calendar">Aucun agenda n\'est modifiable. Autorisez l\'accès à l\'Agenda et réessayez.</string>
     <string name="save_failed">Impossible d\'enregistrer l\'événement</string>
+    <!-- 1.2 -->
+    <string name="upcoming">À venir</string>
+    <string name="search_events">Rechercher des événements</string>
+    <string name="no_upcoming">Rien de prévu dans les 12 prochains mois</string>
+    <string name="no_results">Aucun résultat</string>
+    <string name="tomorrow">Demain</string>
 </resources>
