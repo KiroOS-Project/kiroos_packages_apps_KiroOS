@@ -49,4 +49,16 @@
     <string name="same_time">Same time</string>
     <string name="offset_h">%1$s%2$d h</string>
     <string name="offset_h_min">%1$s%2$d h %3$d min</string>
+    <!-- 1.2 -->
+    <string name="upcoming_alarm">Upcoming alarm</string>
+    <string name="dismiss_now">Dismiss now</string>
+    <string name="skip_next">Skip the next one · %s</string>
+    <string name="undo_skip">Don\'t skip</string>
+    <string name="skipped_next">Next ring skipped · then %s</string>
+    <string name="snooze_length">Snooze: %d min</string>
+    <string name="snooze_title">Snooze length</string>
+    <plurals name="minutes_n">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
 </resources>

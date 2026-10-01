@@ -53,6 +53,7 @@ public class AlarmService extends Service {
     /** broadcast (to this app) when the ringing stops, so AlarmActivity closes */
     static final String ACTION_DONE = "com.kiroos.clock.RING_DONE";
 
+    /** the snooze of an alarm without its own length (and of the timer's text) */
     static final int SNOOZE_MINUTES = 10;
     private static final long AUTO_SILENCE_MS = 10 * 60 * 1000;
     private static final long RAMP_MS = 20 * 1000;
@@ -138,6 +139,7 @@ public class AlarmService extends Service {
         sRinging = id;
         // a one-time alarm is spent; a repeating one moves to its next day
         alarm.snoozeUntil = 0;
+        alarm.skipUntil = 0;
         if (alarm.days == 0) {
             alarm.enabled = false;
         }
@@ -166,7 +168,7 @@ public class AlarmService extends Service {
             final Alarm a = Alarm.get(this, id);
             if (a != null) {
                 a.enabled = true;
-                a.snoozeUntil = System.currentTimeMillis() + SNOOZE_MINUTES * 60 * 1000L;
+                a.snoozeUntil = System.currentTimeMillis() + a.snoozeMinutes * 60 * 1000L;
                 a.save(this);
                 Scheduler.reschedule(this);
             }

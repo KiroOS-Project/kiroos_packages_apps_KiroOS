@@ -42,4 +42,16 @@
     <string name="search_city">Cerca città</string>
     <string name="remove_city">Rimuovere %s?</string>
     <string name="same_time">Stessa ora</string>
+    <!-- 1.2 -->
+    <string name="upcoming_alarm">Sveglia in arrivo</string>
+    <string name="dismiss_now">Ignora ora</string>
+    <string name="skip_next">Salta la prossima · %s</string>
+    <string name="undo_skip">Non saltare</string>
+    <string name="skipped_next">Prossima saltata · poi %s</string>
+    <string name="snooze_length">Posticipa: %d min</string>
+    <string name="snooze_title">Durata del posticipo</string>
+    <plurals name="minutes_n">
+        <item quantity="one">%d minuto</item>
+        <item quantity="other">%d minuti</item>
+    </plurals>
 </resources>

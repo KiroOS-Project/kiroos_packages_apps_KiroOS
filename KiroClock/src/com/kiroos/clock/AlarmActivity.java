@@ -85,8 +85,15 @@ public class AlarmActivity extends Activity {
         final TextView primary = (TextView) findViewById(R.id.btn_dismiss);
         final TextView secondary = (TextView) findViewById(R.id.btn_snooze);
         primary.setText(mTimer ? R.string.stop : R.string.dismiss);
+        int snooze = AlarmService.SNOOZE_MINUTES;
+        if (!mTimer && AlarmService.sRinging >= 0) {
+            final Alarm ringing = Alarm.get(this, AlarmService.sRinging);
+            if (ringing != null) {
+                snooze = ringing.snoozeMinutes;
+            }
+        }
         secondary.setText(mTimer ? getString(R.string.add_minute)
-                : getString(R.string.snooze_minutes, AlarmService.SNOOZE_MINUTES));
+                : getString(R.string.snooze_minutes, snooze));
         primary.setBackground(SquircleDrawable.button(getColor(R.color.kiro_accent),
                 getColor(R.color.kiro_ripple)));
         secondary.setBackground(SquircleDrawable.button(getColor(R.color.kiro_surface_raised),

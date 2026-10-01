@@ -58,6 +58,15 @@ public class AlarmReceiver extends BroadcastReceiver {
             case ACTION_TIMER_RESET:
                 Scheduler.resetTimer(context);
                 break;
+            case UpcomingNotification.ACTION_UPCOMING:
+                // two hours before: rescheduling posts the notification
+                Scheduler.reschedule(context);
+                break;
+            case UpcomingNotification.ACTION_DISMISS_NOW:
+                UpcomingNotification.dismissNow(context,
+                        intent.getLongExtra(Scheduler.EXTRA_ID, -1),
+                        intent.getLongExtra(UpcomingNotification.EXTRA_TIME, -1));
+                break;
             default:
                 // BOOT_COMPLETED, LOCKED_BOOT_COMPLETED, TIME_SET, TIMEZONE_CHANGED,
                 // MY_PACKAGE_REPLACED

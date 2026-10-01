@@ -44,19 +44,34 @@ final class Alarm {
     String ringtone;
     /** snoozed until this time (ms), 0 if not snoozed */
     long snoozeUntil;
+    /** 1.2: the occurrences up to this time (ms) are skipped ("Dismiss now", "Skip next") */
+    long skipUntil;
+    /** 1.2: how long Snooze waits */
+    int snoozeMinutes = 10;
 
-    /** Next time this alarm rings after {@code now}, or -1 if disabled. */
+    /** Next time this alarm rings after {@code now} (a snooze included), or -1 if disabled. */
     long nextTime(long now) {
+        long t = nextOccurrence(now);
+        if (t > 0 && snoozeUntil > now && snoozeUntil < t) {
+            t = snoozeUntil;
+        }
+        return t;
+    }
+
+    /** Next scheduled time after {@code now}, snooze left out (what "Skip next" passes over). */
+    long nextOccurrence(long now) {
         if (!enabled) {
             return -1;
         }
+        // a skipped occurrence is passed over: the next one after it
+        final long base = Math.max(now, skipUntil);
         final Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(now);
+        c.setTimeInMillis(base);
         c.set(Calendar.HOUR_OF_DAY, hour);
         c.set(Calendar.MINUTE, minute);
         c.set(Calendar.SECOND, 0);
         c.set(Calendar.MILLISECOND, 0);
-        if (c.getTimeInMillis() <= now) {
+        if (c.getTimeInMillis() <= base) {
             c.add(Calendar.DAY_OF_YEAR, 1);
         }
         if (days != 0) {
@@ -64,11 +79,26 @@ final class Alarm {
                 c.add(Calendar.DAY_OF_YEAR, 1);
             }
         }
-        long t = c.getTimeInMillis();
-        if (snoozeUntil > now && snoozeUntil < t) {
-            t = snoozeUntil;
+        return c.getTimeInMillis();
+    }
+
+    /**
+     * "Dismiss now" / "Skip next": a snoozed alarm stops being snoozed; otherwise its next
+     * occurrence is passed over (a one-time alarm is turned off).
+     */
+    void skipNext(long now) {
+        if (snoozeUntil > now) {
+            snoozeUntil = 0;
+            if (days == 0) {
+                enabled = false;
+            }
+            return;
         }
-        return t;
+        if (days == 0) {
+            enabled = false;
+        } else {
+            skipUntil = nextOccurrence(now);
+        }
     }
 
     /** Monday = 0 … Sunday = 6 */
@@ -80,14 +110,15 @@ final class Alarm {
 
     private static final class Db extends SQLiteOpenHelper {
         Db(Context context) {
-            super(context.createDeviceProtectedStorageContext(), "alarms.db", null, 1);
+            super(context.createDeviceProtectedStorageContext(), "alarms.db", null, 2);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE alarms (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + "hour INTEGER, minute INTEGER, days INTEGER, enabled INTEGER, "
-                    + "vibrate INTEGER, label TEXT, ringtone TEXT, snooze INTEGER DEFAULT 0)");
+                    + "vibrate INTEGER, label TEXT, ringtone TEXT, snooze INTEGER DEFAULT 0, "
+                    + "skip INTEGER DEFAULT 0, snooze_min INTEGER DEFAULT 10)");
             // a first alarm, off, as a starting point
             db.execSQL("INSERT INTO alarms (hour, minute, days, enabled, vibrate, label) "
                     + "VALUES (7, 0, 31, 0, 1, '')");
@@ -95,6 +126,11 @@ final class Alarm {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            if (oldVersion < 2) {
+                // 1.2: skipped occurrences and the snooze length; existing alarms keep 10 min
+                db.execSQL("ALTER TABLE alarms ADD COLUMN skip INTEGER DEFAULT 0");
+                db.execSQL("ALTER TABLE alarms ADD COLUMN snooze_min INTEGER DEFAULT 10");
+            }
         }
     }
 
@@ -135,6 +171,8 @@ final class Alarm {
         a.label = c.getString(c.getColumnIndexOrThrow("label"));
         a.ringtone = c.getString(c.getColumnIndexOrThrow("ringtone"));
         a.snoozeUntil = c.getLong(c.getColumnIndexOrThrow("snooze"));
+        a.skipUntil = c.getLong(c.getColumnIndexOrThrow("skip"));
+        a.snoozeMinutes = Math.max(1, c.getInt(c.getColumnIndexOrThrow("snooze_min")));
         return a;
     }
 
@@ -148,6 +186,8 @@ final class Alarm {
         v.put("label", label != null ? label : "");
         v.put("ringtone", ringtone);
         v.put("snooze", snoozeUntil);
+        v.put("skip", skipUntil);
+        v.put("snooze_min", snoozeMinutes);
         if (id < 0) {
             id = db(context).insert("alarms", null, v);
         } else {

@@ -43,4 +43,16 @@
     <string name="search_city">Rechercher une ville</string>
     <string name="remove_city">Supprimer %s ?</string>
     <string name="same_time">Même heure</string>
+    <!-- 1.2 -->
+    <string name="upcoming_alarm">Alarme à venir</string>
+    <string name="dismiss_now">Ignorer maintenant</string>
+    <string name="skip_next">Passer la prochaine · %s</string>
+    <string name="undo_skip">Ne pas passer</string>
+    <string name="skipped_next">Prochaine passée · puis %s</string>
+    <string name="snooze_length">Répéter : %d min</string>
+    <string name="snooze_title">Durée de répétition</string>
+    <plurals name="minutes_n">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
 </resources>

@@ -26,6 +26,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,10 +50,14 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-/** The alarms list, and the alarm editor (time, days, label, sound, vibration). */
+/**
+ * The alarms list, and the alarm editor (time, days, label, sound, snooze length,
+ * vibration). Long press a repeating alarm to skip its next ring.
+ */
 final class AlarmsPage {
 
     static final int REQUEST_RINGTONE = 10;
+    private static final int[] SNOOZE_CHOICES = {5, 10, 15, 20, 30};
 
     private final Activity mActivity;
     private final Adapter mAdapter = new Adapter();
@@ -69,6 +74,12 @@ final class AlarmsPage {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 edit(mAdapter.getItem(position));
+            }
+        });
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return skipMenu(mAdapter.getItem(position));
             }
         });
         final ImageButton add = (ImageButton) root.findViewById(R.id.btn_add_alarm);
@@ -131,6 +142,46 @@ final class AlarmsPage {
                 : mActivity.getString(R.string.alarm_in_minutes, m);
     }
 
+    /** "Wed 07:00" */
+    private String whenText(long t) {
+        return DateUtils.formatDateTime(mActivity, t, DateUtils.FORMAT_SHOW_WEEKDAY
+                | DateUtils.FORMAT_ABBREV_WEEKDAY) + " " + DateFormat.getTimeFormat(mActivity).format(t);
+    }
+
+    /**
+     * Long press on a repeating alarm (1.2): skip its next ring, e.g. a holiday tomorrow, or
+     * bring it back. Returns false (no menu) for one-time or switched-off alarms.
+     */
+    private boolean skipMenu(final Alarm a) {
+        final long now = System.currentTimeMillis();
+        if (!a.enabled || a.days == 0) {
+            return false;
+        }
+        final boolean skipped = a.skipUntil > now;
+        final String label;
+        if (skipped) {
+            label = mActivity.getString(R.string.undo_skip);
+        } else {
+            label = mActivity.getString(R.string.skip_next, whenText(a.nextOccurrence(now)));
+        }
+        new AlertDialog.Builder(mActivity)
+                .setTitle(format(a.hour, a.minute))
+                .setItems(new String[] {label}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int which) {
+                        if (skipped) {
+                            a.skipUntil = 0;
+                        } else {
+                            a.skipUntil = a.nextOccurrence(System.currentTimeMillis());
+                        }
+                        a.save(mActivity);
+                        changed(a);
+                    }
+                })
+                .show();
+        return true;
+    }
+
     // --- editor ---------------------------------------------------------------------------
 
     private void edit(final Alarm alarm) {
@@ -139,7 +190,39 @@ final class AlarmsPage {
         final EditText label = (EditText) v.findViewById(R.id.edit_label);
         final Switch vibrate = (Switch) v.findViewById(R.id.edit_vibrate);
         final TextView sound = (TextView) v.findViewById(R.id.edit_sound);
+        final TextView snooze = (TextView) v.findViewById(R.id.edit_snooze);
         final LinearLayout days = (LinearLayout) v.findViewById(R.id.edit_days);
+
+        // 1.2: the snooze length of this alarm
+        final int[] snoozeChoice = {alarm.snoozeMinutes};
+        snooze.setText(mActivity.getString(R.string.snooze_length, alarm.snoozeMinutes));
+        snooze.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String[] names = new String[SNOOZE_CHOICES.length];
+                int checked = -1;
+                for (int i = 0; i < names.length; i++) {
+                    names[i] = mActivity.getResources().getQuantityString(R.plurals.minutes_n,
+                            SNOOZE_CHOICES[i], SNOOZE_CHOICES[i]);
+                    if (SNOOZE_CHOICES[i] == snoozeChoice[0]) {
+                        checked = i;
+                    }
+                }
+                new AlertDialog.Builder(mActivity)
+                        .setTitle(R.string.snooze_title)
+                        .setSingleChoiceItems(names, checked, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface d, int which) {
+                                snoozeChoice[0] = SNOOZE_CHOICES[which];
+                                snooze.setText(mActivity.getString(R.string.snooze_length,
+                                        snoozeChoice[0]));
+                                d.dismiss();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+            }
+        });
 
         time.setText(format(alarm.hour, alarm.minute));
         time.setOnClickListener(new View.OnClickListener() {
@@ -203,8 +286,10 @@ final class AlarmsPage {
                     public void onClick(DialogInterface d, int which) {
                         alarm.label = label.getText().toString().trim();
                         alarm.vibrate = vibrate.isChecked();
+                        alarm.snoozeMinutes = snoozeChoice[0];
                         alarm.enabled = true;
                         alarm.snoozeUntil = 0;
+                        alarm.skipUntil = 0;
                         alarm.save(mActivity);
                         changed(alarm);
                     }
@@ -327,11 +412,14 @@ final class AlarmsPage {
             if (!TextUtils.isEmpty(a.label)) {
                 summary = a.label + " · " + summary;
             }
-            if (a.snoozeUntil > System.currentTimeMillis()) {
+            final long now = System.currentTimeMillis();
+            if (a.snoozeUntil > now) {
                 final Calendar c = Calendar.getInstance();
                 c.setTimeInMillis(a.snoozeUntil);
                 summary = mActivity.getString(R.string.snoozed_until,
                         DateFormat.getTimeFormat(mActivity).format(c.getTime()));
+            } else if (a.enabled && a.skipUntil > now) {
+                summary = mActivity.getString(R.string.skipped_next, whenText(a.nextOccurrence(now)));
             }
             ((TextView) v.findViewById(R.id.alarm_summary)).setText(summary);
             final Switch sw = (Switch) v.findViewById(R.id.alarm_switch);
@@ -342,6 +430,7 @@ final class AlarmsPage {
                 public void onCheckedChanged(CompoundButton b, boolean on) {
                     a.enabled = on;
                     a.snoozeUntil = 0;
+                    a.skipUntil = 0;
                     a.save(mActivity);
                     changed(a);
                 }

@@ -57,12 +57,14 @@ final class Scheduler {
                 PendingIntent.FLAG_UPDATE_CURRENT);
         if (next == null) {
             am.cancel(fire);
+            UpcomingNotification.update(context, null, 0);
             return;
         }
         final PendingIntent show = PendingIntent.getActivity(context, 0,
                 new Intent(context, ClockActivity.class).putExtra(ClockActivity.EXTRA_TAB, 0),
                 PendingIntent.FLAG_UPDATE_CURRENT);
         am.setAlarmClock(new AlarmManager.AlarmClockInfo(nextTime, show), fire);
+        UpcomingNotification.update(context, next, nextTime);
     }
 
     // --- timer ----------------------------------------------------------------------------

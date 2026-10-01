@@ -44,4 +44,16 @@
     <string name="search_city">Stadt suchen</string>
     <string name="remove_city">%s entfernen?</string>
     <string name="same_time">Gleiche Uhrzeit</string>
+    <!-- 1.2 -->
+    <string name="upcoming_alarm">Bevorstehender Wecker</string>
+    <string name="dismiss_now">Jetzt beenden</string>
+    <string name="skip_next">Nächsten überspringen · %s</string>
+    <string name="undo_skip">Nicht überspringen</string>
+    <string name="skipped_next">Nächster übersprungen · dann %s</string>
+    <string name="snooze_length">Schlummern: %d Min.</string>
+    <string name="snooze_title">Schlummerdauer</string>
+    <plurals name="minutes_n">
+        <item quantity="one">%d Minute</item>
+        <item quantity="other">%d Minuten</item>
+    </plurals>
 </resources>
