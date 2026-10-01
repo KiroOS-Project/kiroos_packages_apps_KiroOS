@@ -51,4 +51,16 @@
     <string name="import_failed">Bu dosya içe aktarılamadı</string>
     <string name="exported">Kişiler Download/%s konumuna kaydedildi</string>
     <string name="export_failed">Kişiler dışa aktarılamadı</string>
+    <!-- 1.2 -->
+    <string name="duplicates">Yinelenenleri birleştir</string>
+    <string name="duplicates_summary">Aynı ada veya aynı numaraya sahip kişiler. Birleştirince tüm numaralar ve ayrıntılar korunur, hiçbir şey silinmez.</string>
+    <string name="merge">Birleştir</string>
+    <string name="merge_all">Tümünü birleştir</string>
+    <string name="no_duplicates">Yinelenen kişi yok</string>
+    <string name="merged">Kişiler birleştirildi</string>
+    <string name="merge_failed">Bu kişiler birleştirilemedi</string>
+    <plurals name="merge_all_confirm">
+        <item quantity="one">%d kişi grubu birleştirilsin mi?</item>
+        <item quantity="other">%d kişi grubunun tümü birleştirilsin mi?</item>
+    </plurals>
 </resources>

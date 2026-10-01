@@ -51,4 +51,16 @@
     <string name="import_failed">Diese Datei konnte nicht importiert werden</string>
     <string name="exported">Kontakte in Download/%s gespeichert</string>
     <string name="export_failed">Kontakte konnten nicht exportiert werden</string>
+    <!-- 1.2 -->
+    <string name="duplicates">Duplikate zusammenführen</string>
+    <string name="duplicates_summary">Kontakte mit gleichem Namen oder gleicher Nummer. Beim Zusammenführen bleiben alle Nummern und Details erhalten, nichts wird gelöscht.</string>
+    <string name="merge">Zusammenführen</string>
+    <string name="merge_all">Alle zusammenführen</string>
+    <string name="no_duplicates">Keine doppelten Kontakte</string>
+    <string name="merged">Kontakte zusammengeführt</string>
+    <string name="merge_failed">Diese Kontakte konnten nicht zusammengeführt werden</string>
+    <plurals name="merge_all_confirm">
+        <item quantity="one">%d Kontaktgruppe zusammenführen?</item>
+        <item quantity="other">Alle %d Kontaktgruppen zusammenführen?</item>
+    </plurals>
 </resources>

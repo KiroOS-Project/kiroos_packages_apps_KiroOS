@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One group of duplicates: the names, their numbers, Merge -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/kiro_card"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="14dp"
+    android:paddingEnd="12dp"
+    android:paddingStart="20dp"
+    android:paddingTop="14dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/names"
+            style="@style/Kiro.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.15" />
+
+        <TextView
+            android:id="@+id/numbers"
+            style="@style/Kiro.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_merge"
+        style="@style/Kiro.Button.Accent"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:minHeight="40dp"
+        android:focusable="false"
+        android:text="@string/merge" />
+</LinearLayout>

@@ -50,4 +50,16 @@
     <string name="import_failed">Impossibile importare questo file</string>
     <string name="exported">Contatti salvati in Download/%s</string>
     <string name="export_failed">Impossibile esportare i contatti</string>
+    <!-- 1.2 -->
+    <string name="duplicates">Unisci duplicati</string>
+    <string name="duplicates_summary">Contatti con lo stesso nome o lo stesso numero. Unendoli restano tutti i numeri e i dettagli, non si cancella niente.</string>
+    <string name="merge">Unisci</string>
+    <string name="merge_all">Unisci tutti</string>
+    <string name="no_duplicates">Nessun contatto duplicato</string>
+    <string name="merged">Contatti uniti</string>
+    <string name="merge_failed">Impossibile unire questi contatti</string>
+    <plurals name="merge_all_confirm">
+        <item quantity="one">Unire %d gruppo di contatti?</item>
+        <item quantity="other">Unire tutti i %d gruppi di contatti?</item>
+    </plurals>
 </resources>

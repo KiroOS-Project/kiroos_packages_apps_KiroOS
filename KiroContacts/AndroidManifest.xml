@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Kiro Contacts v1.0 -->
+<!-- Kiro Contacts 1.2: merge duplicates -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.contacts"
-    android:versionCode="110"
-    android:versionName="1.1">
+    android:versionCode="120"
+    android:versionName="1.2">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 
@@ -100,6 +100,11 @@
                 <data android:mimeType="vnd.android.cursor.item/person" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DuplicatesActivity"
+            android:label="@string/duplicates"
+            android:parentActivityName=".ContactsActivity" />
 
         <!-- open .vcf files (import) -->
         <activity

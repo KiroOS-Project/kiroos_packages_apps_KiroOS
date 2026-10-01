@@ -51,4 +51,16 @@
     <string name="import_failed">No se pudo importar este archivo</string>
     <string name="exported">Contactos guardados en Download/%s</string>
     <string name="export_failed">No se pudieron exportar los contactos</string>
+    <!-- 1.2 -->
+    <string name="duplicates">Combinar duplicados</string>
+    <string name="duplicates_summary">Contactos con el mismo nombre o el mismo número. Al combinarlos se conservan todos los números y datos, y no se borra nada.</string>
+    <string name="merge">Combinar</string>
+    <string name="merge_all">Combinar todos</string>
+    <string name="no_duplicates">No hay contactos duplicados</string>
+    <string name="merged">Contactos combinados</string>
+    <string name="merge_failed">No se han podido combinar estos contactos</string>
+    <plurals name="merge_all_confirm">
+        <item quantity="one">¿Combinar %d grupo de contactos?</item>
+        <item quantity="other">¿Combinar los %d grupos de contactos?</item>
+    </plurals>
 </resources>

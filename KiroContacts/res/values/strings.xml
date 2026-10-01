@@ -50,4 +50,16 @@
     <string name="import_failed">This file could not be imported</string>
     <string name="exported">Contacts saved in Download/%s</string>
     <string name="export_failed">Contacts could not be exported</string>
+    <!-- 1.2 -->
+    <string name="duplicates">Merge duplicates</string>
+    <string name="duplicates_summary">Contacts with the same name or the same number. Merging keeps every number and detail, and nothing is deleted.</string>
+    <string name="merge">Merge</string>
+    <string name="merge_all">Merge all</string>
+    <string name="no_duplicates">No duplicate contacts</string>
+    <string name="merged">Contacts merged</string>
+    <string name="merge_failed">These contacts couldn\'t be merged</string>
+    <plurals name="merge_all_confirm">
+        <item quantity="one">Merge %d group of contacts?</item>
+        <item quantity="other">Merge all %d groups of contacts?</item>
+    </plurals>
 </resources>

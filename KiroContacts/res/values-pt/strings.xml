@@ -51,4 +51,16 @@
     <string name="import_failed">Não foi possível importar este arquivo</string>
     <string name="exported">Contatos salvos em Download/%s</string>
     <string name="export_failed">Não foi possível exportar os contatos</string>
+    <!-- 1.2 -->
+    <string name="duplicates">Mesclar duplicados</string>
+    <string name="duplicates_summary">Contatos com o mesmo nome ou o mesmo número. Ao mesclar, todos os números e detalhes são mantidos e nada é apagado.</string>
+    <string name="merge">Mesclar</string>
+    <string name="merge_all">Mesclar todos</string>
+    <string name="no_duplicates">Nenhum contato duplicado</string>
+    <string name="merged">Contatos mesclados</string>
+    <string name="merge_failed">Não foi possível mesclar estes contatos</string>
+    <plurals name="merge_all_confirm">
+        <item quantity="one">Mesclar %d grupo de contatos?</item>
+        <item quantity="other">Mesclar todos os %d grupos de contatos?</item>
+    </plurals>
 </resources>

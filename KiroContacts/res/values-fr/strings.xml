@@ -51,4 +51,16 @@
     <string name="import_failed">Impossible d\'importer ce fichier</string>
     <string name="exported">Contacts enregistrés dans Download/%s</string>
     <string name="export_failed">Impossible d\'exporter les contacts</string>
+    <!-- 1.2 -->
+    <string name="duplicates">Fusionner les doublons</string>
+    <string name="duplicates_summary">Contacts avec le même nom ou le même numéro. La fusion garde tous les numéros et les détails, rien n\'est supprimé.</string>
+    <string name="merge">Fusionner</string>
+    <string name="merge_all">Tout fusionner</string>
+    <string name="no_duplicates">Aucun contact en double</string>
+    <string name="merged">Contacts fusionnés</string>
+    <string name="merge_failed">Impossible de fusionner ces contacts</string>
+    <plurals name="merge_all_confirm">
+        <item quantity="one">Fusionner %d groupe de contacts ?</item>
+        <item quantity="other">Fusionner les %d groupes de contacts ?</item>
+    </plurals>
 </resources>

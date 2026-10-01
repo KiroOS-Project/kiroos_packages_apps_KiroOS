@@ -51,4 +51,18 @@
     <string name="import_failed">Не удалось импортировать этот файл</string>
     <string name="exported">Контакты сохранены в Download/%s</string>
     <string name="export_failed">Не удалось экспортировать контакты</string>
+    <!-- 1.2 -->
+    <string name="duplicates">Объединить дубликаты</string>
+    <string name="duplicates_summary">Контакты с одинаковым именем или номером. При объединении сохраняются все номера и данные, ничего не удаляется.</string>
+    <string name="merge">Объединить</string>
+    <string name="merge_all">Объединить все</string>
+    <string name="no_duplicates">Нет повторяющихся контактов</string>
+    <string name="merged">Контакты объединены</string>
+    <string name="merge_failed">Не удалось объединить эти контакты</string>
+    <plurals name="merge_all_confirm">
+        <item quantity="one">Объединить %d группу контактов?</item>
+        <item quantity="few">Объединить %d группы контактов?</item>
+        <item quantity="many">Объединить %d групп контактов?</item>
+        <item quantity="other">Объединить %d группы контактов?</item>
+    </plurals>
 </resources>

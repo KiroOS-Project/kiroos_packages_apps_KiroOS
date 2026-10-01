@@ -57,6 +57,7 @@ import java.util.List;
 /**
  * All contacts (favourites first) with search and fast scroll. Also the picker other apps
  * open with PICK / GET_CONTENT for a contact, a phone number or an e-mail address.
+ * 1.2: More > Merge duplicates (DuplicatesActivity).
  */
 public class ContactsActivity extends Activity {
 
@@ -307,6 +308,7 @@ public class ContactsActivity extends Activity {
         final PopupMenu menu = new PopupMenu(this, anchor);
         menu.getMenu().add(0, 1, 0, R.string.import_vcf);
         menu.getMenu().add(0, 2, 0, R.string.export_vcf);
+        menu.getMenu().add(0, 4, 0, R.string.duplicates);
         menu.getMenu().add(0, 3, 0, R.string.accounts);
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -324,6 +326,9 @@ public class ContactsActivity extends Activity {
                         return true;
                     case 3:
                         startActivity(new Intent(android.provider.Settings.ACTION_SYNC_SETTINGS));
+                        return true;
+                    case 4:
+                        startActivity(new Intent(ContactsActivity.this, DuplicatesActivity.class));
                         return true;
                     default:
                         return false;
