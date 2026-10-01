@@ -36,4 +36,13 @@
         <item quantity="one">%d Titel</item>
         <item quantity="other">%d Titel</item>
     </plurals>
+    <!-- 1.2 -->
+    <string name="sleep_timer">Sleep-Timer</string>
+    <string name="sleep_end_of_song">Am Ende des Titels</string>
+    <string name="sleep_off">Timer ausschalten</string>
+    <string name="sleep_set">Die Musik stoppt in %d Min.</string>
+    <string name="sleep_set_song">Die Musik stoppt am Ende dieses Titels</string>
+    <string name="sleep_left">Stoppt in %d Min.</string>
+    <string name="sleep_left_song">Stoppt am Ende des Titels</string>
+    <string name="minutes_short">%d Min.</string>
 </resources>

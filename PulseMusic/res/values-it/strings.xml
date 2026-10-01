@@ -40,4 +40,13 @@
         <item quantity="one">%d brano</item>
         <item quantity="other">%d brani</item>
     </plurals>
+    <!-- 1.2 -->
+    <string name="sleep_timer">Timer di spegnimento</string>
+    <string name="sleep_end_of_song">Alla fine del brano</string>
+    <string name="sleep_off">Disattiva il timer</string>
+    <string name="sleep_set">La musica si ferma tra %d min</string>
+    <string name="sleep_set_song">La musica si ferma alla fine di questo brano</string>
+    <string name="sleep_left">Si ferma tra %d min</string>
+    <string name="sleep_left_song">Si ferma alla fine del brano</string>
+    <string name="minutes_short">%d min</string>
 </resources>

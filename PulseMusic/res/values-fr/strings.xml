@@ -42,4 +42,13 @@
         <item quantity="one">%d titre</item>
         <item quantity="other">%d titres</item>
     </plurals>
+    <!-- 1.2 -->
+    <string name="sleep_timer">Minuteur de veille</string>
+    <string name="sleep_end_of_song">À la fin du morceau</string>
+    <string name="sleep_off">Désactiver le minuteur</string>
+    <string name="sleep_set">La musique s\'arrête dans %d min</string>
+    <string name="sleep_set_song">La musique s\'arrête à la fin de ce morceau</string>
+    <string name="sleep_left">S\'arrête dans %d min</string>
+    <string name="sleep_left_song">S\'arrête à la fin du morceau</string>
+    <string name="minutes_short">%d min</string>
 </resources>

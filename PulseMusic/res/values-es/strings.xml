@@ -40,4 +40,13 @@
         <item quantity="one">%d canción</item>
         <item quantity="other">%d canciones</item>
     </plurals>
+    <!-- 1.2 -->
+    <string name="sleep_timer">Temporizador de apagado</string>
+    <string name="sleep_end_of_song">Al terminar la canción</string>
+    <string name="sleep_off">Desactivar el temporizador</string>
+    <string name="sleep_set">La música se detiene en %d min</string>
+    <string name="sleep_set_song">La música se detiene al terminar esta canción</string>
+    <string name="sleep_left">Se detiene en %d min</string>
+    <string name="sleep_left_song">Se detiene al terminar la canción</string>
+    <string name="minutes_short">%d min</string>
 </resources>

@@ -37,8 +37,8 @@ import com.kiroos.ui.SquircleDrawable;
 import java.util.Collections;
 
 /**
- * The playing song: cover, live waveform, position, controls, shuffle / repeat and the
- * equalizer. Also opens audio files from other apps (VIEW audio/*).
+ * The playing song: cover, live waveform, position, controls, shuffle / repeat, the sleep
+ * timer (1.2) and the equalizer. Also opens audio files from other apps (VIEW audio/*).
  */
 public class NowPlayingActivity extends Activity implements MusicService.Listener {
 
@@ -53,6 +53,7 @@ public class NowPlayingActivity extends Activity implements MusicService.Listene
     private ImageButton mPlay;
     private ImageButton mShuffle;
     private ImageButton mRepeat;
+    private ImageButton mSleep;
     private WaveView mWave;
     private boolean mTracking;
     private long mShownAlbum = -2;
@@ -129,6 +130,13 @@ public class NowPlayingActivity extends Activity implements MusicService.Listene
                 if (s != null) {
                     s.cycleRepeat();
                 }
+            }
+        });
+        mSleep = (ImageButton) findViewById(R.id.btn_sleep);
+        mSleep.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSleepTimer();
             }
         });
         findViewById(R.id.btn_eq).setOnClickListener(new View.OnClickListener() {
@@ -269,6 +277,64 @@ public class NowPlayingActivity extends Activity implements MusicService.Listene
         final boolean seekable = !t.stream;
         mSeek.setEnabled(seekable);
         updatePosition();
+        updateSleep();
+    }
+
+    // --- sleep timer (1.2) --------------------------------------------------------------------
+
+    private void updateSleep() {
+        final MusicService s = MusicService.get();
+        final long left = s != null ? s.sleepRemaining() : 0;
+        mSleep.setImageTintList(android.content.res.ColorStateList.valueOf(getColor(
+                left != 0 ? R.color.kiro_accent : R.color.kiro_text)));
+        mSleep.setContentDescription(left == 0 ? getString(R.string.sleep_timer)
+                : left < 0 ? getString(R.string.sleep_left_song)
+                : getString(R.string.sleep_left, minutesLeft(left)));
+    }
+
+    private static int minutesLeft(long ms) {
+        return (int) Math.max(1, (ms + 59999) / 60000);
+    }
+
+    private void showSleepTimer() {
+        final MusicService s = MusicService.get();
+        if (s == null) {
+            return;
+        }
+        final int[] minutes = {15, 30, 45, 60, -1};
+        final long left = s.sleepRemaining();
+        final java.util.List<String> labels = new java.util.ArrayList<>();
+        for (int m : minutes) {
+            labels.add(m > 0 ? getString(R.string.minutes_short, m) : getString(R.string.sleep_end_of_song));
+        }
+        if (left != 0) {
+            labels.add(getString(R.string.sleep_off));
+        }
+        new android.app.AlertDialog.Builder(this)
+                .setTitle(left == 0 ? getString(R.string.sleep_timer)
+                        : left < 0 ? getString(R.string.sleep_left_song)
+                        : getString(R.string.sleep_left, minutesLeft(left)))
+                .setItems(labels.toArray(new String[0]),
+                        new android.content.DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(android.content.DialogInterface d, int which) {
+                                final MusicService svc = MusicService.get();
+                                if (svc == null) {
+                                    return;
+                                }
+                                if (which >= minutes.length) {
+                                    svc.setSleepTimer(0);
+                                    return;
+                                }
+                                final int m = minutes[which];
+                                svc.setSleepTimer(m);
+                                android.widget.Toast.makeText(NowPlayingActivity.this,
+                                        m > 0 ? getString(R.string.sleep_set, m)
+                                                : getString(R.string.sleep_set_song),
+                                        android.widget.Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                .show();
     }
 
     private void updatePosition() {

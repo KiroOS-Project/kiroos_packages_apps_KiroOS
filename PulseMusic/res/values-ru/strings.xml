@@ -47,4 +47,13 @@
         <item quantity="many">%d треков</item>
         <item quantity="other">%d трека</item>
     </plurals>
+    <!-- 1.2 -->
+    <string name="sleep_timer">Таймер сна</string>
+    <string name="sleep_end_of_song">В конце песни</string>
+    <string name="sleep_off">Выключить таймер</string>
+    <string name="sleep_set">Музыка остановится через %d мин</string>
+    <string name="sleep_set_song">Музыка остановится в конце этой песни</string>
+    <string name="sleep_left">Остановка через %d мин</string>
+    <string name="sleep_left_song">Остановка в конце песни</string>
+    <string name="minutes_short">%d мин</string>
 </resources>

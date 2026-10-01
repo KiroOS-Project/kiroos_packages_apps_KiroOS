@@ -91,6 +91,18 @@ public class MusicService extends Service implements Engine.Listener, Engine.Pcm
     private boolean mPreparing;
     private String mFormat = "";
 
+    /** 1.2: the sleep timer: playback stops at this elapsedRealtime (0 = off) */
+    private long mSleepAt;
+    /** 1.2: the sleep timer stops playback when the current song ends */
+    private boolean mSleepEndOfSong;
+    private static final long SLEEP_FADE_MS = 8000;
+    private final Runnable mSleepTick = new Runnable() {
+        @Override
+        public void run() {
+            sleepTick();
+        }
+    };
+
     static MusicService get() {
         return sInstance;
     }
@@ -231,6 +243,7 @@ public class MusicService extends Service implements Engine.Listener, Engine.Pcm
 
     @Override
     public void onDestroy() {
+        mHandler.removeCallbacks(mSleepTick);
         mEngine.stop();
         mSession.release();
         unregisterReceiver(mNoisy);
@@ -470,7 +483,56 @@ public class MusicService extends Service implements Engine.Listener, Engine.Pcm
         changed();
     }
 
+    // --- sleep timer (1.2) --------------------------------------------------------------------
+
+    /** minutes > 0: stop after that long; 0: off; -1: at the end of the current song */
+    void setSleepTimer(int minutes) {
+        mHandler.removeCallbacks(mSleepTick);
+        mEngine.setVolume(1f);
+        mSleepEndOfSong = minutes < 0;
+        mSleepAt = minutes > 0 ? SystemClock.elapsedRealtime() + minutes * 60000L : 0;
+        if (mSleepAt > 0) {
+            mHandler.post(mSleepTick);
+        }
+        changed();
+    }
+
+    /** ms until the sleep timer stops the music, -1 at the end of the song, 0 off */
+    long sleepRemaining() {
+        if (mSleepEndOfSong) {
+            return -1;
+        }
+        return mSleepAt > 0 ? Math.max(1, mSleepAt - SystemClock.elapsedRealtime()) : 0;
+    }
+
+    private void sleepTick() {
+        if (mSleepAt == 0) {
+            return;
+        }
+        final long left = mSleepAt - SystemClock.elapsedRealtime();
+        if (left <= 0) {
+            // asleep: paused (it can be resumed), at full volume for next time
+            mSleepAt = 0;
+            pause();
+            mEngine.setVolume(1f);
+            changed();
+            return;
+        }
+        if (left <= SLEEP_FADE_MS) {
+            // the last seconds fade out instead of a hard stop
+            if (mPlaying) {
+                mEngine.setVolume(Math.max(0.02f, left / (float) SLEEP_FADE_MS));
+            }
+            mHandler.postDelayed(mSleepTick, 200);
+        } else {
+            mHandler.postDelayed(mSleepTick, Math.min(30000, left - SLEEP_FADE_MS));
+        }
+    }
+
     void close() {
+        mSleepAt = 0;
+        mSleepEndOfSong = false;
+        mHandler.removeCallbacks(mSleepTick);
         mPlaying = false;
         mEngine.stop();
         mSession.setActive(false);
@@ -507,6 +569,14 @@ public class MusicService extends Service implements Engine.Listener, Engine.Pcm
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                if (mSleepEndOfSong) {
+                    // the sleep timer's "end of the song": the next one waits, paused
+                    mSleepEndOfSong = false;
+                    next(false);
+                    pause();
+                    changed();
+                    return;
+                }
                 next(false);
             }
         });

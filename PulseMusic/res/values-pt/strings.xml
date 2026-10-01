@@ -39,4 +39,13 @@
         <item quantity="one">%d música</item>
         <item quantity="other">%d músicas</item>
     </plurals>
+    <!-- 1.2 -->
+    <string name="sleep_timer">Timer de desligamento</string>
+    <string name="sleep_end_of_song">No fim da música</string>
+    <string name="sleep_off">Desativar o timer</string>
+    <string name="sleep_set">A música para em %d min</string>
+    <string name="sleep_set_song">A música para no fim desta faixa</string>
+    <string name="sleep_left">Para em %d min</string>
+    <string name="sleep_left_song">Para no fim da música</string>
+    <string name="minutes_short">%d min</string>
 </resources>

@@ -41,4 +41,13 @@
         <item quantity="one">%d şarkı</item>
         <item quantity="other">%d şarkı</item>
     </plurals>
+    <!-- 1.2 -->
+    <string name="sleep_timer">Uyku zamanlayıcısı</string>
+    <string name="sleep_end_of_song">Şarkının sonunda</string>
+    <string name="sleep_off">Zamanlayıcıyı kapat</string>
+    <string name="sleep_set">Müzik %d dk sonra durur</string>
+    <string name="sleep_set_song">Müzik bu şarkının sonunda durur</string>
+    <string name="sleep_left">%d dk sonra durur</string>
+    <string name="sleep_left_song">Şarkının sonunda durur</string>
+    <string name="minutes_short">%d dk</string>
 </resources>

@@ -45,4 +45,13 @@
         <item quantity="one">%d song</item>
         <item quantity="other">%d songs</item>
     </plurals>
+    <!-- 1.2 -->
+    <string name="sleep_timer">Sleep timer</string>
+    <string name="sleep_end_of_song">At the end of the song</string>
+    <string name="sleep_off">Turn off the timer</string>
+    <string name="sleep_set">The music stops in %d min</string>
+    <string name="sleep_set_song">The music stops at the end of this song</string>
+    <string name="sleep_left">Stops in %d min</string>
+    <string name="sleep_left_song">Stops at the end of the song</string>
+    <string name="minutes_short">%d min</string>
 </resources>
