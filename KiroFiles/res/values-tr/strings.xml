@@ -53,4 +53,11 @@
     <string name="info_type">Tür: %s</string>
     <string name="info_items">%d öğe</string>
     <string name="info_size">Boyut: %s</string>
+    <!-- 1.2 -->
+    <string name="search">Ara</string>
+    <string name="search_hint">Dosya veya klasör adı</string>
+    <string name="search_in">%s içinde</string>
+    <string name="search_start">Bir dosya veya klasör adı yazın</string>
+    <string name="search_none">Dosya bulunamadı</string>
+    <string name="searching">Aranıyor…</string>
 </resources>

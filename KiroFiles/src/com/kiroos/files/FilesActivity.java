@@ -71,8 +71,24 @@ public class FilesActivity extends Activity {
     private static final int CAT_AUDIO = 3;
     private static final int CAT_DOCUMENTS = 4;
     private static final int CAT_APK = 5;
+    /** 1.2: the results of a search by name (mSearchBase and below) */
+    private static final int CAT_SEARCH = 6;
+    private static final int SEARCH_MAX_RESULTS = 300;
+    private static final int SEARCH_MAX_VISITS = 80000;
 
     private SharedPreferences mPrefs;
+    private EditText mSearchField;
+    private File mSearchBase;
+    private File mBeforeSearchDir;
+    private int mBeforeSearchCategory;
+    private CharSequence mBeforeSearchTitle;
+    private final android.os.Handler mHandler = new android.os.Handler();
+    private final Runnable mSearchNow = new Runnable() {
+        @Override
+        public void run() {
+            refresh();
+        }
+    };
     private View mHome;
     private ListView mList;
     private TextView mEmpty;
@@ -121,6 +137,35 @@ public class FilesActivity extends Activity {
             @Override
             public void onClick(View v) {
                 showMenu(v);
+            }
+        });
+        mSearchField = (EditText) findViewById(R.id.search_field);
+        findViewById(R.id.btn_search).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCategory == CAT_SEARCH) {
+                    endSearch();
+                } else {
+                    startSearch();
+                }
+            }
+        });
+        mSearchField.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                // a short pause after typing: the walk starts once
+                mHandler.removeCallbacks(mSearchNow);
+                if (mCategory == CAT_SEARCH) {
+                    mHandler.postDelayed(mSearchNow, 300);
+                }
             }
         });
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -244,7 +289,89 @@ public class FilesActivity extends Activity {
         return i > 0 ? new File(p.substring(0, i)) : null;
     }
 
+    // --- search (1.2) ------------------------------------------------------------------------
+
+    /** search the open folder (or the internal storage from the home) by name */
+    private void startSearch() {
+        mBeforeSearchDir = mDir;
+        mBeforeSearchCategory = mCategory;
+        mBeforeSearchTitle = mTitle.getText();
+        mSearchBase = mDir != null && mDir.canRead() ? mDir : Environment.getExternalStorageDirectory();
+        mDir = null;
+        mCategory = CAT_SEARCH;
+        clearSelection();
+        mHome.setVisibility(View.GONE);
+        mList.setVisibility(View.VISIBLE);
+        mBack.setVisibility(View.VISIBLE);
+        mNewFolder.setVisibility(View.GONE);
+        mTitle.setText(R.string.search);
+        mSubtitle.setText(getString(R.string.search_in, mSearchBase.getAbsolutePath()));
+        mSubtitle.setVisibility(View.VISIBLE);
+        mSearchField.setText("");
+        mSearchField.setVisibility(View.VISIBLE);
+        mSearchField.requestFocus();
+        ((android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .showSoftInput(mSearchField, 0);
+        updatePasteBar();
+        refresh();
+    }
+
+    private void hideSearchField() {
+        mHandler.removeCallbacks(mSearchNow);
+        if (mSearchField.getVisibility() == View.VISIBLE) {
+            ((android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(mSearchField.getWindowToken(), 0);
+            mSearchField.setVisibility(View.GONE);
+        }
+    }
+
+    /** back to what was open before the search */
+    private void endSearch() {
+        hideSearchField();
+        if (mBeforeSearchDir != null) {
+            mCategory = 0;
+            openDir(mBeforeSearchDir, false);
+        } else if (mBeforeSearchCategory != 0 && mBeforeSearchCategory != CAT_SEARCH) {
+            openCategory(mBeforeSearchCategory, String.valueOf(mBeforeSearchTitle));
+        } else {
+            showHome();
+        }
+    }
+
+    /** files and folders whose name contains q, under base (depth first, capped) */
+    private static List<FileItem> search(File base, String q, boolean hidden) {
+        final List<FileItem> out = new ArrayList<>();
+        final String needle = q.toLowerCase(java.util.Locale.getDefault());
+        final java.util.ArrayDeque<File> stack = new java.util.ArrayDeque<>();
+        stack.push(base);
+        int visits = 0;
+        while (!stack.isEmpty() && out.size() < SEARCH_MAX_RESULTS && visits < SEARCH_MAX_VISITS) {
+            final File[] files = stack.pop().listFiles();
+            if (files == null) {
+                continue;
+            }
+            for (File f : files) {
+                visits++;
+                final String name = f.getName();
+                if (!hidden && name.startsWith(".")) {
+                    continue;
+                }
+                if (name.toLowerCase(java.util.Locale.getDefault()).contains(needle)) {
+                    out.add(new FileItem(f));
+                    if (out.size() >= SEARCH_MAX_RESULTS) {
+                        break;
+                    }
+                }
+                if (f.isDirectory()) {
+                    stack.push(f);
+                }
+            }
+        }
+        return out;
+    }
+
     private void showHome() {
+        hideSearchField();
         mDir = null;
         mCategory = 0;
         mHistory.clear();
@@ -273,6 +400,7 @@ public class FilesActivity extends Activity {
     // --- folders & categories ---------------------------------------------------------------
 
     private void openDir(File dir, boolean push) {
+        hideSearchField();
         if (push && mDir != null) {
             mHistory.add(mDir);
         }
@@ -291,6 +419,7 @@ public class FilesActivity extends Activity {
     }
 
     private void openCategory(int category, String title) {
+        hideSearchField();
         mDir = null;
         mCategory = category;
         clearSelection();
@@ -316,13 +445,29 @@ public class FilesActivity extends Activity {
         final boolean hidden = mPrefs.getBoolean("hidden", false);
         final int sort = mPrefs.getInt("sort", FileItem.SORT_NAME);
         final boolean root = rootEnabled();
+        final String query = mSearchField.getText().toString().trim();
+        final File searchBase = mSearchBase;
+        if (category == CAT_SEARCH && query.isEmpty()) {
+            mAdapter.set(new ArrayList<FileItem>());
+            mEmpty.setText(R.string.search_start);
+            mEmpty.setVisibility(View.VISIBLE);
+            return;
+        }
+        if (category == CAT_SEARCH) {
+            mEmpty.setText(R.string.searching);
+            mEmpty.setVisibility(mAdapter.getCount() == 0 ? View.VISIBLE : View.GONE);
+        }
         new AsyncTask<Void, Void, List<FileItem>>() {
             @Override
             protected List<FileItem> doInBackground(Void... params) {
-                final List<FileItem> out = dir != null ? listDir(dir, hidden, root)
-                        : listCategory(category);
-                Collections.sort(out, FileItem.comparator(category != 0 && sort == FileItem.SORT_NAME
-                        ? FileItem.SORT_DATE : sort));
+                final List<FileItem> out;
+                if (category == CAT_SEARCH) {
+                    out = search(searchBase, query, hidden);
+                } else {
+                    out = dir != null ? listDir(dir, hidden, root) : listCategory(category);
+                }
+                Collections.sort(out, FileItem.comparator(category == CAT_SEARCH ? FileItem.SORT_NAME
+                        : category != 0 && sort == FileItem.SORT_NAME ? FileItem.SORT_DATE : sort));
                 return out;
             }
 
@@ -331,9 +476,17 @@ public class FilesActivity extends Activity {
                 if (dir != mDir || category != mCategory) {
                     return;
                 }
+                if (category == CAT_SEARCH
+                        && !query.equals(mSearchField.getText().toString().trim())) {
+                    return; // the user typed on: a newer search is coming
+                }
                 mAdapter.set(items);
-                mEmpty.setText(dir != null && !dir.canRead() && !root ? R.string.no_access
-                        : R.string.empty_folder);
+                if (category == CAT_SEARCH) {
+                    mEmpty.setText(R.string.search_none);
+                } else {
+                    mEmpty.setText(dir != null && !dir.canRead() && !root ? R.string.no_access
+                            : R.string.empty_folder);
+                }
                 mEmpty.setVisibility(items.isEmpty() ? View.VISIBLE : View.GONE);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -415,6 +568,10 @@ public class FilesActivity extends Activity {
     public void onBackPressed() {
         if (!mSelected.isEmpty()) {
             clearSelection();
+            return;
+        }
+        if (mCategory == CAT_SEARCH) {
+            endSearch();
             return;
         }
         if (mDir != null && !mHistory.isEmpty()) {
@@ -886,8 +1043,18 @@ public class FilesActivity extends Activity {
             icon.setImageResource(f.icon());
             icon.setColorFilter(getColor(f.directory ? R.color.kiro_accent : R.color.kiro_text_secondary));
             ((TextView) v.findViewById(R.id.name)).setText(f.name());
-            final String when = f.modified > 0 ? DateUtils.getRelativeTimeSpanString(f.modified)
+            String when = f.modified > 0 ? DateUtils.getRelativeTimeSpanString(f.modified)
                     .toString() : "";
+            if (mCategory == CAT_SEARCH && mSearchBase != null && f.file.getParentFile() != null) {
+                // a search result: where it is, under the folder searched
+                final String base = mSearchBase.getAbsolutePath();
+                String where = f.file.getParentFile().getAbsolutePath();
+                where = where.equals(base) ? "" : where.startsWith(base + "/")
+                        ? where.substring(base.length() + 1) : where;
+                if (!where.isEmpty()) {
+                    when = where + (when.isEmpty() ? "" : " · " + when);
+                }
+            }
             ((TextView) v.findViewById(R.id.info)).setText(f.directory ? when
                     : Formatter.formatShortFileSize(FilesActivity.this, f.size)
                     + (when.isEmpty() ? "" : " · " + when));

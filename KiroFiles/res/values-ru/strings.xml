@@ -53,4 +53,11 @@
     <string name="info_type">Тип: %s</string>
     <string name="info_items">Элементов: %d</string>
     <string name="info_size">Размер: %s</string>
+    <!-- 1.2 -->
+    <string name="search">Поиск</string>
+    <string name="search_hint">Имя файла или папки</string>
+    <string name="search_in">В %s</string>
+    <string name="search_start">Введите имя файла или папки</string>
+    <string name="search_none">Файлы не найдены</string>
+    <string name="searching">Поиск…</string>
 </resources>

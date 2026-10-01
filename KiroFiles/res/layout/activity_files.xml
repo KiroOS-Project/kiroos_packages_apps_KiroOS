@@ -50,6 +50,15 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/btn_search"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/search"
+            android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_search" />
+
+        <ImageButton
             android:id="@+id/btn_more"
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"
@@ -58,6 +67,21 @@
             android:tint="?android:attr/textColorPrimary"
             android:src="@drawable/ic_more" />
     </LinearLayout>
+
+    <!-- 1.2: search by name -->
+    <EditText
+        android:id="@+id/search_field"
+        style="@style/Kiro.Field"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:hint="@string/search_hint"
+        android:imeOptions="actionSearch|flagNoExtractUi"
+        android:inputType="text"
+        android:singleLine="true"
+        android:visibility="gone" />
 
     <FrameLayout
         android:layout_width="match_parent"

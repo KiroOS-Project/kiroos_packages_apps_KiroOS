@@ -52,4 +52,11 @@
     <string name="info_type">Tipo: %s</string>
     <string name="info_items">%d elementos</string>
     <string name="info_size">Tamaño: %s</string>
+    <!-- 1.2 -->
+    <string name="search">Buscar</string>
+    <string name="search_hint">Nombre de un archivo o carpeta</string>
+    <string name="search_in">En %s</string>
+    <string name="search_start">Escribe el nombre de un archivo o carpeta</string>
+    <string name="search_none">No se han encontrado archivos</string>
+    <string name="searching">Buscando…</string>
 </resources>
