@@ -19,4 +19,18 @@
     <string name="desc_negate">Vorzeichen ändern</string>
     <string name="desc_parens">Klammern</string>
     <string name="desc_sqrt">Quadratwurzel</string>
+    <!-- 1.2 -->
+    <string name="converter">Einheitenrechner</string>
+    <string name="back">Zurück</string>
+    <string name="swap_units">Einheiten tauschen</string>
+    <string name="all_units">In allen Einheiten</string>
+    <string name="cat_length">Länge</string>
+    <string name="cat_area">Fläche</string>
+    <string name="cat_volume">Volumen</string>
+    <string name="cat_mass">Gewicht</string>
+    <string name="cat_temperature">Temperatur</string>
+    <string name="cat_speed">Geschwindigkeit</string>
+    <string name="cat_time">Zeit</string>
+    <string name="cat_data">Daten</string>
+    <string name="cat_energy">Energie</string>
 </resources>

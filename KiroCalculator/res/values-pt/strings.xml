@@ -19,4 +19,18 @@
     <string name="desc_negate">Inverter sinal</string>
     <string name="desc_parens">Parênteses</string>
     <string name="desc_sqrt">Raiz quadrada</string>
+    <!-- 1.2 -->
+    <string name="converter">Conversor de unidades</string>
+    <string name="back">Voltar</string>
+    <string name="swap_units">Trocar unidades</string>
+    <string name="all_units">Em todas as unidades</string>
+    <string name="cat_length">Comprimento</string>
+    <string name="cat_area">Área</string>
+    <string name="cat_volume">Volume</string>
+    <string name="cat_mass">Peso</string>
+    <string name="cat_temperature">Temperatura</string>
+    <string name="cat_speed">Velocidade</string>
+    <string name="cat_time">Tempo</string>
+    <string name="cat_data">Dados</string>
+    <string name="cat_energy">Energia</string>
 </resources>

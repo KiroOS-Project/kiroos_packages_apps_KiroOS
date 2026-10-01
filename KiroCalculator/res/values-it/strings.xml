@@ -18,4 +18,18 @@
     <string name="desc_negate">Cambia segno</string>
     <string name="desc_parens">Parentesi</string>
     <string name="desc_sqrt">Radice quadrata</string>
+    <!-- 1.2 -->
+    <string name="converter">Convertitore</string>
+    <string name="back">Indietro</string>
+    <string name="swap_units">Scambia le unità</string>
+    <string name="all_units">In tutte le unità</string>
+    <string name="cat_length">Lunghezza</string>
+    <string name="cat_area">Area</string>
+    <string name="cat_volume">Volume</string>
+    <string name="cat_mass">Peso</string>
+    <string name="cat_temperature">Temperatura</string>
+    <string name="cat_speed">Velocità</string>
+    <string name="cat_time">Tempo</string>
+    <string name="cat_data">Dati</string>
+    <string name="cat_energy">Energia</string>
 </resources>

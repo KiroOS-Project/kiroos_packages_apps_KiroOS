@@ -19,4 +19,18 @@
     <string name="desc_negate">Сменить знак</string>
     <string name="desc_parens">Скобки</string>
     <string name="desc_sqrt">Квадратный корень</string>
+    <!-- 1.2 -->
+    <string name="converter">Конвертер величин</string>
+    <string name="back">Назад</string>
+    <string name="swap_units">Поменять единицы</string>
+    <string name="all_units">Во всех единицах</string>
+    <string name="cat_length">Длина</string>
+    <string name="cat_area">Площадь</string>
+    <string name="cat_volume">Объём</string>
+    <string name="cat_mass">Вес</string>
+    <string name="cat_temperature">Температура</string>
+    <string name="cat_speed">Скорость</string>
+    <string name="cat_time">Время</string>
+    <string name="cat_data">Данные</string>
+    <string name="cat_energy">Энергия</string>
 </resources>

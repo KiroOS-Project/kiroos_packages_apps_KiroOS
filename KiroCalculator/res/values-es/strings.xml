@@ -19,4 +19,18 @@
     <string name="desc_negate">Cambiar signo</string>
     <string name="desc_parens">Paréntesis</string>
     <string name="desc_sqrt">Raíz cuadrada</string>
+    <!-- 1.2 -->
+    <string name="converter">Conversor de unidades</string>
+    <string name="back">Atrás</string>
+    <string name="swap_units">Intercambiar unidades</string>
+    <string name="all_units">En todas las unidades</string>
+    <string name="cat_length">Longitud</string>
+    <string name="cat_area">Área</string>
+    <string name="cat_volume">Volumen</string>
+    <string name="cat_mass">Peso</string>
+    <string name="cat_temperature">Temperatura</string>
+    <string name="cat_speed">Velocidad</string>
+    <string name="cat_time">Tiempo</string>
+    <string name="cat_data">Datos</string>
+    <string name="cat_energy">Energía</string>
 </resources>

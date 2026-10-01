@@ -21,4 +21,18 @@
     <string name="desc_negate">Change sign</string>
     <string name="desc_parens">Parentheses</string>
     <string name="desc_sqrt">Square root</string>
+    <!-- 1.2 -->
+    <string name="converter">Unit converter</string>
+    <string name="back">Back</string>
+    <string name="swap_units">Swap units</string>
+    <string name="all_units">In every unit</string>
+    <string name="cat_length">Length</string>
+    <string name="cat_area">Area</string>
+    <string name="cat_volume">Volume</string>
+    <string name="cat_mass">Weight</string>
+    <string name="cat_temperature">Temperature</string>
+    <string name="cat_speed">Speed</string>
+    <string name="cat_time">Time</string>
+    <string name="cat_data">Data</string>
+    <string name="cat_energy">Energy</string>
 </resources>

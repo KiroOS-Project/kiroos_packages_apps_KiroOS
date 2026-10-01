@@ -41,7 +41,8 @@ import java.util.List;
 
 /**
  * Kiro Calculator: live result while typing, scientific functions (degrees / radians),
- * history of the last 50 calculations, squircle keys on black.
+ * history of the last 50 calculations, squircle keys; 1.2: the unit converter
+ * (ConverterActivity).
  */
 public class CalculatorActivity extends Activity {
 
@@ -119,6 +120,13 @@ public class CalculatorActivity extends Activity {
             @Override
             public void onClick(View v) {
                 showHistory();
+            }
+        });
+        findViewById(R.id.btn_convert).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new android.content.Intent(CalculatorActivity.this,
+                        ConverterActivity.class));
             }
         });
         final View.OnLongClickListener copy = new View.OnLongClickListener() {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Kiro Calculator v1.0 -->
+<!-- Kiro Calculator 1.2: unit converter -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.calculator"
-    android:versionCode="110"
-    android:versionName="1.1">
+    android:versionCode="120"
+    android:versionName="1.2">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 
@@ -25,5 +25,12 @@
                 <category android:name="android.intent.category.APP_CALCULATOR" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".ConverterActivity"
+            android:label="@string/converter"
+            android:parentActivityName=".CalculatorActivity"
+            android:screenOrientation="nosensor"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
     </application>
 </manifest>

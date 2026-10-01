@@ -45,6 +45,16 @@
             android:layout_weight="1" />
 
         <ImageButton
+            android:id="@+id/btn_convert"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/converter"
+            android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_convert" />
+
+        <ImageButton
             android:id="@+id/btn_history"
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"

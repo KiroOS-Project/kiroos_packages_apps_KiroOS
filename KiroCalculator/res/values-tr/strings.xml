@@ -19,4 +19,18 @@
     <string name="desc_negate">İşareti değiştir</string>
     <string name="desc_parens">Parantez</string>
     <string name="desc_sqrt">Karekök</string>
+    <!-- 1.2 -->
+    <string name="converter">Birim dönüştürücü</string>
+    <string name="back">Geri</string>
+    <string name="swap_units">Birimleri değiştir</string>
+    <string name="all_units">Tüm birimlerde</string>
+    <string name="cat_length">Uzunluk</string>
+    <string name="cat_area">Alan</string>
+    <string name="cat_volume">Hacim</string>
+    <string name="cat_mass">Ağırlık</string>
+    <string name="cat_temperature">Sıcaklık</string>
+    <string name="cat_speed">Hız</string>
+    <string name="cat_time">Zaman</string>
+    <string name="cat_data">Veri</string>
+    <string name="cat_energy">Enerji</string>
 </resources>
