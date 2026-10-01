@@ -41,4 +41,11 @@
     <string name="edit_bookmarks">Supprimer…</string>
     <string name="remove_bookmarks">Supprimer des favoris</string>
     <string name="remove">Supprimer</string>
+    <!-- 1.2 -->
+    <string name="find_in_page">Rechercher dans la page</string>
+    <string name="find_hint">Rechercher dans la page</string>
+    <string name="find_previous">Précédent</string>
+    <string name="find_next">Suivant</string>
+    <string name="find_close">Fermer</string>
+    <string name="text_size">Taille du texte</string>
 </resources>

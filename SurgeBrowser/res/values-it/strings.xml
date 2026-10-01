@@ -40,4 +40,11 @@
     <string name="edit_bookmarks">Rimuovi…</string>
     <string name="remove_bookmarks">Rimuovi segnalibri</string>
     <string name="remove">Rimuovi</string>
+    <!-- 1.2 -->
+    <string name="find_in_page">Trova nella pagina</string>
+    <string name="find_hint">Trova nella pagina</string>
+    <string name="find_previous">Precedente</string>
+    <string name="find_next">Successivo</string>
+    <string name="find_close">Chiudi</string>
+    <string name="text_size">Dimensione del testo</string>
 </resources>

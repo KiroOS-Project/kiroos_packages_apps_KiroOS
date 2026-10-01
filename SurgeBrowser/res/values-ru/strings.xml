@@ -41,4 +41,11 @@
     <string name="edit_bookmarks">Удалить…</string>
     <string name="remove_bookmarks">Удалить закладки</string>
     <string name="remove">Удалить</string>
+    <!-- 1.2 -->
+    <string name="find_in_page">Найти на странице</string>
+    <string name="find_hint">Найти на странице</string>
+    <string name="find_previous">Назад</string>
+    <string name="find_next">Далее</string>
+    <string name="find_close">Закрыть</string>
+    <string name="text_size">Размер текста</string>
 </resources>

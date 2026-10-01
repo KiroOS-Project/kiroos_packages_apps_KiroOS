@@ -73,6 +73,7 @@ import java.util.List;
 /**
  * Surge Browser: tabs of WebViews, a combined address / search bar, built-in ad and tracker
  * blocking, bookmarks, history, desktop mode, downloads, file uploads and full screen video.
+ * 1.2: find in page and text size.
  */
 public class BrowserActivity extends Activity {
 
@@ -121,12 +122,19 @@ public class BrowserActivity extends Activity {
     private WebChromeClient.CustomViewCallback mCustomCallback;
     private ValueCallback<Uri[]> mFileCallback;
     private String mPendingDownload;
+    /** 1.2: find in page */
+    private View mFindBar;
+    private EditText mFindText;
+    private TextView mFindCount;
+    /** 1.2: text size, as a percentage */
+    private static final int[] TEXT_ZOOMS = {80, 90, 100, 115, 130, 150};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser);
         mPrefs = getSharedPreferences("surge", MODE_PRIVATE);
+        setupFind();
         mContent = (FrameLayout) findViewById(R.id.content);
         mUrl = (EditText) findViewById(R.id.url);
         mProgress = (ProgressBar) findViewById(R.id.progress);
@@ -255,6 +263,7 @@ public class BrowserActivity extends Activity {
     }
 
     private void switchTo(Tab tab) {
+        closeFind();
         if (mCurrent != null) {
             mCurrent.web.onPause();
         }
@@ -320,8 +329,19 @@ public class BrowserActivity extends Activity {
         s.setGeolocationEnabled(true);
         s.setAllowFileAccess(false);
         s.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
+        s.setTextZoom(mPrefs.getInt("text_zoom", 100));
         CookieManager.getInstance().setAcceptThirdPartyCookies(web,
                 !mPrefs.getBoolean("block_3p_cookies", true));
+        web.setFindListener(new WebView.FindListener() {
+            @Override
+            public void onFindResultReceived(int active, int count, boolean done) {
+                if (tab == mCurrent && done) {
+                    mFindCount.setText(count == 0
+                            ? (mFindText.length() == 0 ? "" : "0/0")
+                            : (active + 1) + "/" + count);
+                }
+            }
+        });
 
         web.setWebViewClient(new WebViewClient() {
             @Override
@@ -607,6 +627,8 @@ public class BrowserActivity extends Activity {
     public void onBackPressed() {
         if (mCustomView != null) {
             exitFullscreen();
+        } else if (mFindBar.getVisibility() == View.VISIBLE) {
+            closeFind();
         } else if (mTabsPanel.getVisibility() == View.VISIBLE) {
             showTabs(false);
         } else if (mUrl.hasFocus()) {
@@ -639,6 +661,8 @@ public class BrowserActivity extends Activity {
                 .setChecked(mCurrent != null && mCurrent.desktop);
         menu.getMenu().add(0, 9, 0, R.string.adblock).setCheckable(true)
                 .setChecked(mPrefs.getBoolean("adblock", true));
+        menu.getMenu().add(0, 12, 0, R.string.find_in_page).setEnabled(page);
+        menu.getMenu().add(0, 13, 0, R.string.text_size);
         menu.getMenu().add(0, 10, 0, R.string.search_engine);
         menu.getMenu().add(0, 11, 0, R.string.clear_data);
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -683,12 +707,125 @@ public class BrowserActivity extends Activity {
                     case 11:
                         confirmClearData();
                         return true;
+                    case 12:
+                        openFind();
+                        return true;
+                    case 13:
+                        chooseTextSize();
+                        return true;
                     default:
                         return false;
                 }
             }
         });
         menu.show();
+    }
+
+    // --- find in page and text size (1.2) ------------------------------------------------------
+
+    private void setupFind() {
+        mFindBar = findViewById(R.id.find_bar);
+        mFindText = (EditText) findViewById(R.id.find_text);
+        mFindCount = (TextView) findViewById(R.id.find_count);
+        mFindText.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                if (mCurrent != null && mFindBar.getVisibility() == View.VISIBLE) {
+                    if (s.length() == 0) {
+                        mCurrent.web.clearMatches();
+                        mFindCount.setText("");
+                    } else {
+                        mCurrent.web.findAllAsync(s.toString());
+                    }
+                }
+            }
+        });
+        mFindText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (mCurrent != null) {
+                    mCurrent.web.findNext(true);
+                }
+                return true;
+            }
+        });
+        findViewById(R.id.find_next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrent != null && mFindText.length() > 0) {
+                    mCurrent.web.findNext(true);
+                }
+            }
+        });
+        findViewById(R.id.find_prev).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrent != null && mFindText.length() > 0) {
+                    mCurrent.web.findNext(false);
+                }
+            }
+        });
+        findViewById(R.id.find_close).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeFind();
+            }
+        });
+    }
+
+    private void openFind() {
+        mFindBar.setVisibility(View.VISIBLE);
+        mFindText.setText("");
+        mFindCount.setText("");
+        mFindText.requestFocus();
+        ((android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .showSoftInput(mFindText, 0);
+    }
+
+    private void closeFind() {
+        if (mFindBar == null || mFindBar.getVisibility() != View.VISIBLE) {
+            return;
+        }
+        mFindBar.setVisibility(View.GONE);
+        ((android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(mFindText.getWindowToken(), 0);
+        if (mCurrent != null) {
+            mCurrent.web.clearMatches();
+        }
+    }
+
+    private void chooseTextSize() {
+        final int current = mPrefs.getInt("text_zoom", 100);
+        final String[] names = new String[TEXT_ZOOMS.length];
+        int checked = 2;
+        for (int i = 0; i < TEXT_ZOOMS.length; i++) {
+            names[i] = TEXT_ZOOMS[i] + " %";
+            if (TEXT_ZOOMS[i] == current) {
+                checked = i;
+            }
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.text_size)
+                .setSingleChoiceItems(names, checked, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int which) {
+                        final int zoom = TEXT_ZOOMS[which];
+                        mPrefs.edit().putInt("text_zoom", zoom).apply();
+                        for (Tab t : mTabs) {
+                            t.web.getSettings().setTextZoom(zoom);
+                        }
+                        d.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void toggleDesktop() {

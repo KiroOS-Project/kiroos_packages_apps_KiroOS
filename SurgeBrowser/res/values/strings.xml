@@ -41,4 +41,11 @@
     <string name="edit_bookmarks">Remove…</string>
     <string name="remove_bookmarks">Remove bookmarks</string>
     <string name="remove">Remove</string>
+    <!-- 1.2 -->
+    <string name="find_in_page">Find in page</string>
+    <string name="find_hint">Find in page</string>
+    <string name="find_previous">Previous</string>
+    <string name="find_next">Next</string>
+    <string name="find_close">Close</string>
+    <string name="text_size">Text size</string>
 </resources>
