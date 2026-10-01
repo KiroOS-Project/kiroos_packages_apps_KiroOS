@@ -17,4 +17,12 @@
     <string name="rename_failed">Bu adda bir kayıt zaten var</string>
     <string name="delete">Sil</string>
     <string name="delete_confirm">%s silinsin mi?</string>
+    <!-- 1.2 -->
+    <string name="quality_high">Yüksek kalite</string>
+    <string name="quality_voice">Ses</string>
+    <string name="quality_high_info">Yüksek kalite: stereo, 128 kbps</string>
+    <string name="quality_voice_info">Ses: mono, 64 kbps, dosyalar yarı boyutta</string>
+    <string name="back_10">10 saniye geri</string>
+    <string name="forward_10">10 saniye ileri</string>
+    <string name="speed">Oynatma hızı</string>
 </resources>

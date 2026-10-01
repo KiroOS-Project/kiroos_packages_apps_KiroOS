@@ -17,4 +17,12 @@
     <string name="rename_failed">Eine Aufnahme mit diesem Namen existiert bereits</string>
     <string name="delete">Löschen</string>
     <string name="delete_confirm">%s löschen?</string>
+    <!-- 1.2 -->
+    <string name="quality_high">Hohe Qualität</string>
+    <string name="quality_voice">Sprache</string>
+    <string name="quality_high_info">Hohe Qualität: Stereo, 128 kbit/s</string>
+    <string name="quality_voice_info">Sprache: Mono, 64 kbit/s, halb so große Dateien</string>
+    <string name="back_10">10 Sekunden zurück</string>
+    <string name="forward_10">10 Sekunden vor</string>
+    <string name="speed">Wiedergabegeschwindigkeit</string>
 </resources>

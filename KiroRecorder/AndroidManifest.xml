@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Kiro Recorder v1.0 -->
+<!-- Kiro Recorder 1.2: recording quality, playback speed and 10 s skips -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.recorder"
-    android:versionCode="110"
-    android:versionName="1.1">
+    android:versionCode="120"
+    android:versionName="1.2">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 

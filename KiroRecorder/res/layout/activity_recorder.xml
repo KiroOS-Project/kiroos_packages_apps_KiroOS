@@ -6,13 +6,35 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingStart="20dp"
-        android:text="@string/app_name"
-        style="@style/Kiro.Title" />
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/app_name"
+            style="@style/Kiro.Title" />
+
+        <!-- 1.2: recording quality -->
+        <TextView
+            android:id="@+id/quality"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@drawable/kiro_chip"
+            android:gravity="center"
+            android:paddingEnd="14dp"
+            android:paddingStart="14dp"
+            android:textColor="@color/kiro_text"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/time"

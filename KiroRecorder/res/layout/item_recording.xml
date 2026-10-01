@@ -53,4 +53,43 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:visibility="gone" />
+
+    <!-- 1.2: the recording being played: 10 s back, speed, 10 s forward, position -->
+    <LinearLayout
+        android:id="@+id/controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/back10"
+            style="@style/RecorderChip"
+            android:contentDescription="@string/back_10"
+            android:text="@string/back_10_short" />
+
+        <TextView
+            android:id="@+id/speed"
+            style="@style/RecorderChip"
+            android:layout_marginStart="8dp"
+            android:minWidth="56dp" />
+
+        <TextView
+            android:id="@+id/fwd10"
+            style="@style/RecorderChip"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/forward_10"
+            android:text="@string/forward_10_short" />
+
+        <TextView
+            android:id="@+id/position"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:maxLines="1"
+            style="@style/Kiro.Caption" />
+    </LinearLayout>
 </LinearLayout>

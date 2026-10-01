@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 1.2: the same in every language -->
+    <string name="back_10_short" translatable="false">−10 s</string>
+    <string name="forward_10_short" translatable="false">+10 s</string>
+</resources>

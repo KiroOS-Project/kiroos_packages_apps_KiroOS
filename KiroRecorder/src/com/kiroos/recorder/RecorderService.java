@@ -142,9 +142,13 @@ public class RecorderService extends Service {
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            // 1.2: High (stereo 128 kbps, the default) or Voice (mono 64 kbps, half the size)
+            final boolean voice = RecorderActivity.QUALITY_VOICE.equals(
+                    getSharedPreferences(RecorderActivity.PREFS, MODE_PRIVATE)
+                            .getString(RecorderActivity.PREF_QUALITY, null));
             mRecorder.setAudioSamplingRate(44100);
-            mRecorder.setAudioChannels(2);
-            mRecorder.setAudioEncodingBitRate(128000);
+            mRecorder.setAudioChannels(voice ? 1 : 2);
+            mRecorder.setAudioEncodingBitRate(voice ? 64000 : 128000);
             mRecorder.setOutputFile(mFile.getAbsolutePath());
             mRecorder.prepare();
             mRecorder.start();

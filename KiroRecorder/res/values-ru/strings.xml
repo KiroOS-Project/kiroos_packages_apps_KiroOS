@@ -17,4 +17,12 @@
     <string name="rename_failed">Запись с таким именем уже существует</string>
     <string name="delete">Удалить</string>
     <string name="delete_confirm">Удалить %s?</string>
+    <!-- 1.2 -->
+    <string name="quality_high">Высокое качество</string>
+    <string name="quality_voice">Голос</string>
+    <string name="quality_high_info">Высокое качество: стерео, 128 кбит/с</string>
+    <string name="quality_voice_info">Голос: моно, 64 кбит/с, файлы вдвое меньше</string>
+    <string name="back_10">Назад на 10 секунд</string>
+    <string name="forward_10">Вперёд на 10 секунд</string>
+    <string name="speed">Скорость воспроизведения</string>
 </resources>

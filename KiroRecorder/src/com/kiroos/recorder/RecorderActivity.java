@@ -56,8 +56,18 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/** Kiro Recorder: record with a live level meter, then play, rename, share or delete. */
+/**
+ * Kiro Recorder: record with a live level meter, then play, rename, share or delete.
+ * 1.2: recording quality (High or Voice), and while a recording plays: 10 s back or
+ * forward and the playback speed (0.75x to 2x, remembered).
+ */
 public class RecorderActivity extends Activity implements RecorderService.Listener {
+
+    static final String PREFS = "recorder";
+    static final String PREF_QUALITY = "quality";
+    static final String QUALITY_VOICE = "voice";
+    private static final String PREF_SPEED = "speed";
+    private static final float[] SPEEDS = {1f, 1.25f, 1.5f, 2f, 0.75f};
 
     private static final class Recording {
         File file;
@@ -66,6 +76,9 @@ public class RecorderActivity extends Activity implements RecorderService.Listen
 
     private final Handler mHandler = new Handler();
     private final Adapter mAdapter = new Adapter();
+    private android.content.SharedPreferences mPrefs;
+    private TextView mQuality;
+    private float mSpeed = 1f;
     private TextView mTime;
     private WaveformView mWave;
     private ImageButton mRecord;
@@ -145,6 +158,72 @@ public class RecorderActivity extends Activity implements RecorderService.Listen
             }
         });
         KiroTouch.apply(mRecord, mPause);
+
+        mPrefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        mSpeed = mPrefs.getFloat(PREF_SPEED, 1f);
+        mQuality = (TextView) findViewById(R.id.quality);
+        mQuality.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (RecorderService.isRecording()) {
+                    return; // the quality of a recording in progress can't change
+                }
+                final boolean voice = !isVoice();
+                mPrefs.edit().putString(PREF_QUALITY, voice ? QUALITY_VOICE : "high").apply();
+                updateQuality();
+                Toast.makeText(RecorderActivity.this, voice ? R.string.quality_voice_info
+                        : R.string.quality_high_info, Toast.LENGTH_SHORT).show();
+            }
+        });
+        KiroTouch.apply(mQuality);
+        updateQuality();
+    }
+
+    private boolean isVoice() {
+        return QUALITY_VOICE.equals(mPrefs.getString(PREF_QUALITY, null));
+    }
+
+    private void updateQuality() {
+        mQuality.setText(isVoice() ? R.string.quality_voice : R.string.quality_high);
+        mQuality.setAlpha(RecorderService.isRecording() ? 0.4f : 1f);
+    }
+
+    private static String speedText(float s) {
+        final String n = s == Math.rint(s) ? String.valueOf((int) s) : String.valueOf(s);
+        return n + "×";
+    }
+
+    /** the speed applies while playing (setting it on a paused player would start it) */
+    private void applySpeed() {
+        if (mPlayer == null || !mPlayer.isPlaying()) {
+            return;
+        }
+        try {
+            mPlayer.setPlaybackParams(mPlayer.getPlaybackParams().setSpeed(mSpeed));
+        } catch (RuntimeException e) {
+            // a speed the decoder can't do: stays at the current one
+        }
+    }
+
+    private void cycleSpeed() {
+        int i = 0;
+        while (i < SPEEDS.length && Math.abs(SPEEDS[i] - mSpeed) > 0.01f) {
+            i++;
+        }
+        mSpeed = SPEEDS[(i + 1) % SPEEDS.length];
+        mPrefs.edit().putFloat(PREF_SPEED, mSpeed).apply();
+        applySpeed();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void seekBy(int ms) {
+        if (mPlayer == null) {
+            return;
+        }
+        final int to = Math.max(0, Math.min(mPlayer.getDuration() - 200,
+                mPlayer.getCurrentPosition() + ms));
+        mPlayer.seekTo(to);
+        mAdapter.notifyDataSetChanged();
     }
 
     private boolean hasPermissions() {
@@ -192,6 +271,7 @@ public class RecorderActivity extends Activity implements RecorderService.Listen
                 mPause.setContentDescription(getString(RecorderService.isPaused()
                         ? R.string.resume : R.string.pause));
                 mHandler.removeCallbacks(mTick);
+                updateQuality();
                 if (rec) {
                     mHandler.post(mTick);
                 } else {
@@ -258,6 +338,7 @@ public class RecorderActivity extends Activity implements RecorderService.Listen
                 mPlayer.pause();
             } else {
                 mPlayer.start();
+                applySpeed();
                 mHandler.post(mProgress);
             }
             mAdapter.notifyDataSetChanged();
@@ -279,6 +360,7 @@ public class RecorderActivity extends Activity implements RecorderService.Listen
             });
             mPlayer.start();
             mPlaying = f;
+            applySpeed();
             mHandler.post(mProgress);
         } catch (Exception e) {
             stopPlayback();
@@ -434,6 +516,34 @@ public class RecorderActivity extends Activity implements RecorderService.Listen
                     current && mPlayer.isPlaying() ? R.drawable.ic_pause : R.drawable.ic_play);
             final SeekBar bar = (SeekBar) v.findViewById(R.id.progress);
             bar.setVisibility(current ? View.VISIBLE : View.GONE);
+            final View controls = v.findViewById(R.id.controls);
+            controls.setVisibility(current ? View.VISIBLE : View.GONE);
+            if (current) {
+                final TextView speed = (TextView) v.findViewById(R.id.speed);
+                speed.setText(speedText(mSpeed));
+                speed.setContentDescription(getString(R.string.speed) + " " + speedText(mSpeed));
+                speed.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        cycleSpeed();
+                    }
+                });
+                v.findViewById(R.id.back10).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        seekBy(-10000);
+                    }
+                });
+                v.findViewById(R.id.fwd10).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        seekBy(10000);
+                    }
+                });
+                ((TextView) v.findViewById(R.id.position)).setText(
+                        DateUtils.formatElapsedTime(mPlayer.getCurrentPosition() / 1000) + " / "
+                                + DateUtils.formatElapsedTime(mPlayer.getDuration() / 1000));
+            }
             if (current) {
                 bar.setMax(Math.max(1, mPlayer.getDuration()));
                 bar.setProgress(mPlayer.getCurrentPosition());

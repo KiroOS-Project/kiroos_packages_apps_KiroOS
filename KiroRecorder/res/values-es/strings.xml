@@ -17,4 +17,12 @@
     <string name="rename_failed">Ya existe una grabación con este nombre</string>
     <string name="delete">Eliminar</string>
     <string name="delete_confirm">¿Eliminar %s?</string>
+    <!-- 1.2 -->
+    <string name="quality_high">Alta calidad</string>
+    <string name="quality_voice">Voz</string>
+    <string name="quality_high_info">Alta calidad: estéreo, 128 kbps</string>
+    <string name="quality_voice_info">Voz: mono, 64 kbps, archivos de la mitad de tamaño</string>
+    <string name="back_10">Retroceder 10 segundos</string>
+    <string name="forward_10">Avanzar 10 segundos</string>
+    <string name="speed">Velocidad de reproducción</string>
 </resources>
