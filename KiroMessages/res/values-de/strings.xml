@@ -35,4 +35,8 @@
     <string name="sending">Wird gesendet…</string>
     <string name="received">Empfangen</string>
     <string name="sent">Gesendet</string>
+    <!-- 1.2 -->
+    <string name="pin">Oben anheften</string>
+    <string name="unpin">Loslösen</string>
+    <string name="mark_unread">Als ungelesen markieren</string>
 </resources>

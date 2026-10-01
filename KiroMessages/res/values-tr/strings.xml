@@ -35,4 +35,8 @@
     <string name="sending">Gönderiliyor…</string>
     <string name="received">Alındı</string>
     <string name="sent">Gönderildi</string>
+    <!-- 1.2 -->
+    <string name="pin">En üste sabitle</string>
+    <string name="unpin">Sabitlemeyi kaldır</string>
+    <string name="mark_unread">Okunmadı olarak işaretle</string>
 </resources>

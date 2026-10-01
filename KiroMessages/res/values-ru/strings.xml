@@ -35,4 +35,8 @@
     <string name="sending">Отправка…</string>
     <string name="received">Получено</string>
     <string name="sent">Отправлено</string>
+    <!-- 1.2 -->
+    <string name="pin">Закрепить вверху</string>
+    <string name="unpin">Открепить</string>
+    <string name="mark_unread">Отметить как непрочитанное</string>
 </resources>

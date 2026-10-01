@@ -35,4 +35,8 @@
     <string name="sending">Envoi…</string>
     <string name="received">Reçu</string>
     <string name="sent">Envoyé</string>
+    <!-- 1.2 -->
+    <string name="pin">Épingler en haut</string>
+    <string name="unpin">Désépingler</string>
+    <string name="mark_unread">Marquer comme non lue</string>
 </resources>

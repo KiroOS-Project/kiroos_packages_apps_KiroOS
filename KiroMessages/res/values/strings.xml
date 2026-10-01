@@ -34,4 +34,8 @@
     <string name="sending">Sending…</string>
     <string name="received">Received</string>
     <string name="sent">Sent</string>
+    <!-- 1.2 -->
+    <string name="pin">Pin to top</string>
+    <string name="unpin">Unpin</string>
+    <string name="mark_unread">Mark as unread</string>
 </resources>

@@ -309,6 +309,23 @@ final class MessageStore {
         }
     }
 
+    /** 1.2: the conversation shows as unread again (its last received SMS is unread) */
+    static void markThreadUnread(Context context, long threadId) {
+        try (android.database.Cursor c = context.getContentResolver().query(
+                Telephony.Sms.CONTENT_URI, new String[] {Telephony.Sms._ID},
+                "thread_id=" + threadId + " AND type=" + Telephony.Sms.MESSAGE_TYPE_INBOX, null,
+                Telephony.Sms.DATE + " DESC LIMIT 1")) {
+            if (c != null && c.moveToFirst()) {
+                final ContentValues v = new ContentValues();
+                v.put(Telephony.Sms.READ, 0);
+                context.getContentResolver().update(android.content.ContentUris.withAppendedId(
+                        Telephony.Sms.CONTENT_URI, c.getLong(0)), v, null, null);
+            }
+        } catch (RuntimeException e) {
+            // not the default SMS app
+        }
+    }
+
     static void deleteThread(Context context, long threadId) {
         context.getContentResolver().delete(
                 Uri.parse("content://mms-sms/conversations/" + threadId), null, null);

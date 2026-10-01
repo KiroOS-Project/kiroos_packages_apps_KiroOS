@@ -49,8 +49,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/** Conversations, newest first, with search over names and message text. */
+/**
+ * Conversations, newest first, with search over names and message text. 1.2: long press a
+ * conversation to pin it to the top, mark it read or unread, or delete it.
+ */
 public class ConversationListActivity extends Activity {
+
+    private static final String PREF_PINS = "pinned_threads";
 
     private static final String[] PERMISSIONS = {
             Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS,
@@ -65,6 +70,9 @@ public class ConversationListActivity extends Activity {
         String snippet;
         long date;
         boolean unread;
+        boolean pinned;
+        /** a message found by the search, not a conversation */
+        boolean found;
     }
 
     private final Adapter mAdapter = new Adapter();
@@ -101,7 +109,11 @@ public class ConversationListActivity extends Activity {
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                confirmDelete(mAdapter.getItem(position));
+                final Row row = mAdapter.getItem(position);
+                if (row.found) {
+                    return false;
+                }
+                showMenu(row, view);
                 return true;
             }
         });
@@ -194,8 +206,15 @@ public class ConversationListActivity extends Activity {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    private java.util.Set<String> pins() {
+        return new java.util.HashSet<>(getPreferences(MODE_PRIVATE)
+                .getStringSet(PREF_PINS, Collections.<String>emptySet()));
+    }
+
     private List<Row> load(String query) {
         final List<Row> rows = new ArrayList<>();
+        final List<Row> pinned = new ArrayList<>();
+        final java.util.Set<String> pins = pins();
         final String q = query.toLowerCase();
         for (MessageStore.Thread t : MessageStore.threads(this)) {
             final Row r = new Row();
@@ -205,10 +224,13 @@ public class ConversationListActivity extends Activity {
                     ? getString(R.string.picture) : t.snippet;
             r.date = t.date;
             r.unread = t.unread;
+            r.pinned = pins.contains(String.valueOf(t.id));
             if (q.isEmpty() || r.title.toLowerCase().contains(q)) {
-                rows.add(r);
+                // pinned conversations first (newest first among them), then the others
+                (r.pinned ? pinned : rows).add(r);
             }
         }
+        rows.addAll(0, pinned);
         if (!q.isEmpty()) {
             for (MessageStore.Message m : MessageStore.search(this, query, 100)) {
                 final Row r = new Row();
@@ -217,10 +239,57 @@ public class ConversationListActivity extends Activity {
                 r.title = name != null ? name : Names.format(m.address);
                 r.snippet = m.body;
                 r.date = m.date;
+                r.found = true;
                 rows.add(r);
             }
         }
         return rows;
+    }
+
+    /** 1.2: pin / unpin, read / unread, delete */
+    private void showMenu(final Row row, View anchor) {
+        final android.widget.PopupMenu menu = new android.widget.PopupMenu(this, anchor,
+                android.view.Gravity.END);
+        menu.getMenu().add(0, 1, 0, row.pinned ? R.string.unpin : R.string.pin);
+        menu.getMenu().add(0, 2, 0, row.unread ? R.string.mark_read : R.string.mark_unread);
+        menu.getMenu().add(0, 3, 0, R.string.delete);
+        menu.setOnMenuItemClickListener(new android.widget.PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(android.view.MenuItem item) {
+                switch (item.getItemId()) {
+                    case 1:
+                        final java.util.Set<String> pins = pins();
+                        if (row.pinned) {
+                            pins.remove(String.valueOf(row.thread));
+                        } else {
+                            pins.add(String.valueOf(row.thread));
+                        }
+                        getPreferences(MODE_PRIVATE).edit().putStringSet(PREF_PINS, pins).apply();
+                        reload();
+                        return true;
+                    case 2:
+                        final boolean read = row.unread;
+                        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (read) {
+                                    MessageStore.markThreadRead(getApplicationContext(), row.thread);
+                                } else {
+                                    MessageStore.markThreadUnread(getApplicationContext(),
+                                            row.thread);
+                                }
+                            }
+                        });
+                        return true;
+                    case 3:
+                        confirmDelete(row);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+        menu.show();
     }
 
     private void confirmDelete(final Row row) {
@@ -306,6 +375,7 @@ public class ConversationListActivity extends Activity {
                     r.date, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS,
                     DateUtils.FORMAT_ABBREV_RELATIVE));
             v.findViewById(R.id.unread).setVisibility(r.unread ? View.VISIBLE : View.GONE);
+            v.findViewById(R.id.pin).setVisibility(r.pinned ? View.VISIBLE : View.GONE);
             return v;
         }
     }

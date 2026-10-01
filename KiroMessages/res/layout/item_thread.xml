@@ -40,6 +40,18 @@
                 android:maxLines="1"
                 style="@style/Kiro.Body" />
 
+            <!-- 1.2: pinned to the top -->
+            <ImageView
+                android:id="@+id/pin"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_pin"
+                android:tint="@color/kiro_accent"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/date"
                 android:layout_width="wrap_content"
