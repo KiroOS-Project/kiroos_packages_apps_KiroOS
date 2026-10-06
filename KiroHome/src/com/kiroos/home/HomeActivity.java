@@ -24,7 +24,6 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ActivityNotFoundException;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -36,7 +35,6 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
@@ -64,7 +62,9 @@ import com.kiroos.ui.KiroTouch;
 import java.util.List;
 
 /**
- * Kiro Home v1.0: clock, widgets, pages of apps and a dock over the wallpaper.
+ * Kiro Home 2.0: clock, widgets, pages of apps and a dock over the wallpaper.
+ * 2.0: apps are dragged inside the home (no system drag and drop): the icon lifts, follows
+ * the finger and flies into its cell; the drawer's search box can no longer catch a drop.
  * Swipe sideways between the pages, up anywhere for the vertical app drawer, down for
  * notifications (two fingers: quick settings). Long-press an app and drag it to any cell,
  * page or dock slot (also straight from the drawer); let it go where it was for its menu.
@@ -126,7 +126,15 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         float startY;
         boolean moved;
         int edge; // -1 left, +1 right, 0 none
+        /** Kiro Home 2.0: the lifted copy of the icon, where it came from, the finger's grip */
+        ImageView floating;
+        Rect home;
+        float offX;
+        float offY;
     }
+
+    /** how much a lifted app grows under the finger */
+    private static final float DRAG_LIFT = 1.15f;
 
     private Drag mDrag;
     /** the open folder and its key, or null */
@@ -219,7 +227,6 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 return insets.consumeSystemWindowInsets();
             }
         });
-        mRoot.setOnDragListener(mDragListener);
 
         findViewById(R.id.clock_block).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -703,81 +710,98 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         cell.setScaleX(1f);
         cell.setScaleY(1f);
         final View icon = cell.findViewById(R.id.app_icon);
+        final View picture = icon != null && icon.getWidth() > 0 ? icon : cell;
+        if (picture.getWidth() <= 0 || picture.getHeight() <= 0) {
+            return;
+        }
         final Drag d = new Drag();
         d.app = app;
         d.key = key;
         d.from = from;
         d.fromFolder = fromFolder;
         d.source = cell;
+        // Kiro Home 2.0: the app is lifted in the home itself (no system drag and drop): a
+        // copy of its icon floats over everything, under the finger, slightly larger
+        final android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(
+                picture.getWidth(), picture.getHeight(), android.graphics.Bitmap.Config.ARGB_8888);
+        picture.draw(new android.graphics.Canvas(bmp));
+        final ImageView floating = new ImageView(this);
+        floating.setImageBitmap(bmp);
+        final Rect at = boundsInRoot(picture);
+        mRoot.addView(floating, new FrameLayout.LayoutParams(at.width(), at.height()));
+        floating.setX(at.left);
+        floating.setY(at.top);
+        floating.setElevation(12 * getResources().getDisplayMetrics().density);
+        floating.animate().scaleX(DRAG_LIFT).scaleY(DRAG_LIFT).setDuration(160)
+                .setInterpolator(KiroTouch.EASE).start();
+        d.floating = floating;
+        d.home = at;
+        d.offX = mRoot.lastX() - at.left;
+        d.offY = mRoot.lastY() - at.top;
+        d.startX = mRoot.lastX();
+        d.startY = mRoot.lastY();
         mDrag = d;
         // an extra empty page to drop on while dragging
         mWorkspace.setPageCount(mModel.pageCount() + 1);
         mIndicator.setCount(mModel.pageCount() + 1);
-        if (!cell.startDrag(ClipData.newPlainText("app", key),
-                new View.DragShadowBuilder(icon != null ? icon : cell), d, 0)) {
-            mDrag = null;
-            bindHome();
-            if (from == null && fromFolder == null && app != null) {
-                showAppMenu(app, cell);
-            }
-            return;
-        }
         if (from != null) {
             cell.setAlpha(0.25f);
         }
     }
 
-    private final View.OnDragListener mDragListener = new View.OnDragListener() {
-        @Override
-        public boolean onDrag(View v, DragEvent e) {
-            final Drag d = mDrag;
-            if (d == null) {
-                return false;
-            }
-            switch (e.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    return true;
-                case DragEvent.ACTION_DRAG_LOCATION:
-                    if (Float.isNaN(d.startX)) {
-                        d.startX = e.getX();
-                        d.startY = e.getY();
-                    } else if (!d.moved && Math.hypot(e.getX() - d.startX, e.getY() - d.startY)
-                            > mTouchSlop * 2) {
-                        d.moved = true;
-                        if (d.from == null && d.fromFolder == null) {
-                            // from the drawer: it steps aside so the home is the drop area
-                            animateDrawer(false);
-                        }
-                    }
-                    if (d.moved) {
-                        final HomeModel.Loc at = locAt(e.getX(), e.getY());
-                        showHint(at, mergeAt(d, at, e.getX(), e.getY()));
-                        trackEdge(d, e.getX(), e.getY());
-                    }
-                    return true;
-                case DragEvent.ACTION_DROP:
-                    final HomeModel.Loc to = d.moved ? locAt(e.getX(), e.getY()) : null;
-                    if (to != null) {
-                        // onto another app: a folder; anywhere else: that cell
-                        if (!(mergeAt(d, to, e.getX(), e.getY())
-                                && mModel.merge(d.key, to, getString(R.string.folder_default)))) {
-                            if (d.fromFolder != null) {
-                                mModel.removeFromFolder(d.fromFolder, d.key);
-                            }
-                            mModel.place(d.key, to);
-                        }
-                    }
-                    return to != null;
-                case DragEvent.ACTION_DRAG_ENDED:
-                    endDrag(d);
-                    return true;
-                default:
-                    return true;
+    @Override
+    public boolean isDragging() {
+        return mDrag != null && mDrag.floating != null;
+    }
+
+    @Override
+    public void onDragMove(float x, float y) {
+        final Drag d = mDrag;
+        if (d == null) {
+            return;
+        }
+        d.floating.setX(x - d.offX);
+        d.floating.setY(y - d.offY);
+        if (!d.moved && Math.hypot(x - d.startX, y - d.startY) > mTouchSlop * 2) {
+            d.moved = true;
+            if (d.from == null && d.fromFolder == null) {
+                // from the drawer: it steps aside so the home is the drop area
+                animateDrawer(false);
             }
         }
-    };
+        if (d.moved) {
+            final HomeModel.Loc at = locAt(x, y);
+            showHint(at, mergeAt(d, at, x, y));
+            trackEdge(d, x, y);
+        }
+    }
 
-    private void endDrag(Drag d) {
+    @Override
+    public void onDragEnd(float x, float y, boolean dropped) {
+        final Drag d = mDrag;
+        if (d == null) {
+            return;
+        }
+        HomeModel.Loc to = null;
+        boolean merged = false;
+        if (dropped && d.moved) {
+            to = locAt(x, y);
+            if (to != null) {
+                // onto another app: a folder; anywhere else: that cell
+                merged = mergeAt(d, to, x, y)
+                        && mModel.merge(d.key, to, getString(R.string.folder_default));
+                if (!merged) {
+                    if (d.fromFolder != null) {
+                        mModel.removeFromFolder(d.fromFolder, d.key);
+                    }
+                    mModel.place(d.key, to);
+                }
+            }
+        }
+        endDrag(d, to, merged);
+    }
+
+    private void endDrag(Drag d, HomeModel.Loc to, boolean merged) {
         mHandler.removeCallbacks(mEdgePage);
         mDrag = null;
         mDropHint.setVisibility(View.GONE);
@@ -785,6 +809,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final int page = Math.min(mWorkspace.currentPage(), Math.max(0, mModel.pageCount() - 1));
         bindHome();
         mWorkspace.snapTo(page, true);
+        settleFloating(d, to, merged);
         if (!d.moved) {
             if (d.app == null) {
                 openFolder(d.key); // a folder held without moving opens
@@ -795,6 +820,72 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                         ? anchor : mRoot);
             }
         }
+    }
+
+    /**
+     * Kiro Home 2.0: the lifted copy lands. Dropped on a cell it flies into the icon now
+     * there (which shows once it has landed); into a folder it shrinks into the folder; not
+     * moved or dropped nowhere it goes back home. Nothing to fly to: it fades where it is.
+     */
+    private void settleFloating(final Drag d, final HomeModel.Loc to, final boolean merged) {
+        final ImageView floating = d.floating;
+        if (floating == null) {
+            return;
+        }
+        floating.animate().cancel();
+        mRoot.getViewTreeObserver().addOnPreDrawListener(
+                new android.view.ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                mRoot.getViewTreeObserver().removeOnPreDrawListener(this);
+                final HomeModel.Loc land = to != null ? to : d.from;
+                final View cell = land != null ? cellView(land) : null;
+                final View icon = cell != null ? cell.findViewById(R.id.app_icon) : null;
+                final Rect target;
+                if (icon != null && icon.isAttachedToWindow() && icon.getWidth() > 0) {
+                    target = boundsInRoot(icon);
+                } else if (to == null && d.from == null && d.fromFolder == null) {
+                    target = d.home; // back into the drawer
+                } else {
+                    target = null;
+                }
+                if (target == null) {
+                    floating.animate().alpha(0f).scaleX(0.9f).scaleY(0.9f).setDuration(150)
+                            .withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mRoot.removeView(floating);
+                                }
+                            }).start();
+                    return true;
+                }
+                final View hidden = merged ? null : icon;
+                if (hidden != null) {
+                    hidden.setAlpha(0f);
+                }
+                // the copy is sized like the icon it came from: scale onto the target's size
+                final float scale = merged ? 0.5f : target.width() / (float) Math.max(1,
+                        floating.getWidth());
+                floating.animate()
+                        .x(target.exactCenterX() - floating.getWidth() / 2f)
+                        .y(target.exactCenterY() - floating.getHeight() / 2f)
+                        .scaleX(scale).scaleY(scale)
+                        .alpha(merged ? 0f : 1f)
+                        .setDuration(merged ? 200 : 240)
+                        .setInterpolator(KiroTouch.EASE)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (hidden != null) {
+                                    hidden.setAlpha(1f);
+                                }
+                                mRoot.removeView(floating);
+                                schedulePublishIcons(150);
+                            }
+                        }).start();
+                return true;
+            }
+        });
     }
 
     /** the view that shows the app at loc after a rebind */
@@ -986,16 +1077,38 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     }
 
     @Override
-    public void onDrawerRelease(boolean open) {
-        animateDrawer(open);
+    public void onDrawerRelease(boolean open, float speed) {
+        animateDrawer(open, speed);
     }
 
     void animateDrawer(final boolean open) {
+        animateDrawer(open, 0f);
+    }
+
+    private android.animation.ValueAnimator mDrawerAnim;
+
+    /**
+     * Kiro Home 2.0: released by a moving finger, the drawer glides on from the finger's own
+     * speed (the gesture and the animation are one movement); otherwise it eases in place.
+     */
+    void animateDrawer(final boolean open, float speed) {
         final float from = mDrawerProgress;
         final float to = open ? 1f : 0f;
+        if (mDrawerAnim != null) {
+            mDrawerAnim.cancel();
+        }
         final android.animation.ValueAnimator anim = android.animation.ValueAnimator.ofFloat(from, to);
-        anim.setDuration((long) (160 + 180 * Math.abs(to - from)));
-        anim.setInterpolator(KiroTouch.EASE);
+        mDrawerAnim = anim;
+        // the drag maps 60% of the screen height to the whole way (HomeLayout)
+        final float distance = Math.abs(to - from) * mRoot.getHeight() * 0.6f;
+        final long fallback = (long) (160 + 180 * Math.abs(to - from));
+        final long duration = Glide.duration(distance, speed, 140, 340, fallback);
+        anim.setDuration(duration);
+        if (speed > 0f && distance >= 1f) {
+            anim.setInterpolator(new Glide(speed * duration / 1000f / distance));
+        } else {
+            anim.setInterpolator(KiroTouch.EASE);
+        }
         anim.addUpdateListener(new android.animation.ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(android.animation.ValueAnimator a) {

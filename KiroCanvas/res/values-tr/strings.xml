@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallpapers">Duvar kâğıtları</string>
+    <string name="from_gallery">Galeriden</string>
+    <string name="no_gallery">Resim seçecek uygulama yok</string>
+    <string name="w_aurora">Kutup ışığı</string>
+    <string name="w_nebula">Bulutsu</string>
+    <string name="w_waves">Dalgalar</string>
+    <string name="w_mesh">Geçiş</string>
+    <string name="w_orbit">Yörünge</string>
+    <string name="w_dunes">Kumullar</string>
+    <string name="w_glass">Cam</string>
+    <string name="w_midnight">Gece yarısı</string>
+    <string name="set_on">Duvar kâğıdı yap</string>
+    <string name="set_home">Ana ekran</string>
+    <string name="set_lock">Kilit ekranı</string>
+    <string name="set_both">Ana ekran ve kilit ekranı</string>
+    <string name="working">Uygulanıyor…</string>
+    <string name="done">Duvar kâğıdı ayarlandı</string>
+    <string name="failed">Duvar kâğıdı ayarlanamadı</string>
+    <string name="lock_screen">Kilit ekranı</string>
+    <string name="blur">Bulanıklık</string>
+    <string name="blur_note">Ana ekran duvar kâğıdının bulanık bir kopyası, yalnızca kilit ekranında.</string>
+    <string name="apply_lock">Kilit ekranına uygula</string>
+    <string name="reset_lock">Ana ekranla aynı</string>
+    <string name="lock_done">Kilit ekranı güncellendi</string>
+</resources>

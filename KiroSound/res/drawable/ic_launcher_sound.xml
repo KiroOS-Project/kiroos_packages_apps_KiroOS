@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiro Sound: equalizer bars on the KiroOS blue rounded square -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF3987E5"
+        android:pathData="M12,2h24a10,10 0,0 1,10 10v24a10,10 0,0 1,-10 10h-24a10,10 0,0 1,-10 -10v-24a10,10 0,0 1,10 -10z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12.5,16h3v20h-3z M19.5,10h3v26h-3z M26.5,20h3v16h-3z M33.5,13h3v23h-3z" />
+</vector>

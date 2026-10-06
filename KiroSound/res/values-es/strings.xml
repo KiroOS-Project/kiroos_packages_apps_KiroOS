@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="output_now">Perfil para: %1$s</string>
+    <string name="output_speaker">Altavoz</string>
+    <string name="output_headphones">Auriculares</string>
+    <string name="output_bluetooth">Bluetooth</string>
+    <string name="effects">Efectos de sonido</string>
+    <string name="presets">Ajustes predefinidos</string>
+    <string name="preset_flat">Plano</string>
+    <string name="preset_bass">Graves</string>
+    <string name="preset_warm">Cálido</string>
+    <string name="preset_rock">Rock</string>
+    <string name="preset_pop">Pop</string>
+    <string name="preset_vocal">Voz</string>
+    <string name="preset_treble">Agudos</string>
+    <string name="equalizer">Ecualizador</string>
+    <string name="bass">Refuerzo de graves</string>
+    <string name="surround">Envolvente</string>
+    <string name="surround_note">El sonido envolvente funciona con auriculares y Bluetooth.</string>
+    <string name="reset">Restablecer este perfil</string>
+</resources>

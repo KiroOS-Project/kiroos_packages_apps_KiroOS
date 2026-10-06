@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="output_now">Профиль для: %1$s</string>
+    <string name="output_speaker">Динамик</string>
+    <string name="output_headphones">Наушники</string>
+    <string name="output_bluetooth">Bluetooth</string>
+    <string name="effects">Звуковые эффекты</string>
+    <string name="presets">Пресеты</string>
+    <string name="preset_flat">Ровный</string>
+    <string name="preset_bass">Басы</string>
+    <string name="preset_warm">Тёплый</string>
+    <string name="preset_rock">Рок</string>
+    <string name="preset_pop">Поп</string>
+    <string name="preset_vocal">Голос</string>
+    <string name="preset_treble">Высокие</string>
+    <string name="equalizer">Эквалайзер</string>
+    <string name="bass">Усиление басов</string>
+    <string name="surround">Объёмный звук</string>
+    <string name="surround_note">Объёмный звук работает с наушниками и Bluetooth.</string>
+    <string name="reset">Сбросить этот профиль</string>
+</resources>

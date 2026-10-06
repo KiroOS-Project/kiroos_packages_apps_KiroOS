@@ -24,7 +24,7 @@
     <string name="mode_portrait">Portrait</string>
     <string name="log">LOG</string>
     <string name="cinema">21:9</string>
-    <string name="log_on">LOG video: flat profile for colour grading</string>
+    <string name="log_on">LOG video: flat profile for color grading</string>
     <string name="log_off">LOG off</string>
     <string name="cinema_on">Cinema: 21:9 at up to 60 Mbps</string>
     <string name="cinema_off">Cinema off</string>

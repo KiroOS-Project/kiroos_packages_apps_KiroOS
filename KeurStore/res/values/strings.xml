@@ -29,7 +29,7 @@
     <string name="uninstall">Uninstall</string>
     <string name="hero_title">Apps, straight from the source</string>
     <string name="hero_text">Official downloads and F-Droid, installed and updated right here. No Google Play needed.</string>
-    <string name="installed">Installed and optimised for KiroOS</string>
+    <string name="installed">Installed and optimized for KiroOS</string>
     <string name="install_failed">Could not install it: try again later</string>
     <string name="incompatible">This app does not run on this phone</string>
     <string name="no_network">No connection: try again later</string>

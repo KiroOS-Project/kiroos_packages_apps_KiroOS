@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Canvas</string>
+    <string name="wallpapers">Wallpapers</string>
+    <string name="from_gallery">From gallery</string>
+    <string name="no_gallery">No app to pick a picture</string>
+    <string name="w_aurora">Aurora</string>
+    <string name="w_nebula">Nebula</string>
+    <string name="w_waves">Waves</string>
+    <string name="w_mesh">Mesh</string>
+    <string name="w_orbit">Orbit</string>
+    <string name="w_dunes">Dunes</string>
+    <string name="w_glass">Glass</string>
+    <string name="w_midnight">Midnight</string>
+    <string name="set_on">Set as wallpaper</string>
+    <string name="set_home">Home screen</string>
+    <string name="set_lock">Lock screen</string>
+    <string name="set_both">Home and lock screen</string>
+    <string name="working">Applying…</string>
+    <string name="done">Wallpaper set</string>
+    <string name="failed">Couldn\'t set the wallpaper</string>
+    <string name="lock_screen">Lock screen</string>
+    <string name="preview_time" translatable="false">12:30</string>
+    <string name="blur">Blur</string>
+    <string name="blur_note">A blurred copy of your home wallpaper, on the lock screen only.</string>
+    <string name="apply_lock">Apply to the lock screen</string>
+    <string name="reset_lock">Same as the home screen</string>
+    <string name="lock_done">Lock screen updated</string>
+</resources>

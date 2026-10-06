@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallpapers">Planos de fundo</string>
+    <string name="from_gallery">Da galeria</string>
+    <string name="no_gallery">Nenhum app para escolher uma imagem</string>
+    <string name="w_aurora">Aurora</string>
+    <string name="w_nebula">Nebulosa</string>
+    <string name="w_waves">Ondas</string>
+    <string name="w_mesh">Degradê</string>
+    <string name="w_orbit">Órbita</string>
+    <string name="w_dunes">Dunas</string>
+    <string name="w_glass">Vidro</string>
+    <string name="w_midnight">Meia-noite</string>
+    <string name="set_on">Definir como plano de fundo</string>
+    <string name="set_home">Tela inicial</string>
+    <string name="set_lock">Tela de bloqueio</string>
+    <string name="set_both">Tela inicial e de bloqueio</string>
+    <string name="working">Aplicando…</string>
+    <string name="done">Plano de fundo definido</string>
+    <string name="failed">Não foi possível definir o plano de fundo</string>
+    <string name="lock_screen">Tela de bloqueio</string>
+    <string name="blur">Desfoque</string>
+    <string name="blur_note">Uma cópia desfocada do plano de fundo inicial, só na tela de bloqueio.</string>
+    <string name="apply_lock">Aplicar à tela de bloqueio</string>
+    <string name="reset_lock">Igual à tela inicial</string>
+    <string name="lock_done">Tela de bloqueio atualizada</string>
+</resources>

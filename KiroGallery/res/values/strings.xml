@@ -24,7 +24,7 @@
     <string name="info_length">Length: %s</string>
     <string name="info_path">Path: %s</string>
     <!-- 1.2 -->
-    <string name="favourites">Favourites</string>
-    <string name="add_favourite">Add to favourites</string>
-    <string name="remove_favourite">Remove from favourites</string>
+    <string name="favourites">Favorites</string>
+    <string name="add_favourite">Add to favorites</string>
+    <string name="remove_favourite">Remove from favorites</string>
 </resources>

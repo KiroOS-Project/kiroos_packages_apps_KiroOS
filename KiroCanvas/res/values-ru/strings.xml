@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallpapers">Обои</string>
+    <string name="from_gallery">Из галереи</string>
+    <string name="no_gallery">Нет приложения для выбора изображения</string>
+    <string name="w_aurora">Сияние</string>
+    <string name="w_nebula">Туманность</string>
+    <string name="w_waves">Волны</string>
+    <string name="w_mesh">Градиент</string>
+    <string name="w_orbit">Орбита</string>
+    <string name="w_dunes">Дюны</string>
+    <string name="w_glass">Стекло</string>
+    <string name="w_midnight">Полночь</string>
+    <string name="set_on">Установить как обои</string>
+    <string name="set_home">Главный экран</string>
+    <string name="set_lock">Экран блокировки</string>
+    <string name="set_both">Главный экран и экран блокировки</string>
+    <string name="working">Применение…</string>
+    <string name="done">Обои установлены</string>
+    <string name="failed">Не удалось установить обои</string>
+    <string name="lock_screen">Экран блокировки</string>
+    <string name="blur">Размытие</string>
+    <string name="blur_note">Размытая копия обоев главного экрана, только на экране блокировки.</string>
+    <string name="apply_lock">Применить к экрану блокировки</string>
+    <string name="reset_lock">Как на главном экране</string>
+    <string name="lock_done">Экран блокировки обновлён</string>
+</resources>

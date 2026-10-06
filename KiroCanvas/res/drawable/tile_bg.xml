@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- a wallpaper tile: rounded, clipped to its outline -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/kiro_surface_raised" />
+    <corners android:radius="@dimen/kiro_corner_small" />
+</shape>

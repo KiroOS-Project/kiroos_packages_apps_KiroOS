@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="output_now">Profilo per: %1$s</string>
+    <string name="output_speaker">Altoparlante</string>
+    <string name="output_headphones">Cuffie</string>
+    <string name="output_bluetooth">Bluetooth</string>
+    <string name="effects">Effetti audio</string>
+    <string name="presets">Preimpostazioni</string>
+    <string name="preset_flat">Neutro</string>
+    <string name="preset_bass">Bassi</string>
+    <string name="preset_warm">Caldo</string>
+    <string name="preset_rock">Rock</string>
+    <string name="preset_pop">Pop</string>
+    <string name="preset_vocal">Voce</string>
+    <string name="preset_treble">Alti</string>
+    <string name="equalizer">Equalizzatore</string>
+    <string name="bass">Potenziamento bassi</string>
+    <string name="surround">Surround</string>
+    <string name="surround_note">Il surround funziona con le cuffie e il Bluetooth.</string>
+    <string name="reset">Ripristina questo profilo</string>
+</resources>

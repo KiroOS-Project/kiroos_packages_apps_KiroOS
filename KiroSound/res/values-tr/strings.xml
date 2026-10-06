@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="output_now">Profil: %1$s</string>
+    <string name="output_speaker">Hoparlör</string>
+    <string name="output_headphones">Kulaklık</string>
+    <string name="output_bluetooth">Bluetooth</string>
+    <string name="effects">Ses efektleri</string>
+    <string name="presets">Hazır ayarlar</string>
+    <string name="preset_flat">Düz</string>
+    <string name="preset_bass">Bas</string>
+    <string name="preset_warm">Sıcak</string>
+    <string name="preset_rock">Rock</string>
+    <string name="preset_pop">Pop</string>
+    <string name="preset_vocal">Vokal</string>
+    <string name="preset_treble">Tiz</string>
+    <string name="equalizer">Ekolayzer</string>
+    <string name="bass">Bas güçlendirme</string>
+    <string name="surround">Surround</string>
+    <string name="surround_note">Surround kulaklık ve Bluetooth ile çalışır.</string>
+    <string name="reset">Bu profili sıfırla</string>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallpapers">Fonds d\'écran</string>
+    <string name="from_gallery">Depuis la galerie</string>
+    <string name="no_gallery">Aucune app pour choisir une image</string>
+    <string name="w_aurora">Aurore</string>
+    <string name="w_nebula">Nébuleuse</string>
+    <string name="w_waves">Vagues</string>
+    <string name="w_mesh">Dégradé</string>
+    <string name="w_orbit">Orbite</string>
+    <string name="w_dunes">Dunes</string>
+    <string name="w_glass">Verre</string>
+    <string name="w_midnight">Minuit</string>
+    <string name="set_on">Définir comme fond d\'écran</string>
+    <string name="set_home">Écran d\'accueil</string>
+    <string name="set_lock">Écran de verrouillage</string>
+    <string name="set_both">Accueil et écran de verrouillage</string>
+    <string name="working">Application…</string>
+    <string name="done">Fond d\'écran défini</string>
+    <string name="failed">Impossible de définir le fond d\'écran</string>
+    <string name="lock_screen">Écran de verrouillage</string>
+    <string name="blur">Flou</string>
+    <string name="blur_note">Une copie floue du fond d\'accueil, uniquement sur l\'écran de verrouillage.</string>
+    <string name="apply_lock">Appliquer à l\'écran de verrouillage</string>
+    <string name="reset_lock">Comme l\'écran d\'accueil</string>
+    <string name="lock_done">Écran de verrouillage mis à jour</string>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallpapers">Hintergründe</string>
+    <string name="from_gallery">Aus der Galerie</string>
+    <string name="no_gallery">Keine App zum Auswählen eines Bildes</string>
+    <string name="w_aurora">Polarlicht</string>
+    <string name="w_nebula">Nebel</string>
+    <string name="w_waves">Wellen</string>
+    <string name="w_mesh">Verlauf</string>
+    <string name="w_orbit">Orbit</string>
+    <string name="w_dunes">Dünen</string>
+    <string name="w_glass">Glas</string>
+    <string name="w_midnight">Mitternacht</string>
+    <string name="set_on">Als Hintergrund festlegen</string>
+    <string name="set_home">Startbildschirm</string>
+    <string name="set_lock">Sperrbildschirm</string>
+    <string name="set_both">Start- und Sperrbildschirm</string>
+    <string name="working">Wird angewendet…</string>
+    <string name="done">Hintergrund festgelegt</string>
+    <string name="failed">Hintergrund konnte nicht festgelegt werden</string>
+    <string name="lock_screen">Sperrbildschirm</string>
+    <string name="blur">Unschärfe</string>
+    <string name="blur_note">Eine unscharfe Kopie des Startbildschirm-Hintergrunds, nur auf dem Sperrbildschirm.</string>
+    <string name="apply_lock">Auf den Sperrbildschirm anwenden</string>
+    <string name="reset_lock">Wie der Startbildschirm</string>
+    <string name="lock_done">Sperrbildschirm aktualisiert</string>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallpapers">Sfondi</string>
+    <string name="from_gallery">Dalla galleria</string>
+    <string name="no_gallery">Nessuna app per scegliere un\'immagine</string>
+    <string name="w_aurora">Aurora</string>
+    <string name="w_nebula">Nebulosa</string>
+    <string name="w_waves">Onde</string>
+    <string name="w_mesh">Sfumature</string>
+    <string name="w_orbit">Orbita</string>
+    <string name="w_dunes">Dune</string>
+    <string name="w_glass">Vetro</string>
+    <string name="w_midnight">Mezzanotte</string>
+    <string name="set_on">Imposta come sfondo</string>
+    <string name="set_home">Schermata Home</string>
+    <string name="set_lock">Schermata di blocco</string>
+    <string name="set_both">Home e schermata di blocco</string>
+    <string name="working">Applicazione…</string>
+    <string name="done">Sfondo impostato</string>
+    <string name="failed">Impossibile impostare lo sfondo</string>
+    <string name="lock_screen">Schermata di blocco</string>
+    <string name="blur">Sfocatura</string>
+    <string name="blur_note">Una copia sfocata dello sfondo della Home, solo sulla schermata di blocco.</string>
+    <string name="apply_lock">Applica alla schermata di blocco</string>
+    <string name="reset_lock">Uguale alla schermata Home</string>
+    <string name="lock_done">Schermata di blocco aggiornata</string>
+</resources>

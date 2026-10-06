@@ -46,8 +46,11 @@ public class HomeLayout extends FrameLayout {
         /** 0 = closed, 1 = fully open; called while the finger drags the drawer up. */
         void onDrawerDrag(float progress);
 
-        /** Finger lifted during a drawer drag: settle open or closed. */
-        void onDrawerRelease(boolean open);
+        /**
+         * Finger lifted during a drawer drag: settle open or closed, gliding on from the
+         * finger's own speed (px/s, toward the target; 0 when it stood still).
+         */
+        void onDrawerRelease(boolean open, float speed);
 
         void onSwipeDown(boolean twoFingers);
 
@@ -66,6 +69,15 @@ public class HomeLayout extends FrameLayout {
 
         /** a finger touches down; true if it caught the pages mid-glide (it drives them now) */
         boolean onTouchDown();
+
+        /** Kiro Home 2.0: an app (or folder) is lifted and follows the finger */
+        boolean isDragging();
+
+        /** the lifted app moves to this point of the home */
+        void onDragMove(float x, float y);
+
+        /** the finger lifted (dropped = true) or the touch was cancelled */
+        void onDragEnd(float x, float y, boolean dropped);
     }
 
     private static final int NONE = 0;
@@ -110,8 +122,73 @@ public class HomeLayout extends FrameLayout {
         mCallbacks = callbacks;
     }
 
+    /** where the finger is now (the point of the last touch event anywhere on the home) */
+    float lastX() {
+        return mLastX;
+    }
+
+    float lastY() {
+        return mLastY;
+    }
+
+    private float mLastX;
+    private float mLastY;
+    /** the pointer that lifted the app: the drag follows it alone */
+    private int mDragPointer = -1;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        final int i = mDragPointer >= 0 ? ev.findPointerIndex(mDragPointer) : 0;
+        if (i >= 0 && i < ev.getPointerCount()) {
+            mLastX = ev.getX(i);
+            mLastY = ev.getY(i);
+        }
+        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            mDragPointer = ev.getPointerId(0);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * Kiro Home 2.0: while an app is lifted every touch is the drag's, wherever it started
+     * (on an icon, in the drawer, in a folder): the home takes the gesture over and the view
+     * that saw the long press gets a cancel.
+     */
+    private boolean handleDrag(MotionEvent ev) {
+        final int i = ev.findPointerIndex(mDragPointer);
+        final float x = i >= 0 ? ev.getX(i) : mLastX;
+        final float y = i >= 0 ? ev.getY(i) : mLastY;
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_MOVE:
+                mCallbacks.onDragMove(x, y);
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                if (ev.getPointerId(ev.getActionIndex()) == mDragPointer) {
+                    mCallbacks.onDragEnd(x, y, true);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                mCallbacks.onDragEnd(x, y, true);
+                finish();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                mCallbacks.onDragEnd(x, y, false);
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mCallbacks != null && mCallbacks.isDragging()) {
+            // the event that makes the home take over goes to the child as a cancel and
+            // never reaches onTouchEvent: handle it here (a quick lift right after the long
+            // press would otherwise leave the app hanging)
+            return handleDrag(ev);
+        }
         if (mCallbacks == null || mCallbacks.isDrawerOpen() || mCallbacks.isFolderOpen()) {
             return false;
         }
@@ -174,6 +251,9 @@ public class HomeLayout extends FrameLayout {
     public boolean onTouchEvent(MotionEvent ev) {
         if (mCallbacks == null) {
             return false;
+        }
+        if (mCallbacks.isDragging()) {
+            return handleDrag(ev);
         }
         track(ev);
         if (mMode == NONE) {
@@ -327,7 +407,9 @@ public class HomeLayout extends FrameLayout {
         } else if (mMode == DRAWER) {
             final boolean open = up && (vy < -mMinFling
                     || (vy < mMinFling && -dy > getHeight() * 0.25f));
-            mCallbacks.onDrawerRelease(open);
+            // the speed toward where it settles (up when opening, down when closing)
+            final float speed = open ? Math.max(0f, -vy) : Math.max(0f, vy);
+            mCallbacks.onDrawerRelease(open, speed);
         } else if (mMode == SHADE && up && dy > mTouchSlop * 2) {
             mCallbacks.onSwipeDown(mPointers > 1);
         }
