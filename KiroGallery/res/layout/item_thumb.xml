@@ -20,7 +20,7 @@
         android:background="@drawable/badge_bg"
         android:paddingEnd="6dp"
         android:paddingStart="6dp"
-        android:textColor="@color/kiro_text"
+        android:textColor="@android:color/white"
         android:textSize="11sp"
         android:visibility="gone" />
 </com.kiroos.gallery.SquareFrame>

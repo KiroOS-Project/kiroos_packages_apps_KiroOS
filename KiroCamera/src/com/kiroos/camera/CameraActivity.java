@@ -91,11 +91,8 @@ import java.util.List;
  */
 public class CameraActivity extends Activity {
 
-    /** always dark, whatever the system theme */
-    @Override
-    protected void attachBaseContext(android.content.Context base) {
-        super.attachBaseContext(com.kiroos.ui.KiroTheme.dark(base));
-    }
+    // KiroOS Beta 3: the camera follows the system theme (white bands and dark icons with the
+    // light theme); what lies over the picture keeps its own colours.
 
     private static final String TAG = "KiroCamera";
 

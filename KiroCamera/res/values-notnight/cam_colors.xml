@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 3: the camera with the light theme: white bands around the viewfinder, dark
+     icons and a dark shutter. -->
+<resources>
+    <color name="cam_icon">#FF1C1C1E</color>
+    <color name="cam_scrim_top">#D9FFFFFF</color>
+    <color name="cam_scrim_bottom">#E6FFFFFF</color>
+    <color name="cam_pill">#E6FFFFFF</color>
+    <color name="cam_shutter_ring">#FF1C1C1E</color>
+    <color name="cam_shutter_fill">#FF1C1C1E</color>
+</resources>

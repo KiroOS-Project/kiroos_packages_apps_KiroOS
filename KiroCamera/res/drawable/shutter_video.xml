@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="oval">
-            <stroke android:width="4dp" android:color="#FFFFFFFF" />
+            <stroke android:width="4dp" android:color="@color/cam_shutter_ring" />
         </shape>
     </item>
     <item android:bottom="12dp" android:left="12dp" android:right="12dp" android:top="12dp">
