@@ -43,6 +43,8 @@
     <string name="act_bt_off">Bluetooth kapalı.</string>
     <string name="act_profiles">İşte pil profilleri.</string>
     <string name="act_failed">Bunu bu telefonda yapamadım.</string>
+    <string name="act_maps_go">%s için yol tarifi Atlas\'ta açılıyor.</string>
+    <string name="act_maps_show">%s Atlas\'ta gösteriliyor.</string>
     <string-array name="model_descriptions">
         <item>Anında: hızlı hesaplamalar, kısa tanımlar, telefon komutları · SmolLM2 135M</item>
         <item>Günlük asistan: sorular, özetler · Qwen2.5 0.5B</item>

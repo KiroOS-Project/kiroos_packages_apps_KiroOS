@@ -43,6 +43,8 @@
     <string name="act_bt_off">Bluetooth desativado.</string>
     <string name="act_profiles">Aqui estão os perfis de bateria.</string>
     <string name="act_failed">Não consegui fazer isso neste telefone.</string>
+    <string name="act_maps_go">Abrindo a rota para %s no Atlas.</string>
+    <string name="act_maps_show">Mostrando %s no Atlas.</string>
     <string-array name="model_descriptions">
         <item>Instantâneo: contas rápidas, definições curtas, comandos do telefone · SmolLM2 135M</item>
         <item>Assistente do dia a dia: perguntas, resumos · Qwen2.5 0.5B</item>

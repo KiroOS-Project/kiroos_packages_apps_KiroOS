@@ -43,6 +43,8 @@
     <string name="act_bt_off">Bluetooth выключен.</string>
     <string name="act_profiles">Вот профили батареи.</string>
     <string name="act_failed">Не удалось сделать это на этом телефоне.</string>
+    <string name="act_maps_go">Открываю маршрут до %s в Atlas.</string>
+    <string name="act_maps_show">Показываю %s в Atlas.</string>
     <string-array name="model_descriptions">
         <item>Мгновенная: быстрые вычисления, короткие определения, команды телефона · SmolLM2 135M</item>
         <item>Ассистент на каждый день: вопросы, пересказы · Qwen2.5 0.5B</item>

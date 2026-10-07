@@ -42,6 +42,8 @@
     <string name="act_bt_off">Bluetooth aus.</string>
     <string name="act_profiles">Hier sind die Akkuprofile.</string>
     <string name="act_failed">Das konnte ich auf diesem Telefon nicht tun.</string>
+    <string name="act_maps_go">Ich öffne die Route nach %s in Atlas.</string>
+    <string name="act_maps_show">Ich zeige %s in Atlas.</string>
     <string-array name="model_descriptions">
         <item>Sofort: schnelle Rechnungen, kurze Definitionen, Telefonbefehle · SmolLM2 135M</item>
         <item>Alltagsassistent: Fragen, Zusammenfassungen · Qwen2.5 0.5B</item>

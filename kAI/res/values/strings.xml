@@ -44,6 +44,8 @@
     <string name="act_bt_off">Bluetooth off.</string>
     <string name="act_profiles">Here are the battery profiles.</string>
     <string name="act_failed">I could not do that on this phone.</string>
+    <string name="act_maps_go">Opening directions to %s in Atlas.</string>
+    <string name="act_maps_show">Showing %s in Atlas.</string>
     <string-array name="model_descriptions">
         <item>Instant: quick maths, short definitions, phone commands · SmolLM2 135M</item>
         <item>Everyday assistant: questions, summaries · Qwen2.5 0.5B</item>

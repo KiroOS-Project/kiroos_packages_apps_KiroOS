@@ -38,6 +38,24 @@ final class PhoneActions {
     private static final Pattern OFF = Pattern.compile(
             "\\b(spegn[iae]\\w*|disattiv[ai]\\w*|disabilit[ai]\\w*|chiudi|turn off|switch off|disable|off)\\b");
 
+    /** "portami al Colosseo", "navigate to Milan": Atlas with directions */
+    private static final Pattern GO = Pattern.compile(
+            "^(?:portami|accompagnami|naviga|vai|andiamo|indicazioni|percorso|navigate|"
+            + "directions|take me|drive|go|get me)"
+            + "(?: (?:a|al|alla|allo|ai|alle|in|nel|nella|verso|per|fino a|fino al|fino alla|"
+            + "da|dal|dalla|to|towards|for)(?= )| (?:all'|dall'|nell'|fino all'))+ *(.+?)[?.!]*$");
+    /** "dov'è il Pantheon", "where is Rome": Atlas showing the place */
+    private static final Pattern WHERE = Pattern.compile(
+            "^(?:dov'è|dov'e|dove è|dove e|dove si trova|dove sta|where is|where's|"
+            + "trova sulla mappa|mostra sulla mappa|show on the map) +(.+?)"
+            + "(?: sulla mappa| on the map)?[?.!]*$");
+    /** "mostrami Roma sulla mappa", "show me Paris on the map": only with the map named
+     *  ("show me how to..." is a question for the model) */
+    private static final Pattern SHOW = Pattern.compile(
+            "^(?:show me|find|mostrami|trova) +(.+?) (?:sulla mappa|on the map|in atlas|su atlas)[?.!]*$");
+    private static final Pattern ARTICLE = Pattern.compile(
+            "^(?:(?:il|lo|la|i|gli|le|the) +|l')");      // not the "La" of "Lazio"
+
     private static boolean sTorch;
 
     private PhoneActions() {
@@ -47,6 +65,10 @@ final class PhoneActions {
         final String t = text.toLowerCase(Locale.ROOT).trim();
         if (t.length() > 60) {
             return null;                   // a real question, not a command
+        }
+        final String map = maps(c, text.trim(), t);
+        if (map != null) {
+            return map;
         }
         final boolean on = ON.matcher(t).find();
         final boolean off = OFF.matcher(t).find();
@@ -97,5 +119,42 @@ final class PhoneActions {
             return c.getString(R.string.act_failed);
         }
         return null;
+    }
+
+    /** a place to show or to go to, opened in Atlas (geo: link); null when not such a request */
+    private static String maps(Context c, String text, String lower) {
+        boolean go = true;
+        java.util.regex.Matcher m = GO.matcher(lower);
+        if (!m.matches()) {
+            go = false;
+            m = WHERE.matcher(lower);
+            if (!m.matches()) {
+                m = SHOW.matcher(lower);
+                if (!m.matches()) {
+                    return null;
+                }
+            }
+        }
+        // the place as typed (its capitals), without a leading article
+        String place = text.length() == lower.length()
+                ? text.substring(m.start(1), m.end(1)).trim()
+                : lower.substring(m.start(1), m.end(1)).trim();
+        final java.util.regex.Matcher a = ARTICLE.matcher(place.toLowerCase(Locale.ROOT));
+        if (a.lookingAt()) {
+            place = place.substring(a.end());
+        }
+        if (place.isEmpty()) {
+            return null;
+        }
+        final Intent i = new Intent(Intent.ACTION_VIEW,
+                android.net.Uri.parse("geo:0,0?q=" + android.net.Uri.encode(place)))
+                .setPackage("com.kiroos.atlas")
+                .putExtra("com.kiroos.atlas.extra.DIRECTIONS", go)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (i.resolveActivity(c.getPackageManager()) == null) {
+            return null;                   // no Atlas: the model answers instead
+        }
+        c.startActivity(i);
+        return c.getString(go ? R.string.act_maps_go : R.string.act_maps_show, place);
     }
 }
