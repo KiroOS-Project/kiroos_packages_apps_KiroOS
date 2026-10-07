@@ -31,6 +31,9 @@ PRODUCT_PACKAGES += \
 # webview). Its APK is kept out of git: without it the AOSP WebView stays.
 ifneq ($(wildcard vendor/kiroos/webview/KOptimizeWebView.apk),)
 PRODUCT_PACKAGES += KOptimizeWebView
+# the prebuilt's LOCAL_OVERRIDES_PACKAGES alone left the AOSP one in (199 MB, and the OTA
+# package must stay under 2 GiB)
+PRODUCT_PACKAGES_REMOVE += webview
 endif
 
 # Stock apps replaced by the suite (PRODUCT_PACKAGES_REMOVE is applied in build/core/main.mk
