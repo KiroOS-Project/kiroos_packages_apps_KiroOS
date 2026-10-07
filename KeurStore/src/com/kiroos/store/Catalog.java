@@ -49,6 +49,9 @@ import java.util.Map;
  *   "whatsapp"   WhatsApp's official APK
  *   "fdroid"     F-Droid, for open-source apps (its API gives the version)
  *   "system"     a KiroOS app already in the ROM
+ *   "kiroos:<file>" a KiroOS component in the ROM that is also updated apart from it
+ *                (KOptimize WebView): <file> next to the OTA manifest, with versionCode,
+ *                versionName and url
  * Google Play apps cannot be installed outside Google Play: a catalogue entry with a "play"
  * source (older catalogues) is left out.
  */
@@ -79,7 +82,8 @@ final class Catalog {
 
         boolean direct() {
             return source.startsWith("apk:") || source.equals("signal")
-                    || source.equals("whatsapp") || source.equals("fdroid");
+                    || source.equals("whatsapp") || source.equals("fdroid")
+                    || source.startsWith("kiroos:");
         }
 
         boolean fdroid() {

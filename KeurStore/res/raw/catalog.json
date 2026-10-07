@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "note": "KeurStore 2.0 catalogue: every app is installed and updated right here, from its official source only (the developer's own download, or F-Droid for open-source apps), and runs on Android 7.1. Apps only on Google Play cannot be installed outside it and are not listed. Refreshed from <OTA server>/store/catalog.json when reachable.",
   "sections": [
     {"id": "featured", "apps": [
@@ -35,7 +35,13 @@
       {"pkg": "com.kiroos.pulse", "name": "Pulse Music", "desc": "Musica con equalizzatore a 10 bande", "desc_en": "Music with a 10-band equalizer", "source": "system"},
       {"pkg": "com.kiroos.surge", "name": "Surge Browser", "desc": "Browser veloce con blocco annunci", "desc_en": "Fast browser with ad blocking", "source": "system"},
       {"pkg": "com.kiroos.gallery", "name": "Galleria", "desc": "Foto e video", "desc_en": "Photos and videos", "source": "system"},
-      {"pkg": "com.kiroos.files", "name": "File", "desc": "I tuoi documenti", "desc_en": "Your documents", "source": "system"}
+      {"pkg": "com.kiroos.files", "name": "File", "desc": "I tuoi documenti", "desc_en": "Your documents", "source": "system"},
+      {"pkg": "com.kiroos.webview", "name": "KOptimize WebView", "desc": "Il motore web di KiroOS per browser e app, aggiornato a parte", "desc_en": "The KiroOS web engine for browsers and apps, updated on its own", "source": "kiroos:koptimize-webview.json"},
+      {"pkg": "com.kiroos.sound", "name": "Kiro Sound", "desc": "Equalizzatore per altoparlante, cuffie e Bluetooth", "desc_en": "Equalizer for speaker, headphones and Bluetooth", "source": "system"},
+      {"pkg": "com.kiroos.canvas", "name": "Canvas", "desc": "Sfondi AMOLED e sfocatura della schermata di blocco", "desc_en": "AMOLED wallpapers and lock screen blur", "source": "system"},
+      {"pkg": "com.kiroos.screenrecord", "name": "Registra schermo", "desc": "1080p a 60 fps con l'audio del telefono", "desc_en": "1080p at 60 fps with the phone's audio", "source": "system"},
+      {"pkg": "com.kiroos.applock", "name": "Blocco app", "desc": "App aperte solo con impronta o blocco schermo", "desc_en": "Apps that open only with your fingerprint or screen lock", "source": "system"},
+      {"pkg": "com.kiroos.atlas", "name": "Atlas", "desc": "Mappe, percorsi e navigazione con la voce", "desc_en": "Maps, directions and voice navigation", "source": "system"}
     ]}
   ]
 }

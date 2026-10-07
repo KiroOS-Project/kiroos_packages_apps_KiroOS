@@ -86,6 +86,17 @@ final class Sources {
             final String url = app.source.substring(4);
             r.urls.add(url);
             r.fingerprint = fingerprint(url);
+        } else if (app.source.startsWith("kiroos:")) {
+            // a KiroOS component: its manifest sits next to the OTA manifest
+            final String ota = android.os.SystemProperties.get("ro.kiroos.ota.url", "");
+            if (!ota.startsWith("http")) {
+                throw new IllegalStateException("no KiroOS update server");
+            }
+            final URL manifest = new URL(new URL(ota), app.source.substring(7));
+            final JSONObject o = new JSONObject(Installer.get(manifest.toString()));
+            r.versionName = o.optString("versionName", null);
+            r.versionCode = o.getLong("versionCode");
+            r.urls.add(new URL(manifest, o.getString("url")).toString());
         } else {
             throw new IllegalArgumentException(app.source);
         }
