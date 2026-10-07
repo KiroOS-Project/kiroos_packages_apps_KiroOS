@@ -75,6 +75,8 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
     private static final int[] FAR = {800, 250, 120};
     private static final int[] NEAR = {150, 50, 25};
     private static final int[] OFF_ROUTE = {50, 35, 35};
+    /** with a geo: link (kAI's "take me to..."): directions to the place found, not just the pin */
+    private static final String EXTRA_DIRECTIONS = "com.kiroos.atlas.extra.DIRECTIONS";
 
     private MapView mMap;
     private EditText mSearch;
@@ -93,7 +95,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
 
     private int mState = BROWSE;
     private int mSearchGen, mRouteGen;
-    private boolean mQuiet;
+    private boolean mQuiet, mGoWhenFound;
     private final List<Places.Place> mFound = new ArrayList<>();
     private PlaceAdapter mAdapter;
     private Places.Place mPlace;
@@ -252,8 +254,11 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
         });
 
         setState(BROWSE);
-        handleIntent(getIntent());
-        if (!hasLocationPermission() && !mPrefs.getBoolean("asked_location", false)) {
+        // a recreated activity (language, dark mode) does not search the link again
+        if (state == null) handleIntent(getIntent());
+        // with directions asked for, directions() asks for the location itself (one dialog)
+        if (!hasLocationPermission() && !mPrefs.getBoolean("asked_location", false)
+                && !getIntent().getBooleanExtra(EXTRA_DIRECTIONS, false)) {
             mPrefs.edit().putBoolean("asked_location", true).apply();
             requestLocationPermission();
         }
@@ -395,6 +400,9 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
 
     private void search(final String query, final boolean explicit) {
         if (query.isEmpty()) return;
+        // only the search a geo: link started gets the directions it asked for
+        final boolean go = explicit && mGoWhenFound;
+        mGoWhenFound = false;
         final int gen = ++mSearchGen;
         final double lat = mMap.centerLat(), lon = mMap.centerLon();
         mNet.execute(new Runnable() {
@@ -425,6 +433,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
                             // straight to the best match
                             else if (mFound.size() == 1 || !mSearch.hasFocus()) {
                                 showPlace(mFound.get(0), true);
+                                if (go) directions();
                             }
                         }
                     }
@@ -499,6 +508,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
         if (u == null || !"geo".equals(u.getScheme())) return;
         final String enc = u.getEncodedSchemeSpecificPart();
         if (enc == null) return;
+        final boolean go = intent.getBooleanExtra(EXTRA_DIRECTIONS, false);
         final int qi = enc.indexOf('?');
         String coords = Uri.decode(qi < 0 ? enc : enc.substring(0, qi));
         final int semi = coords.indexOf(';');
@@ -534,6 +544,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
                         : getString(R.string.dropped_pin);
                 p.detail = String.format(Locale.US, "%.5f, %.5f", p.lat, p.lon);
                 showPlace(p, true);
+                if (go) directions();
                 return;
             }
             if (hasPoint) mMap.setCamera(lat, lon, 13);
@@ -541,6 +552,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
             mSearch.setText(query);
             mQuiet = false;
             mCenterOnFix = false;
+            mGoWhenFound = go;
             search(query, true);
             return;
         }
