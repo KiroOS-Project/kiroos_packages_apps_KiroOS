@@ -93,7 +93,7 @@
     <string name="kai_point_models">Keng 1.5 Flash Lite für sofortige Antworten, Pro für Code und Schritt-für-Schritt-Denken.</string>
     <string name="kai_point_actions">Exakte Ergebnisse bei Rechnungen, und er schaltet Taschenlampe, WLAN und Bluetooth ein oder aus.</string>
     <string name="kai_power">Ein/Aus-Taste gedrückt halten für kAI</string>
-    <string name="kai_power_summary">Ein/Aus und Lauter zusammen öffnen das Ausschaltmenü</string>
+    <string name="kai_power_summary">Ein/Aus und Lauter: kurz zusammen drücken für einen Screenshot, halten für das Ausschaltmenü</string>
     <string name="highlights_title">Das steckt in KiroOS</string>
     <string name="highlights_summary">Ein paar Dinge zum Ausprobieren.</string>
     <string name="feat_kai">Künstliche Intelligenz, die in deinem Telefon lebt, mit Sprache und Antworten auch offline</string>

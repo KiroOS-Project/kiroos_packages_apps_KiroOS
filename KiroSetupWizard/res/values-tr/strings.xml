@@ -94,7 +94,7 @@
     <string name="kai_point_models">Anında yanıtlar için Keng 1.5 Flash Lite, kod ve adım adım akıl yürütme için Pro.</string>
     <string name="kai_point_actions">Hesaplamalarda kesin sonuçlar; feneri, Wi‑Fi\'ı ve Bluetooth\'u açıp kapatır.</string>
     <string name="kai_power">Güç tuşu basılı tutulunca kAI</string>
-    <string name="kai_power_summary">Güç ve sesi açma tuşu birlikte kapatma menüsünü açar</string>
+    <string name="kai_power_summary">Güç ve sesi açma: hızlıca basmak ekran görüntüsü alır, basılı tutmak kapatma menüsünü açar</string>
     <string name="highlights_title">KiroOS\'ta neler var</string>
     <string name="highlights_summary">Önce deneyebileceğiniz birkaç şey.</string>
     <string name="feat_kai">Telefonunuzda yaşayan yapay zekâ; sesli ve çevrimdışı yanıtlar</string>

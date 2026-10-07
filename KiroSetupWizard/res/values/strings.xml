@@ -95,7 +95,7 @@
     <string name="kai_point_models">Keng 1.5 Flash Lite for instant answers, Pro for code and step-by-step reasoning.</string>
     <string name="kai_point_actions">Exact answers to calculations, and it turns the torch, Wi‑Fi and Bluetooth on or off.</string>
     <string name="kai_power">Hold the power button for kAI</string>
-    <string name="kai_power_summary">Power and volume up together open the power menu</string>
+    <string name="kai_power_summary">Power and volume up: a quick press takes a screenshot, hold them for the power menu</string>
     <string name="highlights_title">What\'s in KiroOS</string>
     <string name="highlights_summary">A few things to try first.</string>
     <string name="feat_kai_t">kAI</string>

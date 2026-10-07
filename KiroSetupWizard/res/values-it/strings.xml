@@ -95,7 +95,7 @@
     <string name="kai_point_models">Keng 1.5 Flash Lite per risposte istantanee, Pro per il codice e il ragionamento passo passo.</string>
     <string name="kai_point_actions">Risultati esatti nei calcoli, e accende o spegne torcia, Wi‑Fi e Bluetooth.</string>
     <string name="kai_power">Tieni premuto il tasto di accensione per kAI</string>
-    <string name="kai_power_summary">Accensione e volume su insieme aprono il menu di spegnimento</string>
+    <string name="kai_power_summary">Accensione e volume su: premuti insieme fanno uno screenshot, tenuti aprono il menu di spegnimento</string>
     <string name="highlights_title">Cosa c\'è in KiroOS</string>
     <string name="highlights_summary">Qualche cosa da provare subito.</string>
     <string name="feat_kai">L\'intelligenza artificiale che vive nel telefono, con la voce e risposte anche offline</string>
