@@ -31,6 +31,28 @@
             </intent-filter>
         </activity>
 
+        <!-- the private vault: opened from App Lock, or as a share target ("Private vault" in
+             any app's share sheet); it asks for the fingerprint itself, an intent can't skip it -->
+        <activity
+            android:name=".VaultActivity"
+            android:label="@string/vault_title"
+            android:icon="@drawable/ic_launcher_vault"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.kiroos.applock.vault"
+            android:screenOrientation="nosensor"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="application/*" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
+
         <!-- started only by the activity manager (system uid): no other app can show it -->
         <activity
             android:name=".UnlockActivity"

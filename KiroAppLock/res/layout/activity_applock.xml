@@ -69,6 +69,36 @@
             android:text="@string/explain"
             style="@style/Kiro.Caption" />
 
+        <!-- the private vault -->
+        <LinearLayout
+            android:id="@+id/vault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/kiro_gutter"
+            android:layout_marginStart="@dimen/kiro_gutter"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/kiro_card"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/kiro_row_height"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/kiro_gutter"
+            android:paddingStart="@dimen/kiro_gutter">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_launcher_vault" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:text="@string/vault_title"
+                style="@style/Kiro.Body" />
+        </LinearLayout>
+
         <ListView
             android:id="@+id/list"
             android:layout_width="match_parent"

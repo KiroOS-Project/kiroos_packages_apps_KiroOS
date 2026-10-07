@@ -9,4 +9,29 @@
     <string name="explain">Gesperrte Apps öffnen sich nach dem Fingerabdruck oder der Displaysperre und bleiben entsperrt, bis sich der Bildschirm ausschaltet. Telefon und Startbildschirm öffnen sich immer.</string>
     <string name="need_screen_lock">Richte zuerst eine Displaysperre ein (PIN, Muster oder Passwort), um Apps zu sperren.</string>
     <string name="set_screen_lock">Displaysperre einrichten</string>
+
+    <!-- private vault (VaultActivity) -->
+    <string name="vault_title">Privater Tresor</string>
+    <string name="vault_explain">Fotos, Videos und Dateien hier sind auf dem Telefon verschlüsselt und öffnen sich nur mit deinem Fingerabdruck oder der Displaysperre. Wenn du die Displaysperre ausschaltest, wird der Schlüssel des Tresors gelöscht: Speichere vorher Kopien.</string>
+    <string name="vault_empty">Noch leer. Füge Fotos, Videos oder Dateien hinzu oder teile sie aus jeder App in den Tresor.</string>
+    <string name="vault_add">Hinzufügen</string>
+    <string name="vault_adding">%1$d von %2$d wird hinzugefügt…</string>
+    <string name="vault_added">Hinzugefügt: %d</string>
+    <string name="vault_add_failed">%s konnte nicht hinzugefügt werden</string>
+    <string name="vault_remove_title">Originale entfernen?</string>
+    <string name="vault_remove_text">Der Tresor hat verschlüsselte Kopien. Die %d Originale aus dem Telefonspeicher entfernen?</string>
+    <string name="vault_keep">Behalten</string>
+    <string name="vault_remove">Entfernen</string>
+    <string name="vault_removed">%1$d von %2$d Originalen entfernt</string>
+    <string name="vault_save_copy">Kopie speichern</string>
+    <string name="vault_saved">Gespeichert</string>
+    <string name="vault_delete">Löschen</string>
+    <string name="vault_delete_confirm">„%s“ aus dem Tresor löschen? Das lässt sich nicht wiederherstellen.</string>
+    <string name="vault_open_failed">Der Tresor konnte nicht geöffnet werden</string>
+    <string name="vault_file_failed">Diese Datei konnte nicht geöffnet werden</string>
+    <string name="vault_lost">Der Schlüssel des Tresors wurde gelöscht, als die Displaysperre ausgeschaltet wurde. Seine Dateien lassen sich nicht mehr öffnen.</string>
+    <string name="vault_reset">Tresor löschen</string>
+    <string name="vault_reset_confirm">Den Tresor und alle seine Dateien löschen? Das lässt sich nicht rückgängig machen.</string>
+    <string name="vault_need_screen_lock">Lege zuerst eine Displaysperre fest (PIN, Muster oder Passwort), um den Tresor zu nutzen.</string>
+    <string name="vault_open">Privaten Tresor öffnen</string>
 </resources>

@@ -9,4 +9,29 @@
     <string name="explain">Locked apps open after your fingerprint or screen lock, and stay unlocked until the screen turns off. The phone app and the home screen always open.</string>
     <string name="need_screen_lock">To lock apps, set a screen lock (PIN, pattern or password) first.</string>
     <string name="set_screen_lock">Set screen lock</string>
+
+    <!-- private vault (VaultActivity) -->
+    <string name="vault_title">Private vault</string>
+    <string name="vault_explain">Photos, videos and files here are encrypted on the phone and open only with your fingerprint or screen lock. Turning off the screen lock erases the vault\'s key: save copies first.</string>
+    <string name="vault_empty">Nothing here yet. Add photos, videos or files, or share them to the vault from any app.</string>
+    <string name="vault_add">Add</string>
+    <string name="vault_adding">Adding %1$d of %2$d…</string>
+    <string name="vault_added">Added: %d</string>
+    <string name="vault_add_failed">Couldn\'t add %s</string>
+    <string name="vault_remove_title">Remove the originals?</string>
+    <string name="vault_remove_text">The vault has encrypted copies. Remove the %d originals from the phone\'s storage?</string>
+    <string name="vault_keep">Keep</string>
+    <string name="vault_remove">Remove</string>
+    <string name="vault_removed">Removed %1$d of %2$d originals</string>
+    <string name="vault_save_copy">Save a copy</string>
+    <string name="vault_saved">Saved</string>
+    <string name="vault_delete">Delete</string>
+    <string name="vault_delete_confirm">Delete \"%s\" from the vault? It can\'t be recovered.</string>
+    <string name="vault_open_failed">Couldn\'t open the vault</string>
+    <string name="vault_file_failed">Couldn\'t open this file</string>
+    <string name="vault_lost">The vault\'s key was erased when the screen lock was turned off, so its files can\'t be opened anymore.</string>
+    <string name="vault_reset">Erase the vault</string>
+    <string name="vault_reset_confirm">Erase the vault and all its files? This can\'t be undone.</string>
+    <string name="vault_need_screen_lock">To use the vault, set a screen lock (PIN, pattern or password) first.</string>
+    <string name="vault_open">Open the private vault</string>
 </resources>

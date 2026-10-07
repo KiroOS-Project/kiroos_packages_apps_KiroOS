@@ -9,4 +9,29 @@
     <string name="explain">Заблокированные приложения открываются после отпечатка или блокировки экрана и остаются разблокированными, пока экран не погаснет. Телефон и главный экран открываются всегда.</string>
     <string name="need_screen_lock">Чтобы блокировать приложения, сначала настройте блокировку экрана (PIN-код, графический ключ или пароль).</string>
     <string name="set_screen_lock">Настроить блокировку</string>
+
+    <!-- private vault (VaultActivity) -->
+    <string name="vault_title">Личный сейф</string>
+    <string name="vault_explain">Фото, видео и файлы здесь зашифрованы на телефоне и открываются только по отпечатку пальца или блокировке экрана. Если отключить блокировку экрана, ключ сейфа будет удалён: сначала сохраните копии.</string>
+    <string name="vault_empty">Пока пусто. Добавьте фото, видео или файлы либо отправьте их в сейф из любого приложения.</string>
+    <string name="vault_add">Добавить</string>
+    <string name="vault_adding">Добавление %1$d из %2$d…</string>
+    <string name="vault_added">Добавлено: %d</string>
+    <string name="vault_add_failed">Не удалось добавить %s</string>
+    <string name="vault_remove_title">Удалить оригиналы?</string>
+    <string name="vault_remove_text">В сейфе есть зашифрованные копии. Удалить оригиналы (%d) из памяти телефона?</string>
+    <string name="vault_keep">Оставить</string>
+    <string name="vault_remove">Удалить</string>
+    <string name="vault_removed">Удалено оригиналов: %1$d из %2$d</string>
+    <string name="vault_save_copy">Сохранить копию</string>
+    <string name="vault_saved">Сохранено</string>
+    <string name="vault_delete">Удалить</string>
+    <string name="vault_delete_confirm">Удалить «%s» из сейфа? Восстановить его будет нельзя.</string>
+    <string name="vault_open_failed">Не удалось открыть сейф</string>
+    <string name="vault_file_failed">Не удалось открыть этот файл</string>
+    <string name="vault_lost">Ключ сейфа был удалён при отключении блокировки экрана, поэтому его файлы больше нельзя открыть.</string>
+    <string name="vault_reset">Стереть сейф</string>
+    <string name="vault_reset_confirm">Стереть сейф и все его файлы? Это действие нельзя отменить.</string>
+    <string name="vault_need_screen_lock">Чтобы пользоваться сейфом, сначала настройте блокировку экрана (PIN-код, графический ключ или пароль).</string>
+    <string name="vault_open">Открыть личный сейф</string>
 </resources>

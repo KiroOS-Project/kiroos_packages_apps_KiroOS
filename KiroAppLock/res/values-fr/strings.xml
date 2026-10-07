@@ -9,4 +9,29 @@
     <string name="explain">Les apps verrouillées s\'ouvrent après votre empreinte ou le verrouillage de l\'écran, et restent déverrouillées jusqu\'à ce que l\'écran s\'éteigne. Le téléphone et l\'écran d\'accueil s\'ouvrent toujours.</string>
     <string name="need_screen_lock">Pour verrouiller des apps, configurez d\'abord un verrouillage de l\'écran (code, schéma ou mot de passe).</string>
     <string name="set_screen_lock">Configurer le verrouillage</string>
+
+    <!-- private vault (VaultActivity) -->
+    <string name="vault_title">Coffre-fort privé</string>
+    <string name="vault_explain">Les photos, vidéos et fichiers d\'ici sont chiffrés sur le téléphone et ne s\'ouvrent qu\'avec votre empreinte ou le verrouillage de l\'écran. Si vous désactivez le verrouillage de l\'écran, la clé du coffre-fort est effacée : enregistrez d\'abord des copies.</string>
+    <string name="vault_empty">Encore vide. Ajoutez des photos, des vidéos ou des fichiers, ou partagez-les vers le coffre-fort depuis n\'importe quelle app.</string>
+    <string name="vault_add">Ajouter</string>
+    <string name="vault_adding">Ajout de %1$d sur %2$d…</string>
+    <string name="vault_added">Ajoutés : %d</string>
+    <string name="vault_add_failed">Impossible d\'ajouter %s</string>
+    <string name="vault_remove_title">Supprimer les originaux ?</string>
+    <string name="vault_remove_text">Le coffre-fort contient des copies chiffrées. Supprimer les %d originaux de la mémoire du téléphone ?</string>
+    <string name="vault_keep">Conserver</string>
+    <string name="vault_remove">Supprimer</string>
+    <string name="vault_removed">%1$d originaux supprimés sur %2$d</string>
+    <string name="vault_save_copy">Enregistrer une copie</string>
+    <string name="vault_saved">Enregistré</string>
+    <string name="vault_delete">Supprimer</string>
+    <string name="vault_delete_confirm">Supprimer « %s » du coffre-fort ? Il ne pourra pas être récupéré.</string>
+    <string name="vault_open_failed">Impossible d\'ouvrir le coffre-fort</string>
+    <string name="vault_file_failed">Impossible d\'ouvrir ce fichier</string>
+    <string name="vault_lost">La clé du coffre-fort a été effacée quand le verrouillage de l\'écran a été désactivé : ses fichiers ne peuvent plus être ouverts.</string>
+    <string name="vault_reset">Effacer le coffre-fort</string>
+    <string name="vault_reset_confirm">Effacer le coffre-fort et tous ses fichiers ? Cette action est irréversible.</string>
+    <string name="vault_need_screen_lock">Pour utiliser le coffre-fort, définissez d\'abord un verrouillage de l\'écran (code, schéma ou mot de passe).</string>
+    <string name="vault_open">Ouvrir le coffre-fort privé</string>
 </resources>

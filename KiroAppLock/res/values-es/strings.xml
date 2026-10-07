@@ -9,4 +9,29 @@
     <string name="explain">Las apps bloqueadas se abren tras tu huella o el bloqueo de pantalla y siguen desbloqueadas hasta que se apaga la pantalla. El teléfono y la pantalla de inicio siempre se abren.</string>
     <string name="need_screen_lock">Para bloquear apps, configura primero un bloqueo de pantalla (PIN, patrón o contraseña).</string>
     <string name="set_screen_lock">Configurar bloqueo</string>
+
+    <!-- private vault (VaultActivity) -->
+    <string name="vault_title">Caja fuerte privada</string>
+    <string name="vault_explain">Las fotos, los vídeos y los archivos de aquí están cifrados en el teléfono y solo se abren con tu huella o el bloqueo de pantalla. Si desactivas el bloqueo de pantalla, se borra la clave de la caja fuerte: guarda copias antes.</string>
+    <string name="vault_empty">Aún está vacía. Añade fotos, vídeos o archivos, o compártelos a la caja fuerte desde cualquier app.</string>
+    <string name="vault_add">Añadir</string>
+    <string name="vault_adding">Añadiendo %1$d de %2$d…</string>
+    <string name="vault_added">Añadidos: %d</string>
+    <string name="vault_add_failed">No se pudo añadir %s</string>
+    <string name="vault_remove_title">¿Quitar los originales?</string>
+    <string name="vault_remove_text">La caja fuerte tiene copias cifradas. ¿Quitar los %d originales del almacenamiento del teléfono?</string>
+    <string name="vault_keep">Conservar</string>
+    <string name="vault_remove">Quitar</string>
+    <string name="vault_removed">Se quitaron %1$d de %2$d originales</string>
+    <string name="vault_save_copy">Guardar una copia</string>
+    <string name="vault_saved">Guardado</string>
+    <string name="vault_delete">Eliminar</string>
+    <string name="vault_delete_confirm">¿Eliminar \"%s\" de la caja fuerte? No se podrá recuperar.</string>
+    <string name="vault_open_failed">No se pudo abrir la caja fuerte</string>
+    <string name="vault_file_failed">No se pudo abrir este archivo</string>
+    <string name="vault_lost">La clave de la caja fuerte se borró al desactivar el bloqueo de pantalla, así que sus archivos ya no se pueden abrir.</string>
+    <string name="vault_reset">Borrar la caja fuerte</string>
+    <string name="vault_reset_confirm">¿Borrar la caja fuerte y todos sus archivos? No se puede deshacer.</string>
+    <string name="vault_need_screen_lock">Para usar la caja fuerte, configura antes un bloqueo de pantalla (PIN, patrón o contraseña).</string>
+    <string name="vault_open">Abrir la caja fuerte privada</string>
 </resources>

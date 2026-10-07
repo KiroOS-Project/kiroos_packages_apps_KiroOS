@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Private vault: a safe door with its dial on the KiroOS blue rounded square -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF3987E5"
+        android:pathData="M12,2h24a10,10 0,0 1,10 10v24a10,10 0,0 1,-10 10h-24a10,10 0,0 1,-10 -10v-24a10,10 0,0 1,10 -10z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M14,12h20a2.5,2.5 0,0 1,2.5 2.5v17a2.5,2.5 0,0 1,-2.5 2.5h-20a2.5,2.5 0,0 1,-2.5 -2.5v-17a2.5,2.5 0,0 1,2.5 -2.5z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M15,34h4v3h-4zM29,34h4v3h-4z" />
+    <path
+        android:strokeColor="#FF3987E5"
+        android:strokeWidth="2.4"
+        android:pathData="M24,17.5a5.5,5.5 0,1 1,0 11a5.5,5.5 0,1 1,0 -11z" />
+    <path
+        android:fillColor="#FF3987E5"
+        android:pathData="M23,19.5h2v4.5h-2z" />
+</vector>

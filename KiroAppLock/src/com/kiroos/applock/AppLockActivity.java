@@ -80,6 +80,12 @@ public class AppLockActivity extends Activity implements Auth.Callback {
                 startActivity(new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD));
             }
         });
+        findViewById(R.id.vault).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AppLockActivity.this, VaultActivity.class));
+            }
+        });
     }
 
     @Override
@@ -118,6 +124,8 @@ public class AppLockActivity extends Activity implements Auth.Callback {
     @Override
     public void onAuthenticated() {
         if (!mAuth.secure()) return;
+        // the vault opens without asking again for a minute
+        Vault.authenticated();
         mUnlocked = true;
         show(mListPanel);
         load();

@@ -9,4 +9,29 @@
     <string name="explain">Os apps bloqueados abrem depois da sua digital ou do bloqueio de tela e ficam desbloqueados até a tela apagar. O telefone e a tela inicial sempre abrem.</string>
     <string name="need_screen_lock">Para bloquear apps, defina primeiro um bloqueio de tela (PIN, padrão ou senha).</string>
     <string name="set_screen_lock">Definir bloqueio de tela</string>
+
+    <!-- private vault (VaultActivity) -->
+    <string name="vault_title">Cofre privado</string>
+    <string name="vault_explain">Fotos, vídeos e arquivos aqui ficam criptografados no telefone e só abrem com sua digital ou o bloqueio de tela. Se você desativar o bloqueio de tela, a chave do cofre é apagada: salve cópias antes.</string>
+    <string name="vault_empty">Ainda vazio. Adicione fotos, vídeos ou arquivos, ou compartilhe com o cofre a partir de qualquer app.</string>
+    <string name="vault_add">Adicionar</string>
+    <string name="vault_adding">Adicionando %1$d de %2$d…</string>
+    <string name="vault_added">Adicionados: %d</string>
+    <string name="vault_add_failed">Não foi possível adicionar %s</string>
+    <string name="vault_remove_title">Remover os originais?</string>
+    <string name="vault_remove_text">O cofre tem cópias criptografadas. Remover os %d originais do armazenamento do telefone?</string>
+    <string name="vault_keep">Manter</string>
+    <string name="vault_remove">Remover</string>
+    <string name="vault_removed">%1$d de %2$d originais removidos</string>
+    <string name="vault_save_copy">Salvar uma cópia</string>
+    <string name="vault_saved">Salvo</string>
+    <string name="vault_delete">Excluir</string>
+    <string name="vault_delete_confirm">Excluir \"%s\" do cofre? Não será possível recuperar.</string>
+    <string name="vault_open_failed">Não foi possível abrir o cofre</string>
+    <string name="vault_file_failed">Não foi possível abrir este arquivo</string>
+    <string name="vault_lost">A chave do cofre foi apagada quando o bloqueio de tela foi desativado, então os arquivos não podem mais ser abertos.</string>
+    <string name="vault_reset">Apagar o cofre</string>
+    <string name="vault_reset_confirm">Apagar o cofre e todos os arquivos? Não é possível desfazer.</string>
+    <string name="vault_need_screen_lock">Para usar o cofre, defina primeiro um bloqueio de tela (PIN, padrão ou senha).</string>
+    <string name="vault_open">Abrir o cofre privado</string>
 </resources>

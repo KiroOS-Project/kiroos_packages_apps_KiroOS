@@ -9,4 +9,29 @@
     <string name="explain">Kilitli uygulamalar parmak izinizden veya ekran kilidinden sonra açılır ve ekran kapanana kadar açık kalır. Telefon ve ana ekran her zaman açılır.</string>
     <string name="need_screen_lock">Uygulamaları kilitlemek için önce bir ekran kilidi (PIN, desen veya şifre) ayarlayın.</string>
     <string name="set_screen_lock">Ekran kilidi ayarla</string>
+
+    <!-- private vault (VaultActivity) -->
+    <string name="vault_title">Özel kasa</string>
+    <string name="vault_explain">Buradaki fotoğraflar, videolar ve dosyalar telefonda şifrelenir ve yalnızca parmak iziniz ya da ekran kilidiyle açılır. Ekran kilidini kapatırsanız kasanın anahtarı silinir: önce kopyalarını kaydedin.</string>
+    <string name="vault_empty">Henüz boş. Fotoğraf, video veya dosya ekleyin ya da herhangi bir uygulamadan kasaya paylaşın.</string>
+    <string name="vault_add">Ekle</string>
+    <string name="vault_adding">%1$d / %2$d ekleniyor…</string>
+    <string name="vault_added">Eklendi: %d</string>
+    <string name="vault_add_failed">%s eklenemedi</string>
+    <string name="vault_remove_title">Orijinaller kaldırılsın mı?</string>
+    <string name="vault_remove_text">Kasada şifreli kopyalar var. %d orijinal telefon depolamasından kaldırılsın mı?</string>
+    <string name="vault_keep">Sakla</string>
+    <string name="vault_remove">Kaldır</string>
+    <string name="vault_removed">%2$d orijinalden %1$d tanesi kaldırıldı</string>
+    <string name="vault_save_copy">Kopya kaydet</string>
+    <string name="vault_saved">Kaydedildi</string>
+    <string name="vault_delete">Sil</string>
+    <string name="vault_delete_confirm">\"%s\" kasadan silinsin mi? Geri alınamaz.</string>
+    <string name="vault_open_failed">Kasa açılamadı</string>
+    <string name="vault_file_failed">Bu dosya açılamadı</string>
+    <string name="vault_lost">Ekran kilidi kapatıldığında kasanın anahtarı silindi, bu yüzden dosyaları artık açılamaz.</string>
+    <string name="vault_reset">Kasayı sil</string>
+    <string name="vault_reset_confirm">Kasa ve tüm dosyaları silinsin mi? Bu işlem geri alınamaz.</string>
+    <string name="vault_need_screen_lock">Kasayı kullanmak için önce bir ekran kilidi (PIN, desen veya şifre) ayarlayın.</string>
+    <string name="vault_open">Özel kasayı aç</string>
 </resources>

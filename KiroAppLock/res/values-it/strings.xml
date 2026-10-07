@@ -9,4 +9,29 @@
     <string name="explain">Le app bloccate si aprono dopo l\'impronta o il blocco schermo e restano sbloccate finché lo schermo non si spegne. Telefono e schermata Home si aprono sempre.</string>
     <string name="need_screen_lock">Per bloccare le app imposta prima un blocco schermo (PIN, sequenza o password).</string>
     <string name="set_screen_lock">Imposta blocco schermo</string>
+
+    <!-- private vault (VaultActivity) -->
+    <string name="vault_title">Cassaforte privata</string>
+    <string name="vault_explain">Foto, video e file qui dentro sono cifrati sul telefono e si aprono solo con l\'impronta o il blocco schermo. Se disattivi il blocco schermo, la chiave della cassaforte viene cancellata: prima salvane una copia.</string>
+    <string name="vault_empty">Ancora vuota. Aggiungi foto, video o file, oppure condividili nella cassaforte da qualsiasi app.</string>
+    <string name="vault_add">Aggiungi</string>
+    <string name="vault_adding">Aggiunta %1$d di %2$d…</string>
+    <string name="vault_added">Aggiunti: %d</string>
+    <string name="vault_add_failed">Impossibile aggiungere %s</string>
+    <string name="vault_remove_title">Rimuovere gli originali?</string>
+    <string name="vault_remove_text">La cassaforte ha le copie cifrate. Rimuovere i %d originali dalla memoria del telefono?</string>
+    <string name="vault_keep">Mantieni</string>
+    <string name="vault_remove">Rimuovi</string>
+    <string name="vault_removed">Rimossi %1$d originali su %2$d</string>
+    <string name="vault_save_copy">Salva una copia</string>
+    <string name="vault_saved">Salvato</string>
+    <string name="vault_delete">Elimina</string>
+    <string name="vault_delete_confirm">Eliminare \"%s\" dalla cassaforte? Non si potrà recuperare.</string>
+    <string name="vault_open_failed">Impossibile aprire la cassaforte</string>
+    <string name="vault_file_failed">Impossibile aprire questo file</string>
+    <string name="vault_lost">La chiave della cassaforte è stata cancellata quando è stato disattivato il blocco schermo, quindi i suoi file non si possono più aprire.</string>
+    <string name="vault_reset">Cancella la cassaforte</string>
+    <string name="vault_reset_confirm">Cancellare la cassaforte e tutti i suoi file? Non si può annullare.</string>
+    <string name="vault_need_screen_lock">Per usare la cassaforte, imposta prima un blocco schermo (PIN, sequenza o password).</string>
+    <string name="vault_open">Apri la cassaforte privata</string>
 </resources>
