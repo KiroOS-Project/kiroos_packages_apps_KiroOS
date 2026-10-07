@@ -22,7 +22,14 @@ PRODUCT_PACKAGES += \
     kAI \
     KeurStore \
     KiroSound \
-    KiroCanvas
+    KiroCanvas \
+    KiroScreenRecord
+
+# KOptimize WebView, the system WebView (KOptimizeWebView/Android.mk; it overrides the AOSP
+# webview). Its APK is kept out of git: without it the AOSP WebView stays.
+ifneq ($(wildcard vendor/kiroos/webview/KOptimizeWebView.apk),)
+PRODUCT_PACKAGES += KOptimizeWebView
+endif
 
 # Stock apps replaced by the suite (PRODUCT_PACKAGES_REMOVE is applied in build/core/main.mk
 # after all inherited product makefiles, so nothing can bring them back)

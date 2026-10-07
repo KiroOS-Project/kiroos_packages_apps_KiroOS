@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Запись экрана</string>
+    <string name="tile_label">Запись экрана</string>
+    <string name="tile_stop">Остановить запись</string>
+    <string name="start_title">Начать запись?</string>
+    <string name="start_note">Записывается всё, что показано на экране, включая уведомления.</string>
+    <string name="quality">Качество</string>
+    <string name="quality_high">1080p · 60 кадр/с</string>
+    <string name="quality_low">720p · 30 кадр/с</string>
+    <string name="sound">Звук</string>
+    <string name="sound_off">Без звука</string>
+    <string name="sound_mic">Микрофон</string>
+    <string name="sound_device">Звук устройства</string>
+    <string name="touches">Показывать нажатия</string>
+    <string name="cancel">Отмена</string>
+    <string name="start">Начать</string>
+    <string name="countdown">Запись начнётся через %1$d…</string>
+    <string name="recording">Идёт запись экрана</string>
+    <string name="recording_text">Нажмите, чтобы остановить</string>
+    <string name="stop">Стоп</string>
+    <string name="saved">Запись экрана сохранена</string>
+    <string name="saved_text">Нажмите, чтобы посмотреть</string>
+    <string name="share">Поделиться</string>
+    <string name="delete">Удалить</string>
+    <string name="deleted">Запись удалена</string>
+    <string name="error">Не удалось записать экран</string>
+    <string name="error_text">Запись не удалось сохранить. Повторите попытку.</string>
+    <string name="need_storage">Для сохранения видео нужен доступ к памяти.</string>
+    <string name="need_mic">Для записи звука нужно разрешение на микрофон.</string>
+</resources>

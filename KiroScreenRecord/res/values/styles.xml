@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the options card floats over the screen it is about to record -->
+    <style name="Theme.ScreenRecord.Start" parent="@style/Theme.Kiro.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <!-- the dialog background keeps its own margins: the card stays clear of the edges -->
+        <item name="android:windowMinWidthMinor">100%</item>
+        <item name="android:windowMinWidthMajor">65%</item>
+    </style>
+
+    <style name="ScreenRecord" />
+
+    <style name="ScreenRecord.Chip">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:background">@drawable/kiro_chip</item>
+        <item name="android:textColor">@color/kiro_text</item>
+        <item name="android:maxLines">1</item>
+    </style>
+</resources>

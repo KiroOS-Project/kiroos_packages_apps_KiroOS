@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Registra schermo</string>
+    <string name="tile_label">Registra schermo</string>
+    <string name="tile_stop">Ferma registrazione</string>
+    <string name="start_title">Avviare la registrazione?</string>
+    <string name="start_note">Viene registrato tutto ciò che appare sullo schermo, notifiche comprese.</string>
+    <string name="quality">Qualità</string>
+    <string name="quality_high">1080p · 60 fps</string>
+    <string name="quality_low">720p · 30 fps</string>
+    <string name="sound">Audio</string>
+    <string name="sound_off">Nessuno</string>
+    <string name="sound_mic">Microfono</string>
+    <string name="sound_device">Audio del dispositivo</string>
+    <string name="touches">Mostra i tocchi</string>
+    <string name="cancel">Annulla</string>
+    <string name="start">Avvia</string>
+    <string name="countdown">La registrazione inizia tra %1$d…</string>
+    <string name="recording">Registrazione dello schermo</string>
+    <string name="recording_text">Tocca per fermare</string>
+    <string name="stop">Ferma</string>
+    <string name="saved">Registrazione salvata</string>
+    <string name="saved_text">Tocca per guardarla</string>
+    <string name="share">Condividi</string>
+    <string name="delete">Elimina</string>
+    <string name="deleted">Registrazione eliminata</string>
+    <string name="error">Registrazione non riuscita</string>
+    <string name="error_text">Non è stato possibile salvare la registrazione. Riprova.</string>
+    <string name="need_storage">Per salvare i video serve l\'accesso alla memoria.</string>
+    <string name="need_mic">Per registrare l\'audio serve il permesso del microfono.</string>
+</resources>

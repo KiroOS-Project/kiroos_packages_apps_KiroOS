@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grabar pantalla</string>
+    <string name="tile_label">Grabar pantalla</string>
+    <string name="tile_stop">Detener grabación</string>
+    <string name="start_title">¿Empezar a grabar?</string>
+    <string name="start_note">Se graba todo lo que aparece en la pantalla, incluidas las notificaciones.</string>
+    <string name="quality">Calidad</string>
+    <string name="quality_high">1080p · 60 fps</string>
+    <string name="quality_low">720p · 30 fps</string>
+    <string name="sound">Sonido</string>
+    <string name="sound_off">Sin sonido</string>
+    <string name="sound_mic">Micrófono</string>
+    <string name="sound_device">Audio del dispositivo</string>
+    <string name="touches">Mostrar toques</string>
+    <string name="cancel">Cancelar</string>
+    <string name="start">Empezar</string>
+    <string name="countdown">La grabación empieza en %1$d…</string>
+    <string name="recording">Grabando la pantalla</string>
+    <string name="recording_text">Toca para detener</string>
+    <string name="stop">Detener</string>
+    <string name="saved">Grabación guardada</string>
+    <string name="saved_text">Toca para verla</string>
+    <string name="share">Compartir</string>
+    <string name="delete">Eliminar</string>
+    <string name="deleted">Grabación eliminada</string>
+    <string name="error">No se pudo grabar la pantalla</string>
+    <string name="error_text">No se pudo guardar la grabación. Inténtalo de nuevo.</string>
+    <string name="need_storage">Para guardar los vídeos se necesita acceso al almacenamiento.</string>
+    <string name="need_mic">Para grabar sonido se necesita el permiso del micrófono.</string>
+</resources>

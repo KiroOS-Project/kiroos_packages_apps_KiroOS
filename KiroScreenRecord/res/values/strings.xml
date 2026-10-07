@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Screen Recorder</string>
+    <string name="tile_label">Screen record</string>
+    <string name="tile_stop">Stop recording</string>
+    <string name="start_title">Start recording?</string>
+    <string name="start_note">Everything shown on the screen is recorded, notifications included.</string>
+    <string name="quality">Quality</string>
+    <string name="quality_high">1080p · 60 fps</string>
+    <string name="quality_low">720p · 30 fps</string>
+    <string name="sound">Sound</string>
+    <string name="sound_off">Off</string>
+    <string name="sound_mic">Microphone</string>
+    <string name="sound_device">Device audio</string>
+    <string name="touches">Show touches</string>
+    <string name="cancel">Cancel</string>
+    <string name="start">Start</string>
+    <string name="countdown">Recording starts in %1$d…</string>
+    <string name="recording">Recording the screen</string>
+    <string name="recording_text">Tap to stop</string>
+    <string name="stop">Stop</string>
+    <string name="saved">Screen recording saved</string>
+    <string name="saved_text">Tap to view</string>
+    <string name="share">Share</string>
+    <string name="delete">Delete</string>
+    <string name="deleted">Recording deleted</string>
+    <string name="error">Screen recording failed</string>
+    <string name="error_text">The recording could not be saved. Try again.</string>
+    <string name="need_storage">Screen Recorder needs storage access to save videos.</string>
+    <string name="need_mic">Recording sound needs the microphone permission.</string>
+</resources>
