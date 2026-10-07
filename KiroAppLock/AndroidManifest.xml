@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiro App Lock 1.0 (KiroOS Beta 3): apps that open only after the fingerprint (or the screen
+     lock), enforced by the activity manager (frameworks/base ActivityStartInterceptor). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kiroos.applock"
+    android:versionCode="100"
+    android:versionName="1.0">
+
+    <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
+
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <!-- the locked list lives in Settings.Secure, where the activity manager reads it -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <!-- a locked app opened from Recents is reopened as its task -->
+    <uses-permission android:name="android.permission.START_TASKS_FROM_RECENTS" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher_applock"
+        android:theme="@style/Theme.Kiro"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".AppLockActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="nosensor"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- started only by the activity manager (system uid): no other app can show it -->
+        <activity
+            android:name=".UnlockActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.kiroos.applock.unlock"
+            android:screenOrientation="nosensor"
+            android:permission="android.permission.MANAGE_ACTIVITY_STACKS"
+            android:exported="true" />
+    </application>
+</manifest>

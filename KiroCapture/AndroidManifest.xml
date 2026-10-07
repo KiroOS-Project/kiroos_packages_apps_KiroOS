@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kiro Capture 1.0 (KiroOS Beta 3): the scroll capture behind the "Scroll" action of the
+     screenshot notification (SystemUI GlobalScreenshot). No launcher icon. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.kiroos.capture"
+    android:versionCode="100"
+    android:versionName="1.0">
+
+    <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
+
+    <!-- screenshots, the scroll gestures and the app on top -->
+    <uses-permission android:name="android.permission.READ_FRAME_BUFFER" />
+    <uses-permission android:name="android.permission.INJECT_EVENTS" />
+    <uses-permission android:name="android.permission.REAL_GET_TASKS" />
+    <!-- saved with the other screenshots -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- largeHeap: a long screenshot is several screens of pixels before it is saved -->
+    <application
+        android:label="@string/app_name"
+        android:icon="@drawable/ic_launcher_capture"
+        android:theme="@style/Theme.Kiro"
+        android:largeHeap="true"
+        android:supportsRtl="true">
+
+        <!-- only SystemUI starts it (STATUS_BAR_SERVICE) -->
+        <activity
+            android:name=".ScrollCaptureActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:permission="android.permission.STATUS_BAR_SERVICE"
+            android:exported="true" />
+
+        <service
+            android:name=".ScrollCaptureService"
+            android:exported="false" />
+    </application>
+</manifest>

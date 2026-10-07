@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App Lock</string>
+    <string name="app_locked">%1$s is locked</string>
+    <string name="touch_sensor">Touch the fingerprint sensor</string>
+    <string name="not_recognized">Not recognized. Try again.</string>
+    <string name="use_lock">Use screen lock</string>
+    <string name="use_lock_hint">Unlock with your screen lock</string>
+    <string name="explain">Locked apps open after your fingerprint or screen lock, and stay unlocked until the screen turns off. The phone app and the home screen always open.</string>
+    <string name="need_screen_lock">To lock apps, set a screen lock (PIN, pattern or password) first.</string>
+    <string name="set_screen_lock">Set screen lock</string>
+</resources>

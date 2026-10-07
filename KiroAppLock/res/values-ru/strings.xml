@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Блокировка приложений</string>
+    <string name="app_locked">%1$s заблокировано</string>
+    <string name="touch_sensor">Приложите палец к сканеру</string>
+    <string name="not_recognized">Не распознано. Повторите попытку.</string>
+    <string name="use_lock">Использовать блокировку экрана</string>
+    <string name="use_lock_hint">Разблокируйте блокировкой экрана</string>
+    <string name="explain">Заблокированные приложения открываются после отпечатка или блокировки экрана и остаются разблокированными, пока экран не погаснет. Телефон и главный экран открываются всегда.</string>
+    <string name="need_screen_lock">Чтобы блокировать приложения, сначала настройте блокировку экрана (PIN-код, графический ключ или пароль).</string>
+    <string name="set_screen_lock">Настроить блокировку</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kiro Capture</string>
+    <string name="saving">Uzun ekran görüntüsü kaydediliyor…</string>
+    <string name="saved">Uzun ekran görüntüsü kaydedildi</string>
+    <string name="saved_text">Görmek için dokunun</string>
+    <string name="share">Paylaş</string>
+    <string name="delete">Sil</string>
+    <string name="deleted">Ekran görüntüsü silindi</string>
+    <string name="failed">Uzun ekran görüntüsü alınamadı</string>
+    <string name="no_scroll">Bu ekran kaydırılamıyor</string>
+    <string name="portrait_only">Kaydırmalı ekran görüntüsü dikey modda çalışır</string>
+    <string name="need_storage">Ekran görüntülerini kaydetmek için depolama erişimi gerekiyor.</string>
+</resources>

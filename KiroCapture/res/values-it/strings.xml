@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kiro Capture</string>
+    <string name="saving">Salvataggio dello screenshot lungo…</string>
+    <string name="saved">Screenshot lungo salvato</string>
+    <string name="saved_text">Tocca per vedere lo screenshot</string>
+    <string name="share">Condividi</string>
+    <string name="delete">Elimina</string>
+    <string name="deleted">Screenshot eliminato</string>
+    <string name="failed">Impossibile fare lo screenshot lungo</string>
+    <string name="no_scroll">Questa schermata non scorre</string>
+    <string name="portrait_only">Lo screenshot a scorrimento funziona in verticale</string>
+    <string name="need_storage">Per salvare gli screenshot serve l\'accesso alla memoria.</string>
+</resources>

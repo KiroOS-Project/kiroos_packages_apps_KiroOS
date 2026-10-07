@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Verrou d\'apps</string>
+    <string name="app_locked">%1$s est verrouillée</string>
+    <string name="touch_sensor">Touchez le lecteur d\'empreintes</string>
+    <string name="not_recognized">Non reconnue. Réessayez.</string>
+    <string name="use_lock">Utiliser le verrouillage de l\'écran</string>
+    <string name="use_lock_hint">Déverrouillez avec le verrouillage de l\'écran</string>
+    <string name="explain">Les apps verrouillées s\'ouvrent après votre empreinte ou le verrouillage de l\'écran, et restent déverrouillées jusqu\'à ce que l\'écran s\'éteigne. Le téléphone et l\'écran d\'accueil s\'ouvrent toujours.</string>
+    <string name="need_screen_lock">Pour verrouiller des apps, configurez d\'abord un verrouillage de l\'écran (code, schéma ou mot de passe).</string>
+    <string name="set_screen_lock">Configurer le verrouillage</string>
+</resources>

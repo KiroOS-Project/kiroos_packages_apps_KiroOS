@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App-Sperre</string>
+    <string name="app_locked">%1$s ist gesperrt</string>
+    <string name="touch_sensor">Berühre den Fingerabdrucksensor</string>
+    <string name="not_recognized">Nicht erkannt. Versuche es erneut.</string>
+    <string name="use_lock">Displaysperre verwenden</string>
+    <string name="use_lock_hint">Mit der Displaysperre entsperren</string>
+    <string name="explain">Gesperrte Apps öffnen sich nach dem Fingerabdruck oder der Displaysperre und bleiben entsperrt, bis sich der Bildschirm ausschaltet. Telefon und Startbildschirm öffnen sich immer.</string>
+    <string name="need_screen_lock">Richte zuerst eine Displaysperre ein (PIN, Muster oder Passwort), um Apps zu sperren.</string>
+    <string name="set_screen_lock">Displaysperre einrichten</string>
+</resources>

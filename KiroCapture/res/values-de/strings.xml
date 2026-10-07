@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kiro Capture</string>
+    <string name="saving">Langer Screenshot wird gespeichert…</string>
+    <string name="saved">Langer Screenshot gespeichert</string>
+    <string name="saved_text">Zum Ansehen tippen</string>
+    <string name="share">Teilen</string>
+    <string name="delete">Löschen</string>
+    <string name="deleted">Screenshot gelöscht</string>
+    <string name="failed">Langer Screenshot nicht möglich</string>
+    <string name="no_scroll">Dieser Bildschirm lässt sich nicht scrollen</string>
+    <string name="portrait_only">Scroll-Screenshots gehen im Hochformat</string>
+    <string name="need_storage">Zum Speichern der Screenshots ist Zugriff auf den Speicher nötig.</string>
+</resources>

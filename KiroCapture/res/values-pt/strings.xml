@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kiro Capture</string>
+    <string name="saving">Salvando a captura longa…</string>
+    <string name="saved">Captura longa salva</string>
+    <string name="saved_text">Toque para ver</string>
+    <string name="share">Compartilhar</string>
+    <string name="delete">Excluir</string>
+    <string name="deleted">Captura excluída</string>
+    <string name="failed">Não foi possível fazer a captura longa</string>
+    <string name="no_scroll">Esta tela não rola</string>
+    <string name="portrait_only">A captura com rolagem funciona na vertical</string>
+    <string name="need_storage">É preciso acesso ao armazenamento para salvar as capturas.</string>
+</resources>

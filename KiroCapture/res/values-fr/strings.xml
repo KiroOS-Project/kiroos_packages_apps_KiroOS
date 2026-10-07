@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kiro Capture</string>
+    <string name="saving">Enregistrement de la capture longue…</string>
+    <string name="saved">Capture longue enregistrée</string>
+    <string name="saved_text">Appuyez pour l\'afficher</string>
+    <string name="share">Partager</string>
+    <string name="delete">Supprimer</string>
+    <string name="deleted">Capture supprimée</string>
+    <string name="failed">Impossible de faire la capture longue</string>
+    <string name="no_scroll">Cet écran ne défile pas</string>
+    <string name="portrait_only">La capture avec défilement fonctionne en portrait</string>
+    <string name="need_storage">L\'accès au stockage est nécessaire pour enregistrer les captures.</string>
+</resources>

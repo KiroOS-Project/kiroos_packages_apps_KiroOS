@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/kiro_black"
+    android:fitsSystemWindows="true">
+
+    <!-- the fingerprint first -->
+    <LinearLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/kiro_gutter"
+        android:paddingStart="@dimen/kiro_gutter">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:src="@drawable/ic_launcher_applock" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/app_name"
+            style="@style/Kiro.Headline" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <include layout="@layout/auth_panel" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="64dp" />
+    </LinearLayout>
+
+    <!-- then the apps -->
+    <LinearLayout
+        android:id="@+id/list_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/kiro_gutter"
+            android:paddingTop="20dp"
+            android:text="@string/app_name"
+            style="@style/Kiro.Title" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:paddingEnd="@dimen/kiro_gutter"
+            android:paddingStart="@dimen/kiro_gutter"
+            android:text="@string/explain"
+            style="@style/Kiro.Caption" />
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_weight="1"
+            android:divider="@null"
+            android:scrollbars="none" />
+    </LinearLayout>
+
+    <!-- no screen lock: nothing to lock with -->
+    <LinearLayout
+        android:id="@+id/nolock_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/need_screen_lock"
+            style="@style/Kiro.Body" />
+
+        <Button
+            android:id="@+id/set_lock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/set_screen_lock"
+            style="@style/Kiro.Button.Accent" />
+    </LinearLayout>
+</FrameLayout>

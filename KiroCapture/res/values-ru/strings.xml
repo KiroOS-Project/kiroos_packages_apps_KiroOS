@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kiro Capture</string>
+    <string name="saving">Сохранение длинного скриншота…</string>
+    <string name="saved">Длинный скриншот сохранён</string>
+    <string name="saved_text">Нажмите, чтобы посмотреть</string>
+    <string name="share">Поделиться</string>
+    <string name="delete">Удалить</string>
+    <string name="deleted">Скриншот удалён</string>
+    <string name="failed">Не удалось сделать длинный скриншот</string>
+    <string name="no_scroll">Этот экран не прокручивается</string>
+    <string name="portrait_only">Длинный скриншот работает в портретной ориентации</string>
+    <string name="need_storage">Для сохранения скриншотов нужен доступ к памяти.</string>
+</resources>

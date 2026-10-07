@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- App Lock: a padlock on the KiroOS blue rounded square -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#FF3987E5"
+        android:pathData="M12,2h24a10,10 0,0 1,10 10v24a10,10 0,0 1,-10 10h-24a10,10 0,0 1,-10 -10v-24a10,10 0,0 1,10 -10z" />
+    <path
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2.8"
+        android:pathData="M18,22v-4a6,6 0,0 1,12 0v4" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M16,21h16a2.5,2.5 0,0 1,2.5 2.5v9a2.5,2.5 0,0 1,-2.5 2.5h-16a2.5,2.5 0,0 1,-2.5 -2.5v-9a2.5,2.5 0,0 1,2.5 -2.5z" />
+    <path
+        android:fillColor="#FF3987E5"
+        android:pathData="M24,25.5a2.3,2.3 0,0 1,1.2 4.3v2.2h-2.4v-2.2a2.3,2.3 0,0 1,1.2 -4.3z" />
+</vector>
