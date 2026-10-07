@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -393,6 +394,17 @@ public class BrowserActivity extends Activity {
                     showAddress();
                     updateShield();
                 }
+            }
+
+            @Override
+            public void onPageCommitVisible(WebView view, String url) {
+                // the web's canvas is white unless a page paints its own: on the theme's black
+                // a page without a background was black text on black (example.com uses CSS
+                // light-dark(), newer than Chromium 119, so its background is dropped). Black
+                // stays only while loading, so the dark theme has no white flash.
+                final boolean web = url != null
+                        && (url.startsWith("http:") || url.startsWith("https:"));
+                view.setBackgroundColor(web ? Color.WHITE : getColor(R.color.kiro_black));
             }
 
             @Override
