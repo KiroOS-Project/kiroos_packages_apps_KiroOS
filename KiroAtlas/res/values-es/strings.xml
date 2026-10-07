@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Atlas</string>
+    <string name="search_hint">Buscar lugares</string>
+    <string name="clear">Borrar</string>
+    <string name="my_location">Mi ubicación</string>
+    <string name="mode_car">Coche</string>
+    <string name="mode_bike">Bici</string>
+    <string name="mode_foot">A pie</string>
+    <string name="directions">Cómo llegar</string>
+    <string name="share">Compartir</string>
+    <string name="close">Cerrar</string>
+    <string name="start">Iniciar</string>
+    <string name="end">Finalizar</string>
+    <string name="overview">Vista general</string>
+    <string name="dropped_pin">Marcador</string>
+    <string name="no_results">Sin resultados</string>
+    <string name="search_failed">La búsqueda no está disponible ahora</string>
+    <string name="offline">No tienes conexión. Los lugares que ya has visto se siguen mostrando.</string>
+    <string name="route_failed">No se encontró ninguna ruta</string>
+    <string name="finding_route">Buscando una ruta…</string>
+    <string name="finding_location">Buscando tu ubicación…</string>
+    <string name="need_location">Activa la ubicación para obtener indicaciones</string>
+    <string name="location_denied">Atlas necesita tu ubicación para las indicaciones</string>
+    <string name="rerouting">Recalculando la ruta</string>
+    <string name="arrive_at">Llegada a las %s</string>
+    <string name="dur_min">%d min</string>
+    <string name="dur_hours">%1$d h %2$d min</string>
+    <string name="navigating_to">Navegando a %s</string>
+    <string name="nav_tap">Toca para volver al mapa</string>
+    <string name="attribution">© OpenFreeMap © OpenMapTiles © OpenStreetMap</string>
+    <string name="credits_title">Datos del mapa</string>
+    <string name="credits">Mapa © OpenFreeMap y © OpenMapTiles, datos © colaboradores de OpenStreetMap (ODbL).\n\nBúsqueda: Photon de komoot, datos de OpenStreetMap.\nRutas: BRouter (brouter.de), datos de OpenStreetMap.\n\nAtlas funciona en línea. Las zonas que ya has visto quedan guardadas en el teléfono y también se abren sin conexión.</string>
+
+    <string name="dir_left">a la izquierda</string>
+    <string name="dir_right">a la derecha</string>
+    <string name="dir_slight_left">ligeramente a la izquierda</string>
+    <string name="dir_slight_right">ligeramente a la derecha</string>
+    <string name="dir_sharp_left">bruscamente a la izquierda</string>
+    <string name="dir_sharp_right">bruscamente a la derecha</string>
+    <string name="nav_depart">Inicia la ruta</string>
+    <string name="nav_arrive">Has llegado</string>
+    <string name="nav_roundabout_exit">En la rotonda, toma la salida %d</string>
+    <string name="nav_roundabout">Entra en la rotonda</string>
+    <string name="nav_keep">Mantente %s</string>
+    <string name="nav_continue">Continúa recto</string>
+    <string name="nav_uturn">Cambia de sentido</string>
+    <string name="nav_turn">Gira %s</string>
+    <string name="nav_in">En %1$s, %2$s</string>
+</resources>

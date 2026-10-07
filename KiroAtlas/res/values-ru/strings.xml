@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Atlas</string>
+    <string name="search_hint">Поиск мест</string>
+    <string name="clear">Очистить</string>
+    <string name="my_location">Моё местоположение</string>
+    <string name="mode_car">Авто</string>
+    <string name="mode_bike">Велосипед</string>
+    <string name="mode_foot">Пешком</string>
+    <string name="directions">Маршрут</string>
+    <string name="share">Поделиться</string>
+    <string name="close">Закрыть</string>
+    <string name="start">Поехали</string>
+    <string name="end">Завершить</string>
+    <string name="overview">Обзор</string>
+    <string name="dropped_pin">Метка</string>
+    <string name="no_results">Ничего не найдено</string>
+    <string name="search_failed">Поиск сейчас недоступен</string>
+    <string name="offline">Нет подключения. Уже просмотренные места по-прежнему видны.</string>
+    <string name="route_failed">Маршрут не найден</string>
+    <string name="finding_route">Поиск маршрута…</string>
+    <string name="finding_location">Определение местоположения…</string>
+    <string name="need_location">Включите геолокацию, чтобы построить маршрут</string>
+    <string name="location_denied">Atlas нужен доступ к местоположению для маршрутов</string>
+    <string name="rerouting">Маршрут перестроен</string>
+    <string name="arrive_at">Прибытие в %s</string>
+    <string name="dur_min">%d мин</string>
+    <string name="dur_hours">%1$d ч %2$d мин</string>
+    <string name="navigating_to">Маршрут до: %s</string>
+    <string name="nav_tap">Нажмите, чтобы вернуться к карте</string>
+    <string name="attribution">© OpenFreeMap © OpenMapTiles © OpenStreetMap</string>
+    <string name="credits_title">Картографические данные</string>
+    <string name="credits">Карта © OpenFreeMap и © OpenMapTiles, данные © участники OpenStreetMap (ODbL).\n\nПоиск: Photon от komoot, данные OpenStreetMap.\nМаршруты: BRouter (brouter.de), данные OpenStreetMap.\n\nAtlas работает онлайн. Просмотренные области сохраняются в телефоне и открываются без сети.</string>
+
+    <string name="dir_left">налево</string>
+    <string name="dir_right">направо</string>
+    <string name="dir_slight_left">плавно налево</string>
+    <string name="dir_slight_right">плавно направо</string>
+    <string name="dir_sharp_left">резко налево</string>
+    <string name="dir_sharp_right">резко направо</string>
+    <string name="nav_depart">Начните движение</string>
+    <string name="nav_arrive">Вы прибыли</string>
+    <string name="nav_roundabout_exit">На круговом движении — %d-й съезд</string>
+    <string name="nav_roundabout">Въезжайте на круговое движение</string>
+    <string name="nav_keep">Держитесь %s</string>
+    <string name="nav_continue">Продолжайте прямо</string>
+    <string name="nav_uturn">Развернитесь</string>
+    <string name="nav_turn">Поверните %s</string>
+    <string name="nav_in">Через %1$s: %2$s</string>
+</resources>

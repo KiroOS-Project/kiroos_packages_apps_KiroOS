@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Atlas</string>
+    <string name="search_hint">Pesquisar lugares</string>
+    <string name="clear">Limpar</string>
+    <string name="my_location">Minha localização</string>
+    <string name="mode_car">Carro</string>
+    <string name="mode_bike">Bicicleta</string>
+    <string name="mode_foot">A pé</string>
+    <string name="directions">Rotas</string>
+    <string name="share">Compartilhar</string>
+    <string name="close">Fechar</string>
+    <string name="start">Iniciar</string>
+    <string name="end">Encerrar</string>
+    <string name="overview">Visão geral</string>
+    <string name="dropped_pin">Marcador</string>
+    <string name="no_results">Nenhum resultado</string>
+    <string name="search_failed">A pesquisa não está disponível agora</string>
+    <string name="offline">Você está off-line. Os lugares que você já viu continuam aparecendo.</string>
+    <string name="route_failed">Nenhuma rota encontrada</string>
+    <string name="finding_route">Procurando uma rota…</string>
+    <string name="finding_location">Procurando sua localização…</string>
+    <string name="need_location">Ative a localização para ver rotas</string>
+    <string name="location_denied">O Atlas precisa da sua localização para as rotas</string>
+    <string name="rerouting">Recalculando a rota</string>
+    <string name="arrive_at">Chegada às %s</string>
+    <string name="dur_min">%d min</string>
+    <string name="dur_hours">%1$d h %2$d min</string>
+    <string name="navigating_to">Navegando para %s</string>
+    <string name="nav_tap">Toque para voltar ao mapa</string>
+    <string name="attribution">© OpenFreeMap © OpenMapTiles © OpenStreetMap</string>
+    <string name="credits_title">Dados do mapa</string>
+    <string name="credits">Mapa © OpenFreeMap e © OpenMapTiles, dados © colaboradores do OpenStreetMap (ODbL).\n\nPesquisa: Photon da komoot, dados do OpenStreetMap.\nRotas: BRouter (brouter.de), dados do OpenStreetMap.\n\nO Atlas funciona on-line. As áreas que você já viu ficam salvas no telefone e também abrem off-line.</string>
+
+    <string name="dir_left">à esquerda</string>
+    <string name="dir_right">à direita</string>
+    <string name="dir_slight_left">levemente à esquerda</string>
+    <string name="dir_slight_right">levemente à direita</string>
+    <string name="dir_sharp_left">acentuadamente à esquerda</string>
+    <string name="dir_sharp_right">acentuadamente à direita</string>
+    <string name="nav_depart">Comece o trajeto</string>
+    <string name="nav_arrive">Você chegou</string>
+    <string name="nav_roundabout_exit">Na rotatória, pegue a saída %d</string>
+    <string name="nav_roundabout">Entre na rotatória</string>
+    <string name="nav_keep">Mantenha-se %s</string>
+    <string name="nav_continue">Siga em frente</string>
+    <string name="nav_uturn">Faça o retorno</string>
+    <string name="nav_turn">Vire %s</string>
+    <string name="nav_in">Em %1$s, %2$s</string>
+</resources>

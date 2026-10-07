@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Atlas</string>
+    <string name="search_hint">Search places</string>
+    <string name="clear">Clear</string>
+    <string name="my_location">My location</string>
+    <string name="mode_car">Car</string>
+    <string name="mode_bike">Bike</string>
+    <string name="mode_foot">Walk</string>
+    <string name="directions">Directions</string>
+    <string name="share">Share</string>
+    <string name="close">Close</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="overview">Overview</string>
+    <string name="dropped_pin">Dropped pin</string>
+    <string name="no_results">No results</string>
+    <string name="search_failed">Search isn\'t available right now</string>
+    <string name="offline">You\'re offline. Places you\'ve already seen still show.</string>
+    <string name="route_failed">Couldn\'t find a route</string>
+    <string name="finding_route">Finding a route…</string>
+    <string name="finding_location">Finding your location…</string>
+    <string name="need_location">Turn on location to get directions</string>
+    <string name="location_denied">Atlas needs your location for directions</string>
+    <string name="rerouting">Rerouting</string>
+    <string name="arrive_at">Arrive at %s</string>
+    <string name="dur_min">%d min</string>
+    <string name="dur_hours">%1$d h %2$d min</string>
+    <string name="navigating_to">Navigating to %s</string>
+    <string name="nav_tap">Tap to return to the map</string>
+    <string name="attribution">© OpenFreeMap © OpenMapTiles © OpenStreetMap</string>
+    <string name="credits_title">Map data</string>
+    <string name="credits">Map © OpenFreeMap and © OpenMapTiles, data © OpenStreetMap contributors (ODbL).\n\nSearch: Photon by komoot, OpenStreetMap data.\nRoutes: BRouter (brouter.de), OpenStreetMap data.\n\nAtlas works online. The areas you\'ve seen stay saved on your phone, so they also open offline.</string>
+
+    <!-- turn-by-turn (BRouter gives no street names): the direction words, then the instructions they go in -->
+    <string name="dir_left">left</string>
+    <string name="dir_right">right</string>
+    <string name="dir_slight_left">slightly left</string>
+    <string name="dir_slight_right">slightly right</string>
+    <string name="dir_sharp_left">sharp left</string>
+    <string name="dir_sharp_right">sharp right</string>
+    <string name="nav_depart">Head out</string>
+    <string name="nav_arrive">You\'ve arrived</string>
+    <string name="nav_roundabout_exit">At the roundabout, take exit %d</string>
+    <string name="nav_roundabout">Enter the roundabout</string>
+    <string name="nav_keep">Keep %s</string>
+    <string name="nav_continue">Continue straight</string>
+    <string name="nav_uturn">Make a U-turn</string>
+    <string name="nav_turn">Turn %s</string>
+    <string name="nav_in">In %1$s, %2$s</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/atlas_panel" />
+    <corners
+        android:topLeftRadius="@dimen/kiro_corner"
+        android:topRightRadius="@dimen/kiro_corner" />
+</shape>

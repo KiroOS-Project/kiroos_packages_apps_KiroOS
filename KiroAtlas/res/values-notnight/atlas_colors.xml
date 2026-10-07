@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- light theme: a light map, white panels -->
+<resources>
+    <bool name="atlas_dark">false</bool>
+    <color name="atlas_panel">#FFFFFFFF</color>
+    <color name="atlas_halo">#FFFFFFFF</color>
+</resources>

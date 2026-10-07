@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Atlas</string>
+    <string name="search_hint">Orte suchen</string>
+    <string name="clear">Löschen</string>
+    <string name="my_location">Mein Standort</string>
+    <string name="mode_car">Auto</string>
+    <string name="mode_bike">Fahrrad</string>
+    <string name="mode_foot">Zu Fuß</string>
+    <string name="directions">Route</string>
+    <string name="share">Teilen</string>
+    <string name="close">Schließen</string>
+    <string name="start">Starten</string>
+    <string name="end">Beenden</string>
+    <string name="overview">Übersicht</string>
+    <string name="dropped_pin">Markierung</string>
+    <string name="no_results">Keine Ergebnisse</string>
+    <string name="search_failed">Die Suche ist gerade nicht verfügbar</string>
+    <string name="offline">Du bist offline. Bereits gesehene Orte werden weiter angezeigt.</string>
+    <string name="route_failed">Keine Route gefunden</string>
+    <string name="finding_route">Route wird berechnet…</string>
+    <string name="finding_location">Standort wird gesucht…</string>
+    <string name="need_location">Aktiviere den Standort, um eine Route zu erhalten</string>
+    <string name="location_denied">Atlas benötigt deinen Standort für Routen</string>
+    <string name="rerouting">Route wird neu berechnet</string>
+    <string name="arrive_at">Ankunft um %s</string>
+    <string name="dur_min">%d Min.</string>
+    <string name="dur_hours">%1$d Std. %2$d Min.</string>
+    <string name="navigating_to">Navigation nach %s</string>
+    <string name="nav_tap">Tippen, um zur Karte zurückzukehren</string>
+    <string name="attribution">© OpenFreeMap © OpenMapTiles © OpenStreetMap</string>
+    <string name="credits_title">Kartendaten</string>
+    <string name="credits">Karte © OpenFreeMap und © OpenMapTiles, Daten © OpenStreetMap-Mitwirkende (ODbL).\n\nSuche: Photon von komoot, OpenStreetMap-Daten.\nRouten: BRouter (brouter.de), OpenStreetMap-Daten.\n\nAtlas funktioniert online. Bereits gesehene Gebiete bleiben auf dem Telefon gespeichert und öffnen sich auch offline.</string>
+
+    <string name="dir_left">links</string>
+    <string name="dir_right">rechts</string>
+    <string name="dir_slight_left">leicht links</string>
+    <string name="dir_slight_right">leicht rechts</string>
+    <string name="dir_sharp_left">scharf links</string>
+    <string name="dir_sharp_right">scharf rechts</string>
+    <string name="nav_depart">Starten</string>
+    <string name="nav_arrive">Ziel erreicht</string>
+    <string name="nav_roundabout_exit">Im Kreisverkehr die %d. Ausfahrt nehmen</string>
+    <string name="nav_roundabout">In den Kreisverkehr einfahren</string>
+    <string name="nav_keep">%s halten</string>
+    <string name="nav_continue">Geradeaus weiter</string>
+    <string name="nav_uturn">Wenden</string>
+    <string name="nav_turn">%s abbiegen</string>
+    <string name="nav_in">In %1$s: %2$s</string>
+</resources>

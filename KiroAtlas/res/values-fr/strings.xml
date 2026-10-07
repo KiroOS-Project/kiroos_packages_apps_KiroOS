@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Atlas</string>
+    <string name="search_hint">Rechercher des lieux</string>
+    <string name="clear">Effacer</string>
+    <string name="my_location">Ma position</string>
+    <string name="mode_car">Voiture</string>
+    <string name="mode_bike">Vélo</string>
+    <string name="mode_foot">À pied</string>
+    <string name="directions">Itinéraire</string>
+    <string name="share">Partager</string>
+    <string name="close">Fermer</string>
+    <string name="start">Démarrer</string>
+    <string name="end">Arrêter</string>
+    <string name="overview">Vue d\'ensemble</string>
+    <string name="dropped_pin">Repère</string>
+    <string name="no_results">Aucun résultat</string>
+    <string name="search_failed">La recherche n\'est pas disponible pour le moment</string>
+    <string name="offline">Vous êtes hors connexion. Les lieux déjà vus restent affichés.</string>
+    <string name="route_failed">Aucun itinéraire trouvé</string>
+    <string name="finding_route">Calcul de l\'itinéraire…</string>
+    <string name="finding_location">Recherche de votre position…</string>
+    <string name="need_location">Activez la localisation pour obtenir un itinéraire</string>
+    <string name="location_denied">Atlas a besoin de votre position pour les itinéraires</string>
+    <string name="rerouting">Nouvel itinéraire</string>
+    <string name="arrive_at">Arrivée à %s</string>
+    <string name="dur_min">%d min</string>
+    <string name="dur_hours">%1$d h %2$d min</string>
+    <string name="navigating_to">Navigation vers %s</string>
+    <string name="nav_tap">Appuyez pour revenir à la carte</string>
+    <string name="attribution">© OpenFreeMap © OpenMapTiles © OpenStreetMap</string>
+    <string name="credits_title">Données cartographiques</string>
+    <string name="credits">Carte © OpenFreeMap et © OpenMapTiles, données © contributeurs d\'OpenStreetMap (ODbL).\n\nRecherche : Photon de komoot, données OpenStreetMap.\nItinéraires : BRouter (brouter.de), données OpenStreetMap.\n\nAtlas fonctionne en ligne. Les zones déjà vues restent enregistrées sur le téléphone et s\'ouvrent aussi hors connexion.</string>
+
+    <string name="dir_left">à gauche</string>
+    <string name="dir_right">à droite</string>
+    <string name="dir_slight_left">légèrement à gauche</string>
+    <string name="dir_slight_right">légèrement à droite</string>
+    <string name="dir_sharp_left">franchement à gauche</string>
+    <string name="dir_sharp_right">franchement à droite</string>
+    <string name="nav_depart">Partez</string>
+    <string name="nav_arrive">Vous êtes arrivé</string>
+    <string name="nav_roundabout_exit">Au rond-point, prenez la sortie %d</string>
+    <string name="nav_roundabout">Entrez dans le rond-point</string>
+    <string name="nav_keep">Restez %s</string>
+    <string name="nav_continue">Continuez tout droit</string>
+    <string name="nav_uturn">Faites demi-tour</string>
+    <string name="nav_turn">Tournez %s</string>
+    <string name="nav_in">Dans %1$s, %2$s</string>
+</resources>

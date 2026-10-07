@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Atlas</string>
+    <string name="search_hint">Yer ara</string>
+    <string name="clear">Temizle</string>
+    <string name="my_location">Konumum</string>
+    <string name="mode_car">Araba</string>
+    <string name="mode_bike">Bisiklet</string>
+    <string name="mode_foot">Yürüyüş</string>
+    <string name="directions">Yol tarifi</string>
+    <string name="share">Paylaş</string>
+    <string name="close">Kapat</string>
+    <string name="start">Başlat</string>
+    <string name="end">Bitir</string>
+    <string name="overview">Genel bakış</string>
+    <string name="dropped_pin">İşaretli konum</string>
+    <string name="no_results">Sonuç yok</string>
+    <string name="search_failed">Arama şu anda kullanılamıyor</string>
+    <string name="offline">Çevrimdışısınız. Daha önce gördüğünüz yerler görünmeye devam eder.</string>
+    <string name="route_failed">Rota bulunamadı</string>
+    <string name="finding_route">Rota aranıyor…</string>
+    <string name="finding_location">Konumunuz bulunuyor…</string>
+    <string name="need_location">Yol tarifi için konumu açın</string>
+    <string name="location_denied">Atlas, yol tarifi için konumunuza ihtiyaç duyar</string>
+    <string name="rerouting">Rota yeniden hesaplanıyor</string>
+    <string name="arrive_at">Varış: %s</string>
+    <string name="dur_min">%d dk</string>
+    <string name="dur_hours">%1$d sa %2$d dk</string>
+    <string name="navigating_to">%s konumuna gidiliyor</string>
+    <string name="nav_tap">Haritaya dönmek için dokunun</string>
+    <string name="attribution">© OpenFreeMap © OpenMapTiles © OpenStreetMap</string>
+    <string name="credits_title">Harita verileri</string>
+    <string name="credits">Harita © OpenFreeMap ve © OpenMapTiles, veriler © OpenStreetMap katkıda bulunanlar (ODbL).\n\nArama: komoot Photon, OpenStreetMap verileri.\nRotalar: BRouter (brouter.de), OpenStreetMap verileri.\n\nAtlas çevrimiçi çalışır. Gördüğünüz bölgeler telefonda kayıtlı kalır ve çevrimdışı da açılır.</string>
+
+    <string name="dir_left">sola</string>
+    <string name="dir_right">sağa</string>
+    <string name="dir_slight_left">hafif sola</string>
+    <string name="dir_slight_right">hafif sağa</string>
+    <string name="dir_sharp_left">keskin sola</string>
+    <string name="dir_sharp_right">keskin sağa</string>
+    <string name="nav_depart">Başlayın</string>
+    <string name="nav_arrive">Vardınız</string>
+    <string name="nav_roundabout_exit">Dönel kavşakta %d. çıkışı kullanın</string>
+    <string name="nav_roundabout">Dönel kavşağa girin</string>
+    <string name="nav_keep">%s yönelin</string>
+    <string name="nav_continue">Düz devam edin</string>
+    <string name="nav_uturn">U dönüşü yapın</string>
+    <string name="nav_turn">%s dönün</string>
+    <string name="nav_in">%1$s sonra %2$s</string>
+</resources>

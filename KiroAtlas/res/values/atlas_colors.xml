@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- dark theme: the map is Pure Black (TileRenderer.Style) -->
+<resources>
+    <bool name="atlas_dark">true</bool>
+    <color name="atlas_panel">#FF1C1C1F</color>
+    <color name="atlas_halo">#FF000000</color>
+</resources>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- focusable so the search field does not take the focus (and a cursor) at launch -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <com.kiroos.atlas.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- the search, or the next maneuver while navigating -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="12dp"
+        android:paddingStart="12dp"
+        android:paddingTop="10dp">
+
+        <LinearLayout
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/atlas_pill"
+            android:elevation="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="4dp"
+            android:paddingStart="18dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_search" />
+
+            <EditText
+                android:id="@+id/search"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/search_hint"
+                android:imeOptions="actionSearch|flagNoExtractUi"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/kiro_text"
+                android:textColorHint="@color/kiro_text_tertiary"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/clear"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/kiro_icon_button"
+                android:contentDescription="@string/clear"
+                android:src="@drawable/ic_close"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/atlas_card"
+            android:divider="@color/kiro_divider"
+            android:dividerHeight="1px"
+            android:elevation="4dp"
+            android:layoutAnimation="@null"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/nav_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/atlas_nav_card"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:paddingBottom="14dp"
+            android:paddingEnd="18dp"
+            android:paddingStart="18dp"
+            android:paddingTop="14dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/nav_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/kiro_on_accent"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/nav_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:maxLines="3"
+                android:textColor="@color/kiro_on_accent"
+                android:textSize="19sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- the credits and the location button ride above the sheet -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="8dp">
+
+            <TextView
+                android:id="@+id/attribution"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:padding="4dp"
+                android:shadowColor="@color/atlas_halo"
+                android:shadowRadius="3"
+                android:text="@string/attribution"
+                android:textColor="@color/kiro_text_secondary"
+                android:textSize="10sp" />
+
+            <ImageButton
+                android:id="@+id/locate"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/atlas_round"
+                android:contentDescription="@string/my_location"
+                android:elevation="4dp"
+                android:src="@drawable/ic_locate" />
+        </LinearLayout>
+
+        <!-- a place, a route, or the trip while navigating -->
+        <LinearLayout
+            android:id="@+id/sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/atlas_sheet"
+            android:clickable="true"
+            android:elevation="8dp"
+            android:orientation="vertical"
+            android:paddingBottom="18dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="18dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:textColor="@color/kiro_text"
+                android:textSize="21sp" />
+
+            <TextView
+                android:id="@+id/detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:maxLines="2"
+                android:textColor="@color/kiro_text_secondary"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/modes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/mode_car"
+                    style="@style/Atlas.Chip"
+                    android:text="@string/mode_car" />
+
+                <TextView
+                    android:id="@+id/mode_bike"
+                    style="@style/Atlas.Chip"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/mode_bike" />
+
+                <TextView
+                    android:id="@+id/mode_foot"
+                    style="@style/Atlas.Chip"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/mode_foot" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/secondary"
+                    style="@style/Kiro.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp" />
+
+                <Button
+                    android:id="@+id/primary"
+                    style="@style/Kiro.Button.Accent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="10dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>
