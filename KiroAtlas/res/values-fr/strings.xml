@@ -52,4 +52,8 @@
     <string name="slow_fix_settings">Paramètres de localisation</string>
     <string name="slow_fix_wait">Attendre encore</string>
     <string name="slow_fix_gps">Je cherche encore votre position. Le GPS marche mieux en extérieur.</string>
+    <string name="say_meters">%1$d mètres</string>
+    <string name="say_km">%1$s kilomètres</string>
+    <string name="say_feet">%1$d pieds</string>
+    <string name="say_miles">%1$s miles</string>
 </resources>

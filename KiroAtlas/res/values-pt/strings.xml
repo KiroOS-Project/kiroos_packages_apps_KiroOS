@@ -52,4 +52,8 @@
     <string name="slow_fix_settings">Configurações de localização</string>
     <string name="slow_fix_wait">Continuar esperando</string>
     <string name="slow_fix_gps">Ainda procurando sua localização. O GPS funciona melhor ao ar livre.</string>
+    <string name="say_meters">%1$d metros</string>
+    <string name="say_km">%1$s quilômetros</string>
+    <string name="say_feet">%1$d pés</string>
+    <string name="say_miles">%1$s milhas</string>
 </resources>

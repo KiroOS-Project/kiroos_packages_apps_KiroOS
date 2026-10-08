@@ -71,6 +71,25 @@ final class Geo {
         return Math.sqrt(cx * cx + cy * cy);
     }
 
+    /** the distance for the voice: words, not "200 m" (Pico spelled the unit out) */
+    static String spokenDistance(android.content.Context c, double meters, boolean metric) {
+        if (!metric) {
+            final double feet = meters * 3.28084;
+            if (feet < 1000) {
+                return c.getString(R.string.say_feet, Math.round(feet / 10) * 10);
+            }
+            return c.getString(R.string.say_miles, decimal(meters / 1609.344));
+        }
+        if (meters < 1000) return c.getString(R.string.say_meters, Math.round(meters / 10) * 10);
+        return c.getString(R.string.say_km, decimal(meters / 1000));
+    }
+
+    /** 1.5 -> "1,5" (the locale's way), 2.0 -> "2", 12.3 -> "12" */
+    private static String decimal(double v) {
+        if (v >= 10 || Math.abs(v - Math.round(v)) < 0.05) return String.valueOf(Math.round(v));
+        return String.format(java.util.Locale.getDefault(), "%.1f", v);
+    }
+
     static String formatDistance(double meters, boolean metric) {
         if (!metric) {
             final double feet = meters * 3.28084;

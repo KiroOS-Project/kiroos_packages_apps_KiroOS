@@ -52,4 +52,8 @@
     <string name="slow_fix_settings">Konum ayarları</string>
     <string name="slow_fix_wait">Beklemeye devam et</string>
     <string name="slow_fix_gps">Konumun hâlâ aranıyor. GPS açık havada daha iyi çalışır.</string>
+    <string name="say_meters">%1$d metre</string>
+    <string name="say_km">%1$s kilometre</string>
+    <string name="say_feet">%1$d fit</string>
+    <string name="say_miles">%1$s mil</string>
 </resources>

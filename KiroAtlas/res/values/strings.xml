@@ -53,4 +53,8 @@
     <string name="slow_fix_settings">Location settings</string>
     <string name="slow_fix_wait">Keep waiting</string>
     <string name="slow_fix_gps">Still looking for your location. GPS works best outdoors.</string>
+    <string name="say_meters">%1$d meters</string>
+    <string name="say_km">%1$s kilometers</string>
+    <string name="say_feet">%1$d feet</string>
+    <string name="say_miles">%1$s miles</string>
 </resources>

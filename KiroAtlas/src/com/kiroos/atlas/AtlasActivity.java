@@ -321,6 +321,12 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
 
     private void setState(int state) {
         mState = state;
+        // 3D while navigating; flat for a place or a route (they are seen whole)
+        if (state == NAV) {
+            mMap.setTilt(true);
+        } else if (state != BROWSE) {
+            mMap.setTilt(false);
+        }
         mSearchBar.setVisibility(state == NAV ? View.GONE : View.VISIBLE);
         mNavBar.setVisibility(state == NAV ? View.VISIBLE : View.GONE);
         mSheet.setVisibility(state == BROWSE ? View.GONE : View.VISIBLE);
@@ -384,6 +390,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
             case ROUTE: clearRoute(); setState(PLACE); break;
             case NAV:
                 mFollow = false;
+                mMap.setTilt(false);
                 mMap.fit(mNav.route.points);
                 break;
         }
@@ -739,7 +746,8 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
         } else if (mSpokenLevel < 1 && p.toStep <= FAR[mMode] && p.toStep > NEAR[mMode] * 2) {
             mSpokenLevel = 1;
             final double rounded = p.toStep >= 200 ? Math.round(p.toStep / 50) * 50 : p.toStep;
-            speak(getString(R.string.nav_in, Geo.formatDistance(rounded, mMetric), text));
+            speak(getString(R.string.nav_in, Geo.spokenDistance(this, rounded, mMetric),
+                    lowerFirst(text)));
         }
     }
 
@@ -749,6 +757,8 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
         }
         if (mTts == null) {
             mPendingSpeech.add(text);
+            final String engine = bestEngine();
+            mPico = "com.svox.pico".equals(engine);
             mTts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
                 @Override
                 public void onInit(int status) {
@@ -758,6 +768,12 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
                         return;
                     }
                     mTts.setLanguage(Locale.getDefault());
+                    if (mPico) {
+                        // Pico at its own pace runs the words together: a little slower and a
+                        // touch lower reads clearer over traffic
+                        mTts.setSpeechRate(0.9f);
+                        mTts.setPitch(0.95f);
+                    }
                     mTts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                         @Override
                         public void onStart(String id) {
@@ -778,7 +794,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
                     for (String s : mPendingSpeech) say(s);
                     mPendingSpeech.clear();
                 }
-            });
+            }, engine);
             return;
         }
         if (!mTtsReady) {
@@ -788,7 +804,38 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
         say(text);
     }
 
+    private boolean mPico;
+
+    /** "Svolta a destra" inside "Tra 200 metri, svolta a destra" (German nouns keep theirs) */
+    private static String lowerFirst(String s) {
+        if (s.isEmpty() || "de".equals(Locale.getDefault().getLanguage())) return s;
+        return Character.toLowerCase(s.charAt(0)) + s.substring(1);
+    }
+
+    /**
+     * The voice: Google's (natural, from the Play Store) when installed, else any engine the
+     * user chose, else Pico (the robotic one that comes with Android 7).
+     */
+    private String bestEngine() {
+        final java.util.List<String> engines = new ArrayList<>();
+        for (android.content.pm.ResolveInfo r : getPackageManager().queryIntentServices(
+                new Intent(TextToSpeech.Engine.INTENT_ACTION_TTS_SERVICE), 0)) {
+            engines.add(r.serviceInfo.packageName);
+        }
+        if (engines.contains("com.google.android.tts")) return "com.google.android.tts";
+        final String chosen = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.TTS_DEFAULT_SYNTH);
+        if (chosen != null && engines.contains(chosen)) return chosen;
+        for (String e : engines) {
+            if (!"com.svox.pico".equals(e)) return e;
+        }
+        return engines.isEmpty() ? null : engines.get(0);
+    }
+
     private void say(String text) {
+        // Pico pauses only at punctuation: a comma after the distance ("In 200 m, turn") is
+        // already there; a final period lets the sentence end instead of trailing off
+        if (mPico && !text.endsWith(".") && !text.endsWith("!")) text = text + ".";
         // the music ducks while Atlas speaks
         mAudio.requestAudioFocus(null, AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
@@ -929,6 +976,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
     private void locate() {
         if (mState == NAV) {
             mFollow = true;
+            mMap.setTilt(true);
             if (mLocation != null) {
                 mMap.animateTo(mLocation.getLatitude(), mLocation.getLongitude(),
                         NAV_ZOOM[mMode]);
@@ -936,8 +984,10 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
             return;
         }
         if (mLocation != null) {
+            // close in, and leaning back a little: streets around you, not a flat plan
             mMap.animateTo(mLocation.getLatitude(), mLocation.getLongitude(),
-                    Math.max(mMap.zoom(), 16));
+                    Math.max(mMap.zoom(), 17.5));
+            if (mState == BROWSE) mMap.setTilt(true);
             return;
         }
         mCenterOnFix = true;
@@ -977,7 +1027,8 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
             setState(ROUTE);
         } else if (mCenterOnFix && (first || mState == BROWSE)) {
             mCenterOnFix = false;
-            mMap.animateTo(l.getLatitude(), l.getLongitude(), Math.max(mMap.zoom(), 15));
+            mMap.animateTo(l.getLatitude(), l.getLongitude(), Math.max(mMap.zoom(), 17.5));
+            if (mState == BROWSE) mMap.setTilt(true);
         }
     }
 

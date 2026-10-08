@@ -52,4 +52,8 @@
     <string name="slow_fix_settings">Настройки местоположения</string>
     <string name="slow_fix_wait">Подождать ещё</string>
     <string name="slow_fix_gps">Всё ещё ищу ваше местоположение. GPS лучше работает на улице.</string>
+    <string name="say_meters">%1$d метров</string>
+    <string name="say_km">%1$s километра</string>
+    <string name="say_feet">%1$d футов</string>
+    <string name="say_miles">%1$s мили</string>
 </resources>
