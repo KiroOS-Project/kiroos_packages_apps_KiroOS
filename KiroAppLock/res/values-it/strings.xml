@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Blocco app</string>
     <string name="app_locked">%1$s è bloccata</string>
+    <string name="lock_done">%1$s ora si apre con l\'impronta</string>
+    <string name="unlock_done">%1$s non è più bloccata</string>
     <string name="touch_sensor">Tocca il sensore d\'impronta</string>
     <string name="not_recognized">Impronta non riconosciuta. Riprova.</string>
     <string name="use_lock">Usa il blocco schermo</string>

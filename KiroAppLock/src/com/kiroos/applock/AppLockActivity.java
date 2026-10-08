@@ -17,6 +17,7 @@
 package com.kiroos.applock;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -47,9 +49,16 @@ import java.util.Set;
 /**
  * App lock settings: after the fingerprint (or the screen lock), the apps with a switch each.
  * The phone app and the home screen are left out, so calls and home always open.
+ * As LockAppActivity it locks or unlocks one app (the home screen's long-press menu).
  */
 public class AppLockActivity extends Activity implements Auth.Callback {
 
+    static final String ACTION_LOCK_APP = "com.kiroos.applock.action.LOCK_APP";
+    static final String ACTION_UNLOCK_APP = "com.kiroos.applock.action.UNLOCK_APP";
+
+    /** the one app to lock or unlock (LockAppActivity), null for the list */
+    private String mTogglePkg;
+    private boolean mToggleLock;
     private Auth mAuth;
     private View mAuthPanel;
     private View mListPanel;
@@ -65,9 +74,21 @@ public class AppLockActivity extends Activity implements Auth.Callback {
         Drawable icon;
     }
 
+    /** the app LockAppActivity was asked for; the list has none */
+    String requestedPackage() {
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mTogglePkg = requestedPackage();
+        mToggleLock = ACTION_LOCK_APP.equals(getIntent().getAction());
+        if (mTogglePkg != null && alwaysOpen(this).contains(mTogglePkg)) {
+            finish();
+            return;
+        }
+        if (toggleWithoutProof()) return;
         setContentView(R.layout.activity_applock);
         mAuthPanel = findViewById(R.id.root);
         mListPanel = findViewById(R.id.list_panel);
@@ -88,9 +109,38 @@ public class AppLockActivity extends Activity implements Auth.Callback {
         });
     }
 
+    /**
+     * Locking needs no proof (the fingerprint is asked when the app opens, and to unlock it);
+     * without a screen lock, unlocking needs none either.
+     * @return true when done (the activity finishes)
+     */
+    private boolean toggleWithoutProof() {
+        if (mTogglePkg == null) return false;
+        final boolean secure = getSystemService(KeyguardManager.class).isKeyguardSecure();
+        if (mToggleLock != secure) return false;
+        toggleDone();
+        return true;
+    }
+
+    private void toggleDone() {
+        Locks.set(this, mTogglePkg, mToggleLock);
+        CharSequence label = mTogglePkg;
+        try {
+            final PackageManager pm = getPackageManager();
+            label = pm.getApplicationInfo(mTogglePkg, 0).loadLabel(pm);
+        } catch (PackageManager.NameNotFoundException e) {
+            // the package name, then
+        }
+        Toast.makeText(getApplicationContext(), getString(mToggleLock ? R.string.lock_done
+                : R.string.unlock_done, label), Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        // back from setting a screen lock: the app gets locked now
+        if (toggleWithoutProof()) return;
         if (!mAuth.secure()) {
             show(mNoLockPanel);
             return;
@@ -124,6 +174,10 @@ public class AppLockActivity extends Activity implements Auth.Callback {
     @Override
     public void onAuthenticated() {
         if (!mAuth.secure()) return;
+        if (mTogglePkg != null) {
+            toggleDone();
+            return;
+        }
         // the vault opens without asking again for a minute
         Vault.authenticated();
         mUnlocked = true;
@@ -155,8 +209,8 @@ public class AppLockActivity extends Activity implements Auth.Callback {
         }.execute();
     }
 
-    /** the apps with a launcher icon, minus the ones that must always open */
-    private static List<App> apps(Context context) {
+    /** the apps that can't be locked: the home screen, the phone, App Lock itself */
+    private static Set<String> alwaysOpen(Context context) {
         final PackageManager pm = context.getPackageManager();
         final Set<String> skip = new HashSet<>();
         skip.add(context.getPackageName());
@@ -170,6 +224,13 @@ public class AppLockActivity extends Activity implements Auth.Callback {
         }
         skip.add("com.android.server.telecom");
         skip.add("com.android.emergency");
+        return skip;
+    }
+
+    /** the apps with a launcher icon, minus the ones that must always open */
+    private static List<App> apps(Context context) {
+        final PackageManager pm = context.getPackageManager();
+        final Set<String> skip = alwaysOpen(context);
         final List<App> out = new ArrayList<>();
         final Set<String> seen = new HashSet<>();
         for (ResolveInfo r : pm.queryIntentActivities(new Intent(Intent.ACTION_MAIN)

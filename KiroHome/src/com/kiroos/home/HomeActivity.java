@@ -661,12 +661,25 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         } else {
             m.add(0, 2, 0, R.string.add_to_home);
         }
+        final Intent lock = appLockIntent(app);
+        if (lock != null) {
+            m.add(0, 6, 0, APP_LOCK_UNLOCK.equals(lock.getAction()) ? R.string.unlock_app
+                    : R.string.lock_app);
+        }
         m.add(0, 4, 0, R.string.app_info);
         m.add(0, 5, 0, R.string.uninstall);
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
+                    case 6:
+                        try {
+                            startActivity(lock);
+                        } catch (ActivityNotFoundException | SecurityException e) {
+                            Toast.makeText(HomeActivity.this, R.string.app_not_available,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        return true;
                     case 1:
                         mModel.remove(app.key());
                         bindHome();
@@ -692,6 +705,38 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             }
         });
         menu.show();
+    }
+
+    /** KiroOS App Lock (com.kiroos.applock): the locked packages and the lock/unlock screen */
+    private static final String APP_LOCK_PACKAGE = "com.kiroos.applock";
+    private static final String APP_LOCK_LIST = "kiroos_applock_packages";
+    private static final String APP_LOCK_LOCK = "com.kiroos.applock.action.LOCK_APP";
+    private static final String APP_LOCK_UNLOCK = "com.kiroos.applock.action.UNLOCK_APP";
+
+    /**
+     * "Lock app" or "Unlock app" for this app; null when App Lock is not there or the app must
+     * always open (the home screen, the phone, App Lock) or belongs to another profile.
+     */
+    private Intent appLockIntent(AppInfo app) {
+        final String pkg = app.component.getPackageName();
+        if (!android.os.Process.myUserHandle().equals(app.user)
+                || pkg.equals(getPackageName()) || pkg.equals(APP_LOCK_PACKAGE)) {
+            return null;
+        }
+        final android.telecom.TelecomManager tm = getSystemService(
+                android.telecom.TelecomManager.class);
+        if (tm != null && pkg.equals(tm.getDefaultDialerPackage())) {
+            return null;
+        }
+        final String list = Settings.Secure.getString(getContentResolver(), APP_LOCK_LIST);
+        final boolean locked = list != null
+                && java.util.Arrays.asList(list.split(",")).contains(pkg);
+        final Intent i = new Intent(locked ? APP_LOCK_UNLOCK : APP_LOCK_LOCK)
+                .setComponent(new android.content.ComponentName(APP_LOCK_PACKAGE,
+                        APP_LOCK_PACKAGE + ".LockAppActivity"))
+                .putExtra(Intent.EXTRA_PACKAGE_NAME, pkg)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return getPackageManager().resolveActivity(i, 0) != null ? i : null;
     }
 
     // --- drag and drop ----------------------------------------------------------------------

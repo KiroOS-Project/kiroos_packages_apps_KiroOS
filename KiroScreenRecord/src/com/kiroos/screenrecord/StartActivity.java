@@ -48,7 +48,7 @@ public class StartActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (RecordService.sActive) {
-            // a recording runs: the launcher icon stops it, like the tile
+            // a recording runs: opening the options stops it, like the tile
             startService(new Intent(this, RecordService.class)
                     .setAction(RecordService.ACTION_STOP));
             finish();

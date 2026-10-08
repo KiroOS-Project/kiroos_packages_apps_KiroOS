@@ -7,6 +7,8 @@
     <string name="add_to_home">Aggiungi alla home</string>
     <string name="app_info">Info app</string>
     <string name="uninstall">Disinstalla</string>
+    <string name="lock_app">Blocca app</string>
+    <string name="unlock_app">Sblocca app</string>
     <string name="home_full">La home è piena</string>
     <string name="add_widget">Aggiungi widget</string>
     <string name="wallpaper">Sfondo</string>

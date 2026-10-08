@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Kiro App Lock 1.0 (KiroOS Beta 3): apps that open only after the fingerprint (or the screen
-     lock), enforced by the activity manager (frameworks/base ActivityStartInterceptor). -->
+     lock), enforced by the activity manager (frameworks/base ActivityStartInterceptor). It has no
+     app icon: an app is locked from the home screen (long-press, "Lock app"), and the list and
+     the private vault are in Settings > Security. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.applock"
     android:versionCode="100"
@@ -14,25 +16,43 @@
     <!-- a locked app opened from Recents is reopened as its task -->
     <uses-permission android:name="android.permission.START_TASKS_FROM_RECENTS" />
 
+    <!-- held by Kiro Home: lock or unlock one app from its long-press menu -->
+    <permission
+        android:name="com.kiroos.applock.permission.LOCK_APPS"
+        android:protectionLevel="signature" />
+
     <application
         android:label="@string/app_name"
         android:icon="@drawable/ic_launcher_applock"
         android:theme="@style/Theme.Kiro"
         android:supportsRtl="true">
 
+        <!-- the locked apps list, from Settings > Security > App lock -->
         <activity
             android:name=".AppLockActivity"
             android:label="@string/app_name"
             android:screenOrientation="nosensor"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.kiroos.applock.action.SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <!-- the private vault: opened from App Lock, or as a share target ("Private vault" in
-             any app's share sheet); it asks for the fingerprint itself, an intent can't skip it -->
+        <!-- one app, from the home screen's long-press menu: com.kiroos.applock.action.LOCK_APP
+             or UNLOCK_APP with EXTRA_PACKAGE_NAME; unlocking asks for the fingerprint first -->
+        <activity
+            android:name=".LockAppActivity"
+            android:label="@string/app_name"
+            android:permission="com.kiroos.applock.permission.LOCK_APPS"
+            android:excludeFromRecents="true"
+            android:taskAffinity="com.kiroos.applock.toggle"
+            android:screenOrientation="nosensor"
+            android:exported="true" />
+
+        <!-- the private vault: opened from Settings > Security or App Lock, or as a share target
+             ("Private vault" in any app's share sheet); it asks for the fingerprint itself, an
+             intent can't skip it -->
         <activity
             android:name=".VaultActivity"
             android:label="@string/vault_title"

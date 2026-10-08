@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Блокировка приложений</string>
     <string name="app_locked">%1$s заблокировано</string>
+    <string name="lock_done">%1$s теперь открывается по отпечатку</string>
+    <string name="unlock_done">%1$s больше не заблокировано</string>
     <string name="touch_sensor">Приложите палец к сканеру</string>
     <string name="not_recognized">Не распознано. Повторите попытку.</string>
     <string name="use_lock">Использовать блокировку экрана</string>

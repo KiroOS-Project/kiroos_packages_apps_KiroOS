@@ -7,6 +7,8 @@
     <string name="add_to_home">Adicionar à tela inicial</string>
     <string name="app_info">Informações do app</string>
     <string name="uninstall">Desinstalar</string>
+    <string name="lock_app">Bloquear app</string>
+    <string name="unlock_app">Desbloquear app</string>
     <string name="home_full">A tela inicial está cheia</string>
     <string name="add_widget">Adicionar widget</string>
     <string name="wallpaper">Plano de fundo</string>

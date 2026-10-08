@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Verrou d\'apps</string>
     <string name="app_locked">%1$s est verrouillée</string>
+    <string name="lock_done">%1$s s\'ouvre maintenant avec votre empreinte</string>
+    <string name="unlock_done">%1$s n\'est plus verrouillée</string>
     <string name="touch_sensor">Touchez le lecteur d\'empreintes</string>
     <string name="not_recognized">Non reconnue. Réessayez.</string>
     <string name="use_lock">Utiliser le verrouillage de l\'écran</string>

@@ -16,6 +16,8 @@
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
     <!-- the clock opens the alarms (AlarmClock.ACTION_SHOW_ALARMS) -->
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <!-- "Lock app" / "Unlock app" in an app's long-press menu (KiroOS App Lock) -->
+    <uses-permission android:name="com.kiroos.applock.permission.LOCK_APPS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application

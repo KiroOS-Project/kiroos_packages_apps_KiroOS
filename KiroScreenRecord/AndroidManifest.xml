@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Screen Recorder 1.0 (KiroOS Beta 3): records the screen at 1080p 60 fps (or 720p 30 fps) with
-     the device audio or the microphone, from a control center tile or the app drawer. -->
+     the device audio or the microphone, from its control center tile only (no app icon; SystemUI's
+     AutoTileManager adds the tile once). -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.screenrecord"
     android:versionCode="100"
@@ -30,12 +31,7 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity=""
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false" />
 
         <service
             android:name=".RecordService"

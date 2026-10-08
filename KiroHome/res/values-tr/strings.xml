@@ -7,6 +7,8 @@
     <string name="add_to_home">Ana ekrana ekle</string>
     <string name="app_info">Uygulama bilgileri</string>
     <string name="uninstall">Kaldır</string>
+    <string name="lock_app">Uygulamayı kilitle</string>
+    <string name="unlock_app">Kilidi kaldır</string>
     <string name="home_full">Ana ekran dolu</string>
     <string name="add_widget">Widget ekle</string>
     <string name="wallpaper">Duvar kağıdı</string>

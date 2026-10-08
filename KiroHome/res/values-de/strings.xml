@@ -7,6 +7,8 @@
     <string name="add_to_home">Zum Startbildschirm hinzufügen</string>
     <string name="app_info">App-Info</string>
     <string name="uninstall">Deinstallieren</string>
+    <string name="lock_app">App sperren</string>
+    <string name="unlock_app">App entsperren</string>
     <string name="home_full">Der Startbildschirm ist voll</string>
     <string name="add_widget">Widget hinzufügen</string>
     <string name="wallpaper">Hintergrund</string>

@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Bloqueio de apps</string>
     <string name="app_locked">%1$s está bloqueado</string>
+    <string name="lock_done">%1$s agora abre com sua digital</string>
+    <string name="unlock_done">%1$s não está mais bloqueado</string>
     <string name="touch_sensor">Toque no sensor de impressão digital</string>
     <string name="not_recognized">Não reconhecida. Tente de novo.</string>
     <string name="use_lock">Usar bloqueio de tela</string>

@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Bloqueo de apps</string>
     <string name="app_locked">%1$s está bloqueada</string>
+    <string name="lock_done">%1$s ahora se abre con tu huella</string>
+    <string name="unlock_done">%1$s ya no está bloqueada</string>
     <string name="touch_sensor">Toca el sensor de huellas</string>
     <string name="not_recognized">No se reconoce. Inténtalo de nuevo.</string>
     <string name="use_lock">Usar bloqueo de pantalla</string>

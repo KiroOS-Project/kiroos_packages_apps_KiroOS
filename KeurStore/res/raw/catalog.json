@@ -39,8 +39,6 @@
       {"pkg": "com.kiroos.webview", "name": "KOptimize WebView", "desc": "Il motore web di KiroOS per browser e app, aggiornato a parte", "desc_en": "The KiroOS web engine for browsers and apps, updated on its own", "source": "kiroos:koptimize-webview.json"},
       {"pkg": "com.kiroos.sound", "name": "Kiro Sound", "desc": "Equalizzatore per altoparlante, cuffie e Bluetooth", "desc_en": "Equalizer for speaker, headphones and Bluetooth", "source": "system"},
       {"pkg": "com.kiroos.canvas", "name": "Canvas", "desc": "Sfondi AMOLED e sfocatura della schermata di blocco", "desc_en": "AMOLED wallpapers and lock screen blur", "source": "system"},
-      {"pkg": "com.kiroos.screenrecord", "name": "Registra schermo", "desc": "1080p a 60 fps con l'audio del telefono", "desc_en": "1080p at 60 fps with the phone's audio", "source": "system"},
-      {"pkg": "com.kiroos.applock", "name": "Blocco app", "desc": "App aperte solo con impronta o blocco schermo", "desc_en": "Apps that open only with your fingerprint or screen lock", "source": "system"},
       {"pkg": "com.kiroos.atlas", "name": "Atlas", "desc": "Mappe, percorsi e navigazione con la voce", "desc_en": "Maps, directions and voice navigation", "source": "system"}
     ]}
   ]

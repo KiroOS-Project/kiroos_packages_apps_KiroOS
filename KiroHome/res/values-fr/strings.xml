@@ -7,6 +7,8 @@
     <string name="add_to_home">Ajouter à l\'accueil</string>
     <string name="app_info">Infos sur l\'application</string>
     <string name="uninstall">Désinstaller</string>
+    <string name="lock_app">Verrouiller l\'app</string>
+    <string name="unlock_app">Déverrouiller l\'app</string>
     <string name="home_full">L\'écran d\'accueil est plein</string>
     <string name="add_widget">Ajouter un widget</string>
     <string name="wallpaper">Fond d\'écran</string>

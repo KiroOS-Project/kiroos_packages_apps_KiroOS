@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">App-Sperre</string>
     <string name="app_locked">%1$s ist gesperrt</string>
+    <string name="lock_done">%1$s öffnet sich jetzt mit deinem Fingerabdruck</string>
+    <string name="unlock_done">%1$s ist nicht mehr gesperrt</string>
     <string name="touch_sensor">Berühre den Fingerabdrucksensor</string>
     <string name="not_recognized">Nicht erkannt. Versuche es erneut.</string>
     <string name="use_lock">Displaysperre verwenden</string>

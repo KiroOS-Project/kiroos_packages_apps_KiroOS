@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">Uygulama Kilidi</string>
     <string name="app_locked">%1$s kilitli</string>
+    <string name="lock_done">%1$s artık parmak izinle açılıyor</string>
+    <string name="unlock_done">%1$s artık kilitli değil</string>
     <string name="touch_sensor">Parmak izi sensörüne dokunun</string>
     <string name="not_recognized">Tanınmadı. Tekrar deneyin.</string>
     <string name="use_lock">Ekran kilidini kullan</string>
