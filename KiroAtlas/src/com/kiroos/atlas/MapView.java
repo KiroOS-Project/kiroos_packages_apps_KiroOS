@@ -218,6 +218,27 @@ public class MapView extends View {
         mAnimator.start();
     }
 
+    private boolean mTilted;
+
+    /**
+     * A slight 3D view for your position and navigation: the map leans back around its middle
+     * (and is scaled up so its far corners still fill the screen). Touches go through the
+     * view's matrix, so dragging and pinching keep working.
+     */
+    void setTilt(boolean on) {
+        if (on == mTilted) return;
+        mTilted = on;
+        setCameraDistance(9000 * mDensity);
+        setPivotX(getWidth() / 2f);
+        setPivotY(getHeight() / 2f);
+        animate().rotationX(on ? 34f : 0f).scaleX(on ? 1.32f : 1f).scaleY(on ? 1.32f : 1f)
+                .setDuration(500).setInterpolator(new DecelerateInterpolator(1.6f)).start();
+    }
+
+    boolean tilted() {
+        return mTilted;
+    }
+
     private void cancelMotion() {
         if (mAnimator != null) mAnimator.cancel();
         mScroller.forceFinished(true);
@@ -437,16 +458,66 @@ public class MapView extends View {
 
     private void drawRoute(Canvas canvas) {
         if (mRoute == null || mRoute.size() < 2) return;
+        // Zoomed in, the far points of a route are millions of pixels away and the hardware
+        // renderer drops the whole path ("path too large"): the line vanished up close. Only
+        // the segments near the screen are drawn, cut at a margin around it.
         mRoutePath.reset();
-        boolean first = true;
+        final double m = 64 * mDensity;
+        final double minX = -m, minY = -m, maxX = getWidth() + m, maxY = getHeight() + m;
+        final double w = worldPx();
+        final double left = mX - getWidth() / 2.0 / w, top = mY - getHeight() / 2.0 / w;
+        double px = 0, py = 0;
+        boolean have = false, open = false;
+        float lastX = Float.NaN, lastY = Float.NaN;
         for (double[] p : mRoute) {
-            final float sx = screenX(Geo.x(p[1])), sy = screenY(Geo.y(p[0]));
-            if (first) mRoutePath.moveTo(sx, sy);
-            else mRoutePath.lineTo(sx, sy);
-            first = false;
+            final double x = (Geo.x(p[1]) - left) * w, y = (Geo.y(p[0]) - top) * w;
+            if (have) {
+                final double[] c = clip(px, py, x, y, minX, minY, maxX, maxY);
+                if (c == null) {
+                    open = false;
+                } else {
+                    final float ax = (float) c[0], ay = (float) c[1];
+                    final float bx = (float) c[2], by = (float) c[3];
+                    if (!open || ax != lastX || ay != lastY) mRoutePath.moveTo(ax, ay);
+                    mRoutePath.lineTo(bx, by);
+                    lastX = bx;
+                    lastY = by;
+                    // the segment left the area at its end: the next one starts anew
+                    open = c[2] == x && c[3] == y;
+                }
+            }
+            px = x;
+            py = y;
+            have = true;
         }
         canvas.drawPath(mRoutePath, mRouteCasing);
         canvas.drawPath(mRoutePath, mRoutePaint);
+    }
+
+    /** Liang–Barsky: the part of the segment inside the rectangle, or null */
+    private static double[] clip(double x0, double y0, double x1, double y1,
+            double minX, double minY, double maxX, double maxY) {
+        final double dx = x1 - x0, dy = y1 - y0;
+        double t0 = 0, t1 = 1;
+        final double[] p = {-dx, dx, -dy, dy};
+        final double[] q = {x0 - minX, maxX - x0, y0 - minY, maxY - y0};
+        for (int i = 0; i < 4; i++) {
+            if (p[i] == 0) {
+                if (q[i] < 0) return null;
+            } else {
+                final double r = q[i] / p[i];
+                if (p[i] < 0) {
+                    if (r > t1) return null;
+                    if (r > t0) t0 = r;
+                } else {
+                    if (r < t0) return null;
+                    if (r < t1) t1 = r;
+                }
+            }
+        }
+        return new double[] {
+                t0 == 0 ? x0 : x0 + t0 * dx, t0 == 0 ? y0 : y0 + t0 * dy,
+                t1 == 1 ? x1 : x0 + t1 * dx, t1 == 1 ? y1 : y0 + t1 * dy};
     }
 
     private void drawLabels(Canvas canvas, List<TileRenderer.Result> shown) {
@@ -601,6 +672,8 @@ public class MapView extends View {
             final double[] after = world(d.getFocusX(), d.getFocusY());
             mX = wrapX(mX + before[0] - after[0]);
             mY = clampY(mY + before[1] - after[1]);
+            // zoomed far out the lean only hides the map: flat again
+            if (mTilted && mZoom < 13) setTilt(false);
             moved();
             invalidate();
             return true;
