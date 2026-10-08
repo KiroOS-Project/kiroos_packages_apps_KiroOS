@@ -47,4 +47,9 @@
     <string name="nav_uturn">Faites demi-tour</string>
     <string name="nav_turn">Tournez %s</string>
     <string name="nav_in">Dans %1$s, %2$s</string>
+    <string name="slow_fix_title">Recherche en cours</string>
+    <string name="slow_fix_text">La localisation utilise seulement le GPS, et à l\'intérieur le GPS peut mettre des minutes ou ne trouver aucun satellite. Activez la localisation par Wi-Fi et réseaux mobiles pour l\'avoir en quelques secondes.</string>
+    <string name="slow_fix_settings">Paramètres de localisation</string>
+    <string name="slow_fix_wait">Attendre encore</string>
+    <string name="slow_fix_gps">Je cherche encore votre position. Le GPS marche mieux en extérieur.</string>
 </resources>

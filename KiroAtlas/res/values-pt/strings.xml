@@ -47,4 +47,9 @@
     <string name="nav_uturn">Faça o retorno</string>
     <string name="nav_turn">Vire %s</string>
     <string name="nav_in">Em %1$s, %2$s</string>
+    <string name="slow_fix_title">Ainda procurando você</string>
+    <string name="slow_fix_text">A localização usa só o GPS, e em ambientes fechados o GPS pode levar minutos ou não achar nenhum satélite. Ative a localização por Wi-Fi e redes móveis para tê-la em segundos.</string>
+    <string name="slow_fix_settings">Configurações de localização</string>
+    <string name="slow_fix_wait">Continuar esperando</string>
+    <string name="slow_fix_gps">Ainda procurando sua localização. O GPS funciona melhor ao ar livre.</string>
 </resources>

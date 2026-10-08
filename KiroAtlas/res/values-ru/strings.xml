@@ -47,4 +47,9 @@
     <string name="nav_uturn">Развернитесь</string>
     <string name="nav_turn">Поверните %s</string>
     <string name="nav_in">Через %1$s: %2$s</string>
+    <string name="slow_fix_title">Всё ещё ищу вас</string>
+    <string name="slow_fix_text">Местоположение определяется только по GPS, а в помещении GPS может искать спутники минутами или не найти их вовсе. Включите определение по Wi-Fi и мобильной сети, чтобы получить его за секунды.</string>
+    <string name="slow_fix_settings">Настройки местоположения</string>
+    <string name="slow_fix_wait">Подождать ещё</string>
+    <string name="slow_fix_gps">Всё ещё ищу ваше местоположение. GPS лучше работает на улице.</string>
 </resources>

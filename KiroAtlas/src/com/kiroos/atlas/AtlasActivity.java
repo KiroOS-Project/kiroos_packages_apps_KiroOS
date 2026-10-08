@@ -861,7 +861,64 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
                 // no such provider on this phone
             }
         }
+        // a recent fix another app got (Play services, the camera...) is a start
+        if (mLocation == null) {
+            try {
+                final Location last = mLocations.getLastKnownLocation(
+                        LocationManager.PASSIVE_PROVIDER);
+                if (last != null && System.currentTimeMillis() - last.getTime() < 10 * 60000) {
+                    onLocationChanged(last);
+                }
+            } catch (SecurityException | IllegalArgumentException e) {
+                // none
+            }
+        }
+        if (mListening && mLocation == null) {
+            mHandler.removeCallbacks(mSlowFix);
+            mHandler.postDelayed(mSlowFix, SLOW_FIX_MS);
+        }
     }
+
+    private static final long SLOW_FIX_MS = 12000;
+    private boolean mSlowFixShown;
+
+    /**
+     * No fix after a while: say why instead of waiting forever. With location set to "device
+     * only" (GPS), indoors there may be no satellite at all; Wi-Fi and mobile network location
+     * gives a position in seconds.
+     */
+    private final Runnable mSlowFix = new Runnable() {
+        @Override
+        public void run() {
+            if (mLocation != null || isDestroyed() || mSlowFixShown) return;
+            if (!mCenterOnFix && !mRoutePending) return;
+            mSlowFixShown = true;
+            boolean networkOff = false;
+            try {
+                networkOff = mLocations.getProvider(LocationManager.NETWORK_PROVIDER) != null
+                        && !mLocations.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } catch (Exception e) {
+                // no network location
+            }
+            if (!networkOff) {
+                toast(R.string.slow_fix_gps);
+                return;
+            }
+            new android.app.AlertDialog.Builder(AtlasActivity.this)
+                    .setTitle(R.string.slow_fix_title)
+                    .setMessage(R.string.slow_fix_text)
+                    .setNegativeButton(R.string.slow_fix_wait, null)
+                    .setPositiveButton(R.string.slow_fix_settings,
+                            new android.content.DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(android.content.DialogInterface d, int w) {
+                                    startActivity(new Intent(
+                                            Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                }
+                            })
+                    .show();
+        }
+    };
 
     private void stopLocation() {
         if (!mListening) return;
@@ -890,8 +947,13 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
             toast(R.string.need_location);
             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         } else {
+            mSlowFixShown = false;
             startLocation();
             toast(R.string.finding_location);
+            if (mListening && mLocation == null) {
+                mHandler.removeCallbacks(mSlowFix);
+                mHandler.postDelayed(mSlowFix, SLOW_FIX_MS);
+            }
         }
     }
 
@@ -905,6 +967,7 @@ public class AtlasActivity extends Activity implements MapView.Listener, Locatio
         }
         final boolean first = mLocation == null;
         mLocation = l;
+        mHandler.removeCallbacks(mSlowFix);
         mMap.setLocation(l.getLatitude(), l.getLongitude(), l.getAccuracy());
         if (mState == NAV && mNav != null) {
             navigate(l);

@@ -47,4 +47,9 @@
     <string name="nav_uturn">Cambia de sentido</string>
     <string name="nav_turn">Gira %s</string>
     <string name="nav_in">En %1$s, %2$s</string>
+    <string name="slow_fix_title">Aún te estoy buscando</string>
+    <string name="slow_fix_text">La ubicación usa solo GPS, y en interiores el GPS puede tardar minutos o no encontrar ningún satélite. Activa la ubicación con Wi-Fi y redes móviles para tenerla en segundos.</string>
+    <string name="slow_fix_settings">Ajustes de ubicación</string>
+    <string name="slow_fix_wait">Seguir esperando</string>
+    <string name="slow_fix_gps">Aún busco tu ubicación. El GPS funciona mejor al aire libre.</string>
 </resources>

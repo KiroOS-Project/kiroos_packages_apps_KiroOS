@@ -47,4 +47,9 @@
     <string name="nav_uturn">Fai inversione a U</string>
     <string name="nav_turn">Svolta %s</string>
     <string name="nav_in">Tra %1$s, %2$s</string>
+    <string name="slow_fix_title">Ti sto ancora cercando</string>
+    <string name="slow_fix_text">La posizione usa solo il GPS, e al chiuso il GPS può metterci minuti o non trovare nessun satellite. Attiva la posizione con Wi-Fi e reti mobili per averla in pochi secondi.</string>
+    <string name="slow_fix_settings">Impostazioni posizione</string>
+    <string name="slow_fix_wait">Aspetta ancora</string>
+    <string name="slow_fix_gps">Sto ancora cercando la tua posizione. Il GPS funziona meglio all\'aperto.</string>
 </resources>

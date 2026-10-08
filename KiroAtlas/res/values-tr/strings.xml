@@ -47,4 +47,9 @@
     <string name="nav_uturn">U dönüşü yapın</string>
     <string name="nav_turn">%s dönün</string>
     <string name="nav_in">%1$s sonra %2$s</string>
+    <string name="slow_fix_title">Hâlâ seni arıyorum</string>
+    <string name="slow_fix_text">Konum yalnızca GPS kullanıyor ve kapalı alanda GPS dakikalar sürebilir ya da hiç uydu bulamayabilir. Konumunu saniyeler içinde almak için Wi-Fi ve mobil ağ konumunu aç.</string>
+    <string name="slow_fix_settings">Konum ayarları</string>
+    <string name="slow_fix_wait">Beklemeye devam et</string>
+    <string name="slow_fix_gps">Konumun hâlâ aranıyor. GPS açık havada daha iyi çalışır.</string>
 </resources>

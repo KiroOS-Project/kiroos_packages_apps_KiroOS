@@ -47,4 +47,9 @@
     <string name="nav_uturn">Wenden</string>
     <string name="nav_turn">%s abbiegen</string>
     <string name="nav_in">In %1$s: %2$s</string>
+    <string name="slow_fix_title">Suche dich noch</string>
+    <string name="slow_fix_text">Der Standort nutzt nur GPS, und drinnen braucht GPS Minuten oder findet gar keine Satelliten. Schalte den Standort über WLAN und Mobilfunk ein, dann ist er in Sekunden da.</string>
+    <string name="slow_fix_settings">Standorteinstellungen</string>
+    <string name="slow_fix_wait">Weiter warten</string>
+    <string name="slow_fix_gps">Suche deinen Standort noch. GPS funktioniert draußen am besten.</string>
 </resources>

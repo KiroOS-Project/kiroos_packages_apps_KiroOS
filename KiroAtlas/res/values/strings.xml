@@ -48,4 +48,9 @@
     <string name="nav_uturn">Make a U-turn</string>
     <string name="nav_turn">Turn %s</string>
     <string name="nav_in">In %1$s, %2$s</string>
+    <string name="slow_fix_title">Still looking for you</string>
+    <string name="slow_fix_text">Location is set to GPS only, and indoors GPS can take minutes or find no satellites at all. Turn on location with Wi-Fi and mobile networks to get your position in seconds.</string>
+    <string name="slow_fix_settings">Location settings</string>
+    <string name="slow_fix_wait">Keep waiting</string>
+    <string name="slow_fix_gps">Still looking for your location. GPS works best outdoors.</string>
 </resources>
