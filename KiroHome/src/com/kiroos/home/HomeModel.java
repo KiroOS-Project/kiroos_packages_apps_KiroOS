@@ -69,19 +69,22 @@ final class HomeModel {
      * column, package}. Apps that are not installed leave their cell empty.
      */
     private static final Object[][] DEFAULT_CELLS = {
-            // first page, the two rows above the dock
-            {0, 1, 0, "com.android.vending"},
-            {0, 1, 1, "com.kiroos.calculator"},
-            {0, 1, 2, "com.kiroos.pulse"},
-            {0, 1, 3, "com.kiroos.calendar"},
-            {0, 0, 0, "com.kiroos.gallery"},
-            {0, 0, 1, "com.android.settings"},
-            {0, 0, 2, "com.kiroos.clock"},
-            {0, 0, 3, "com.kiroos.kai"},
-            // second page, the tools
-            {1, 3, 0, "com.kiroos.files"},
-            {1, 3, 3, "com.kiroos.contacts"},
-            {1, 2, 0, "com.kiroos.recorder"},
+            // KiroOS 3.0: only system apps, in full rows. First page, the everyday apps in the
+            // two rows above the dock
+            {0, 1, 0, "com.kiroos.gallery"},
+            {0, 1, 1, "com.kiroos.atlas"},
+            {0, 1, 2, "com.kiroos.calendar"},
+            {0, 1, 3, "com.kiroos.clock"},
+            {0, 0, 0, "com.kiroos.kai"},
+            {0, 0, 1, "com.kiroos.store"},
+            {0, 0, 2, "com.android.settings"},
+            {0, 0, 3, "com.kiroos.files"},
+            // second page, the tools, from the same rows
+            {1, 1, 0, "com.kiroos.contacts"},
+            {1, 1, 1, "com.kiroos.calculator"},
+            {1, 1, 2, "com.kiroos.recorder"},
+            {1, 1, 3, "com.kiroos.pulse"},
+            {1, 0, 0, "com.kiroos.canvas"},
     };
 
     static final String FOLDER_PREFIX = "folder:";
