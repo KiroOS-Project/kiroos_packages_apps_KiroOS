@@ -55,4 +55,10 @@
     <string name="transcribing">Anlaşılıyor…</string>
     <string name="voice_failed">Mikrofon kullanılamıyor.</string>
     <string name="open_chat">kAI\'de devam et</string>
+    <string name="history_title">Geçmiş</string>
+    <string name="history_empty">Henüz önceki sohbet yok. "Yeni sohbet" mevcut sohbeti burada saklar.</string>
+    <string name="history_untitled">Sohbet</string>
+    <string name="history_clear">Geçmişi temizle</string>
+    <string name="history_clear_confirm">Tüm önceki sohbetler silinsin mi? Geri alınamaz.</string>
+    <string name="history_deleted">Sohbet silindi</string>
 </resources>

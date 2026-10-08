@@ -55,4 +55,10 @@
     <string name="transcribing">Compréhension…</string>
     <string name="voice_failed">Le micro n\'est pas disponible.</string>
     <string name="open_chat">Continuer dans kAI</string>
+    <string name="history_title">Historique</string>
+    <string name="history_empty">Aucune discussion précédente. "Nouvelle discussion" garde ici l\'actuelle.</string>
+    <string name="history_untitled">Discussion</string>
+    <string name="history_clear">Effacer l\'historique</string>
+    <string name="history_clear_confirm">Supprimer toutes les discussions précédentes ? C\'est définitif.</string>
+    <string name="history_deleted">Discussion supprimée</string>
 </resources>

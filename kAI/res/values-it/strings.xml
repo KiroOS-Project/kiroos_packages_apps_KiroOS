@@ -54,4 +54,10 @@
     <string name="transcribing">Sto capendo…</string>
     <string name="voice_failed">Il microfono non è disponibile.</string>
     <string name="open_chat">Continua in kAI</string>
+    <string name="history_title">Cronologia</string>
+    <string name="history_empty">Nessuna chat precedente. "Nuova chat" conserva qui quella attuale.</string>
+    <string name="history_untitled">Chat</string>
+    <string name="history_clear">Cancella cronologia</string>
+    <string name="history_clear_confirm">Eliminare tutte le chat precedenti? Non si può annullare.</string>
+    <string name="history_deleted">Chat eliminata</string>
 </resources>

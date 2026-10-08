@@ -54,4 +54,10 @@
     <string name="transcribing">Wird verstanden…</string>
     <string name="voice_failed">Das Mikrofon ist nicht verfügbar.</string>
     <string name="open_chat">In kAI fortfahren</string>
+    <string name="history_title">Verlauf</string>
+    <string name="history_empty">Noch keine früheren Chats. "Neuer Chat" bewahrt den aktuellen hier auf.</string>
+    <string name="history_untitled">Chat</string>
+    <string name="history_clear">Verlauf löschen</string>
+    <string name="history_clear_confirm">Alle früheren Chats löschen? Das lässt sich nicht rückgängig machen.</string>
+    <string name="history_deleted">Chat gelöscht</string>
 </resources>

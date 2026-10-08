@@ -155,9 +155,19 @@ public class KaiActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (!mBusy) {
+                    // the chat is not lost: it goes into the history
+                    ChatStore.archive(KaiActivity.this, mMessages);
                     mMessages.clear();
                     save();
                     refresh();
+                }
+            }
+        });
+        findViewById(R.id.btn_history).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mBusy) {
+                    showHistory();
                 }
             }
         });
@@ -719,6 +729,101 @@ public class KaiActivity extends Activity {
     }
 
     // --- persistence ---------------------------------------------------------------------------
+
+    /**
+     * The earlier chats, newest first: a tap opens one (the current chat goes into the history
+     * in its place), a long press deletes one, "Clear history" deletes them all.
+     */
+    private void showHistory() {
+        final List<ChatStore.Past> past = ChatStore.history(this);
+        if (past.isEmpty()) {
+            Toast.makeText(this, R.string.history_empty, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final BaseAdapter adapter = new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return past.size();
+            }
+
+            @Override
+            public ChatStore.Past getItem(int position) {
+                return past.get(position);
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                final View v = convertView != null ? convertView : LayoutInflater.from(
+                        parent.getContext()).inflate(android.R.layout.simple_list_item_2,
+                        parent, false);
+                final ChatStore.Past p = getItem(position);
+                final TextView title = (TextView) v.findViewById(android.R.id.text1);
+                title.setSingleLine(true);
+                title.setEllipsize(android.text.TextUtils.TruncateAt.END);
+                title.setText(p.title.isEmpty() ? getString(R.string.history_untitled)
+                        : p.title);
+                ((TextView) v.findViewById(android.R.id.text2)).setText(
+                        android.text.format.DateUtils.getRelativeDateTimeString(
+                                KaiActivity.this, p.time,
+                                android.text.format.DateUtils.MINUTE_IN_MILLIS,
+                                android.text.format.DateUtils.WEEK_IN_MILLIS, 0));
+                return v;
+            }
+        };
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.history_title)
+                .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int which) {
+                        final ChatStore.Past p = past.get(which);
+                        final List<BridgeClient.Message> chat = ChatStore.open(p);
+                        ChatStore.delete(p);
+                        ChatStore.archive(KaiActivity.this, mMessages);
+                        mMessages.clear();
+                        mMessages.addAll(chat);
+                        save();
+                        refresh();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.history_clear, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface d, int which) {
+                        new AlertDialog.Builder(KaiActivity.this)
+                                .setMessage(R.string.history_clear_confirm)
+                                .setNegativeButton(android.R.string.cancel, null)
+                                .setPositiveButton(R.string.history_clear,
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface d2, int w) {
+                                                ChatStore.clearHistory(KaiActivity.this);
+                                            }
+                                        })
+                                .show();
+                    }
+                })
+                .create();
+        dialog.getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+                    long id) {
+                ChatStore.delete(past.remove(position));
+                adapter.notifyDataSetChanged();
+                Toast.makeText(KaiActivity.this, R.string.history_deleted,
+                        Toast.LENGTH_SHORT).show();
+                if (past.isEmpty()) {
+                    dialog.dismiss();
+                }
+                return true;
+            }
+        });
+        dialog.show();
+    }
 
     private void save() {
         ChatStore.save(this, mMessages);

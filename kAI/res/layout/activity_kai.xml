@@ -43,6 +43,15 @@
             android:src="@drawable/ic_web" />
 
         <ImageButton
+            android:id="@+id/btn_history"
+            android:layout_width="@dimen/kiro_touch_target"
+            android:layout_height="@dimen/kiro_touch_target"
+            android:background="@drawable/kiro_icon_button"
+            android:contentDescription="@string/history_title"
+            android:tint="?android:attr/textColorPrimary"
+            android:src="@drawable/ic_history" />
+
+        <ImageButton
             android:id="@+id/btn_new"
             android:layout_width="@dimen/kiro_touch_target"
             android:layout_height="@dimen/kiro_touch_target"

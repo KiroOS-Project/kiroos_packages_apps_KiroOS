@@ -55,4 +55,10 @@
     <string name="transcribing">Entendendo…</string>
     <string name="voice_failed">O microfone não está disponível.</string>
     <string name="open_chat">Continuar no kAI</string>
+    <string name="history_title">Histórico</string>
+    <string name="history_empty">Ainda não há conversas anteriores. "Nova conversa" guarda a atual aqui.</string>
+    <string name="history_untitled">Conversa</string>
+    <string name="history_clear">Limpar histórico</string>
+    <string name="history_clear_confirm">Excluir todas as conversas anteriores? Não é possível desfazer.</string>
+    <string name="history_deleted">Conversa excluída</string>
 </resources>
