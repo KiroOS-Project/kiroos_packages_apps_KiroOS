@@ -735,7 +735,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 .setComponent(new android.content.ComponentName(APP_LOCK_PACKAGE,
                         APP_LOCK_PACKAGE + ".LockAppActivity"))
                 .putExtra(Intent.EXTRA_PACKAGE_NAME, pkg)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // a fresh screen for every request: an earlier one left open (say, at "Set
+                // screen lock") would otherwise come back instead, and this app be ignored
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return getPackageManager().resolveActivity(i, 0) != null ? i : null;
     }
 
