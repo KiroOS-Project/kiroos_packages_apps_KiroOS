@@ -229,10 +229,23 @@ public class MapView extends View {
         if (on == mTilted) return;
         mTilted = on;
         setCameraDistance(9000 * mDensity);
-        setPivotX(getWidth() / 2f);
-        setPivotY(getHeight() / 2f);
+        // before the first layout the size is 0: the pivot would be the top left corner and
+        // the map would lean off to the side (the dot ended low on the right); onSizeChanged
+        // sets it again
+        if (getWidth() > 0) {
+            setPivotX(getWidth() / 2f);
+            setPivotY(getHeight() / 2f);
+        }
         animate().rotationX(on ? 34f : 0f).scaleX(on ? 1.32f : 1f).scaleY(on ? 1.32f : 1f)
                 .setDuration(500).setInterpolator(new DecelerateInterpolator(1.6f)).start();
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        // the lean turns around the middle of the map
+        setPivotX(w / 2f);
+        setPivotY(h / 2f);
     }
 
     boolean tilted() {
