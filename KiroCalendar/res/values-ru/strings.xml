@@ -44,4 +44,12 @@
     <string name="no_upcoming">Ничего не запланировано на ближайшие 12 месяцев</string>
     <string name="no_results">Ничего не найдено</string>
     <string name="tomorrow">Завтра</string>
+    <string name="widget_upnext_label">Далее</string>
+    <string name="widget_upnext_empty">На сегодня и завтра ничего не запланировано.</string>
+    <string name="widget_upnext_permission">Откройте Календарь, чтобы видеть здесь события.</string>
+    <string name="widget_untitled">(Без названия)</string>
+    <string name="widget_all_day">Весь день</string>
+    <string name="widget_tomorrow_all_day">Завтра, весь день</string>
+    <string name="widget_now">Сейчас</string>
+    <string name="widget_tomorrow_at">Завтра %1$s</string>
 </resources>

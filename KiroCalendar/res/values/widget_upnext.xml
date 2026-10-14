@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Calendar "Up next" widget: row styles -->
+<resources>
+    <style name="UpNextRow">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="UpNextDot">
+        <item name="android:layout_width">8dp</item>
+        <item name="android:layout_height">8dp</item>
+        <item name="android:src">@drawable/widget_upnext_dot</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="UpNextTitle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/kiro_text</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="UpNextTime">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/kiro_text_secondary</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+</resources>

@@ -43,4 +43,12 @@
     <string name="no_upcoming">Niente in programma nei prossimi 12 mesi</string>
     <string name="no_results">Nessun risultato</string>
     <string name="tomorrow">Domani</string>
+    <string name="widget_upnext_label">In arrivo</string>
+    <string name="widget_upnext_empty">Niente in programma per oggi e domani.</string>
+    <string name="widget_upnext_permission">Apri Calendario per vedere qui i tuoi eventi.</string>
+    <string name="widget_untitled">(Senza titolo)</string>
+    <string name="widget_all_day">Tutto il giorno</string>
+    <string name="widget_tomorrow_all_day">Domani, tutto il giorno</string>
+    <string name="widget_now">Ora</string>
+    <string name="widget_tomorrow_at">Domani %1$s</string>
 </resources>

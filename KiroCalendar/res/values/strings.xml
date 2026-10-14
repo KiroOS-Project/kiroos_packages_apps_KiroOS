@@ -43,4 +43,12 @@
     <string name="no_upcoming">Nothing planned in the next 12 months</string>
     <string name="no_results">Nothing found</string>
     <string name="tomorrow">Tomorrow</string>
+    <string name="widget_upnext_label">Up next</string>
+    <string name="widget_upnext_empty">Nothing planned for today and tomorrow.</string>
+    <string name="widget_upnext_permission">Open Calendar to show your events here.</string>
+    <string name="widget_untitled">(No title)</string>
+    <string name="widget_all_day">All day</string>
+    <string name="widget_tomorrow_all_day">Tomorrow, all day</string>
+    <string name="widget_now">Now</string>
+    <string name="widget_tomorrow_at">Tomorrow %1$s</string>
 </resources>

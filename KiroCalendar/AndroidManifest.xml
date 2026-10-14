@@ -75,6 +75,26 @@
         </activity>
 
         <!-- reminders scheduled by the CalendarProvider -->
+        <!-- "Up next" widget: refreshed when events change, on a new day, or a new clock -->
+        <receiver
+            android:name=".UpNextWidget"
+            android:label="@string/widget_upnext_label"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PROVIDER_CHANGED" />
+                <data android:scheme="content" android:host="com.android.calendar" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_upnext_info" />
+        </receiver>
+
         <receiver android:name=".AlertReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.EVENT_REMINDER" />

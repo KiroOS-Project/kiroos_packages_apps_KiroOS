@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Calendar "Up next" widget: the date, then up to three events (colour dot, title, time) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/upnext_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_upnext_bg"
+    android:orientation="vertical"
+    android:paddingBottom="12dp"
+    android:paddingEnd="18dp"
+    android:paddingStart="18dp"
+    android:paddingTop="14dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:singleLine="true"
+            android:text="@string/widget_upnext_label"
+            android:textColor="@color/kiro_accent"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/upnext_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/kiro_text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/upnext_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/kiro_text_secondary"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
+    <LinearLayout android:id="@+id/upnext_row1" style="@style/UpNextRow">
+        <ImageView android:id="@+id/upnext_dot1" style="@style/UpNextDot" />
+        <TextView android:id="@+id/upnext_title1" style="@style/UpNextTitle" />
+        <TextView android:id="@+id/upnext_time1" style="@style/UpNextTime" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/upnext_row2" style="@style/UpNextRow">
+        <ImageView android:id="@+id/upnext_dot2" style="@style/UpNextDot" />
+        <TextView android:id="@+id/upnext_title2" style="@style/UpNextTitle" />
+        <TextView android:id="@+id/upnext_time2" style="@style/UpNextTime" />
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/upnext_row3" style="@style/UpNextRow">
+        <ImageView android:id="@+id/upnext_dot3" style="@style/UpNextDot" />
+        <TextView android:id="@+id/upnext_title3" style="@style/UpNextTitle" />
+        <TextView android:id="@+id/upnext_time3" style="@style/UpNextTime" />
+    </LinearLayout>
+</LinearLayout>

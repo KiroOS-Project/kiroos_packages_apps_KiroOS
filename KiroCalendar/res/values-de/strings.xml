@@ -44,4 +44,12 @@
     <string name="no_upcoming">Nichts geplant in den nächsten 12 Monaten</string>
     <string name="no_results">Nichts gefunden</string>
     <string name="tomorrow">Morgen</string>
+    <string name="widget_upnext_label">Als Nächstes</string>
+    <string name="widget_upnext_empty">Für heute und morgen ist nichts geplant.</string>
+    <string name="widget_upnext_permission">Öffne den Kalender, um hier deine Termine zu sehen.</string>
+    <string name="widget_untitled">(Ohne Titel)</string>
+    <string name="widget_all_day">Ganztägig</string>
+    <string name="widget_tomorrow_all_day">Morgen, ganztägig</string>
+    <string name="widget_now">Jetzt</string>
+    <string name="widget_tomorrow_at">Morgen %1$s</string>
 </resources>

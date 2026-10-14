@@ -44,4 +44,12 @@
     <string name="no_upcoming">Önümüzdeki 12 ayda planlanmış bir şey yok</string>
     <string name="no_results">Sonuç bulunamadı</string>
     <string name="tomorrow">Yarın</string>
+    <string name="widget_upnext_label">Sıradaki</string>
+    <string name="widget_upnext_empty">Bugün ve yarın için plan yok.</string>
+    <string name="widget_upnext_permission">Etkinliklerini burada görmek için Takvim\'i aç.</string>
+    <string name="widget_untitled">(Başlıksız)</string>
+    <string name="widget_all_day">Tüm gün</string>
+    <string name="widget_tomorrow_all_day">Yarın, tüm gün</string>
+    <string name="widget_now">Şimdi</string>
+    <string name="widget_tomorrow_at">Yarın %1$s</string>
 </resources>
