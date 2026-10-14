@@ -23,7 +23,7 @@
     <string name="send_failed_title">Message not sent</string>
     <string name="send_failed_text">Open the conversation and tap the message to try again.</string>
     <string name="download_failed_title">Picture message not downloaded</string>
-    <string name="download_failed_text">Mobile data is needed to download MMS. It will be retried by the carrier.</string>
+    <string name="download_failed_text">Cellular data is needed to download MMS. It will be retried by the carrier.</string>
     <string name="no_recipients">Add a recipient</string>
     <string name="not_default">Make Kiro Messages the default SMS app to send messages</string>
     <string name="copy_text">Copy text</string>
