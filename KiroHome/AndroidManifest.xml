@@ -18,6 +18,8 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <!-- "Lock app" / "Unlock app" in an app's long-press menu (KiroOS App Lock) -->
     <uses-permission android:name="com.kiroos.applock.permission.LOCK_APPS" />
+    <!-- which app just went back to the home, so its icon catches it (Home 2.0) -->
+    <uses-permission android:name="android.permission.REAL_GET_TASKS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application

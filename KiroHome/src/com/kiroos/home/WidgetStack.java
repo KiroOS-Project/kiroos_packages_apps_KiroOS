@@ -58,7 +58,19 @@ final class WidgetStack {
         for (int id : ids()) {
             addView(id);
         }
+        // Home 2.0: when a widget comes or goes, the others glide to their new place (the
+        // widget itself animates on its own, see add / remove)
+        final android.animation.LayoutTransition lt = new android.animation.LayoutTransition();
+        lt.setAnimator(android.animation.LayoutTransition.APPEARING, null);
+        lt.setAnimator(android.animation.LayoutTransition.DISAPPEARING, null);
+        lt.setDuration(280);
+        lt.setInterpolator(android.animation.LayoutTransition.CHANGE_APPEARING, EASE);
+        lt.setInterpolator(android.animation.LayoutTransition.CHANGE_DISAPPEARING, EASE);
+        mStack.setLayoutTransition(lt);
     }
+
+    private static final android.view.animation.Interpolator EASE =
+            new android.view.animation.PathInterpolator(0.2f, 0.9f, 0.1f, 1f);
 
     AppWidgetHost host() {
         return mHost;
@@ -97,7 +109,16 @@ final class WidgetStack {
         }
         ids.add(id);
         save(ids);
-        addView(id);
+        final View v = addView(id);
+        if (v != null) {
+            // a new widget grows in from a little smaller, with a small bounce
+            v.setAlpha(0f);
+            v.setScaleX(0.86f);
+            v.setScaleY(0.86f);
+            v.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(120).setDuration(380)
+                    .setInterpolator(new android.view.animation.OvershootInterpolator(1.4f))
+                    .start();
+        }
     }
 
     void remove(int id) {
@@ -107,17 +128,25 @@ final class WidgetStack {
         for (int i = 0; i < mStack.getChildCount(); i++) {
             final View v = mStack.getChildAt(i);
             if (v instanceof AppWidgetHostView && ((AppWidgetHostView) v).getAppWidgetId() == id) {
-                mStack.removeViewAt(i);
+                // it shrinks and fades, then leaves its place (the others glide up)
+                v.setEnabled(false);
+                v.animate().alpha(0f).scaleX(0.86f).scaleY(0.86f).setDuration(200)
+                        .setInterpolator(EASE).withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                mStack.removeView(v);
+                            }
+                        }).start();
                 break;
             }
         }
         mHost.deleteAppWidgetId(id);
     }
 
-    private void addView(final int id) {
+    private View addView(final int id) {
         final AppWidgetProviderInfo info = mManager.getAppWidgetInfo(id);
         if (info == null) {
-            return;
+            return null;
         }
         final AppWidgetHostView view = mHost.createView(mActivity.getApplicationContext(), id, info);
         view.setAppWidget(id, info);
@@ -142,6 +171,7 @@ final class WidgetStack {
         });
         view.setLongClickable(true);
         mStack.addView(view, lp);
+        return view;
     }
 
     private List<Integer> ids() {

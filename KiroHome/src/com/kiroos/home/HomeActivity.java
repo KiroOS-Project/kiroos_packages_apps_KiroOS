@@ -330,6 +330,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     @Override
     protected void onResume() {
         super.onResume();
+        catchClosingApp();
         schedulePublishIcons(700);
     }
 
@@ -650,7 +651,79 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             mRepo.launcherApps().startMainActivity(app.component, app.user, bounds, opts);
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_SHORT).show();
+            return;
         }
+        // Home 2.0: the icon becomes the app. Its picture leaves as the window grows out of
+        // it, so no second copy of the icon stays behind the opening app; it is back a moment
+        // later (the app covers the home by then, or it is a small window over it)
+        final View icon = from != null ? from.findViewById(R.id.app_icon) : null;
+        if (icon != null) {
+            icon.animate().cancel();
+            icon.animate().alpha(0f).setStartDelay(40).setDuration(110).start();
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    icon.animate().cancel();
+                    icon.setAlpha(1f);
+                }
+            }, 900);
+        }
+    }
+
+    /** how far into the system's close (320 ms) the app melts into its icon */
+    private static final long CATCH_DELAY = 210;
+
+    /**
+     * Home 2.0: an app that just went back to the home lands in its icon, and the icon catches
+     * it: it appears as the app melts into it and settles with a small bounce. Only right
+     * after an app left (its task was active in the last moment), not on screen on.
+     */
+    private void catchClosingApp() {
+        String pkg = null;
+        try {
+            final android.app.ActivityManager am = getSystemService(
+                    android.app.ActivityManager.class);
+            for (android.app.ActivityManager.RecentTaskInfo t : am.getRecentTasks(3,
+                    android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE)) {
+                if (t.baseIntent == null || t.baseIntent.getComponent() == null) continue;
+                final String p = t.baseIntent.getComponent().getPackageName();
+                if (p.equals(getPackageName())) continue;
+                if (System.currentTimeMillis() - t.lastActiveTime < 1500) pkg = p;
+                break;
+            }
+        } catch (RuntimeException e) {
+            return;
+        }
+        if (pkg == null || isDrawerOpen()) return;
+        final View icon = visibleIcon(pkg);
+        if (icon == null) return;
+        icon.animate().cancel();
+        icon.setAlpha(0f);
+        icon.setScaleX(0.8f);
+        icon.setScaleY(0.8f);
+        icon.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(CATCH_DELAY)
+                .setDuration(360).setInterpolator(new android.view.animation.OvershootInterpolator(2.2f))
+                .start();
+    }
+
+    /** the icon picture of an app on the page shown or in the dock (a folder counts) */
+    private View visibleIcon(String pkg) {
+        final int page = mWorkspace.currentPage();
+        for (int i = 0; i < mWorkspace.getChildCount() + mDock.getChildCount(); i++) {
+            final View c;
+            if (i < mWorkspace.getChildCount()) {
+                c = mWorkspace.getChildAt(i);
+                if (((Workspace.LayoutParams) c.getLayoutParams()).page != page) continue;
+            } else {
+                c = mDock.getChildAt(i - mWorkspace.getChildCount());
+            }
+            final Object tag = c.getTag(R.id.kiro_icon_packages);
+            if (!(tag instanceof String[])) continue;
+            for (String p : (String[]) tag) {
+                if (pkg.equals(p)) return c.findViewById(R.id.app_icon);
+            }
+        }
+        return null;
     }
 
     private void showAppMenu(final AppInfo app, View anchor) {
