@@ -523,7 +523,18 @@ final class HomeModel {
         save();
     }
 
+    /** true once, right after the first layout of a new phone was made (no earlier home) */
+    private boolean mFreshInstall;
+
+    /** a new phone's first home: the default widgets go in too (read once) */
+    boolean takeFreshInstall() {
+        final boolean f = mFreshInstall;
+        mFreshInstall = false;
+        return f;
+    }
+
     private void buildDefault(AppRepository repo) {
+        mFreshInstall = TextUtils.isEmpty(mPrefs.getString("grid", ""));
         ensurePage(1);
         for (int i = 0; i < DEFAULT_DOCK.length; i++) {
             mDock[i] = keyFor(repo, DEFAULT_DOCK[i]);

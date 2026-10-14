@@ -121,6 +121,24 @@ final class WidgetStack {
         }
     }
 
+    /** the widgets of a new phone's home: the kAI bar (Kiro Home binds it, no prompt) */
+    void seedDefaults() {
+        if (!ids().isEmpty()) return;
+        final android.content.ComponentName bar = new android.content.ComponentName(
+                "com.kiroos.kai", "com.kiroos.kai.KaiBarWidget");
+        int id = -1;
+        try {
+            id = allocateId();
+            if (mManager.bindAppWidgetIdIfAllowed(id, bar)) {
+                add(id);
+                return;
+            }
+        } catch (RuntimeException e) {
+            // no kAI on this build, or the widget service not up: a plain home
+        }
+        if (id != -1) deleteId(id);
+    }
+
     void remove(int id) {
         final List<Integer> ids = ids();
         ids.remove(Integer.valueOf(id));

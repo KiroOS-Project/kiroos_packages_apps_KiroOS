@@ -381,6 +381,10 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     @Override
     public void onAppsChanged(List<AppInfo> apps) {
         mModel.load(mRepo);
+        if (mModel.takeFreshInstall()) {
+            // a new phone: the home is set like out of the box, the kAI bar under the clock
+            mWidgets.seedDefaults();
+        }
         mModel.prune(mRepo);
         mModel.fitRows();
         mDrawerAdapter.setApps(apps);
