@@ -61,4 +61,7 @@
     <string name="history_clear">Очистить историю</string>
     <string name="history_clear_confirm">Удалить все прошлые чаты? Это нельзя отменить.</string>
     <string name="history_deleted">Чат удалён</string>
+    <string name="widget_kai_label">Панель kAI</string>
+    <string name="widget_kai_hint">Спросите kAI…</string>
+    <string name="widget_kai_listen">Сказать kAI</string>
 </resources>

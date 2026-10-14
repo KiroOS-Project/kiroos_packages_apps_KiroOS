@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- kAI bar widget: a pill with the sparkle, "Ask kAI…" and the microphone -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/kai_bar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/widget_kai_bar_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="6dp"
+        android:paddingStart="16dp">
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_sparkle"
+            android:tint="@color/kiro_accent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/widget_kai_hint"
+            android:textColor="@color/kiro_text_secondary"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/kai_bar_mic"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:contentDescription="@string/widget_kai_listen"
+            android:padding="10dp"
+            android:src="@drawable/ic_mic"
+            android:tint="@color/kiro_text" />
+    </LinearLayout>
+</FrameLayout>

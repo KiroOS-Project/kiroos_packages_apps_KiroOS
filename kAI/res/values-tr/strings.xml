@@ -61,4 +61,7 @@
     <string name="history_clear">Geçmişi temizle</string>
     <string name="history_clear_confirm">Tüm önceki sohbetler silinsin mi? Geri alınamaz.</string>
     <string name="history_deleted">Sohbet silindi</string>
+    <string name="widget_kai_label">kAI çubuğu</string>
+    <string name="widget_kai_hint">kAI\'ye sor…</string>
+    <string name="widget_kai_listen">kAI ile konuş</string>
 </resources>

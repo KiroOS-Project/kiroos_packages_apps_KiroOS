@@ -62,4 +62,7 @@
     <string name="history_clear">Clear history</string>
     <string name="history_clear_confirm">Delete all earlier chats? This can\'t be undone.</string>
     <string name="history_deleted">Chat deleted</string>
+    <string name="widget_kai_label">kAI bar</string>
+    <string name="widget_kai_hint">Ask kAI…</string>
+    <string name="widget_kai_listen">Speak to kAI</string>
 </resources>

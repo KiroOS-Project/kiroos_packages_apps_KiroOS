@@ -61,4 +61,7 @@
     <string name="history_clear">Limpar histórico</string>
     <string name="history_clear_confirm">Excluir todas as conversas anteriores? Não é possível desfazer.</string>
     <string name="history_deleted">Conversa excluída</string>
+    <string name="widget_kai_label">Barra do kAI</string>
+    <string name="widget_kai_hint">Pergunte ao kAI…</string>
+    <string name="widget_kai_listen">Falar com o kAI</string>
 </resources>

@@ -60,4 +60,7 @@
     <string name="history_clear">Verlauf löschen</string>
     <string name="history_clear_confirm">Alle früheren Chats löschen? Das lässt sich nicht rückgängig machen.</string>
     <string name="history_deleted">Chat gelöscht</string>
+    <string name="widget_kai_label">kAI-Leiste</string>
+    <string name="widget_kai_hint">Frag kAI…</string>
+    <string name="widget_kai_listen">Mit kAI sprechen</string>
 </resources>
