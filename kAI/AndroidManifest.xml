@@ -55,6 +55,17 @@
             android:theme="@style/Theme.Kai.Overlay"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
+        <!-- typing on the home: "Ask kAI…" on the kAI bar widget -->
+        <activity
+            android:name=".KaiQuickAskActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:noHistory="true"
+            android:taskAffinity="com.kiroos.kai.quick"
+            android:theme="@style/Theme.Kai.Overlay"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustNothing" />
+
         <!-- the kAI bar widget (on the home of a new phone, under the clock) -->
         <receiver
             android:name=".KaiBarWidget"

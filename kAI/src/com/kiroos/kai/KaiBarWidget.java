@@ -24,16 +24,17 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 /**
- * The kAI bar on the home (KiroOS widget, under the clock on a new phone): "Ask kAI…" opens
- * kAI, the microphone opens it listening.
+ * The kAI bar on the home (KiroOS widget, under the clock on a new phone): "Ask kAI…" turns
+ * into a text field on the home (KaiQuickAskActivity, Send opens kAI with the question), the
+ * microphone opens kAI listening.
  */
 public class KaiBarWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
         final RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_kai_bar);
-        final Intent open = new Intent(context, KaiActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        final Intent open = new Intent(context, KaiQuickAskActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         v.setOnClickPendingIntent(R.id.kai_bar, PendingIntent.getActivity(context, 0, open,
                 PendingIntent.FLAG_UPDATE_CURRENT));
         // the same start as holding Power: kAI opens and listens

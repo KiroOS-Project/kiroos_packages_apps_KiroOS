@@ -60,6 +60,9 @@ public class KaiActivity extends Activity {
     static final String SOURCES_MARK = "\n\n🔎 ";
     private static final Pattern LINK = Pattern.compile("\\[([^\\]\\n]+)\\]\\((https?://[^)\\s]+)\\)");
     /** Ollama's port; over USB "adb reverse tcp:11434 tcp:11434" maps it to the PC */
+    /** with EXTRA_TEXT: ask it right away (the home's kAI field, KaiQuickAskActivity) */
+    static final String EXTRA_SEND = "com.kiroos.kai.extra.SEND";
+
     private static final int DEFAULT_PORT = 11434;
     /** first character of R.string.error_answer in every language */
     private static final String ERROR_MARK = "⚠";
@@ -187,19 +190,53 @@ public class KaiActivity extends Activity {
         });
         load();
         refresh();
-        if (getIntent().getBooleanExtra("from_power_key", false) && Voice.available()) {
+        handleIntent(getIntent());
+    }
+
+    /*
+     * kAI is singleTask: when it is already open (behind the home), the kAI bar's microphone
+     * and the home's text field reach it here, not in onCreate. Before Beta 4 they only
+     * brought it to the front, and it did not listen.
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent.getBooleanExtra("from_power_key", false) && Voice.available()) {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    toggleVoice();
+                    if (!mVoice.recording()) {
+                        toggleVoice();
+                    }
                 }
             }, 350);
         }
-        // shared text ("Share → kAI") becomes the prompt
-        final String shared = getIntent().getStringExtra(Intent.EXTRA_TEXT);
+        // shared text ("Share → kAI") becomes the prompt; from the home's field it is asked
+        final String shared = intent.getStringExtra(Intent.EXTRA_TEXT);
         if (shared != null) {
             mInput.setText(shared);
+            mInput.setSelection(shared.length());
+            if (intent.getBooleanExtra(EXTRA_SEND, false)) {
+                // after onResume, which reloads the chat from disk
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!mBusy) {
+                            send();
+                        }
+                    }
+                });
+            }
         }
+        // done once: not again when the activity is recreated (rotation, theme)
+        intent.removeExtra("from_power_key");
+        intent.removeExtra(Intent.EXTRA_TEXT);
+        intent.removeExtra(EXTRA_SEND);
     }
 
     @Override
