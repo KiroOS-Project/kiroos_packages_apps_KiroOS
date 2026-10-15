@@ -27,6 +27,14 @@
  * It answers the standard Equalizer parameters (android.media.audiofx.Equalizer), so music apps
  * that open their own equalizer get the ten bands too. Stereo 16-bit, as the effect chains of
  * Android 7 run.
+ *
+ * Bass (Kiro Sound's Bass slider, KIRO_PARAM_BASS / KIRO_PARAM_BASS_MODE): the NXP bass boost
+ * raised frequencies the phone's speaker cannot move, then lowered the volume to make room, so
+ * all one heard was a quieter phone. Here the bass follows the output:
+ *  - speaker: a broad boost around 150 Hz, where the speaker still plays, plus virtual bass:
+ *    the notes below it (filtered out of the mono sum) are rectified into their harmonics,
+ *    which the speaker can play and from which the ear rebuilds the missing fundamental;
+ *  - headphones / Bluetooth: a low shelf below 90 Hz, the real deep bass they can play.
  */
 
 #define LOG_TAG "KiroEqualizer"
@@ -46,6 +54,17 @@
 #define PRESET_CUSTOM (-1)
 #define BAND_Q 1.41421356f  /* one octave */
 #define LIMIT 0.966f        /* -0.3 dBFS */
+
+/* KiroOS parameters (int32 param, int16 or int32 value), next to the standard ones */
+#define KIRO_PARAM_BASS 0x4B01          /* 0-1000 */
+#define KIRO_PARAM_BASS_MODE 0x4B02     /* 0 speaker, 1 headphones / Bluetooth */
+#define BASS_SPEAKER_HZ 150.0f
+#define BASS_SPEAKER_DB 8.0f
+#define BASS_SPEAKER_Q 0.8f
+#define BASS_VIRTUAL_HZ 140.0f          /* below this the speaker gets harmonics instead */
+#define BASS_VIRTUAL_GAIN 3.0f
+#define BASS_SHELF_HZ 90.0f
+#define BASS_SHELF_DB 10.0f
 
 static const int kCenterHz[NUM_BANDS] = {
     31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000,
@@ -101,6 +120,18 @@ typedef struct {
     float pregain;
     float gain;                     /* limiter */
     float release;
+    /* bass */
+    int bass;                       /* 0-1000 */
+    int bassMode;
+    int bassActive;
+    biquad_t bassBq;                /* speaker peak or headphone shelf, both channels */
+    float bassZ[2][2];
+    int virtualActive;
+    float virtualGain;
+    biquad_t vLow[2];               /* 4th-order low pass of the mono sum: the missing bass */
+    biquad_t vBand[2];              /* high pass + low pass around the harmonics */
+    float vLowZ[2][2];
+    float vBandZ[2][2];
 } eq_context_t;
 
 static const struct effect_interface_s gInterface;
@@ -121,9 +152,86 @@ static float presetLevel(int preset, int band)
     return 0;
 }
 
+/* RBJ cookbook filters */
+static void peaking(biquad_t *q, float rate, float hz, float db, float Q)
+{
+    const float A = powf(10.0f, db / 40.0f);
+    const float w0 = 2.0f * (float) M_PI * hz / rate;
+    const float alpha = sinf(w0) / (2.0f * Q);
+    const float cw = cosf(w0);
+    const float a0 = 1.0f + alpha / A;
+    q->b0 = (1.0f + alpha * A) / a0;
+    q->b1 = (-2.0f * cw) / a0;
+    q->b2 = (1.0f - alpha * A) / a0;
+    q->a1 = (-2.0f * cw) / a0;
+    q->a2 = (1.0f - alpha / A) / a0;
+}
+
+static void lowShelf(biquad_t *q, float rate, float hz, float db)
+{
+    const float A = powf(10.0f, db / 40.0f);
+    const float w0 = 2.0f * (float) M_PI * hz / rate;
+    const float cw = cosf(w0);
+    const float alpha = sinf(w0) / 2.0f * sqrtf(2.0f);   /* S = 1 */
+    const float sa = 2.0f * sqrtf(A) * alpha;
+    const float a0 = (A + 1) + (A - 1) * cw + sa;
+    q->b0 = A * ((A + 1) - (A - 1) * cw + sa) / a0;
+    q->b1 = 2 * A * ((A - 1) - (A + 1) * cw) / a0;
+    q->b2 = A * ((A + 1) - (A - 1) * cw - sa) / a0;
+    q->a1 = -2 * ((A - 1) + (A + 1) * cw) / a0;
+    q->a2 = ((A + 1) + (A - 1) * cw - sa) / a0;
+}
+
+static void passFilter(biquad_t *q, float rate, float hz, int high)
+{
+    const float w0 = 2.0f * (float) M_PI * hz / rate;
+    const float cw = cosf(w0);
+    const float alpha = sinf(w0) / (2.0f * 0.70710678f);
+    const float a0 = 1.0f + alpha;
+    if (high) {
+        q->b0 = (1.0f + cw) / 2.0f / a0;
+        q->b1 = -(1.0f + cw) / a0;
+    } else {
+        q->b0 = (1.0f - cw) / 2.0f / a0;
+        q->b1 = (1.0f - cw) / a0;
+    }
+    q->b2 = q->b0;
+    q->a1 = -2.0f * cw / a0;
+    q->a2 = (1.0f - alpha) / a0;
+}
+
+static inline float runBiquad(const biquad_t *q, float *z, float v)
+{
+    /* transposed direct form II */
+    const float y = q->b0 * v + z[0];
+    z[0] = q->b1 * v - q->a1 * y + z[1];
+    z[1] = q->b2 * v - q->a2 * y;
+    return y;
+}
+
 static void design(eq_context_t *c)
 {
     float maxBoost = 0;
+    const float s = c->bass / 1000.0f;
+    float bassDb = 0;
+    c->bassActive = c->bass > 0;
+    c->virtualActive = c->bass > 0 && c->bassMode == 0;
+    if (c->bassActive) {
+        if (c->bassMode == 0) {
+            bassDb = BASS_SPEAKER_DB * s;
+            peaking(&c->bassBq, c->rate, BASS_SPEAKER_HZ, bassDb, BASS_SPEAKER_Q);
+        } else {
+            bassDb = BASS_SHELF_DB * s;
+            lowShelf(&c->bassBq, c->rate, BASS_SHELF_HZ, bassDb);
+        }
+    }
+    if (c->virtualActive) {
+        c->virtualGain = BASS_VIRTUAL_GAIN * s;
+        passFilter(&c->vLow[0], c->rate, BASS_VIRTUAL_HZ, 0);
+        passFilter(&c->vLow[1], c->rate, BASS_VIRTUAL_HZ, 0);
+        passFilter(&c->vBand[0], c->rate, BASS_VIRTUAL_HZ, 1);  /* drops the DC of |x| */
+        passFilter(&c->vBand[1], c->rate, 600.0f, 0);
+    }
     for (int b = 0; b < NUM_BANDS; b++) {
         const float db = c->levels[b] / 100.0f;
         c->active[b] = c->levels[b] != 0 && kCenterHz[b] < c->rate * 0.45f;
@@ -131,25 +239,22 @@ static void design(eq_context_t *c)
             continue;
         }
         if (db > maxBoost) maxBoost = db;
-        /* RBJ cookbook peaking EQ */
-        const float A = powf(10.0f, db / 40.0f);
-        const float w0 = 2.0f * (float) M_PI * kCenterHz[b] / c->rate;
-        const float alpha = sinf(w0) / (2.0f * BAND_Q);
-        const float cw = cosf(w0);
-        const float a0 = 1.0f + alpha / A;
-        c->bq[b].b0 = (1.0f + alpha * A) / a0;
-        c->bq[b].b1 = (-2.0f * cw) / a0;
-        c->bq[b].b2 = (1.0f - alpha * A) / a0;
-        c->bq[b].a1 = (-2.0f * cw) / a0;
-        c->bq[b].a2 = (1.0f - alpha / A) / a0;
+        peaking(&c->bq[b], c->rate, kCenterHz[b], db, BAND_Q);
     }
-    /* half of the biggest boost back as headroom, the limiter takes care of the rest */
-    c->pregain = powf(10.0f, -maxBoost * 0.5f / 20.0f);
+    /* a quarter of the biggest band boost back as headroom, none for the bass: on the output
+     * mix the volume is already applied, so below full volume there is room anyway, and a
+     * bass that lowers everything else only sounds quieter (what the NXP bass boost did).
+     * At full volume the limiter catches the peaks. */
+    (void) bassDb;
+    c->pregain = powf(10.0f, -maxBoost * 0.25f / 20.0f);
 }
 
 static void resetState(eq_context_t *c)
 {
     memset(c->z, 0, sizeof(c->z));
+    memset(c->bassZ, 0, sizeof(c->bassZ));
+    memset(c->vLowZ, 0, sizeof(c->vLowZ));
+    memset(c->vBandZ, 0, sizeof(c->vBandZ));
     c->gain = 1.0f;
 }
 
@@ -210,19 +315,26 @@ static int32_t eq_process(effect_handle_t self, audio_buffer_t *in, audio_buffer
 
     for (size_t i = 0; i < frames; i++) {
         float x[2] = { src[2 * i] * (1.0f / 32768.0f), src[2 * i + 1] * (1.0f / 32768.0f) };
+        /* virtual bass: the harmonics of what lies below the speaker's range, from the mono
+         * sum (|x| doubles the frequency: 60 Hz becomes 120, 180, 240 Hz...) */
+        float harm = 0;
+        if (c->virtualActive) {
+            float low = (x[0] + x[1]) * 0.5f + 1e-20f;
+            low = runBiquad(&c->vLow[0], c->vLowZ[0], low);
+            low = runBiquad(&c->vLow[1], c->vLowZ[1], low);
+            harm = runBiquad(&c->vBand[0], c->vBandZ[0], fabsf(low));
+            harm = runBiquad(&c->vBand[1], c->vBandZ[1], harm) * c->virtualGain;
+        }
         for (int ch = 0; ch < 2; ch++) {
             /* the tiny offset keeps the filter states out of denormals in silence (slow on
              * ARM VFP); it is far below what 16 bits can show */
-            float v = x[ch] * c->pregain + 1e-20f;
+            float v = (x[ch] + harm) * c->pregain + 1e-20f;
+            if (c->bassActive) {
+                v = runBiquad(&c->bassBq, c->bassZ[ch], v);
+            }
             for (int b = 0; b < NUM_BANDS; b++) {
                 if (!c->active[b]) continue;
-                const biquad_t *q = &c->bq[b];
-                float *z = c->z[b][ch];
-                /* transposed direct form II */
-                const float y = q->b0 * v + z[0];
-                z[0] = q->b1 * v - q->a1 * y + z[1];
-                z[1] = q->b2 * v - q->a2 * y;
-                v = y;
+                v = runBiquad(&c->bq[b], c->z[b][ch], v);
             }
             x[ch] = v;
         }
@@ -252,6 +364,20 @@ static int getParameter(eq_context_t *c, const int32_t *param, uint32_t psize, v
     if (psize < sizeof(int32_t)) return -EINVAL;
     const int32_t cmd = param[0];
     const int32_t arg = psize >= 2 * sizeof(int32_t) ? param[1] : 0;
+
+    if (cmd == KIRO_PARAM_BASS || cmd == KIRO_PARAM_BASS_MODE) {
+        const int32_t v = cmd == KIRO_PARAM_BASS ? c->bass : c->bassMode;
+        if (*vsize >= sizeof(int32_t)) {
+            *(int32_t *) value = v;
+            *vsize = sizeof(int32_t);
+        } else if (*vsize >= sizeof(int16_t)) {
+            *(int16_t *) value = (int16_t) v;
+            *vsize = sizeof(int16_t);
+        } else {
+            return -EINVAL;
+        }
+        return 0;
+    }
 
     switch (cmd) {
     case EQ_PARAM_NUM_BANDS:
@@ -339,6 +465,20 @@ static int setParameter(eq_context_t *c, const int32_t *param, uint32_t psize,
 {
     if (psize < sizeof(int32_t)) return -EINVAL;
     const int32_t cmd = param[0];
+
+    if (cmd == KIRO_PARAM_BASS || cmd == KIRO_PARAM_BASS_MODE) {
+        int32_t v;
+        if (vsize >= sizeof(int32_t)) v = *(const int32_t *) value;
+        else if (vsize >= sizeof(int16_t)) v = *(const int16_t *) value;
+        else return -EINVAL;
+        if (cmd == KIRO_PARAM_BASS) {
+            c->bass = v < 0 ? 0 : v > 1000 ? 1000 : v;
+        } else {
+            c->bassMode = v ? 1 : 0;
+        }
+        design(c);
+        return 0;
+    }
 
     switch (cmd) {
     case EQ_PARAM_CUR_PRESET: {

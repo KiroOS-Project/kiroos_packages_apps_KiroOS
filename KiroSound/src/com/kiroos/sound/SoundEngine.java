@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
-import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
 import android.media.audiofx.Virtualizer;
 import android.os.Handler;
@@ -34,7 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The effects of Kiro Sound: one equalizer, bass boost and virtualizer on the output mix
+ * The effects of Kiro Sound: the KiroOS Equalizer (ten bands and the bass) and the virtualizer
+ * on the output mix
  * (audio session 0), which every music app plays through, so nothing is applied twice (the old
  * Settings equalizer added per-app copies on top of the global one). They live in Kiro Sound's
  * persistent process, started by Android at boot and never reclaimed.
@@ -71,7 +71,6 @@ final class SoundEngine {
     private final List<Listener> mListeners = new ArrayList<Listener>();
 
     private Equalizer mEq;
-    private BassBoost mBass;
     private Virtualizer mVirtualizer;
     private int mOutput = Profiles.SPEAKER;
     private boolean mStarted;
@@ -182,14 +181,11 @@ final class SoundEngine {
                     level = (short) Math.max(range[0], Math.min(range[1], level));
                     mEq.setBandLevel(b, level);
                 }
-                mEq.setEnabled(on && !profiles.isFlat(out));
-            }
-            if (mBass != null) {
-                final int strength = profiles.bass(out);
-                if (mBass.getStrengthSupported()) {
-                    mBass.setStrength((short) strength);
-                }
-                mBass.setEnabled(on && strength > 0);
+                // the bass lives in the KiroOS Equalizer too, tuned to the output
+                final int bass = profiles.bass(out);
+                final boolean kiroBass = setKiroParam(PARAM_BASS_MODE,
+                        out == Profiles.SPEAKER ? 0 : 1) && setKiroParam(PARAM_BASS, bass);
+                mEq.setEnabled(on && (!profiles.isFlat(out) || (kiroBass && bass > 0)));
             }
             if (mVirtualizer != null) {
                 final int strength = profiles.surround(out);
@@ -208,20 +204,34 @@ final class SoundEngine {
         }
     }
 
+    /*
+     * The KiroOS Equalizer's own parameters (KiroEqualizer.c). The NXP bass boost is gone: it
+     * raised bass the speaker cannot play and lowered the volume to make room, so it only
+     * made the phone quieter. AudioEffect.setParameter(int, int) is hidden: reflection.
+     */
+    private static final int PARAM_BASS = 0x4B01;
+    private static final int PARAM_BASS_MODE = 0x4B02;
+    private static java.lang.reflect.Method sSetParameter;
+
+    private boolean setKiroParam(int param, int value) {
+        try {
+            if (sSetParameter == null) {
+                sSetParameter = AudioEffect.class.getMethod("setParameter", int.class, int.class);
+            }
+            final Object r = sSetParameter.invoke(mEq, param, value);
+            return r instanceof Integer && (Integer) r == AudioEffect.SUCCESS;
+        } catch (ReflectiveOperationException e) {
+            Log.w(TAG, "KiroOS Equalizer parameter " + param, e);
+            return false;
+        }
+    }
+
     private void ensureEffects() {
         if (mEq == null) {
             mEq = create(new EffectFactory<Equalizer>() {
                 @Override
                 public Equalizer make() {
                     return new Equalizer(PRIORITY, 0);
-                }
-            });
-        }
-        if (mBass == null) {
-            mBass = create(new EffectFactory<BassBoost>() {
-                @Override
-                public BassBoost make() {
-                    return new BassBoost(PRIORITY, 0);
                 }
             });
         }
@@ -254,9 +264,6 @@ final class SoundEngine {
             if (mEq != null) {
                 mEq.getEnabled();
             }
-            if (mBass != null) {
-                mBass.getEnabled();
-            }
             return true;
         } catch (RuntimeException e) {
             return false;
@@ -264,7 +271,7 @@ final class SoundEngine {
     }
 
     private void release() {
-        for (AudioEffect e : new AudioEffect[] { mEq, mBass, mVirtualizer }) {
+        for (AudioEffect e : new AudioEffect[] { mEq, mVirtualizer }) {
             if (e != null) {
                 try {
                     e.release();
@@ -273,7 +280,6 @@ final class SoundEngine {
             }
         }
         mEq = null;
-        mBass = null;
         mVirtualizer = null;
     }
 
