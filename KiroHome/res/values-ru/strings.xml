@@ -13,6 +13,8 @@
     <string name="add_widget">Добавить виджет</string>
     <string name="wallpaper">Обои</string>
     <string name="settings">Настройки</string>
+    <string name="move_widget_up">Выше</string>
+    <string name="move_widget_down">Ниже</string>
     <string name="remove_widget">Убрать виджет</string>
     <string name="remove_clock">Убрать часы</string>
     <string name="show_clock">Показать часы</string>

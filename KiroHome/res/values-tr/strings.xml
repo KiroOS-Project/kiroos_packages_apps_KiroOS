@@ -13,6 +13,8 @@
     <string name="add_widget">Widget ekle</string>
     <string name="wallpaper">Duvar kağıdı</string>
     <string name="settings">Ayarlar</string>
+    <string name="move_widget_up">Yukarı taşı</string>
+    <string name="move_widget_down">Aşağı taşı</string>
     <string name="remove_widget">Widget\'ı kaldır</string>
     <string name="remove_clock">Saati kaldır</string>
     <string name="show_clock">Saati göster</string>

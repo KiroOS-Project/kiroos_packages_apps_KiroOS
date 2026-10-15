@@ -13,6 +13,8 @@
     <string name="add_widget">Ajouter un widget</string>
     <string name="wallpaper">Fond d\'écran</string>
     <string name="settings">Paramètres</string>
+    <string name="move_widget_up">Monter</string>
+    <string name="move_widget_down">Descendre</string>
     <string name="remove_widget">Retirer le widget</string>
     <string name="remove_clock">Retirer l\'horloge</string>
     <string name="show_clock">Afficher l\'horloge</string>

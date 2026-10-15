@@ -13,6 +13,8 @@
     <string name="add_widget">Aggiungi widget</string>
     <string name="wallpaper">Sfondo</string>
     <string name="settings">Impostazioni</string>
+    <string name="move_widget_up">Sposta su</string>
+    <string name="move_widget_down">Sposta giù</string>
     <string name="remove_widget">Rimuovi widget</string>
     <string name="remove_clock">Rimuovi orologio</string>
     <string name="show_clock">Mostra orologio</string>

@@ -336,6 +336,22 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         BubbleReveal.maybePlay(this, mHomeContent);
     }
 
+    /** Beta 4: the widget that opened the app now in front (it left with the app) */
+    private View mLaunchedWidget;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // a widget just tapped became the app: like an icon, it goes with it (the system grows
+        // the app out of the widget's rectangle) and comes back to catch it on the way home
+        final KiroWidgetView w = KiroWidgetView.tappedWithin(700);
+        if (w != null) {
+            mLaunchedWidget = w;
+            w.animate().cancel();
+            w.animate().alpha(0f).setStartDelay(40).setDuration(110).start();
+        }
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -685,6 +701,21 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
      * after an app left (its task was active in the last moment), not on screen on.
      */
     private void catchClosingApp() {
+        // Beta 4: an app opened from a widget shrinks back into it (AppTransition): the widget
+        // appears as the app melts into it, with the same small bounce as an icon
+        if (mLaunchedWidget != null) {
+            final View w = mLaunchedWidget;
+            mLaunchedWidget = null;
+            w.animate().cancel();
+            w.setAlpha(0f);
+            w.setScaleX(0.96f);
+            w.setScaleY(0.96f);
+            w.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(CATCH_DELAY)
+                    .setDuration(360).setInterpolator(
+                            new android.view.animation.OvershootInterpolator(1.6f))
+                    .start();
+            return;
+        }
         String pkg = null;
         try {
             final android.app.ActivityManager am = getSystemService(
@@ -1393,13 +1424,28 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     /** Called by the widget stack when the user long-presses a widget. */
     void onWidgetLongPress(final AppWidgetHostView view, final int id) {
         view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+        // Beta 4: lifted while the menu is open, like an icon picked up
+        view.animate().scaleX(1.04f).scaleY(1.04f).setDuration(160).start();
         final PopupMenu menu = new PopupMenu(this, view);
+        final int[] pos = mWidgets.position(id);
+        if (pos[0] > 0) menu.getMenu().add(0, 2, 0, R.string.move_widget_up);
+        if (pos[0] >= 0 && pos[0] < pos[1] - 1) menu.getMenu().add(0, 3, 0, R.string.move_widget_down);
         menu.getMenu().add(0, 1, 0, R.string.remove_widget);
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                mWidgets.remove(id);
+                switch (item.getItemId()) {
+                    case 1: mWidgets.remove(id); break;
+                    case 2: mWidgets.move(id, -1); break;
+                    case 3: mWidgets.move(id, 1); break;
+                }
                 return true;
+            }
+        });
+        menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu m) {
+                view.animate().scaleX(1f).scaleY(1f).setDuration(200).start();
             }
         });
         menu.show();

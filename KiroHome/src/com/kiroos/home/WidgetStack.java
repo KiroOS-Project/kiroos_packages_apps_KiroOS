@@ -54,7 +54,8 @@ final class WidgetStack {
         mStack = stack;
         mPrefs = prefs;
         mManager = AppWidgetManager.getInstance(activity);
-        mHost = new AppWidgetHost(activity, HOST_ID);
+        // Beta 4: widget views that let a long press through (move / remove)
+        mHost = new KiroWidgetView.Host(activity, HOST_ID);
         for (int id : ids()) {
             addView(id);
         }
@@ -63,6 +64,8 @@ final class WidgetStack {
         final android.animation.LayoutTransition lt = new android.animation.LayoutTransition();
         lt.setAnimator(android.animation.LayoutTransition.APPEARING, null);
         lt.setAnimator(android.animation.LayoutTransition.DISAPPEARING, null);
+        // a widget moved (removed and added back at its new place) glides there too
+        lt.enableTransitionType(android.animation.LayoutTransition.CHANGING);
         lt.setDuration(280);
         lt.setInterpolator(android.animation.LayoutTransition.CHANGE_APPEARING, EASE);
         lt.setInterpolator(android.animation.LayoutTransition.CHANGE_DISAPPEARING, EASE);
@@ -159,6 +162,32 @@ final class WidgetStack {
             }
         }
         mHost.deleteAppWidgetId(id);
+    }
+
+    /** Beta 4: moves a widget up (-1) or down (+1) in the stack; the others glide */
+    void move(int id, int delta) {
+        final List<Integer> ids = ids();
+        final int from = ids.indexOf(id);
+        final int to = from + delta;
+        if (from < 0 || to < 0 || to >= ids.size()) return;
+        ids.remove(from);
+        ids.add(to, id);
+        save(ids);
+        for (int i = 0; i < mStack.getChildCount(); i++) {
+            final View v = mStack.getChildAt(i);
+            if (v instanceof AppWidgetHostView && ((AppWidgetHostView) v).getAppWidgetId() == id) {
+                final int target = Math.max(0, Math.min(mStack.getChildCount() - 1, i + delta));
+                mStack.removeView(v);
+                mStack.addView(v, target);
+                break;
+            }
+        }
+    }
+
+    /** where a widget is in the stack: [position, count] */
+    int[] position(int id) {
+        final List<Integer> ids = ids();
+        return new int[] { ids.indexOf(id), ids.size() };
     }
 
     private View addView(final int id) {
