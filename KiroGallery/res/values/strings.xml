@@ -27,4 +27,7 @@
     <string name="favourites">Favorites</string>
     <string name="add_favourite">Add to favorites</string>
     <string name="remove_favourite">Remove from favorites</string>
+    <string name="widget_gallery_label">Recent</string>
+    <string name="widget_gallery_empty">Your photos will show up here</string>
+    <string name="widget_gallery_permission">Open Gallery to show your photos here</string>
 </resources>

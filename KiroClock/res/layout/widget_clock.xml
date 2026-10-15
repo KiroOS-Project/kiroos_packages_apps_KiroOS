@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Clock widget: the time (large), the date, the next alarm -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clock_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_clock_bg"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingBottom="12dp"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp"
+    android:paddingTop="10dp">
+
+    <TextClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:format12Hour="h:mm"
+        android:format24Hour="H:mm"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:textColor="@color/kiro_text"
+        android:textSize="58sp" />
+
+    <TextClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif-medium"
+        android:format12Hour="EEEE d MMMM"
+        android:format24Hour="EEEE d MMMM"
+        android:singleLine="true"
+        android:textColor="@color/kiro_accent"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/clock_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:drawablePadding="6dp"
+        android:singleLine="true"
+        android:textColor="@color/kiro_text_secondary"
+        android:textSize="13sp"
+        android:visibility="gone" />
+</LinearLayout>

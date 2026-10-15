@@ -297,7 +297,7 @@ public class CameraActivity extends Activity {
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
                     @Override
                     public boolean onScale(ScaleGestureDetector d) {
-                        setZoom(mZoom * d.getScaleFactor());
+                        setZoom(mZoomTarget * d.getScaleFactor());
                         return true;
                     }
                 });
@@ -464,7 +464,7 @@ public class CameraActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // 1x -> 2x -> 4x -> 1x (never past what the sensor crop allows)
-                final float next = mZoom < 1.5f ? 2f : mZoom < 3f ? 4f : 1f;
+                final float next = mZoomTarget < 1.5f ? 2f : mZoomTarget < 3f ? 4f : 1f;
                 setZoom(Math.min(next, mMaxZoom));
             }
         });
@@ -857,6 +857,9 @@ public class CameraActivity extends Activity {
             final Float maxZoom = mChars.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
             mMaxZoom = maxZoom != null ? Math.min(8f, maxZoom) : 1f;
             mZoom = 1f;
+            mZoomTarget = 1f;   // a camera switch does not glide
+            mZoomGliding = false;
+            mPreview.removeCallbacks(mZoomStep);
             mZoomText.setVisibility(View.GONE);
             prepareOutputs();
             mOpening = true;
@@ -1135,6 +1138,18 @@ public class CameraActivity extends Activity {
             // always set: back at 1x the crop must return to the whole sensor
             b.set(CaptureRequest.SCALER_CROP_REGION, cropFor(mZoom));
         }
+        // Beta 4: the S6's optical stabilisation for photos and videos, and the HAL's video
+        // stabilisation while filming, when the camera offers them (steadier, sharper)
+        if (supports(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION,
+                CameraMetadata.LENS_OPTICAL_STABILIZATION_MODE_ON)) {
+            b.set(CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE,
+                    CameraMetadata.LENS_OPTICAL_STABILIZATION_MODE_ON);
+        }
+        if (mVideoMode && supports(CameraCharacteristics.CONTROL_AVAILABLE_VIDEO_STABILIZATION_MODES,
+                CameraMetadata.CONTROL_VIDEO_STABILIZATION_MODE_ON)) {
+            b.set(CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE,
+                    CameraMetadata.CONTROL_VIDEO_STABILIZATION_MODE_ON);
+        }
         // no banding under 50 Hz lights; exposure compensation from the EV control
         b.set(CaptureRequest.CONTROL_AE_ANTIBANDING_MODE,
                 CaptureRequest.CONTROL_AE_ANTIBANDING_MODE_AUTO);
@@ -1177,8 +1192,55 @@ public class CameraActivity extends Activity {
         }
     }
 
+    private boolean supports(CameraCharacteristics.Key<int[]> key, int mode) {
+        final int[] modes = mChars != null ? mChars.get(key) : null;
+        if (modes != null) {
+            for (int m : modes) {
+                if (m == mode) return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * Beta 4: smooth zoom. A pinch or a zoom chip sets a target and the crop glides to it
+     * frame by frame (a third of the way each frame), so the picture never jumps, in the
+     * viewfinder or in a video being recorded.
+     */
+    private float mZoomTarget = 1f;
+    private boolean mZoomGliding;
+
     private void setZoom(float zoom) {
-        mZoom = Math.max(1f, Math.min(mMaxZoom, zoom));
+        mZoomTarget = Math.max(1f, Math.min(mMaxZoom, zoom));
+        if (Math.abs(mZoomTarget - mZoom) < 0.005f) {
+            mZoom = mZoomTarget;
+            applyZoom();
+            return;
+        }
+        if (!mZoomGliding) {
+            mZoomGliding = true;
+            mPreview.postOnAnimation(mZoomStep);
+        }
+    }
+
+    private final Runnable mZoomStep = new Runnable() {
+        @Override
+        public void run() {
+            final float d = mZoomTarget - mZoom;
+            if (Math.abs(d) < 0.005f || mSession == null) {
+                mZoom = mZoomTarget;
+                mZoomGliding = false;
+            } else {
+                mZoom += d * 0.33f;
+            }
+            applyZoom();
+            if (mZoomGliding) {
+                mPreview.postOnAnimation(this);
+            }
+        }
+    };
+
+    private void applyZoom() {
         mZoomText.setText(String.format(java.util.Locale.US, "%.1f×", mZoom));
         mZoomText.setVisibility(View.GONE); // the zoom chip shows it now
         updateControls();

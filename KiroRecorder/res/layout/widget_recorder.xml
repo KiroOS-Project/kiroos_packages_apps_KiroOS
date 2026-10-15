@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Recorder widget: a record button; while recording the time runs, with pause and stop -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rec_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_recorder_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingEnd="14dp"
+    android:paddingStart="18dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/rec_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:singleLine="true"
+            android:textColor="@color/kiro_accent"
+            android:textSize="13sp" />
+
+        <Chronometer
+            android:id="@+id/rec_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:singleLine="true"
+            android:textColor="@color/kiro_text"
+            android:textSize="34sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/rec_pause"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/widget_recorder_button_bg"
+        android:contentDescription="@string/pause"
+        android:padding="13dp"
+        android:src="@drawable/ic_pause"
+        android:tint="@color/kiro_text"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/rec_main"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/widget_recorder_record_bg"
+        android:contentDescription="@string/record"
+        android:padding="17dp"
+        android:src="@drawable/ic_mic"
+        android:tint="@android:color/white" />
+</LinearLayout>

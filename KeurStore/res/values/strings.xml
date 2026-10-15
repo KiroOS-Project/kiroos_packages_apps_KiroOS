@@ -34,4 +34,10 @@
     <string name="incompatible">This app does not run on this phone</string>
     <string name="no_network">No connection: try again later</string>
     <string name="updated">Updated</string>
+    <string name="widget_store_update">Update</string>
+    <string name="widget_store_none">All apps are up to date</string>
+    <plurals name="widget_store_updates">
+        <item quantity="one">%d update available</item>
+        <item quantity="other">%d updates available</item>
+    </plurals>
 </resources>

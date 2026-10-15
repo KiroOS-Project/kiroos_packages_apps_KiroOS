@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Files widget: the storage used, then Downloads / Images / Documents -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/files_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_files_bg"
+    android:orientation="vertical"
+    android:paddingBottom="10dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-medium"
+            android:singleLine="true"
+            android:text="@string/widget_files_storage"
+            android:textColor="@color/kiro_accent"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/files_free"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="@color/kiro_text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/files_bar"
+        style="@android:style/Widget.Material.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:max="1000"
+        android:progressDrawable="@drawable/widget_files_progress" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <LinearLayout android:id="@+id/files_downloads" style="@style/FilesWidgetShortcut">
+            <ImageView style="@style/FilesWidgetIcon" android:src="@drawable/ic_download" />
+            <TextView style="@style/FilesWidgetLabel" android:text="@string/downloads" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/files_images" style="@style/FilesWidgetShortcut">
+            <ImageView style="@style/FilesWidgetIcon" android:src="@drawable/ic_image" />
+            <TextView style="@style/FilesWidgetLabel" android:text="@string/images" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/files_documents" style="@style/FilesWidgetShortcut">
+            <ImageView style="@style/FilesWidgetIcon" android:src="@drawable/ic_file" />
+            <TextView style="@style/FilesWidgetLabel" android:text="@string/documents" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

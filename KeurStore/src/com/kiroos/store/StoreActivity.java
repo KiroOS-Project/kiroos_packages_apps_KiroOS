@@ -237,6 +237,12 @@ public class StoreActivity extends Activity {
         super.onDestroy();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        StoreWidget.checkSoon(this);   // apps updated here leave the widget's list
+    }
+
     private Catalog.App app(String pkg) {
         for (Catalog.App a : Catalog.all(mCatalog)) {
             if (a.pkg.equals(pkg)) {

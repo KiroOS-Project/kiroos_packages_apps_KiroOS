@@ -127,6 +127,7 @@ public class RecorderService extends Service {
             stop();
         }
         notifyListener();
+        RecorderWidget.show(this);
         return START_NOT_STICKY;
     }
 
@@ -232,6 +233,7 @@ public class RecorderService extends Service {
         }
         sInstance = null;
         notifyListener();
+        RecorderWidget.show(this);
         super.onDestroy();
     }
 }

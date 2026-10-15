@@ -33,4 +33,10 @@
     <string name="incompatible">Questa app non funziona su questo telefono</string>
     <string name="no_network">Nessuna connessione: riprova più tardi</string>
     <string name="updated">Aggiornata</string>
+    <string name="widget_store_update">Aggiorna</string>
+    <string name="widget_store_none">Tutte le app sono aggiornate</string>
+    <plurals name="widget_store_updates">
+        <item quantity="one">%d aggiornamento disponibile</item>
+        <item quantity="other">%d aggiornamenti disponibili</item>
+    </plurals>
 </resources>

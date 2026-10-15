@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS widget card, on the raised surface of the theme (dark / light) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/kiro_surface_raised" />
+    <corners android:radius="22dp" />
+</shape>

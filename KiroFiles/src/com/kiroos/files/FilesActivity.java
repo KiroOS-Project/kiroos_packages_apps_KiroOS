@@ -206,6 +206,35 @@ public class FilesActivity extends Activity {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
         showHome();
+        openShortcut(getIntent());
+    }
+
+    /** Beta 4: the Files widget's shortcuts (Downloads, Images, Documents) */
+    static final String EXTRA_OPEN = "com.kiroos.files.extra.OPEN";
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        openShortcut(intent);
+    }
+
+    private void openShortcut(Intent intent) {
+        final String what = intent != null ? intent.getStringExtra(EXTRA_OPEN) : null;
+        if (what == null) return;
+        intent.removeExtra(EXTRA_OPEN);
+        switch (what) {
+            case "downloads":
+                openDir(Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DOWNLOADS), true);
+                break;
+            case "images":
+                openCategory(CAT_IMAGES, getString(R.string.images));
+                break;
+            case "documents":
+                openCategory(CAT_DOCUMENTS, getString(R.string.documents));
+                break;
+        }
     }
 
     @Override
@@ -217,6 +246,12 @@ public class FilesActivity extends Activity {
     protected void onResume() {
         super.onResume();
         refresh();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        FilesWidget.refresh(this);   // the storage shown on the home after changes here
     }
 
     private boolean rootEnabled() {

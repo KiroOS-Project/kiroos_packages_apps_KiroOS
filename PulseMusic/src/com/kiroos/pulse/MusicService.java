@@ -60,9 +60,9 @@ public class MusicService extends Service implements Engine.Listener, Engine.Pcm
     static final int REPEAT_ALL = 1;
     static final int REPEAT_ONE = 2;
 
-    private static final String ACTION_TOGGLE = "com.kiroos.pulse.TOGGLE";
-    private static final String ACTION_NEXT = "com.kiroos.pulse.NEXT";
-    private static final String ACTION_PREV = "com.kiroos.pulse.PREV";
+    static final String ACTION_TOGGLE = "com.kiroos.pulse.TOGGLE";
+    static final String ACTION_NEXT = "com.kiroos.pulse.NEXT";
+    static final String ACTION_PREV = "com.kiroos.pulse.PREV";
     private static final String ACTION_CLOSE = "com.kiroos.pulse.CLOSE";
     private static final int NOTIFICATION = 1;
     private static final int WAVE_POINTS = 256;
@@ -252,6 +252,8 @@ public class MusicService extends Service implements Engine.Listener, Engine.Pcm
             mWakeLock.release();
         }
         sInstance = null;
+        // the widget keeps the last song, its buttons now open Pulse
+        PulseWidget.show(this, current(), false, false);
         super.onDestroy();
     }
 
@@ -679,6 +681,7 @@ public class MusicService extends Service implements Engine.Listener, Engine.Pcm
             }
             mSession.setMetadata(m.build());
         }
+        PulseWidget.show(this, t, mPlaying, true);
     }
 
     private Notification notification(Library.Track t) {

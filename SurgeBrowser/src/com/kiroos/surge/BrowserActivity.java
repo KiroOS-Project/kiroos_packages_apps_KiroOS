@@ -218,11 +218,33 @@ public class BrowserActivity extends Activity {
 
         final String url = urlFrom(getIntent());
         newTab(url, true);
+        if (getIntent().getBooleanExtra(EXTRA_SEARCH, false)) {
+            focusAddress();
+        }
+    }
+
+    /** Beta 4: the Surge widget's search bar opens a new tab with the keyboard up */
+    static final String EXTRA_SEARCH = "com.kiroos.surge.extra.SEARCH";
+
+    private void focusAddress() {
+        mUrl.requestFocus();
+        mUrl.post(new Runnable() {
+            @Override
+            public void run() {
+                showKeyboard();
+            }
+        });
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (intent.getBooleanExtra(EXTRA_SEARCH, false)) {
+            newTab(null, true);
+            showTabs(false);
+            focusAddress();
+            return;
+        }
         final String url = urlFrom(intent);
         if (url != null) {
             newTab(url, true);

@@ -96,8 +96,8 @@
     <string name="kai_point_actions">Risultati esatti nei calcoli, e accende o spegne torcia, Wi‑Fi e Bluetooth.</string>
     <string name="kai_power">Tieni premuto il tasto di accensione per kAI</string>
     <string name="kai_power_summary">Accensione e volume su: premuti insieme fanno uno screenshot, tenuti aprono il menu di spegnimento</string>
-    <string name="highlights_title">Cosa c\'è in KiroOS</string>
-    <string name="highlights_summary">Qualche cosa da provare subito.</string>
+    <string name="highlights_title">KiroOS vs LineageOS</string>
+    <string name="highlights_summary">Cosa aggiunge KiroOS al LineageOS su cui è costruito, e qualche cosa da provare subito.</string>
     <string name="feat_kai">L\'intelligenza artificiale che vive nel telefono, con la voce e risposte anche offline</string>
     <string name="feat_edge">I bordi dello schermo si illuminano per kAI, la ricarica, la musica e le notifiche</string>
     <string name="feat_cc_t">Centro di controllo</string>
@@ -113,4 +113,19 @@
     <string name="feat_update">Le nuove versioni via rete, in Info telefono</string>
     <string name="feat_privacy_t">Indicatori privacy</string>
     <string name="feat_privacy">Un pallino nella barra di stato mentre la fotocamera o il microfono sono in uso</string>
+    <!-- Beta 4: KiroOS accanto a LineageOS 14.1 (la penultima pagina) -->
+    <string name="vs_heading">Funzione</string>
+    <string name="vs_ai">Assistente IA sul telefono</string>
+    <string name="vs_apps">Oltre 20 app fatte apposta</string>
+    <string name="vs_apps_lineage">AOSP di base</string>
+    <string name="vs_cc">Centro di controllo, pannello Edge</string>
+    <string name="vs_cc_lineage">Impostazioni rapide</string>
+    <string name="vs_eq">Equalizzatore a 10 bande</string>
+    <string name="vs_eq_lineage">5 bande</string>
+    <string name="vs_vulkan">Vulkan 1.1 per i giochi</string>
+    <string name="vs_lock">Blocco app, cassaforte privata</string>
+    <string name="vs_record">Registrazione schermo</string>
+    <string name="vs_battery">Battery Guardian</string>
+    <string name="vs_battery_lineage">Profili di base</string>
+    <string name="welcome">Benvenuto in KiroOS</string>
 </resources>

@@ -38,5 +38,18 @@
             android:authorities="com.kiroos.files.provider"
             android:exported="false"
             android:grantUriPermissions="true" />
+
+        <!-- Beta 4: the Files widget (storage used, Downloads / Images / Documents) -->
+        <receiver
+            android:name=".FilesWidget"
+            android:label="@string/app_name"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_files_info" />
+        </receiver>
     </application>
 </manifest>

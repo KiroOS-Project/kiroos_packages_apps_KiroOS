@@ -60,4 +60,6 @@
     <string name="search_start">Type the name of a file or folder</string>
     <string name="search_none">No files found</string>
     <string name="searching">Searching…</string>
+    <string name="widget_files_storage">Storage</string>
+    <string name="widget_files_free">%1$s free of %2$s</string>
 </resources>

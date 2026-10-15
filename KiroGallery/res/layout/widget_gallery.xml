@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gallery widget: "Recent" and the four latest photos -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gallery_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_gallery_bg"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="4dp"
+        android:fontFamily="sans-serif-medium"
+        android:singleLine="true"
+        android:text="@string/widget_gallery_label"
+        android:textColor="@color/kiro_accent"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/gallery_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/kiro_text_secondary"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/gallery_grid"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <ImageView android:id="@+id/gallery_photo1" style="@style/GalleryWidgetPhoto" />
+        <ImageView android:id="@+id/gallery_photo2" style="@style/GalleryWidgetPhoto" />
+        <ImageView android:id="@+id/gallery_photo3" style="@style/GalleryWidgetPhoto" />
+        <ImageView android:id="@+id/gallery_photo4" style="@style/GalleryWidgetPhoto" />
+    </LinearLayout>
+</LinearLayout>

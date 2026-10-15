@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- behind the album art (or the note when there is none) -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/kiro_surface" />
+    <corners android:radius="14dp" />
+</shape>

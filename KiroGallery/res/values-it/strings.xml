@@ -27,4 +27,7 @@
     <string name="favourites">Preferiti</string>
     <string name="add_favourite">Aggiungi ai preferiti</string>
     <string name="remove_favourite">Rimuovi dai preferiti</string>
+    <string name="widget_gallery_label">Recenti</string>
+    <string name="widget_gallery_empty">Qui appariranno le tue foto</string>
+    <string name="widget_gallery_permission">Apri la Galleria per vedere qui le tue foto</string>
 </resources>

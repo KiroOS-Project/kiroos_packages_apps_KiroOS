@@ -54,4 +54,5 @@
     <string name="sleep_left">Stops in %d min</string>
     <string name="sleep_left_song">Stops at the end of the song</string>
     <string name="minutes_short">%d min</string>
+    <string name="widget_pulse_idle">Tap to play music</string>
 </resources>

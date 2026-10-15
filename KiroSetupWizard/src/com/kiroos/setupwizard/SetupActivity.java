@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.kiroos.ui.KiroTouch;
 
@@ -108,7 +109,7 @@ public class SetupActivity extends Activity {
                 final SetupPage page = mPages.get(mIndex);
                 page.onLeave();
                 if (mIndex == mPages.size() - 1) {
-                    finishSetup();
+                    playStart(v);
                 } else {
                     show(mIndex + 1, true);
                 }
@@ -237,6 +238,67 @@ public class SetupActivity extends Activity {
         }
     }
 
+    private boolean mStarting;
+
+    /**
+     * Beta 4: "Start". The accent colour pours out of the button in a circle until it fills the
+     * screen, "Welcome to KiroOS" rises in it, and Kiro Home takes over from that colour: it
+     * opens it like a bubble (its first-run reveal, see Kiro Home's BubbleReveal).
+     */
+    private void playStart(final View button) {
+        if (mStarting) return;
+        mStarting = true;
+        mNext.setEnabled(false);
+        mBack.setEnabled(false);
+        final ViewGroup root = (ViewGroup) getWindow().getDecorView();
+        final View fill = new View(this);
+        fill.setBackgroundColor(getColor(com.kiroos.ui.R.color.kiro_accent));
+        root.addView(fill, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        final TextView hello = new TextView(this);
+        hello.setText(R.string.welcome);
+        hello.setTextColor(getColor(com.kiroos.ui.R.color.kiro_on_accent));
+        hello.setTextSize(30);
+        hello.setTypeface(android.graphics.Typeface.create("sans-serif-light",
+                android.graphics.Typeface.NORMAL));
+        hello.setGravity(android.view.Gravity.CENTER);
+        hello.setAlpha(0f);
+        root.addView(hello, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        final int[] loc = new int[2];
+        button.getLocationOnScreen(loc);
+        final int cx = loc[0] + button.getWidth() / 2;
+        final int cy = loc[1] + button.getHeight() / 2;
+        fill.post(new Runnable() {
+            @Override
+            public void run() {
+                final float radius = (float) Math.hypot(Math.max(cx, root.getWidth() - cx),
+                        Math.max(cy, root.getHeight() - cy));
+                final android.animation.Animator reveal =
+                        android.view.ViewAnimationUtils.createCircularReveal(fill, cx, cy,
+                                button.getHeight() / 2f, radius);
+                reveal.setDuration(520);
+                reveal.setInterpolator(new android.view.animation.PathInterpolator(
+                        0.3f, 0f, 0.1f, 1f));
+                reveal.start();
+                final float dy = 28 * getResources().getDisplayMetrics().density;
+                hello.setTranslationY(dy);
+                hello.animate().alpha(1f).translationY(0f).setStartDelay(260).setDuration(420)
+                        .setInterpolator(KiroTouch.EASE).start();
+                // the home opens out of the colour once the words have been seen
+                hello.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Settings.Global.putLong(getContentResolver(), "kiroos_setup_finished",
+                                System.currentTimeMillis());
+                        finishSetup();
+                    }
+                }, 1250);
+            }
+        });
+    }
+
     /** Marks the device provisioned, disables the wizard and hands over to Kiro Home. */
     private void finishSetup() {
         if (mPreview) {
@@ -256,7 +318,12 @@ public class SetupActivity extends Activity {
         home.addCategory(Intent.CATEGORY_HOME);
         home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(home);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        if (mStarting) {
+            // Kiro Home picks up from the accent colour (no window animation in between)
+            overridePendingTransition(0, 0);
+        } else {
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
         finish();
     }
 }

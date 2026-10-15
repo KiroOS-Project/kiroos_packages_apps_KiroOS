@@ -53,5 +53,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!-- Beta 4: the Surge widget (a search bar on the home) -->
+        <receiver
+            android:name=".SurgeWidget"
+            android:label="@string/app_name"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_surge_info" />
+        </receiver>
     </application>
 </manifest>

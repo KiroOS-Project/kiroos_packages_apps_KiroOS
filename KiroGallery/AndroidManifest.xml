@@ -81,5 +81,22 @@
                 <data android:mimeType="video/*" />
             </intent-filter>
         </activity>
+
+        <!-- Beta 4: the Gallery widget (the latest photos) and its media store watcher -->
+        <receiver
+            android:name=".GalleryWidget"
+            android:label="@string/app_name"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_gallery_info" />
+        </receiver>
+        <service
+            android:name=".GalleryWidget$Watcher"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 </manifest>

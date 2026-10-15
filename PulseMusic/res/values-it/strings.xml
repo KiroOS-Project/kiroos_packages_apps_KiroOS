@@ -49,4 +49,5 @@
     <string name="sleep_left">Si ferma tra %d min</string>
     <string name="sleep_left_song">Si ferma alla fine del brano</string>
     <string name="minutes_short">%d min</string>
+    <string name="widget_pulse_idle">Tocca per ascoltare musica</string>
 </resources>

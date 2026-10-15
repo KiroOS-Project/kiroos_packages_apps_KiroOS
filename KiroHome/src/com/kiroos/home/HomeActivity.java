@@ -332,6 +332,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         super.onResume();
         catchClosingApp();
         schedulePublishIcons(700);
+        // Beta 4: the first time after the setup, the home opens out of its accent colour
+        BubbleReveal.maybePlay(this, mHomeContent);
     }
 
     @Override

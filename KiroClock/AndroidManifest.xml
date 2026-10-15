@@ -74,5 +74,22 @@
         </receiver>
 
         <service android:name=".AlarmService" android:exported="false" />
+
+        <!-- Beta 4: the Clock widget (time, date, next alarm) -->
+        <receiver
+            android:name=".ClockWidget"
+            android:label="@string/widget_clock_label"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.app.action.NEXT_ALARM_CLOCK_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_clock_info" />
+        </receiver>
     </application>
 </manifest>
