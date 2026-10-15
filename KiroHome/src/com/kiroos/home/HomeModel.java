@@ -89,6 +89,147 @@ final class HomeModel {
 
     static final String FOLDER_PREFIX = "folder:";
 
+    /*
+     * Beta 4: widgets live in the grid like apps, anywhere on any page. A widget takes full
+     * rows: its bottom-left cell holds "widget:<id>:<rows>", every other cell it covers holds
+     * "+widget:<id>" (not empty, so no app is placed there).
+     */
+    static final String WIDGET_PREFIX = "widget:";
+    static final String WIDGET_PART_PREFIX = "+widget:";
+
+    static boolean isWidget(String key) {
+        return key != null && key.startsWith(WIDGET_PREFIX);
+    }
+
+    static boolean isWidgetPart(String key) {
+        return key != null && key.startsWith(WIDGET_PART_PREFIX);
+    }
+
+    /** a widget or a cell a widget covers */
+    static boolean isWidgetCell(String key) {
+        return isWidget(key) || isWidgetPart(key);
+    }
+
+    static int widgetId(String key) {
+        try {
+            final String s = key.substring(isWidgetPart(key) ? WIDGET_PART_PREFIX.length()
+                    : WIDGET_PREFIX.length());
+            final int colon = s.indexOf(':');
+            return Integer.parseInt(colon >= 0 ? s.substring(0, colon) : s);
+        } catch (RuntimeException e) {
+            return -1;
+        }
+    }
+
+    static int widgetRows(String key) {
+        try {
+            return Math.max(1, Integer.parseInt(key.substring(key.lastIndexOf(':') + 1)));
+        } catch (RuntimeException e) {
+            return 1;
+        }
+    }
+
+    /** where a widget is (its bottom-left cell), or null */
+    Loc findWidget(int id) {
+        for (int p = 0; p < mPages.size(); p++) {
+            final String[] page = mPages.get(p);
+            for (int i = 0; i < PAGE_SIZE; i++) {
+                if (isWidget(page[i]) && widgetId(page[i]) == id) {
+                    return new Loc(p, i);
+                }
+            }
+        }
+        return null;
+    }
+
+    /** every widget id on the home */
+    List<Integer> widgetIds() {
+        final List<Integer> ids = new ArrayList<>();
+        for (String[] page : mPages) {
+            for (String k : page) {
+                if (isWidget(k)) ids.add(widgetId(k));
+            }
+        }
+        return ids;
+    }
+
+    private void clearWidget(int id) {
+        for (String[] page : mPages) {
+            for (int i = 0; i < PAGE_SIZE; i++) {
+                if (isWidgetCell(page[i]) && widgetId(page[i]) == id) {
+                    page[i] = "";
+                }
+            }
+        }
+    }
+
+    void removeWidget(int id) {
+        clearWidget(id);
+        trimPages();
+        save();
+    }
+
+    /**
+     * Puts a widget of "rows" rows with its bottom row at bottomRow on a page (clamped to the
+     * rows the page shows). Apps in those rows move to the next free cells; another widget in
+     * the way refuses the drop (false). The widget leaves wherever it was.
+     */
+    boolean placeWidget(int id, int rows, int page, int bottomRow) {
+        if (page < 0) return false;
+        ensurePage(page);
+        final int shown = rows(page);
+        rows = Math.max(1, Math.min(shown, rows));
+        bottomRow = Math.max(0, Math.min(shown - rows, bottomRow));
+        final String[] cells = mPages.get(page);
+        for (int r = bottomRow; r < bottomRow + rows; r++) {
+            for (int c = 0; c < COLUMNS; c++) {
+                final String k = cells[r * COLUMNS + c];
+                if (isWidgetCell(k) && widgetId(k) != id) {
+                    return false;
+                }
+            }
+        }
+        clearWidget(id);
+        final List<String> displaced = new ArrayList<>();
+        for (int r = bottomRow; r < bottomRow + rows; r++) {
+            for (int c = 0; c < COLUMNS; c++) {
+                final int i = r * COLUMNS + c;
+                if (!cells[i].isEmpty()) displaced.add(cells[i]);
+                cells[i] = (r == bottomRow && c == 0)
+                        ? WIDGET_PREFIX + id + ":" + rows : WIDGET_PART_PREFIX + id;
+            }
+        }
+        for (String k : displaced) {
+            final Loc free = firstFree(page, true);
+            ensurePage(free.container);
+            set(free, k);
+        }
+        trimPages();
+        save();
+        return true;
+    }
+
+    /**
+     * A new widget: the first place with "rows" free full rows, from the given page on,
+     * top rows first; with none, the top of the first page (its apps move on).
+     */
+    void addWidget(int id, int rows, int fromPage) {
+        for (int p = Math.max(0, fromPage); p < mPages.size(); p++) {
+            final int shown = rows(p);
+            for (int bottom = shown - rows; bottom >= 0; bottom--) {
+                boolean free = true;
+                for (int i = bottom * COLUMNS; i < (bottom + rows) * COLUMNS && free; i++) {
+                    free = mPages.get(p)[i].isEmpty();
+                }
+                if (free) {
+                    placeWidget(id, rows, p, bottom);
+                    return;
+                }
+            }
+        }
+        placeWidget(id, rows, 0, rows(0) - rows);
+    }
+
     /** A named group of apps in one cell. */
     static final class Folder {
         String name;
@@ -173,7 +314,7 @@ final class HomeModel {
     boolean merge(String appKey, Loc to, String name) {
         final String target = at(to);
         if (target.isEmpty() || target.equals(appKey) || isFolder(appKey)
-                || to.container == DOCK) {
+                || to.container == DOCK || isWidgetCell(target) || isWidgetCell(appKey)) {
             return false;
         }
         if (target.equals(folderOf(appKey))) {
@@ -289,6 +430,10 @@ final class HomeModel {
         if (to.equals(from)) {
             return;
         }
+        // a widget's cells are taken: an app dropped there goes back where it was
+        if (isWidgetCell(at(to)) || isWidgetCell(key)) {
+            return;
+        }
         final String displaced = at(to);
         set(to, key);
         if (from != null) {
@@ -338,10 +483,22 @@ final class HomeModel {
      */
     boolean fitRows() {
         boolean moved = false;
+        // widgets reaching into rows a page no longer shows come down to fit (apps move on)
+        for (int p = 0; p < mPages.size(); p++) {
+            final String[] page = mPages.get(p);
+            for (int i = 0; i < PAGE_SIZE; i++) {
+                if (!isWidget(page[i])) continue;
+                final int rows = widgetRows(page[i]);
+                if (i / COLUMNS + rows > rows(p)) {
+                    placeWidget(widgetId(page[i]), rows, p, rows(p) - rows);
+                    moved = true;
+                }
+            }
+        }
         for (int p = 0; p < mPages.size(); p++) {
             final String[] page = mPages.get(p);
             for (int i = rows(p) * COLUMNS; i < PAGE_SIZE; i++) {
-                if (page[i].isEmpty()) {
+                if (page[i].isEmpty() || isWidgetCell(page[i])) {
                     continue;
                 }
                 final String key = page[i];
@@ -388,7 +545,8 @@ final class HomeModel {
         }
         for (String[] page : mPages) {
             for (int i = 0; i < PAGE_SIZE; i++) {
-                if (!page[i].isEmpty() && !isFolder(page[i]) && repo.find(page[i]) == null) {
+                if (!page[i].isEmpty() && !isFolder(page[i]) && !isWidgetCell(page[i])
+                        && repo.find(page[i]) == null) {
                     page[i] = "";
                     changed = true;
                 }

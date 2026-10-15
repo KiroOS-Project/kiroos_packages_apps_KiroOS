@@ -52,12 +52,27 @@ public class Workspace extends ViewGroup {
     static final class LayoutParams extends ViewGroup.LayoutParams {
         int page;
         int index;
+        /** Beta 4: a widget spans full rows from its bottom-left cell (index) up */
+        int rows = 1;
+        boolean fullWidth;
 
         LayoutParams(int page, int index) {
             super(0, 0);
             this.page = page;
             this.index = index;
         }
+
+        static LayoutParams widget(int page, int index, int rows) {
+            final LayoutParams lp = new LayoutParams(page, index);
+            lp.rows = rows;
+            lp.fullWidth = true;
+            return lp;
+        }
+    }
+
+    /** room around a widget inside its cells */
+    private int widgetInset() {
+        return Math.round(6 * getResources().getDisplayMetrics().density);
     }
 
     private final int mCellHeight;
@@ -330,9 +345,18 @@ public class Workspace extends ViewGroup {
         final int h = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED
                 ? mCellHeight * HomeModel.MAX_ROWS : MeasureSpec.getSize(heightMeasureSpec);
         final int cw = (w - getPaddingLeft() - getPaddingRight()) / HomeModel.COLUMNS;
+        final int inset = widgetInset();
         for (int i = 0; i < getChildCount(); i++) {
-            getChildAt(i).measure(MeasureSpec.makeMeasureSpec(cw, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(mCellHeight, MeasureSpec.EXACTLY));
+            final View c = getChildAt(i);
+            final LayoutParams lp = (LayoutParams) c.getLayoutParams();
+            if (lp.fullWidth) {
+                c.measure(MeasureSpec.makeMeasureSpec(cw * HomeModel.COLUMNS - 2 * inset,
+                        MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(
+                        mCellHeight * lp.rows - 2 * inset, MeasureSpec.EXACTLY));
+            } else {
+                c.measure(MeasureSpec.makeMeasureSpec(cw, MeasureSpec.EXACTLY),
+                        MeasureSpec.makeMeasureSpec(mCellHeight, MeasureSpec.EXACTLY));
+            }
         }
         setMeasuredDimension(w, h);
     }
@@ -343,10 +367,18 @@ public class Workspace extends ViewGroup {
         final int h = b - t;
         updateRows(h);
         final int cw = (w - getPaddingLeft() - getPaddingRight()) / HomeModel.COLUMNS;
+        final int inset = widgetInset();
         for (int i = 0; i < getChildCount(); i++) {
             final View c = getChildAt(i);
             final LayoutParams lp = (LayoutParams) c.getLayoutParams();
             final int x = lp.page * w + cellLeft(lp.index);
+            if (lp.fullWidth) {
+                // from the bottom row of the widget (its index) up lp.rows rows
+                final int y = h - (lp.index / HomeModel.COLUMNS + lp.rows) * mCellHeight;
+                c.layout(x + inset, y + inset, x + cw * HomeModel.COLUMNS - inset,
+                        y + mCellHeight * lp.rows - inset);
+                continue;
+            }
             final int y = h - (lp.index / HomeModel.COLUMNS + 1) * mCellHeight;
             c.layout(x, y, x + cw, y + mCellHeight);
         }

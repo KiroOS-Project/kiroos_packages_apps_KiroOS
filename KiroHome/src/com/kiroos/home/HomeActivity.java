@@ -131,6 +131,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         Rect home;
         float offX;
         float offY;
+        /** Beta 4: a widget dragged (its id and rows), -1 for an app or a folder */
+        int widgetId = -1;
+        int widgetRows = 1;
     }
 
     /** how much a lifted app grows under the finger */
@@ -257,8 +260,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             }
         });
 
-        mWidgets = new WidgetStack(this, (LinearLayout) findViewById(R.id.widget_stack),
-                getSharedPreferences("home", MODE_PRIVATE));
+        // Beta 4: widgets live in the grid (any page, any rows), not stacked under the clock
+        findViewById(R.id.widget_stack).setVisibility(View.GONE);
+        mWidgets = new WidgetStack(this, getSharedPreferences("home", MODE_PRIVATE));
 
         mDrawerAdapter = new DrawerAdapter(this, mIcons);
         mDrawerGrid.setAdapter(mDrawerAdapter);
@@ -399,9 +403,24 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     @Override
     public void onAppsChanged(List<AppInfo> apps) {
         mModel.load(mRepo);
+        final int cell = mWorkspace.cellHeight();
         if (mModel.takeFreshInstall()) {
-            // a new phone: the home is set like out of the box, the kAI bar under the clock
-            mWidgets.seedDefaults();
+            // a new phone: the home is set like out of the box, the kAI bar at the top
+            final int bar = mWidgets.seedKaiBar();
+            if (bar != -1) mModel.addWidget(bar, mWidgets.rowsFor(bar, cell), 0);
+        }
+        // widgets stacked under the clock before Beta 4 come into the grid, top of page 1
+        for (int id : mWidgets.takeLegacyIds()) {
+            if (mWidgets.exists(id) && mModel.findWidget(id) == null) {
+                mModel.addWidget(id, mWidgets.rowsFor(id, cell), 0);
+            }
+        }
+        // widgets whose app is gone leave their place
+        for (int id : mModel.widgetIds()) {
+            if (!mWidgets.exists(id)) {
+                mModel.removeWidget(id);
+                mWidgets.deleteId(id);
+            }
         }
         mModel.prune(mRepo);
         mModel.fitRows();
@@ -418,6 +437,21 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         for (int p = 0; p < mModel.pageCount(); p++) {
             for (int i = 0; i < HomeModel.PAGE_SIZE; i++) {
                 final HomeModel.Loc loc = new HomeModel.Loc(p, i);
+                final String key = mModel.at(loc);
+                if (HomeModel.isWidgetPart(key)) {
+                    continue; // covered by its widget
+                }
+                if (HomeModel.isWidget(key)) {
+                    final View w = mWidgets.view(HomeModel.widgetId(key));
+                    if (w != null) {
+                        w.setAlpha(1f);
+                        w.setScaleX(1f);
+                        w.setScaleY(1f);
+                        mWorkspace.addView(w, Workspace.LayoutParams.widget(p, i,
+                                HomeModel.widgetRows(key)));
+                    }
+                    continue;
+                }
                 final View cell = bindCell(inflater, mWorkspace, loc, true);
                 if (cell != null) {
                     mWorkspace.addView(cell, new Workspace.LayoutParams(p, i));
@@ -866,7 +900,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         cell.animate().cancel();
         cell.setScaleX(1f);
         cell.setScaleY(1f);
-        final View icon = cell.findViewById(R.id.app_icon);
+        // a widget is lifted whole (its own views may reuse any id, even app_icon's)
+        final boolean widget = HomeModel.isWidget(key);
+        final View icon = widget ? null : cell.findViewById(R.id.app_icon);
         final View picture = icon != null && icon.getWidth() > 0 ? icon : cell;
         if (picture.getWidth() <= 0 || picture.getHeight() <= 0) {
             return;
@@ -889,7 +925,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         floating.setX(at.left);
         floating.setY(at.top);
         floating.setElevation(12 * getResources().getDisplayMetrics().density);
-        floating.animate().scaleX(DRAG_LIFT).scaleY(DRAG_LIFT).setDuration(160)
+        final float lift = widget ? 1.04f : DRAG_LIFT;
+        floating.animate().scaleX(lift).scaleY(lift).setDuration(160)
                 .setInterpolator(KiroTouch.EASE).start();
         d.floating = floating;
         d.home = at;
@@ -927,8 +964,12 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             }
         }
         if (d.moved) {
-            final HomeModel.Loc at = locAt(x, y);
-            showHint(at, mergeAt(d, at, x, y));
+            if (d.widgetId >= 0) {
+                showWidgetHint(d, widgetBottomRow(d, x, y));
+            } else {
+                final HomeModel.Loc at = locAt(x, y);
+                showHint(at, mergeAt(d, at, x, y));
+            }
             trackEdge(d, x, y);
         }
     }
@@ -941,6 +982,18 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
         HomeModel.Loc to = null;
         boolean merged = false;
+        if (d.widgetId >= 0) {
+            // a widget lands on full rows of the page shown (another widget in the way: back)
+            if (dropped && d.moved) {
+                final int bottom = widgetBottomRow(d, x, y);
+                if (bottom >= 0 && mModel.placeWidget(d.widgetId, d.widgetRows,
+                        mWorkspace.currentPage(), bottom)) {
+                    to = mModel.findWidget(d.widgetId);
+                }
+            }
+            endDrag(d, to, false);
+            return;
+        }
         if (dropped && d.moved) {
             to = locAt(x, y);
             if (to != null) {
@@ -968,7 +1021,12 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mWorkspace.snapTo(page, true);
         settleFloating(d, to, merged);
         if (!d.moved) {
-            if (d.app == null) {
+            if (d.widgetId >= 0) {
+                // a widget held without moving: its menu
+                final View anchor = d.from != null ? cellView(d.from) : null;
+                showWidgetMenu(d.widgetId, anchor != null && anchor.isAttachedToWindow()
+                        ? anchor : mRoot);
+            } else if (d.app == null) {
                 openFolder(d.key); // a folder held without moving opens
             } else if (d.fromFolder == null) {
                 // a long-press without a move: the app menu, anchored to the app
@@ -997,7 +1055,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 mRoot.getViewTreeObserver().removeOnPreDrawListener(this);
                 final HomeModel.Loc land = to != null ? to : d.from;
                 final View cell = land != null ? cellView(land) : null;
-                final View icon = cell != null ? cell.findViewById(R.id.app_icon) : null;
+                // a widget lands as a whole into its new place
+                final View icon = cell == null ? null
+                        : d.widgetId >= 0 ? cell : cell.findViewById(R.id.app_icon);
                 final Rect target;
                 if (icon != null && icon.isAttachedToWindow() && icon.getWidth() > 0) {
                     target = boundsInRoot(icon);
@@ -1415,39 +1475,116 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                     // add it unconfigured
                 }
             }
-            mWidgets.add(id);
+            addWidgetToHome(id);
         } else if (requestCode == REQUEST_CONFIGURE_WIDGET) {
-            mWidgets.add(id);
+            addWidgetToHome(id);
         }
     }
 
-    /** Called by the widget stack when the user long-presses a widget. */
+    /** Beta 4: a new widget takes the first free rows from the page shown, then grows in */
+    private void addWidgetToHome(int id) {
+        mModel.addWidget(id, mWidgets.rowsFor(id, mWorkspace.cellHeight()),
+                mWorkspace.currentPage());
+        bindHome();
+        final HomeModel.Loc at = mModel.findWidget(id);
+        if (at != null) {
+            mWorkspace.snapTo(at.container, true);
+            final View v = cellView(at);
+            if (v != null) {
+                v.setAlpha(0f);
+                v.setScaleX(0.86f);
+                v.setScaleY(0.86f);
+                v.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(120).setDuration(380)
+                        .setInterpolator(new android.view.animation.OvershootInterpolator(1.4f))
+                        .start();
+            }
+        }
+    }
+
+    /**
+     * Beta 4: a long press on a widget lifts it like an app: it follows the finger to any
+     * page and any rows (held at a side edge the page turns); let go without moving, the
+     * widget menu.
+     */
     void onWidgetLongPress(final AppWidgetHostView view, final int id) {
-        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-        // Beta 4: lifted while the menu is open, like an icon picked up
-        view.animate().scaleX(1.04f).scaleY(1.04f).setDuration(160).start();
-        final PopupMenu menu = new PopupMenu(this, view);
-        final int[] pos = mWidgets.position(id);
-        if (pos[0] > 0) menu.getMenu().add(0, 2, 0, R.string.move_widget_up);
-        if (pos[0] >= 0 && pos[0] < pos[1] - 1) menu.getMenu().add(0, 3, 0, R.string.move_widget_down);
+        final HomeModel.Loc from = mModel.findWidget(id);
+        if (from == null || mDrag != null) return;
+        startDrag(null, mModel.at(from), from, null, view);
+        if (mDrag != null) {
+            mDrag.widgetId = id;
+            mDrag.widgetRows = HomeModel.widgetRows(mModel.at(from));
+        }
+    }
+
+    private void showWidgetMenu(final int id, View anchor) {
+        final PopupMenu menu = new PopupMenu(this, anchor, Gravity.CENTER);
         menu.getMenu().add(0, 1, 0, R.string.remove_widget);
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case 1: mWidgets.remove(id); break;
-                    case 2: mWidgets.move(id, -1); break;
-                    case 3: mWidgets.move(id, 1); break;
+                final HomeModel.Loc at = mModel.findWidget(id);
+                final View v = at != null ? cellView(at) : null;
+                final Runnable remove = new Runnable() {
+                    @Override
+                    public void run() {
+                        mModel.removeWidget(id);
+                        mWidgets.deleteId(id);
+                        bindHome();
+                    }
+                };
+                if (v != null) {
+                    // it shrinks and fades, then leaves its place
+                    v.animate().alpha(0f).scaleX(0.86f).scaleY(0.86f).setDuration(200)
+                            .withEndAction(remove).start();
+                } else {
+                    remove.run();
                 }
                 return true;
             }
         });
-        menu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-            @Override
-            public void onDismiss(PopupMenu m) {
-                view.animate().scaleX(1f).scaleY(1f).setDuration(200).start();
-            }
-        });
         menu.show();
+    }
+
+    /** the bottom row a dragged widget lands on, from where its lifted copy is now */
+    private int widgetBottomRow(Drag d, float x, float y) {
+        final Rect w = boundsInRoot(mWorkspace);
+        final float centerY = y - d.offY + d.floating.getHeight() / 2f;
+        final int index = mWorkspace.cellAt(w.width() / 2f, Math.min(w.height() - 1,
+                centerY - w.top));
+        if (index < 0) return -1;
+        return Math.max(0, index / HomeModel.COLUMNS - (d.widgetRows - 1) / 2);
+    }
+
+    /** where a dragged widget would land: a rounded outline over the rows it takes */
+    private void showWidgetHint(Drag d, int bottomRow) {
+        if (bottomRow < 0) {
+            mDropHint.setVisibility(View.GONE);
+            return;
+        }
+        final int page = mWorkspace.currentPage();
+        final int rows = Math.min(d.widgetRows, mModel.rows(page));
+        final int bottom = Math.max(0, Math.min(mModel.rows(page) - rows, bottomRow));
+        final Rect w = boundsInRoot(mWorkspace);
+        final int inset = Math.round(6 * getResources().getDisplayMetrics().density);
+        final int left = w.left + mWorkspace.cellLeft(0) + inset;
+        final int width = mWorkspace.cellWidth() * HomeModel.COLUMNS - 2 * inset;
+        final int top = w.top + mWorkspace.cellTop(page, (bottom + rows - 1) * HomeModel.COLUMNS)
+                + inset;
+        final int height = mWorkspace.cellHeight() * rows - 2 * inset;
+        final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mDropHint.getLayoutParams();
+        if (lp.width != width || lp.height != height) {
+            lp.width = width;
+            lp.height = height;
+            mDropHint.setLayoutParams(lp);
+        }
+        final boolean wasVisible = mDropHint.getVisibility() == View.VISIBLE;
+        mDropHint.setVisibility(View.VISIBLE);
+        if (wasVisible) {
+            mDropHint.animate().x(left).y(top).setDuration(120).setInterpolator(KiroTouch.EASE)
+                    .start();
+        } else {
+            mDropHint.setX(left);
+            mDropHint.setY(top);
+        }
     }
 }
