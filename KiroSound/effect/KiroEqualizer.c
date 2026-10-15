@@ -62,9 +62,17 @@
 #define BASS_SPEAKER_DB 8.0f
 #define BASS_SPEAKER_Q 0.8f
 #define BASS_VIRTUAL_HZ 140.0f          /* below this the speaker gets harmonics instead */
-#define BASS_VIRTUAL_GAIN 3.0f
+#define BASS_VIRTUAL_GAIN 1.6f
 #define BASS_SHELF_HZ 90.0f
 #define BASS_SHELF_DB 10.0f
+/*
+ * Dynamic bass: the most the boosted bass band may reach (amplitude, full scale = 1). Loud
+ * music already has strong bass, and +8 dB more pushed the speaker past its travel (it
+ * cracked at full volume); the boost backs off as the bass gets louder so the band stays
+ * under this, and comes back when it is quieter. Headphones take more.
+ */
+#define BASS_SPEAKER_LIMIT 0.30f
+#define BASS_HEADPHONE_LIMIT 0.55f
 
 static const int kCenterHz[NUM_BANDS] = {
     31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000,
@@ -124,8 +132,14 @@ typedef struct {
     int bass;                       /* 0-1000 */
     int bassMode;
     int bassActive;
-    biquad_t bassBq;                /* speaker peak or headphone shelf, both channels */
+    biquad_t bassBq;                /* the bass band: band pass (speaker) or low pass */
     float bassZ[2][2];
+    float bassExtra;                /* full boost: out = in + extra * dyn * band */
+    float bassLimit;
+    float bassEnv;                  /* level of the bass band */
+    float bassDyn;                  /* 0-1, how much of the boost is applied now */
+    float envAtk, envRel, dynAtk, dynRel, limAtk;
+    float vEnv;                     /* level of the missing bass (virtual bass) */
     int virtualActive;
     float virtualGain;
     biquad_t vLow[2];               /* 4th-order low pass of the mono sum: the missing bass */
@@ -167,21 +181,6 @@ static void peaking(biquad_t *q, float rate, float hz, float db, float Q)
     q->a2 = (1.0f - alpha / A) / a0;
 }
 
-static void lowShelf(biquad_t *q, float rate, float hz, float db)
-{
-    const float A = powf(10.0f, db / 40.0f);
-    const float w0 = 2.0f * (float) M_PI * hz / rate;
-    const float cw = cosf(w0);
-    const float alpha = sinf(w0) / 2.0f * sqrtf(2.0f);   /* S = 1 */
-    const float sa = 2.0f * sqrtf(A) * alpha;
-    const float a0 = (A + 1) + (A - 1) * cw + sa;
-    q->b0 = A * ((A + 1) - (A - 1) * cw + sa) / a0;
-    q->b1 = 2 * A * ((A - 1) - (A + 1) * cw) / a0;
-    q->b2 = A * ((A + 1) - (A - 1) * cw - sa) / a0;
-    q->a1 = -2 * ((A - 1) + (A + 1) * cw) / a0;
-    q->a2 = ((A + 1) + (A - 1) * cw - sa) / a0;
-}
-
 static void passFilter(biquad_t *q, float rate, float hz, int high)
 {
     const float w0 = 2.0f * (float) M_PI * hz / rate;
@@ -197,6 +196,19 @@ static void passFilter(biquad_t *q, float rate, float hz, int high)
     }
     q->b2 = q->b0;
     q->a1 = -2.0f * cw / a0;
+    q->a2 = (1.0f - alpha) / a0;
+}
+
+/* band pass, 0 dB at the centre */
+static void bandPass(biquad_t *q, float rate, float hz, float Q)
+{
+    const float w0 = 2.0f * (float) M_PI * hz / rate;
+    const float alpha = sinf(w0) / (2.0f * Q);
+    const float a0 = 1.0f + alpha;
+    q->b0 = alpha / a0;
+    q->b1 = 0;
+    q->b2 = -alpha / a0;
+    q->a1 = -2.0f * cosf(w0) / a0;
     q->a2 = (1.0f - alpha) / a0;
 }
 
@@ -217,13 +229,18 @@ static void design(eq_context_t *c)
     c->bassActive = c->bass > 0;
     c->virtualActive = c->bass > 0 && c->bassMode == 0;
     if (c->bassActive) {
+        /* in parallel: in + extra * band is the peak (band pass) or the shelf (low pass),
+         * and the dynamics can scale the extra part alone */
         if (c->bassMode == 0) {
             bassDb = BASS_SPEAKER_DB * s;
-            peaking(&c->bassBq, c->rate, BASS_SPEAKER_HZ, bassDb, BASS_SPEAKER_Q);
+            bandPass(&c->bassBq, c->rate, BASS_SPEAKER_HZ, BASS_SPEAKER_Q);
+            c->bassLimit = BASS_SPEAKER_LIMIT;
         } else {
             bassDb = BASS_SHELF_DB * s;
-            lowShelf(&c->bassBq, c->rate, BASS_SHELF_HZ, bassDb);
+            passFilter(&c->bassBq, c->rate, BASS_SHELF_HZ, 0);
+            c->bassLimit = BASS_HEADPHONE_LIMIT;
         }
+        c->bassExtra = powf(10.0f, bassDb / 20.0f) - 1.0f;
     }
     if (c->virtualActive) {
         c->virtualGain = BASS_VIRTUAL_GAIN * s;
@@ -256,13 +273,28 @@ static void resetState(eq_context_t *c)
     memset(c->vLowZ, 0, sizeof(c->vLowZ));
     memset(c->vBandZ, 0, sizeof(c->vBandZ));
     c->gain = 1.0f;
+    c->bassEnv = 0;
+    c->bassDyn = 0;     /* the boost fades in */
+    c->vEnv = 0;
+}
+
+static float coef(float seconds, float rate)
+{
+    return 1.0f - expf(-1.0f / (seconds * rate));
 }
 
 static void setRate(eq_context_t *c, uint32_t rate)
 {
     c->rate = rate > 0 ? (float) rate : 48000.0f;
-    /* limiter release: back to full gain in about 120 ms */
-    c->release = 1.0f - expf(-1.0f / (0.120f * c->rate));
+    /* limiter: 0.5 ms attack, back to full gain in about 120 ms */
+    c->release = coef(0.120f, c->rate);
+    c->limAtk = coef(0.0005f, c->rate);
+    /* bass dynamics: the level follows in 5 ms / 200 ms, the boost backs off in 10 ms and
+     * comes back over 400 ms (slow enough not to be heard moving) */
+    c->envAtk = coef(0.005f, c->rate);
+    c->envRel = coef(0.200f, c->rate);
+    c->dynAtk = coef(0.010f, c->rate);
+    c->dynRel = coef(0.400f, c->rate);
     design(c);
 }
 
@@ -318,20 +350,37 @@ static int32_t eq_process(effect_handle_t self, audio_buffer_t *in, audio_buffer
         /* virtual bass: the harmonics of what lies below the speaker's range, from the mono
          * sum (|x| doubles the frequency: 60 Hz becomes 120, 180, 240 Hz...) */
         float harm = 0;
+        float band[2] = { 0, 0 };
+        if (c->bassActive) {
+            band[0] = runBiquad(&c->bassBq, c->bassZ[0], x[0] + 1e-20f);
+            band[1] = runBiquad(&c->bassBq, c->bassZ[1], x[1] + 1e-20f);
+            const float lvl = fmaxf(fabsf(band[0]), fabsf(band[1]));
+            c->bassEnv += (lvl - c->bassEnv) * (lvl > c->bassEnv ? c->envAtk : c->envRel);
+            /* the share of the boost that keeps the boosted band under the limit */
+            float want = 1.0f;
+            if (c->bassEnv * (1.0f + c->bassExtra) > c->bassLimit) {
+                want = (c->bassLimit / fmaxf(c->bassEnv, 1e-6f) - 1.0f) / c->bassExtra;
+                if (want < 0) want = 0;
+            }
+            c->bassDyn += (want - c->bassDyn) * (want < c->bassDyn ? c->dynAtk : c->dynRel);
+        }
         if (c->virtualActive) {
+            /* x^2 / level: a clean second harmonic at the level of the missing bass (the
+             * rectifier used before had sharp corners, harsh upper harmonics) */
             float low = (x[0] + x[1]) * 0.5f + 1e-20f;
             low = runBiquad(&c->vLow[0], c->vLowZ[0], low);
             low = runBiquad(&c->vLow[1], c->vLowZ[1], low);
-            harm = runBiquad(&c->vBand[0], c->vBandZ[0], fabsf(low));
-            harm = runBiquad(&c->vBand[1], c->vBandZ[1], harm) * c->virtualGain;
+            const float a = fabsf(low);
+            c->vEnv += (a - c->vEnv) * (a > c->vEnv ? c->envAtk : c->envRel);
+            harm = low * low / (c->vEnv + 1e-3f);
+            harm = runBiquad(&c->vBand[0], c->vBandZ[0], harm);
+            harm = runBiquad(&c->vBand[1], c->vBandZ[1], harm) * c->virtualGain * c->bassDyn;
         }
+        const float extra = c->bassExtra * c->bassDyn;
         for (int ch = 0; ch < 2; ch++) {
             /* the tiny offset keeps the filter states out of denormals in silence (slow on
              * ARM VFP); it is far below what 16 bits can show */
-            float v = (x[ch] + harm) * c->pregain + 1e-20f;
-            if (c->bassActive) {
-                v = runBiquad(&c->bassBq, c->bassZ[ch], v);
-            }
+            float v = (x[ch] + extra * band[ch] + harm) * c->pregain + 1e-20f;
             for (int b = 0; b < NUM_BANDS; b++) {
                 if (!c->active[b]) continue;
                 v = runBiquad(&c->bq[b], c->z[b][ch], v);
@@ -341,13 +390,18 @@ static int32_t eq_process(effect_handle_t self, audio_buffer_t *in, audio_buffer
         /* peak limiter on both channels together (keeps the stereo image) */
         const float peak = fmaxf(fabsf(x[0]), fabsf(x[1]));
         const float want = peak > LIMIT ? LIMIT / peak : 1.0f;
-        if (want < c->gain) {
-            c->gain = want;                             /* instant attack */
-        } else {
-            c->gain += (want - c->gain) * c->release;   /* smooth release */
-        }
+        /* 0.5 ms attack (an instant one modulated the waveform, a crackle when it worked
+         * hard), smooth release; what the attack lets through is rounded off below */
+        c->gain += (want - c->gain) * (want < c->gain ? c->limAtk : c->release);
         for (int ch = 0; ch < 2; ch++) {
-            float s = x[ch] * c->gain * 32768.0f;
+            float y = x[ch] * c->gain;
+            const float ay = fabsf(y);
+            if (ay > LIMIT) {
+                /* soft knee above -0.3 dBFS: never past full scale, no hard edge */
+                const float k = 1.0f - LIMIT;
+                y = copysignf(LIMIT + k * tanhf((ay - LIMIT) / k), y);
+            }
+            float s = y * 32767.0f;
             if (accumulate) s += dst[2 * i + ch];
             const long r = lrintf(s);
             dst[2 * i + ch] = (int16_t) (r > 32767 ? 32767 : r < -32768 ? -32768 : r);
