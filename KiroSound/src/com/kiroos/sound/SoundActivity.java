@@ -44,6 +44,8 @@ public class SoundActivity extends Activity implements SoundEngine.Listener {
     private LinearLayout mPresets;
     private final SeekBar[] mBands = new SeekBar[Profiles.BANDS];
     private final TextView[] mBandValues = new TextView[Profiles.BANDS];
+    private final short[] mCurveLevels = new short[Profiles.BANDS];
+    private EqCurveView mCurve;
     private SeekBar mBass;
     private SeekBar mSurround;
     private View mSurroundNote;
@@ -63,6 +65,7 @@ public class SoundActivity extends Activity implements SoundEngine.Listener {
         mBass = (SeekBar) findViewById(R.id.bass);
         mSurround = (SeekBar) findViewById(R.id.surround);
         mSurroundNote = findViewById(R.id.surround_note);
+        mCurve = (EqCurveView) findViewById(R.id.curve);
 
         mEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -175,7 +178,7 @@ public class SoundActivity extends Activity implements SoundEngine.Listener {
             final LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
             row.setGravity(Gravity.CENTER_VERTICAL);
-            row.setMinimumHeight(dp(52));
+            row.setMinimumHeight(dp(46));
             row.setPadding(dp(16), 0, dp(12), 0);
 
             final TextView label = new TextView(this);
@@ -191,9 +194,12 @@ public class SoundActivity extends Activity implements SoundEngine.Listener {
             bar.setOnSeekBarChangeListener(new Slider() {
                 @Override
                 void onValue(int value) {
-                    mEngine.profiles.setLevel(mEngine.output(), band,
-                            (short) (value - BAND_RANGE));
-                    mBandValues[band].setText(db(value - BAND_RANGE));
+                    // 0.1 dB steps
+                    final short level = (short) (Math.round((value - BAND_RANGE) / 10f) * 10);
+                    mEngine.profiles.setLevel(mEngine.output(), band, level);
+                    mBandValues[band].setText(db(level));
+                    mCurveLevels[band] = level;
+                    mCurve.setLevels(mCurveLevels);
                 }
             });
             row.addView(bar, new LinearLayout.LayoutParams(0,
@@ -245,7 +251,9 @@ public class SoundActivity extends Activity implements SoundEngine.Listener {
             final int level = Math.max(-BAND_RANGE, Math.min(BAND_RANGE, p.level(out, b)));
             mBands[b].setProgress(level + BAND_RANGE);
             mBandValues[b].setText(db(level));
+            mCurveLevels[b] = (short) level;
         }
+        mCurve.setLevels(mCurveLevels);
         mBass.setProgress(p.bass(out));
         final boolean speaker = out == Profiles.SPEAKER;
         mSurround.setProgress(p.surround(out));

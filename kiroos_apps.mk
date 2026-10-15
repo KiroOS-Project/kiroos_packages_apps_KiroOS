@@ -22,6 +22,7 @@ PRODUCT_PACKAGES += \
     kAI \
     KeurStore \
     KiroSound \
+    libkiroeq \
     KiroCanvas \
     KiroScreenRecord \
     KiroCapture \

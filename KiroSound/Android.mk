@@ -14,3 +14,7 @@ LOCAL_CERTIFICATE := platform
 LOCAL_OVERRIDES_PACKAGES := AudioFX MusicFX
 LOCAL_PROGUARD_ENABLED := disabled
 include $(BUILD_PACKAGE)
+
+# the equalizer effect it drives: effect/ (libkiroeq, in kiroos_apps.mk for both ABIs)
+
+include $(call all-makefiles-under, $(LOCAL_PATH))

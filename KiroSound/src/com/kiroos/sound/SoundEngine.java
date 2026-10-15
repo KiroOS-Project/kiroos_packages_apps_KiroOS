@@ -153,7 +153,7 @@ final class SoundEngine {
 
     /** the band centres in Hz, from the platform equalizer (0 when it isn't available) */
     int[] bandCenters() {
-        final int[] hz = { 60, 230, 910, 3600, 14000 };
+        final int[] hz = Profiles.CENTERS.clone();
         try {
             ensureEffects();
             if (mEq != null) {

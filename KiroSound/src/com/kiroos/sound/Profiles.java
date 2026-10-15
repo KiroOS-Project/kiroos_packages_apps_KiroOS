@@ -30,8 +30,13 @@ final class Profiles {
     static final int HEADPHONES = 1;
     static final int BLUETOOTH = 2;
 
-    /** the five bands of the platform equalizer (NXP bundle): 60, 230, 910, 3600, 14000 Hz */
-    static final int BANDS = 5;
+    /**
+     * The ten octave bands of the KiroOS Equalizer (Beta 4, KiroSound/effect): 31 Hz to 16 kHz,
+     * one RBJ peaking filter each, one octave wide (EqCurveView draws the same filters).
+     */
+    static final int BANDS = 10;
+    static final int[] CENTERS = { 31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000 };
+    static final float Q = 1.41421356f;
 
     static final String CUSTOM = "custom";
     static final String[] PRESETS = {
@@ -39,20 +44,62 @@ final class Profiles {
     };
     /** millibels per band; kept within +-6 dB so a preset can't clip the speaker */
     private static final short[][] LEVELS = {
-        { 0, 0, 0, 0, 0 },                  // flat
-        { 600, 400, 0, 0, 0 },              // bass
-        { 200, 300, 0, -100, -200 },        // warm
-        { 500, 300, -100, 300, 500 },       // rock
-        { -100, 200, 400, 200, -100 },      // pop
-        { -200, 0, 400, 300, 0 },           // vocal
-        { 0, 0, 0, 400, 600 },              // treble
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },                               // flat
+        { 600, 600, 450, 200, 0, 0, 0, 0, 0, 0 },                       // bass
+        { 150, 250, 300, 150, 0, 0, -100, -150, -200, -250 },           // warm
+        { 500, 450, 300, 0, -100, -50, 150, 300, 450, 500 },            // rock
+        { -100, 0, 150, 300, 400, 300, 150, 0, -100, -150 },            // pop
+        { -200, -200, -100, 0, 250, 400, 350, 200, 0, -100 },           // vocal
+        { 0, 0, 0, 0, 0, 0, 150, 350, 500, 600 },                       // treble
     };
+
+    /** the bands of Kiro Sound 1.0 (the NXP equalizer), for curves saved before Beta 4 */
+    private static final int[] OLD_CENTERS = { 60, 230, 910, 3600, 14000 };
 
     private final SharedPreferences mPrefs;
 
     Profiles(Context context) {
         mPrefs = context.createDeviceProtectedStorageContext()
                 .getSharedPreferences("sound", Context.MODE_PRIVATE);
+        migrate();
+    }
+
+    /**
+     * A custom curve saved with the five old bands becomes the same curve on the ten new ones
+     * (linear in log frequency between the old band centres, flat beyond the ends).
+     */
+    private void migrate() {
+        if (mPrefs.getInt("eq_bands", 5) == BANDS) {
+            return;
+        }
+        final SharedPreferences.Editor e = mPrefs.edit();
+        for (int out = SPEAKER; out <= BLUETOOTH; out++) {
+            if (!mPrefs.contains(key(out, "b0"))) {
+                continue;
+            }
+            final float[] old = new float[OLD_CENTERS.length];
+            for (int b = 0; b < old.length; b++) {
+                old[b] = mPrefs.getInt(key(out, "b" + b), 0);
+            }
+            for (int b = 0; b < BANDS; b++) {
+                e.putInt(key(out, "b" + b), Math.round(interpolate(old, CENTERS[b])));
+            }
+        }
+        e.putInt("eq_bands", BANDS).apply();
+    }
+
+    private static float interpolate(float[] old, float hz) {
+        if (hz <= OLD_CENTERS[0]) return old[0];
+        final int last = OLD_CENTERS.length - 1;
+        if (hz >= OLD_CENTERS[last]) return old[last];
+        for (int i = 0; i < last; i++) {
+            if (hz <= OLD_CENTERS[i + 1]) {
+                final double t = Math.log(hz / OLD_CENTERS[i])
+                        / Math.log((double) OLD_CENTERS[i + 1] / OLD_CENTERS[i]);
+                return (float) (old[i] + t * (old[i + 1] - old[i]));
+            }
+        }
+        return 0;
     }
 
     private static String key(int output, String what) {
