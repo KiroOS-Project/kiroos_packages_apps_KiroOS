@@ -2,8 +2,8 @@
 <!-- Kiro Calendar 1.2: upcoming events and search -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.calendar"
-    android:versionCode="120"
-    android:versionName="1.2">
+    android:versionCode="121"
+    android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 

@@ -3,8 +3,8 @@
      from the developers' own downloads and F-Droid) -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.store"
-    android:versionCode="200"
-    android:versionName="2.0">
+    android:versionCode="201"
+    android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 

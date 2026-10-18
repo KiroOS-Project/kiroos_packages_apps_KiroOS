@@ -2,8 +2,8 @@
 <!-- Kiro Phone 1.2: dialer (speed dial), recents, contacts and the in-call screen -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.phone"
-    android:versionCode="120"
-    android:versionName="1.2">
+    android:versionCode="121"
+    android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 

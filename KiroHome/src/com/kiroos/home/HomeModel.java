@@ -84,7 +84,7 @@ final class HomeModel {
             {1, 1, 1, "com.kiroos.calculator"},
             {1, 1, 2, "com.kiroos.recorder"},
             {1, 1, 3, "com.kiroos.pulse"},
-            {1, 0, 0, "com.kiroos.canvas"},
+            // Beta 4.1: Canvas has no icon any more (hold the home > Wallpaper)
     };
 
     static final String FOLDER_PREFIX = "folder:";

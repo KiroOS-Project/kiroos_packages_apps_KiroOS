@@ -119,7 +119,7 @@ final class Icons {
                 c = (HttpURLConnection) new URL(url).openConnection();
                 c.setConnectTimeout(6000);
                 c.setReadTimeout(10000);
-                c.setRequestProperty("User-Agent", "KeurStore/2.0 (KiroOS)");
+                c.setRequestProperty("User-Agent", "KeurStore/1.0 (KiroOS)");
                 if (c.getResponseCode() != 200) {
                     return null;
                 }

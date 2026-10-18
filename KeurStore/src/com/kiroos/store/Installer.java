@@ -193,7 +193,7 @@ final class Installer {
         final HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
         c.setConnectTimeout(6000);
         c.setReadTimeout(8000);
-        c.setRequestProperty("User-Agent", "KeurStore/2.0 (KiroOS)");
+        c.setRequestProperty("User-Agent", "KeurStore/1.0 (KiroOS)");
         try (InputStream in = c.getInputStream()) {
             return Catalog.read(in);
         } finally {

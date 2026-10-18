@@ -3,7 +3,7 @@
      screenshot notification (SystemUI GlobalScreenshot). No launcher icon. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.capture"
-    android:versionCode="100"
+    android:versionCode="101"
     android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />

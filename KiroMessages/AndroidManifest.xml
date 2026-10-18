@@ -2,8 +2,8 @@
 <!-- Kiro Messages 1.2: pinned conversations, mark read / unread -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kiroos.messages"
-    android:versionCode="120"
-    android:versionName="1.2">
+    android:versionCode="121"
+    android:versionName="1.0">
 
     <uses-sdk android:minSdkVersion="25" android:targetSdkVersion="25" />
 

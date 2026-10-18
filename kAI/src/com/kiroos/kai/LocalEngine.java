@@ -286,7 +286,6 @@ final class LocalEngine {
         }
         final Guardian guardian = new Guardian(h);
         guardian.start();
-        edgeGlow("kai_start");
         try {
             int r;
             for (;;) {
@@ -319,7 +318,6 @@ final class LocalEngine {
             }
         } finally {
             guardian.finish();
-            edgeGlow("kai_stop");
             synchronized (LocalEngine.class) {
                 sActive--;
             }
@@ -432,16 +430,8 @@ final class LocalEngine {
 
     private static android.content.Context sApp;
 
-    /** the overlay (hold Power) is showing: its aura is the light, no Edge Glow as well */
+    /** the overlay (hold Power) is showing (Beta 4.1: no Edge Glow while kAI writes at all) */
     static volatile boolean sOverlayShowing;
-
-    /** Kiro Edge Glow (SystemUI): the screen edge glows while kAI writes */
-    private static void edgeGlow(String mode) {
-        if (sApp != null && !sOverlayShowing) {
-            sApp.sendBroadcast(new android.content.Intent("com.kiroos.intent.EDGE_GLOW")
-                    .setPackage("com.android.systemui").putExtra("mode", mode));
-        }
-    }
 
     static void init(android.content.Context app) {
         sApp = app;

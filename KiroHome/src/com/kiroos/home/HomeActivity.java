@@ -1425,8 +1425,15 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                         showClock(true);
                         return true;
                     case 2:
-                        startActivity(Intent.createChooser(new Intent(Intent.ACTION_SET_WALLPAPER),
-                                getText(R.string.wallpaper)));
+                        // Canvas straight away (the only wallpaper picker since Beta 4.1)
+                        try {
+                            startActivity(new Intent(Intent.ACTION_SET_WALLPAPER)
+                                    .setPackage("com.kiroos.canvas"));
+                        } catch (android.content.ActivityNotFoundException e) {
+                            startActivity(Intent.createChooser(
+                                    new Intent(Intent.ACTION_SET_WALLPAPER),
+                                    getText(R.string.wallpaper)));
+                        }
                         return true;
                     case 3:
                         startActivity(new Intent(Settings.ACTION_SETTINGS)

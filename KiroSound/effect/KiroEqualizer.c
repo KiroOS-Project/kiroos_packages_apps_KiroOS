@@ -107,7 +107,7 @@ static const effect_descriptor_t kDescriptor = {
     EFFECT_FLAG_TYPE_INSERT | EFFECT_FLAG_INSERT_ANY,
     20,     /* cpu load, 0.1 MIPS */
     1,      /* memory, KB */
-    "KiroOS Equalizer",
+    "Kiro EQ",
     "KiroOS",
 };
 
@@ -733,7 +733,7 @@ __attribute__ ((visibility ("default")))
 audio_effect_library_t AUDIO_EFFECT_LIBRARY_INFO_SYM = {
     .tag = AUDIO_EFFECT_LIBRARY_TAG,
     .version = EFFECT_LIBRARY_API_VERSION,
-    .name = "KiroOS Equalizer Library",
+    .name = "Kiro EQ Library",
     .implementor = "KiroOS",
     .create_effect = lib_create,
     .release_effect = lib_release,

@@ -162,6 +162,7 @@ public class KaiOverlayActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(KaiOverlayActivity.this, KaiActivity.class)
+                        .putExtra(KaiActivity.EXTRA_KEEP_CHAT, true)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 close();
             }

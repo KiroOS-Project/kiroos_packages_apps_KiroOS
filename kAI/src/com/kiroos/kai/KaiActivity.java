@@ -62,6 +62,8 @@ public class KaiActivity extends Activity {
     /** Ollama's port; over USB "adb reverse tcp:11434 tcp:11434" maps it to the PC */
     /** with EXTRA_TEXT: ask it right away (the home's kAI field, KaiQuickAskActivity) */
     static final String EXTRA_SEND = "com.kiroos.kai.extra.SEND";
+    /** opened from the overlay's "open chat": show the chat it just added to, not a new one */
+    static final String EXTRA_KEEP_CHAT = "com.kiroos.kai.extra.KEEP_CHAT";
 
     private static final int DEFAULT_PORT = 11434;
     /** first character of R.string.error_answer in every language */
@@ -77,8 +79,21 @@ public class KaiActivity extends Activity {
     private ImageButton mSend;
     private TextView mStatus;
     private View mEmpty;
-    private BridgeClient mClient;
+    private volatile BridgeClient mClient;
     private boolean mBusy;
+    /** the answer being written; Stop marks it stopped and every later step checks */
+    private volatile Request mRequest;
+    /** the thread of the last answer: the next one waits for it (one answer at a time) */
+    private Thread mWorker;
+
+    private static final class Request {
+        final BridgeClient.Message answer;
+        volatile boolean stopped;
+
+        Request(BridgeClient.Message answer) {
+            this.answer = answer;
+        }
+    }
     private boolean mResumed;
     private Voice mVoice;
     private ImageButton mMic;
@@ -135,9 +150,7 @@ public class KaiActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (mBusy) {
-                    if (mClient != null) {
-                        mClient.cancel();
-                    }
+                    stopAnswer();
                 } else {
                     send();
                 }
@@ -189,6 +202,15 @@ public class KaiActivity extends Activity {
             }
         });
         load();
+        // kAI opened from scratch (closed from Recents, after a restart): a new chat; the
+        // previous one goes into the history. Not when Android recreated it (savedInstanceState)
+        // or the overlay opens the chat it just added to.
+        if (savedInstanceState == null && !getIntent().getBooleanExtra(EXTRA_KEEP_CHAT, false)
+                && !mMessages.isEmpty()) {
+            ChatStore.archive(this, mMessages);
+            mMessages.clear();
+            save();
+        }
         refresh();
         handleIntent(getIntent());
     }
@@ -432,9 +454,23 @@ public class KaiActivity extends Activity {
                 ? previousQuestion + " " + text : text;
         // a spoken question gets its answer from the voice, Flash-Lite Live
         final boolean spoken = mSpokenQuestion;
-        new Thread(new Runnable() {
+        final Request req = new Request(answer);
+        mRequest = req;
+        final Thread previous = mWorker;
+        mWorker = new Thread(new Runnable() {
             @Override
             public void run() {
+                // an answer that was stopped may still be leaving the model: one at a time
+                if (previous != null) {
+                    try {
+                        previous.join();
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                }
+                if (req.stopped) {
+                    return;
+                }
                 // the PC if it is there, else the phone's own model
                 final Target t;
                 try {
@@ -445,6 +481,9 @@ public class KaiActivity extends Activity {
                 } catch (Exception e) {
                     postError(answer, getString(LocalEngine.loading()
                             ? R.string.model_loading : R.string.not_connected));
+                    return;
+                }
+                if (req.stopped) {
                     return;
                 }
                 mClient = t.client;
@@ -493,12 +532,20 @@ public class KaiActivity extends Activity {
                         postStatus(answer, null);
                     }
                 }
+                if (req.stopped) {
+                    return;
+                }
                 final List<WebSearch.Result> sources = results;
                 final BridgeClient.Stream stream = new BridgeClient.Stream() {
                     private long mLastUi;
 
                     @Override
                     public void onDelta(final String delta) {
+                        if (req.stopped) {
+                            // Stop came while the model was starting: end it now
+                            t.client.cancel();
+                            return;
+                        }
                         synchronized (answer) {
                             answer.content += delta;
                         }
@@ -520,6 +567,10 @@ public class KaiActivity extends Activity {
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
+                                if (req.stopped || mRequest != req) {
+                                    return;     // Stop already closed this answer
+                                }
+                                mRequest = null;
                                 if (mSpokenQuestion && !answer.content.isEmpty()) {
                                     mVoice.speak(answer.content, mSpokenLang);
                                 }
@@ -539,7 +590,9 @@ public class KaiActivity extends Activity {
 
                     @Override
                     public void onError(final String message) {
-                        postError(answer, message);
+                        if (!req.stopped) {
+                            postError(answer, message);
+                        }
                     }
                 };
                 if (t.local && spoken && LocalEngine.LIVE.installed()) {
@@ -548,7 +601,36 @@ public class KaiActivity extends Activity {
                     t.client.chat(t.model, history, stream);
                 }
             }
-        }, "kAI-chat").start();
+        }, "kAI-chat");
+        mWorker.start();
+    }
+
+    /**
+     * Stop: the answer ends here at once, keeping what was written so far. The model is told to
+     * stop; if it had not started yet (loading, web search) it never will for this question.
+     */
+    private void stopAnswer() {
+        final Request r = mRequest;
+        mRequest = null;
+        if (r != null) {
+            r.stopped = true;
+            final BridgeClient c = mClient;
+            if (c != null) {
+                c.cancel();
+            }
+            mSpokenQuestion = false;
+            r.answer.status = null;
+            synchronized (r.answer) {
+                if (r.answer.content.trim().isEmpty()) {
+                    mMessages.remove(r.answer);
+                } else {
+                    r.answer.content = r.answer.content.trim();
+                }
+            }
+        }
+        setBusy(false);
+        refresh();
+        save();
     }
 
     /**
@@ -628,6 +710,11 @@ public class KaiActivity extends Activity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                final Request r = mRequest;
+                if (r == null || r.answer != answer) {
+                    return;     // stopped meanwhile: Stop already closed this answer
+                }
+                mRequest = null;
                 if (answer.content.isEmpty()) {
                     answer.content = getString(R.string.error_answer, message);
                 }
