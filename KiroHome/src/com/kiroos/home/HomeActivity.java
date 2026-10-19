@@ -856,7 +856,6 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                                 wrong.setScaleY(1f);
                             }
                         }
-                        if (!isDrawerOpen()) catchIcon(came);
                     }
                 });
             }
@@ -866,18 +865,17 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     /** the app last opened from the home (launch), caught first when the home comes back */
     private String mLastLaunched;
 
-    /** the icon flying back with a closing app (catchIcon), and the view that flies */
-    private android.animation.ValueAnimator mCatch;
-    private View mCatchFly;
+    /** the icon whose app is flying back into it (catchIcon) */
     private View mCatchIcon;
 
     /**
-     * Beta 4.1 "Fluida": the icon flies back with the closing app. The system shrinks the window
-     * into the icon (AppTransition: a scale about the pivot that lands the window's centre on
-     * the icon, and a crop from the full window to its centred square, on the close spring); a
-     * copy of the icon, on the home under the window, follows that same rectangle on the same
-     * spring, so as the app dissolves (55-90% of the way) what shows through is its icon,
-     * shrinking with it into its place. It lands with a small bounce.
+     * Beta 4.1 "Fluida": the app flies back into its icon. The system does the flight
+     * (AppTransition.KiroIconFlight, a surface with the icon's picture following the shrinking
+     * window): the home cannot draw while its window animates in, so a flight drawn here was
+     * never seen and the icon's place stayed empty until the end. Here the icon only steps
+     * aside on the home's first frame (the system's copy lands in its place) and comes back
+     * with a small landing bounce when the system's animation is over
+     * (onEnterAnimationComplete). Only for an app this home opened, so its picture is there.
      */
     private void catchIcon(String pkg) {
         final View icon = visibleIcon(pkg);
@@ -886,106 +884,45 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         icon.animate().cancel();
         icon.setScaleX(1f);
         icon.setScaleY(1f);
-        final Rect at = boundsInRoot(icon);
-        final float w = mRoot.getWidth();
-        final float h = mRoot.getHeight();
-        final android.graphics.Bitmap picture = iconPicture(icon);
-        if (w <= 0 || h <= 0 || at.isEmpty() || picture == null) {
-            icon.setAlpha(1f);
-            return;
-        }
         icon.setAlpha(0f);
-        // the window's geometry, as AppTransition computes it (kiroLaunchScale, addKiroIconMorph)
-        final float end = Math.max(0.06f, Math.min(0.6f, at.width() / w));
-        final float pivotX = (at.exactCenterX() - end * w / 2f) / (1f - end);
-        final float pivotY = (at.exactCenterY() - end * h / 2f) / (1f - end);
-        final float inset = Math.max(0f, (h - w) / 2f);
-        final android.widget.ImageView fly = new android.widget.ImageView(this);
-        fly.setImageBitmap(picture);
-        fly.setAlpha(0f);
-        mRoot.addView(fly, new FrameLayout.LayoutParams(at.width(), at.height()));
-        fly.setX(at.left);
-        fly.setY(at.top);
-        mCatchFly = fly;
         mCatchIcon = icon;
-        final android.animation.ValueAnimator a = android.animation.ValueAnimator.ofFloat(0f, 1f);
-        a.setDuration(KiroSpring.CLOSE.duration());
-        a.setInterpolator(KiroSpring.CLOSE);
-        a.addUpdateListener(new android.animation.ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(android.animation.ValueAnimator v) {
-                final float p = (float) v.getAnimatedValue();
-                final float s = 1f - p * (1f - end);
-                final float cx = pivotX + s * (w / 2f - pivotX);
-                final float cy = pivotY + s * (h / 2f - pivotY); // the crop stays centred
-                final float k = s * w / at.width();
-                fly.setScaleX(k);
-                fly.setScaleY(k);
-                fly.setTranslationX(cx - at.exactCenterX());
-                fly.setTranslationY(cy - at.exactCenterY());
-                fly.setAlpha(Math.max(0f, Math.min(1f, (p - 0.55f) / 0.35f)));
-            }
-        });
-        a.addListener(new android.animation.AnimatorListenerAdapter() {
-            private boolean mCancelled;
+        // if no animation runs (it was skipped, or the home had not gone), it comes back anyway
+        mHandler.postDelayed(mCatchFallback, 900);
+    }
 
-            @Override
-            public void onAnimationCancel(android.animation.Animator animation) {
-                mCancelled = true;
-            }
+    private final Runnable mCatchFallback = new Runnable() {
+        @Override
+        public void run() {
+            landCatch();
+        }
+    };
 
-            @Override
-            public void onAnimationEnd(android.animation.Animator animation) {
-                mRoot.removeView(fly);
-                if (mCatchFly == fly) mCatchFly = null;
-                icon.setAlpha(1f);
-                if (mCancelled) return;
-                // the landing
-                icon.setScaleX(1.08f);
-                icon.setScaleY(1.08f);
-                icon.animate().scaleX(1f).scaleY(1f).setDuration(KiroSpring.CATCH.duration())
-                        .setInterpolator(KiroSpring.CATCH).start();
-            }
-        });
-        mCatch = a;
-        // in step with the window: the system starts the close once the home has drawn, so
-        // the flight starts on the frame after the home's first one
-        final View root = mRoot;
-        root.getViewTreeObserver().addOnPreDrawListener(
-                new android.view.ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                root.getViewTreeObserver().removeOnPreDrawListener(this);
-                android.view.Choreographer.getInstance().postFrameCallback(
-                        new android.view.Choreographer.FrameCallback() {
-                    @Override
-                    public void doFrame(long frameTimeNanos) {
-                        if (mCatch == a) a.start();
-                    }
-                });
-                return true;
-            }
-        });
-        root.invalidate();
+    @Override
+    public void onEnterAnimationComplete() {
+        super.onEnterAnimationComplete();
+        landCatch();
+    }
+
+    /** the icon takes over from the system's copy that just landed in its place */
+    private void landCatch() {
+        mHandler.removeCallbacks(mCatchFallback);
+        final View icon = mCatchIcon;
+        mCatchIcon = null;
+        if (icon == null) return;
+        icon.setAlpha(1f);
+        icon.setScaleX(1.08f);
+        icon.setScaleY(1.08f);
+        icon.animate().scaleX(1f).scaleY(1f).setDuration(KiroSpring.CATCH.duration())
+                .setInterpolator(KiroSpring.CATCH).start();
     }
 
     private void cancelCatch() {
-        if (mCatch != null) {
-            final android.animation.ValueAnimator a = mCatch;
-            mCatch = null;
-            if (a.isStarted()) {
-                a.cancel();
-            } else if (mCatchFly != null) {
-                mRoot.removeView(mCatchFly);
-                mCatchFly = null;
-            }
-        }
+        mHandler.removeCallbacks(mCatchFallback);
         if (mCatchIcon != null) {
             mCatchIcon.setAlpha(1f);
             mCatchIcon = null;
         }
     }
-
     /** the icon picture of an app on the page shown or in the dock (a folder counts) */
     private View visibleIcon(String pkg) {
         final int page = mWorkspace.currentPage();
