@@ -43,19 +43,31 @@ public class HomeClockView extends LinearLayout {
         mDate = (TextView) findViewById(R.id.clock_date);
     }
 
+    /**
+     * The sizes are set here, before the texts are measured: set in onSizeChanged (during the
+     * layout) they came after the measure, so the time and the date kept the width measured for
+     * the old size and were cut ("10:" and "Monday 19 O…" once the hour had two digits).
+     */
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        if (w <= 0 || h <= 0 || mTime == null) {
-            return;
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int w = MeasureSpec.getSize(widthMeasureSpec);
+        final int h = MeasureSpec.getSize(heightMeasureSpec);
+        if (w > 0 && h > 0 && mTime != null) {
+            final int inner = w - getPaddingLeft() - getPaddingRight();
+            // "00:00" in the light face is about 2.6 em wide: fill the width, keep under half
+            // the height so the date fits below
+            final float time = Math.min(inner / 2.7f, h * 0.48f);
+            final float date = Math.min(Math.max(time * 0.27f,
+                    12 * getResources().getDisplayMetrics().density),
+                    22 * getResources().getDisplayMetrics().scaledDensity);
+            // only when it changes: setTextSize asks for a new layout
+            if (Math.abs(mTime.getTextSize() - time) > 0.5f) {
+                mTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, time);
+            }
+            if (Math.abs(mDate.getTextSize() - date) > 0.5f) {
+                mDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, date);
+            }
         }
-        final int inner = w - getPaddingLeft() - getPaddingRight();
-        // "00:00" in the light face is about 2.6 em wide: fill the width, keep under half the
-        // height so the date fits below
-        final float time = Math.min(inner / 2.7f, h * 0.48f);
-        final float date = Math.max(time * 0.27f, 12 * getResources().getDisplayMetrics().density);
-        mTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, time);
-        mDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, Math.min(date, 22
-                * getResources().getDisplayMetrics().scaledDensity));
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }
