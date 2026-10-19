@@ -33,6 +33,12 @@ final class KiroSpring implements Interpolator {
     static final KiroSpring SMOOTH = new KiroSpring(0.95, 13.04, 0, 560);
     /** a quick response to the finger: a widget or an icon lifted, a hint moving */
     static final KiroSpring QUICK = new KiroSpring(0.75, 22, 0, 340);
+    /**
+     * an app going home: the system's close spring (AppTransition KIRO_CLOSE_INTERPOLATOR,
+     * stiffness 195, damping 0.88, started with the gesture's speed), so the icon flying back
+     * moves exactly with the window
+     */
+    static final KiroSpring CLOSE = new KiroSpring(0.88, 13.98, 2.2, 560);
     /** an icon catching its app as it comes home: a visible landing bounce */
     static final KiroSpring CATCH = new KiroSpring(0.55, 15, 0, 520);
 

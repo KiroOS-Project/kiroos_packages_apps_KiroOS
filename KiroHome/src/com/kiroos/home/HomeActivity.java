@@ -595,7 +595,11 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         if (!(tag instanceof String[]) || icon == null || icon.getWidth() == 0) {
             return;
         }
-        icon.getLocationOnScreen(mIconLoc);
+        // from the parent and the layout position: the icon's own scale (the landing bounce)
+        // must not move what is published
+        ((View) icon.getParent()).getLocationOnScreen(mIconLoc);
+        mIconLoc[0] += icon.getLeft();
+        mIconLoc[1] += icon.getTop();
         final String rect = ":" + mIconLoc[0] + "," + mIconLoc[1] + ","
                 + (mIconLoc[0] + icon.getWidth()) + "," + (mIconLoc[1] + icon.getHeight()) + ";";
         for (String pkg : (String[]) tag) {
@@ -744,10 +748,12 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     }
 
     /**
-     * Opens the app out of its icon: the framework grows the app window from the icon's square
-     * (AppTransition, KiroOS launch zoom) while the home steps back. The icon's picture no
-     * longer goes along as a thumbnail layer: over the window it showed as a large dark
-     * square with dark icons (TikTok), split from the app by the home stepping back.
+     * Opens the app out of its icon. Beta 4.1 "Fluida": the icon's own picture goes along as
+     * the transition's thumbnail, so what grows out of the icon is the icon itself; the system
+     * (AppTransition, KiroOS launch zoom) grows it with the window on one spring and the app
+     * dissolves in over it while it is still small (the icon leaves at a quarter of the launch,
+     * never as the large dark square the thumbnail of Home 2.0 left over the app). The icon on
+     * the home stays where it is: the picture covers it, and the home steps back around it.
      */
     void launch(AppInfo app, View from) {
         Bundle opts = null;
@@ -756,8 +762,11 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             final int[] loc = new int[2];
             from.getLocationOnScreen(loc);
             bounds = new Rect(loc[0], loc[1], loc[0] + from.getWidth(), loc[1] + from.getHeight());
-            opts = ActivityOptions.makeScaleUpAnimation(from, 0, 0,
-                    from.getWidth(), from.getHeight()).toBundle();
+            final android.graphics.Bitmap picture = iconPicture(from);
+            opts = (picture != null
+                    ? ActivityOptions.makeThumbnailScaleUpAnimation(from, picture, 0, 0)
+                    : ActivityOptions.makeScaleUpAnimation(from, 0, 0,
+                            from.getWidth(), from.getHeight())).toBundle();
         }
         try {
             mRepo.launcherApps().startMainActivity(app.component, app.user, bounds, opts);
@@ -766,20 +775,18 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             return;
         }
         mLastLaunched = app.component.getPackageName();
-        // Home 2.0: the icon becomes the app. Its picture leaves as the window grows out of
-        // it, so no second copy of the icon stays behind the opening app; it is back a moment
-        // later (the app covers the home by then, or it is a small window over it)
-        final View icon = from != null ? from.findViewById(R.id.app_icon) : null;
-        if (icon != null) {
-            icon.animate().cancel();
-            icon.animate().alpha(0f).setStartDelay(40).setDuration(110).start();
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    icon.animate().cancel();
-                    icon.setAlpha(1f);
-                }
-            }, 900);
+    }
+
+    /** what a view shows (an icon), as a bitmap of its size; null when it cannot be made */
+    private static android.graphics.Bitmap iconPicture(View v) {
+        if (v.getWidth() <= 0 || v.getHeight() <= 0) return null;
+        try {
+            final android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(v.getWidth(),
+                    v.getHeight(), android.graphics.Bitmap.Config.ARGB_8888);
+            v.draw(new android.graphics.Canvas(b));
+            return b;
+        } catch (OutOfMemoryError | IllegalArgumentException e) {
+            return null;
         }
     }
 
@@ -859,16 +866,124 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     /** the app last opened from the home (launch), caught first when the home comes back */
     private String mLastLaunched;
 
+    /** the icon flying back with a closing app (catchIcon), and the view that flies */
+    private android.animation.ValueAnimator mCatch;
+    private View mCatchFly;
+    private View mCatchIcon;
+
+    /**
+     * Beta 4.1 "Fluida": the icon flies back with the closing app. The system shrinks the window
+     * into the icon (AppTransition: a scale about the pivot that lands the window's centre on
+     * the icon, and a crop from the full window to its centred square, on the close spring); a
+     * copy of the icon, on the home under the window, follows that same rectangle on the same
+     * spring, so as the app dissolves (55-90% of the way) what shows through is its icon,
+     * shrinking with it into its place. It lands with a small bounce.
+     */
     private void catchIcon(String pkg) {
         final View icon = visibleIcon(pkg);
         if (icon == null) return;
+        cancelCatch();
         icon.animate().cancel();
+        icon.setScaleX(1f);
+        icon.setScaleY(1f);
+        final Rect at = boundsInRoot(icon);
+        final float w = mRoot.getWidth();
+        final float h = mRoot.getHeight();
+        final android.graphics.Bitmap picture = iconPicture(icon);
+        if (w <= 0 || h <= 0 || at.isEmpty() || picture == null) {
+            icon.setAlpha(1f);
+            return;
+        }
         icon.setAlpha(0f);
-        icon.setScaleX(0.8f);
-        icon.setScaleY(0.8f);
-        icon.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(CATCH_DELAY)
-                .setDuration(KiroSpring.CATCH.duration()).setInterpolator(KiroSpring.CATCH)
-                .start();
+        // the window's geometry, as AppTransition computes it (kiroLaunchScale, addKiroIconMorph)
+        final float end = Math.max(0.06f, Math.min(0.6f, at.width() / w));
+        final float pivotX = (at.exactCenterX() - end * w / 2f) / (1f - end);
+        final float pivotY = (at.exactCenterY() - end * h / 2f) / (1f - end);
+        final float inset = Math.max(0f, (h - w) / 2f);
+        final android.widget.ImageView fly = new android.widget.ImageView(this);
+        fly.setImageBitmap(picture);
+        fly.setAlpha(0f);
+        mRoot.addView(fly, new FrameLayout.LayoutParams(at.width(), at.height()));
+        fly.setX(at.left);
+        fly.setY(at.top);
+        mCatchFly = fly;
+        mCatchIcon = icon;
+        final android.animation.ValueAnimator a = android.animation.ValueAnimator.ofFloat(0f, 1f);
+        a.setDuration(KiroSpring.CLOSE.duration());
+        a.setInterpolator(KiroSpring.CLOSE);
+        a.addUpdateListener(new android.animation.ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(android.animation.ValueAnimator v) {
+                final float p = (float) v.getAnimatedValue();
+                final float s = 1f - p * (1f - end);
+                final float cx = pivotX + s * (w / 2f - pivotX);
+                final float cy = pivotY + s * (h / 2f - pivotY); // the crop stays centred
+                final float k = s * w / at.width();
+                fly.setScaleX(k);
+                fly.setScaleY(k);
+                fly.setTranslationX(cx - at.exactCenterX());
+                fly.setTranslationY(cy - at.exactCenterY());
+                fly.setAlpha(Math.max(0f, Math.min(1f, (p - 0.55f) / 0.35f)));
+            }
+        });
+        a.addListener(new android.animation.AnimatorListenerAdapter() {
+            private boolean mCancelled;
+
+            @Override
+            public void onAnimationCancel(android.animation.Animator animation) {
+                mCancelled = true;
+            }
+
+            @Override
+            public void onAnimationEnd(android.animation.Animator animation) {
+                mRoot.removeView(fly);
+                if (mCatchFly == fly) mCatchFly = null;
+                icon.setAlpha(1f);
+                if (mCancelled) return;
+                // the landing
+                icon.setScaleX(1.08f);
+                icon.setScaleY(1.08f);
+                icon.animate().scaleX(1f).scaleY(1f).setDuration(KiroSpring.CATCH.duration())
+                        .setInterpolator(KiroSpring.CATCH).start();
+            }
+        });
+        mCatch = a;
+        // in step with the window: the system starts the close once the home has drawn, so
+        // the flight starts on the frame after the home's first one
+        final View root = mRoot;
+        root.getViewTreeObserver().addOnPreDrawListener(
+                new android.view.ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                root.getViewTreeObserver().removeOnPreDrawListener(this);
+                android.view.Choreographer.getInstance().postFrameCallback(
+                        new android.view.Choreographer.FrameCallback() {
+                    @Override
+                    public void doFrame(long frameTimeNanos) {
+                        if (mCatch == a) a.start();
+                    }
+                });
+                return true;
+            }
+        });
+        root.invalidate();
+    }
+
+    private void cancelCatch() {
+        if (mCatch != null) {
+            final android.animation.ValueAnimator a = mCatch;
+            mCatch = null;
+            if (a.isStarted()) {
+                a.cancel();
+            } else if (mCatchFly != null) {
+                mRoot.removeView(mCatchFly);
+                mCatchFly = null;
+            }
+        }
+        if (mCatchIcon != null) {
+            mCatchIcon.setAlpha(1f);
+            mCatchIcon = null;
+        }
     }
 
     /** the icon picture of an app on the page shown or in the dock (a folder counts) */
