@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 4.1: the home clock as a grid widget (HomeActivity / WidgetStack, id -2) -->
+<com.kiroos.home.HomeClockView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/clock_block"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+    android:paddingEnd="8dp"
+    android:paddingStart="8dp">
+
+    <TextClock
+        android:id="@+id/clock_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:format12Hour="h:mm"
+        android:format24Hour="HH:mm"
+        android:fontFamily="sans-serif-light"
+        android:includeFontPadding="false"
+        android:letterSpacing="-0.02"
+        android:maxLines="1"
+        android:textColor="@color/kiro_text"
+        android:textSize="60sp"
+        style="@style/HomeShadow" />
+
+    <TextClock
+        android:id="@+id/clock_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:format12Hour="@string/date_format"
+        android:format24Hour="@string/date_format"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:textColor="@color/kiro_text"
+        android:textSize="17sp"
+        style="@style/HomeShadow" />
+</com.kiroos.home.HomeClockView>

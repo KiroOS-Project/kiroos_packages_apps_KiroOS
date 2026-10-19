@@ -13,6 +13,7 @@
     android:paddingTop="10dp">
 
     <TextClock
+        android:id="@+id/clock_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
@@ -24,6 +25,7 @@
         android:textSize="58sp" />
 
     <TextClock
+        android:id="@+id/clock_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"

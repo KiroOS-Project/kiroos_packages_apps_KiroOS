@@ -16,6 +16,10 @@
     <string name="move_widget_up">Sposta su</string>
     <string name="move_widget_down">Sposta giù</string>
     <string name="remove_widget">Rimuovi widget</string>
+    <string name="widget_size_small">Piccolo</string>
+    <string name="widget_size_medium">Medio</string>
+    <string name="widget_size_large">Grande</string>
+    <string name="widget_no_room">Qui non c\'è spazio per questa grandezza</string>
     <string name="remove_clock">Rimuovi orologio</string>
     <string name="show_clock">Mostra orologio</string>
     <string name="folder_default">Cartella</string>

@@ -52,9 +52,10 @@ public class Workspace extends ViewGroup {
     static final class LayoutParams extends ViewGroup.LayoutParams {
         int page;
         int index;
-        /** Beta 4: a widget spans full rows from its bottom-left cell (index) up */
+        /** Beta 4: a widget spans rows from its bottom-left cell (index) up; 4.1: and cols */
         int rows = 1;
-        boolean fullWidth;
+        int cols = 1;
+        boolean widget;
 
         LayoutParams(int page, int index) {
             super(0, 0);
@@ -62,10 +63,11 @@ public class Workspace extends ViewGroup {
             this.index = index;
         }
 
-        static LayoutParams widget(int page, int index, int rows) {
+        static LayoutParams widget(int page, int index, int rows, int cols) {
             final LayoutParams lp = new LayoutParams(page, index);
             lp.rows = rows;
-            lp.fullWidth = true;
+            lp.cols = cols;
+            lp.widget = true;
             return lp;
         }
     }
@@ -349,8 +351,8 @@ public class Workspace extends ViewGroup {
         for (int i = 0; i < getChildCount(); i++) {
             final View c = getChildAt(i);
             final LayoutParams lp = (LayoutParams) c.getLayoutParams();
-            if (lp.fullWidth) {
-                c.measure(MeasureSpec.makeMeasureSpec(cw * HomeModel.COLUMNS - 2 * inset,
+            if (lp.widget) {
+                c.measure(MeasureSpec.makeMeasureSpec(cw * lp.cols - 2 * inset,
                         MeasureSpec.EXACTLY), MeasureSpec.makeMeasureSpec(
                         mCellHeight * lp.rows - 2 * inset, MeasureSpec.EXACTLY));
             } else {
@@ -372,10 +374,11 @@ public class Workspace extends ViewGroup {
             final View c = getChildAt(i);
             final LayoutParams lp = (LayoutParams) c.getLayoutParams();
             final int x = lp.page * w + cellLeft(lp.index);
-            if (lp.fullWidth) {
-                // from the bottom row of the widget (its index) up lp.rows rows
+            if (lp.widget) {
+                // from the bottom-left cell of the widget (its index) up lp.rows rows and
+                // right lp.cols columns
                 final int y = h - (lp.index / HomeModel.COLUMNS + lp.rows) * mCellHeight;
-                c.layout(x + inset, y + inset, x + cw * HomeModel.COLUMNS - inset,
+                c.layout(x + inset, y + inset, x + cw * lp.cols - inset,
                         y + mCellHeight * lp.rows - inset);
                 continue;
             }

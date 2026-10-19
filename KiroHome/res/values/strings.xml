@@ -17,6 +17,10 @@
     <string name="move_widget_up">Move up</string>
     <string name="move_widget_down">Move down</string>
     <string name="remove_widget">Remove widget</string>
+    <string name="widget_size_small">Small</string>
+    <string name="widget_size_medium">Medium</string>
+    <string name="widget_size_large">Large</string>
+    <string name="widget_no_room">There isn\'t room for this size here</string>
     <string name="remove_clock">Remove clock</string>
     <string name="show_clock">Show clock</string>
     <string name="folder_default">Folder</string>

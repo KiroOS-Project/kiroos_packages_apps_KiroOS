@@ -308,6 +308,8 @@ public class SetupActivity extends Activity {
         }
         Settings.Global.putInt(getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 1);
         Settings.Secure.putInt(getContentResolver(), Settings.Secure.USER_SETUP_COMPLETE, 1);
+        // Beta 4.1: the setup showed this release; "what's new" waits for the next one
+        WhatsNewActivity.markSeen(this);
         setStatusBarLocked(false);
 
         final PackageManager pm = getPackageManager();

@@ -16,6 +16,10 @@
     <string name="move_widget_up">Monter</string>
     <string name="move_widget_down">Descendre</string>
     <string name="remove_widget">Retirer le widget</string>
+    <string name="widget_size_small">Petit</string>
+    <string name="widget_size_medium">Moyen</string>
+    <string name="widget_size_large">Grand</string>
+    <string name="widget_no_room">Pas assez de place ici pour cette taille</string>
     <string name="remove_clock">Retirer l\'horloge</string>
     <string name="show_clock">Afficher l\'horloge</string>
     <string name="folder_default">Dossier</string>

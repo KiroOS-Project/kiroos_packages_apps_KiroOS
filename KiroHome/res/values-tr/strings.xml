@@ -16,6 +16,10 @@
     <string name="move_widget_up">Yukarı taşı</string>
     <string name="move_widget_down">Aşağı taşı</string>
     <string name="remove_widget">Widget\'ı kaldır</string>
+    <string name="widget_size_small">Küçük</string>
+    <string name="widget_size_medium">Orta</string>
+    <string name="widget_size_large">Büyük</string>
+    <string name="widget_no_room">Burada bu boyut için yer yok</string>
     <string name="remove_clock">Saati kaldır</string>
     <string name="show_clock">Saati göster</string>
     <string name="folder_default">Klasör</string>

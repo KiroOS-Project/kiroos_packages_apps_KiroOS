@@ -45,7 +45,23 @@ public class GalleryWidget extends AppWidgetProvider {
 
     private static final int[] PHOTO = {
         R.id.gallery_photo1, R.id.gallery_photo2, R.id.gallery_photo3, R.id.gallery_photo4,
+        R.id.gallery_photo5, R.id.gallery_photo6, R.id.gallery_photo7, R.id.gallery_photo8,
     };
+
+    /** Beta 4.1: the home changed the widget's size (small 1 photo, medium 4, large 8) */
+    @Override
+    public void onAppWidgetOptionsChanged(final Context context, AppWidgetManager manager,
+            int id, android.os.Bundle options) {
+        onUpdate(context, manager, new int[] {id});
+    }
+
+    /** how many photos a widget of this size shows */
+    private static int photosFor(AppWidgetManager m, int id) {
+        final android.os.Bundle o = m.getAppWidgetOptions(id);
+        final int w = o.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250);
+        final int h = o.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 110);
+        return w < 200 ? 1 : h >= 280 ? 8 : 4;
+    }
     private static final int JOB_ID = 4242;
     private static final int THUMB = 220;   // px: small enough for the widget's binder call
 
@@ -73,43 +89,60 @@ public class GalleryWidget extends AppWidgetProvider {
         final AppWidgetManager m = AppWidgetManager.getInstance(context);
         final int[] ids = m.getAppWidgetIds(new ComponentName(context, GalleryWidget.class));
         if (ids == null || ids.length == 0) return;
-        final RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_gallery);
         final boolean allowed = context.checkSelfPermission(
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        int shown = 0;
+        // the photos once (up to 8), then each widget shows as many as its size takes
+        final Bitmap[] thumbs = new Bitmap[PHOTO.length];
+        final Intent[] opens = new Intent[PHOTO.length];
+        int found = 0;
         if (allowed) {
             try (Cursor c = context.getContentResolver().query(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     new String[] { MediaStore.Images.Media._ID, MediaStore.Images.Media.MIME_TYPE },
                     null, null,
                     MediaStore.Images.Media.DATE_TAKEN + " DESC, " + MediaStore.Images.Media._ID
-                            + " DESC LIMIT " + PHOTO.length)) {
-                while (c != null && c.moveToNext() && shown < PHOTO.length) {
+                            + " DESC LIMIT " + (PHOTO.length + 4))) {
+                while (c != null && c.moveToNext() && found < PHOTO.length) {
                     final long id = c.getLong(0);
                     final Bitmap thumb = thumbnail(context, id);
                     if (thumb == null) continue;
-                    v.setImageViewBitmap(PHOTO[shown], thumb);
-                    v.setViewVisibility(PHOTO[shown], View.VISIBLE);
                     final Uri uri = ContentUris.withAppendedId(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-                    final Intent view = new Intent(Intent.ACTION_VIEW)
+                    thumbs[found] = thumb;
+                    opens[found] = new Intent(Intent.ACTION_VIEW)
                             .setClass(context, ViewerActivity.class)
                             .setDataAndType(uri, c.getString(1) != null ? c.getString(1) : "image/*")
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                                     | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    v.setOnClickPendingIntent(PHOTO[shown], PendingIntent.getActivity(context,
-                            shown + 1, view, PendingIntent.FLAG_UPDATE_CURRENT));
-                    shown++;
+                    found++;
                 }
             } catch (RuntimeException e) {
                 // media store busy (scanning): the next change refreshes it
             }
         }
-        for (int k = shown; k < PHOTO.length; k++) {
-            // keep the grid even: empty slots stay as placeholders
-            v.setImageViewResource(PHOTO[k], 0);
-            v.setViewVisibility(PHOTO[k], shown == 0 ? View.GONE : View.VISIBLE);
+        for (int wid : ids) {
+            m.updateAppWidget(wid, views(context, photosFor(m, wid), allowed, thumbs, opens, found));
         }
+        watch(context);
+    }
+
+    private static RemoteViews views(Context context, int slots, boolean allowed,
+            Bitmap[] thumbs, Intent[] opens, int found) {
+        final RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_gallery);
+        final int shown = Math.min(slots, found);
+        for (int k = 0; k < PHOTO.length; k++) {
+            if (k < shown) {
+                v.setImageViewBitmap(PHOTO[k], thumbs[k]);
+                v.setViewVisibility(PHOTO[k], View.VISIBLE);
+                v.setOnClickPendingIntent(PHOTO[k], PendingIntent.getActivity(context, k + 1,
+                        opens[k], PendingIntent.FLAG_UPDATE_CURRENT));
+            } else {
+                // keep the grid even: empty slots of the size shown stay as placeholders
+                v.setImageViewResource(PHOTO[k], 0);
+                v.setViewVisibility(PHOTO[k], k < slots && shown > 0 ? View.VISIBLE : View.GONE);
+            }
+        }
+        v.setViewVisibility(R.id.gallery_row2, slots > 4 && shown > 0 ? View.VISIBLE : View.GONE);
         v.setViewVisibility(R.id.gallery_grid, shown == 0 ? View.GONE : View.VISIBLE);
         v.setViewVisibility(R.id.gallery_empty, shown == 0 ? View.VISIBLE : View.GONE);
         v.setTextViewText(R.id.gallery_empty, context.getString(allowed
@@ -117,8 +150,7 @@ public class GalleryWidget extends AppWidgetProvider {
         v.setOnClickPendingIntent(R.id.gallery_root, PendingIntent.getActivity(context, 0,
                 new Intent(context, GalleryActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                 PendingIntent.FLAG_UPDATE_CURRENT));
-        m.updateAppWidget(ids, v);
-        watch(context);
+        return v;
     }
 
     private static Bitmap thumbnail(Context context, long id) {

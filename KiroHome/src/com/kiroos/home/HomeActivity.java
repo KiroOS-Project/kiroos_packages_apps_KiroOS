@@ -84,8 +84,12 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     /** how long an app dragged to a side edge waits before the page turns */
     private static final long EDGE_PAGE_DELAY = 550;
     private static final String KEY_PAGE = "page";
-    /** the clock at the top of the first page (removable) */
+    /** the clock at the top of the first page (removable) - before Beta 4.1 */
     private static final String KEY_CLOCK = "clock";
+    /** Beta 4.1: the clock went into the grid (done once) */
+    private static final String KEY_CLOCK_IN_GRID = "clock_in_grid";
+    /** no widget dragged (widget ids are positive, the clock is HomeModel.CLOCK_ID) */
+    private static final int NO_WIDGET = Integer.MIN_VALUE;
     /** page to show once the layout is bound (restored after the launcher was killed) */
     private int mStartPage;
 
@@ -131,9 +135,14 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         Rect home;
         float offX;
         float offY;
-        /** Beta 4: a widget dragged (its id and rows), -1 for an app or a folder */
-        int widgetId = -1;
+        /** Beta 4: a widget dragged (its id, rows and columns), NO_WIDGET for an app/folder */
+        int widgetId = NO_WIDGET;
         int widgetRows = 1;
+        int widgetCols = HomeModel.COLUMNS;
+
+        boolean isWidget() {
+            return widgetId != NO_WIDGET;
+        }
     }
 
     /** how much a lifted app grows under the finger */
@@ -173,7 +182,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
         mWallpaperManager = WallpaperManager.getInstance(this);
         mHeader = findViewById(R.id.header);
-        mClock = findViewById(R.id.clock_block);
+        // Beta 4.1: the clock is a widget of the grid (WidgetStack.view(CLOCK_ID) hands it out)
+        mClock = getLayoutInflater().inflate(R.layout.home_clock, null, false);
         mWorkspace.setListener(new Workspace.Listener() {
             @Override
             public void onPageScrolled(float position) {
@@ -194,7 +204,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             @Override
             public void onRowsChanged(int firstRows, int rows) {
                 mModel.setRows(firstRows, rows);
-                if (mDrag == null && mModel.fitRows()) {
+                final boolean clock = moveClockIntoGrid();
+                if (mDrag == null && (mModel.fitRows() || clock)) {
                     bindHome();
                 }
             }
@@ -207,7 +218,6 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 mWorkspace.setFirstPageTop(b - t);
             }
         });
-        showClock(getSharedPreferences("home", MODE_PRIVATE).getBoolean(KEY_CLOCK, true));
         // the page survives the launcher being killed while an app is open
         mStartPage = getSharedPreferences("home", MODE_PRIVATE).getInt(KEY_PAGE, 0);
 
@@ -231,7 +241,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             }
         });
 
-        findViewById(R.id.clock_block).setOnClickListener(new View.OnClickListener() {
+        mClock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -242,20 +252,11 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 }
             }
         });
+        // held like any widget: it lifts and follows the finger; let go in place, its menu
         mClock.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                final PopupMenu menu = new PopupMenu(HomeActivity.this, v, Gravity.CENTER);
-                menu.getMenu().add(0, 1, 0, R.string.remove_clock);
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        showClock(false);
-                        return true;
-                    }
-                });
-                menu.show();
+                onWidgetLongPress(v, HomeModel.CLOCK_ID);
                 return true;
             }
         });
@@ -405,16 +406,16 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mModel.load(mRepo);
         final int cell = mWorkspace.cellHeight();
         if (mModel.takeFreshInstall()) {
-            // a new phone: the home is set like out of the box, the kAI bar at the top
-            final int bar = mWidgets.seedKaiBar();
-            if (bar != -1) mModel.addWidget(bar, mWidgets.rowsFor(bar, cell), 0);
+            // a new phone: the home is set like out of the box once the grid knows its rows
+            mSeedHome = true;
         }
         // widgets stacked under the clock before Beta 4 come into the grid, top of page 1
         for (int id : mWidgets.takeLegacyIds()) {
             if (mWidgets.exists(id) && mModel.findWidget(id) == null) {
-                mModel.addWidget(id, mWidgets.rowsFor(id, cell), 0);
+                mModel.addWidget(id, mWidgets.rowsFor(id, cell), HomeModel.COLUMNS, 0);
             }
         }
+        moveClockIntoGrid();
         // widgets whose app is gone leave their place
         for (int id : mModel.widgetIds()) {
             if (!mWidgets.exists(id)) {
@@ -431,6 +432,54 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
     }
 
+    /** a new phone's home still waits for its clock and widgets (the grid's rows first) */
+    private boolean mSeedHome;
+
+    /** the home's clock view (a widget of the grid since Beta 4.1) */
+    View clockView() {
+        return mClock;
+    }
+
+    /**
+     * Beta 4.1, once the grid knows how many rows the first page shows: a new phone's home is
+     * set like out of the box (the clock at the top, the Surge search bar and the kAI bar
+     * below it, Pulse on the second page); a phone from Beta 4 or older gets its clock (the
+     * old header, if it was shown) as a widget at the top of the first page. True if the
+     * home changed.
+     */
+    private boolean moveClockIntoGrid() {
+        final android.content.SharedPreferences p = getSharedPreferences("home", MODE_PRIVATE);
+        if (!mModel.isLoaded() || mWorkspace.getHeight() == 0
+                || mModel.rows(0) != mWorkspace.rows(0)) {
+            return false; // the grid's rows are not known yet: a later call does it
+        }
+        if (mSeedHome) {
+            mSeedHome = false;
+            p.edit().putBoolean(KEY_CLOCK_IN_GRID, true).apply();
+            final int cell = mWorkspace.cellHeight();
+            mModel.addWidget(HomeModel.CLOCK_ID, 2, HomeModel.COLUMNS, 0);
+            final int search = mWidgets.seed(new android.content.ComponentName(
+                    "com.kiroos.surge", "com.kiroos.surge.SurgeWidget"));
+            if (search != -1) mModel.addWidget(search, 1, HomeModel.COLUMNS, 0);
+            final int bar = mWidgets.seed(new android.content.ComponentName(
+                    "com.kiroos.kai", "com.kiroos.kai.KaiBarWidget"));
+            if (bar != -1) mModel.addWidget(bar, mWidgets.rowsFor(bar, cell), HomeModel.COLUMNS, 0);
+            final int pulse = mWidgets.seed(new android.content.ComponentName(
+                    "com.kiroos.pulse", "com.kiroos.pulse.PulseWidget"));
+            if (pulse != -1) mModel.addWidget(pulse, 2, HomeModel.COLUMNS, 1);
+            return true;
+        }
+        if (p.getBoolean(KEY_CLOCK_IN_GRID, false)) {
+            return false;
+        }
+        p.edit().putBoolean(KEY_CLOCK_IN_GRID, true).apply();
+        if (p.getBoolean(KEY_CLOCK, true) && mModel.findWidget(HomeModel.CLOCK_ID) == null) {
+            mModel.addWidget(HomeModel.CLOCK_ID, 2, HomeModel.COLUMNS, 0);
+            return true;
+        }
+        return false;
+    }
+
     private void bindHome() {
         final LayoutInflater inflater = LayoutInflater.from(this);
         mWorkspace.removeAllViews();
@@ -442,13 +491,20 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                     continue; // covered by its widget
                 }
                 if (HomeModel.isWidget(key)) {
-                    final View w = mWidgets.view(HomeModel.widgetId(key));
+                    final int id = HomeModel.widgetId(key);
+                    final View w = mWidgets.view(id);
                     if (w != null) {
                         w.setAlpha(1f);
                         w.setScaleX(1f);
                         w.setScaleY(1f);
-                        mWorkspace.addView(w, Workspace.LayoutParams.widget(p, i,
-                                HomeModel.widgetRows(key)));
+                        w.setTranslationX(0f);
+                        w.setTranslationY(0f);
+                        final int rows = HomeModel.widgetRows(key);
+                        final int cols = HomeModel.widgetCols(key);
+                        mWorkspace.addView(w, Workspace.LayoutParams.widget(p, i, rows, cols));
+                        // the widget's app learns its size (it can show more when larger)
+                        mWidgets.tellSize(id, mWorkspace.cellWidth() * cols,
+                                mWorkspace.cellHeight() * rows);
                     }
                     continue;
                 }
@@ -726,8 +782,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
     }
 
-    /** how far into the system's close (320 ms) the app melts into its icon */
-    private static final long CATCH_DELAY = 210;
+    /** how far into the system's close (Beta 4.1: 380 ms, melting from 58%) the app melts into
+     *  its icon */
+    private static final long CATCH_DELAY = 220;
 
     /**
      * Home 2.0: an app that just went back to the home lands in its icon, and the icon catches
@@ -964,8 +1021,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             }
         }
         if (d.moved) {
-            if (d.widgetId >= 0) {
-                showWidgetHint(d, widgetBottomRow(d, x, y));
+            if (d.isWidget()) {
+                showWidgetHint(d, widgetBottomRow(d, x, y), widgetColumn(d, x));
             } else {
                 final HomeModel.Loc at = locAt(x, y);
                 showHint(at, mergeAt(d, at, x, y));
@@ -982,12 +1039,12 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
         HomeModel.Loc to = null;
         boolean merged = false;
-        if (d.widgetId >= 0) {
+        if (d.isWidget()) {
             // a widget lands on full rows of the page shown (another widget in the way: back)
             if (dropped && d.moved) {
                 final int bottom = widgetBottomRow(d, x, y);
-                if (bottom >= 0 && mModel.placeWidget(d.widgetId, d.widgetRows,
-                        mWorkspace.currentPage(), bottom)) {
+                if (bottom >= 0 && mModel.placeWidget(d.widgetId, d.widgetRows, d.widgetCols,
+                        mWorkspace.currentPage(), bottom, widgetColumn(d, x))) {
                     to = mModel.findWidget(d.widgetId);
                 }
             }
@@ -1021,7 +1078,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mWorkspace.snapTo(page, true);
         settleFloating(d, to, merged);
         if (!d.moved) {
-            if (d.widgetId >= 0) {
+            if (d.isWidget()) {
                 // a widget held without moving: its menu
                 final View anchor = d.from != null ? cellView(d.from) : null;
                 showWidgetMenu(d.widgetId, anchor != null && anchor.isAttachedToWindow()
@@ -1057,7 +1114,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 final View cell = land != null ? cellView(land) : null;
                 // a widget lands as a whole into its new place
                 final View icon = cell == null ? null
-                        : d.widgetId >= 0 ? cell : cell.findViewById(R.id.app_icon);
+                        : d.isWidget() ? cell : cell.findViewById(R.id.app_icon);
                 final Rect target;
                 if (icon != null && icon.isAttachedToWindow() && icon.getWidth() > 0) {
                     target = boundsInRoot(icon);
@@ -1397,8 +1454,14 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
      * when it comes back, apps in that row move on (Workspace.Listener.onRowsChanged).
      */
     private void showClock(boolean show) {
-        mClock.setVisibility(show ? View.VISIBLE : View.GONE);
         getSharedPreferences("home", MODE_PRIVATE).edit().putBoolean(KEY_CLOCK, show).apply();
+        // Beta 4.1: the clock is a widget of the grid; it comes back on the page shown
+        if (show && mModel.findWidget(HomeModel.CLOCK_ID) == null) {
+            addWidgetToHome(HomeModel.CLOCK_ID);
+        } else if (!show && mModel.findWidget(HomeModel.CLOCK_ID) != null) {
+            mModel.removeWidget(HomeModel.CLOCK_ID);
+            bindHome();
+        }
     }
 
     @Override
@@ -1410,7 +1473,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final PopupMenu menu = new PopupMenu(this, anchor);
         menu.getMenu().add(0, 1, 0, R.string.add_widget);
         menu.getMenu().add(0, 2, 0, R.string.wallpaper);
-        if (mClock.getVisibility() != View.VISIBLE) {
+        if (mModel.findWidget(HomeModel.CLOCK_ID) == null) {
             menu.getMenu().add(0, 4, 0, R.string.show_clock);
         }
         menu.getMenu().add(0, 3, 0, R.string.settings);
@@ -1488,10 +1551,11 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
     }
 
-    /** Beta 4: a new widget takes the first free rows from the page shown, then grows in */
+    /** Beta 4: a new widget takes the first free place from the page shown, then grows in */
     private void addWidgetToHome(int id) {
-        mModel.addWidget(id, mWidgets.rowsFor(id, mWorkspace.cellHeight()),
-                mWorkspace.currentPage());
+        final int[] size = mWidgets.defaultSize(id, mWorkspace.cellWidth(),
+                mWorkspace.cellHeight());
+        mModel.addWidget(id, size[0], size[1], mWorkspace.currentPage());
         bindHome();
         final HomeModel.Loc at = mModel.findWidget(id);
         if (at != null) {
@@ -1513,27 +1577,62 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
      * page and any rows (held at a side edge the page turns); let go without moving, the
      * widget menu.
      */
-    void onWidgetLongPress(final AppWidgetHostView view, final int id) {
+    void onWidgetLongPress(final View view, final int id) {
         final HomeModel.Loc from = mModel.findWidget(id);
         if (from == null || mDrag != null) return;
         startDrag(null, mModel.at(from), from, null, view);
         if (mDrag != null) {
             mDrag.widgetId = id;
             mDrag.widgetRows = HomeModel.widgetRows(mModel.at(from));
+            mDrag.widgetCols = HomeModel.widgetCols(mModel.at(from));
         }
     }
 
+    /** the names of the three widget sizes, smallest first */
+    private static final int[] SIZE_NAMES = {
+            R.string.widget_size_small, R.string.widget_size_medium, R.string.widget_size_large,
+    };
+
+    /**
+     * Held without moving: the sizes the widget can take (up to three, the one it has
+     * checked) and Remove. A new size grows or shrinks the widget where it is.
+     */
     private void showWidgetMenu(final int id, View anchor) {
         final PopupMenu menu = new PopupMenu(this, anchor, Gravity.CENTER);
-        menu.getMenu().add(0, 1, 0, R.string.remove_widget);
+        final HomeModel.Loc here = mModel.findWidget(id);
+        final String key = here != null ? mModel.at(here) : "";
+        final java.util.List<int[]> sizes = mWidgets.sizes(id, mWorkspace.cellWidth(),
+                mWorkspace.cellHeight());
+        if (sizes.size() > 1) {
+            for (int i = 0; i < sizes.size(); i++) {
+                final int[] s = sizes.get(i);
+                // {rows, cols, 0 small / 1 medium / 2 large}
+                final MenuItem item = menu.getMenu().add(1, 10 + i, i, getString(SIZE_NAMES[s[2]]));
+                item.setCheckable(true);
+                item.setChecked(s[0] == HomeModel.widgetRows(key)
+                        && s[1] == HomeModel.widgetCols(key));
+            }
+            menu.getMenu().setGroupCheckable(1, true, true);
+        }
+        menu.getMenu().add(2, 1, 10, id == HomeModel.CLOCK_ID
+                ? R.string.remove_clock : R.string.remove_widget);
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() >= 10) {
+                    final int[] s = sizes.get(item.getItemId() - 10);
+                    resizeWidget(id, s[0], s[1]);
+                    return true;
+                }
                 final HomeModel.Loc at = mModel.findWidget(id);
                 final View v = at != null ? cellView(at) : null;
                 final Runnable remove = new Runnable() {
                     @Override
                     public void run() {
+                        if (id == HomeModel.CLOCK_ID) {
+                            showClock(false);
+                            return;
+                        }
                         mModel.removeWidget(id);
                         mWidgets.deleteId(id);
                         bindHome();
@@ -1552,6 +1651,66 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         menu.show();
     }
 
+    /**
+     * Beta 4.1: the widget takes its new size where it is, and the change is animated: the
+     * view (already laid out at the new size) starts drawn over its old place and size and
+     * grows or shrinks into the new one with a soft overshoot.
+     */
+    private void resizeWidget(final int id, int rows, int cols) {
+        final HomeModel.Loc at = mModel.findWidget(id);
+        final View before = at != null ? cellView(at) : null;
+        final Rect old = before != null && before.getWidth() > 0 ? boundsInRoot(before) : null;
+        if (!mModel.resizeWidget(id, rows, cols)) {
+            android.widget.Toast.makeText(this, R.string.widget_no_room,
+                    android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+        bindHome();
+        final HomeModel.Loc now = mModel.findWidget(id);
+        final View v = now != null ? cellView(now) : null;
+        if (v == null || old == null) {
+            return;
+        }
+        v.getViewTreeObserver().addOnPreDrawListener(
+                new android.view.ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                v.getViewTreeObserver().removeOnPreDrawListener(this);
+                final Rect target = boundsInRoot(v);
+                if (target.width() <= 0 || target.height() <= 0) {
+                    return true;
+                }
+                v.setPivotX(0f);
+                v.setPivotY(0f);
+                v.setTranslationX(old.left - target.left);
+                v.setTranslationY(old.top - target.top);
+                v.setScaleX(old.width() / (float) target.width());
+                v.setScaleY(old.height() / (float) target.height());
+                v.animate().translationX(0f).translationY(0f).scaleX(1f).scaleY(1f)
+                        .setDuration(360)
+                        .setInterpolator(new android.view.animation.OvershootInterpolator(0.8f))
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                v.setPivotX(v.getWidth() / 2f);
+                                v.setPivotY(v.getHeight() / 2f);
+                                schedulePublishIcons(150);
+                            }
+                        }).start();
+                return true;
+            }
+        });
+    }
+
+    /** the left column a dragged half-width widget lands on (full width: 0) */
+    private int widgetColumn(Drag d, float x) {
+        if (d.widgetCols >= HomeModel.COLUMNS) return 0;
+        final Rect w = boundsInRoot(mWorkspace);
+        final float left = x - d.offX - w.left - mWorkspace.cellLeft(0);
+        final int col = Math.round(left / Math.max(1, mWorkspace.cellWidth()));
+        return Math.max(0, Math.min(HomeModel.COLUMNS - d.widgetCols, col));
+    }
+
     /** the bottom row a dragged widget lands on, from where its lifted copy is now */
     private int widgetBottomRow(Drag d, float x, float y) {
         final Rect w = boundsInRoot(mWorkspace);
@@ -1562,8 +1721,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         return Math.max(0, index / HomeModel.COLUMNS - (d.widgetRows - 1) / 2);
     }
 
-    /** where a dragged widget would land: a rounded outline over the rows it takes */
-    private void showWidgetHint(Drag d, int bottomRow) {
+    /** where a dragged widget would land: a rounded outline over the cells it takes */
+    private void showWidgetHint(Drag d, int bottomRow, int col) {
         if (bottomRow < 0) {
             mDropHint.setVisibility(View.GONE);
             return;
@@ -1573,8 +1732,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final int bottom = Math.max(0, Math.min(mModel.rows(page) - rows, bottomRow));
         final Rect w = boundsInRoot(mWorkspace);
         final int inset = Math.round(6 * getResources().getDisplayMetrics().density);
-        final int left = w.left + mWorkspace.cellLeft(0) + inset;
-        final int width = mWorkspace.cellWidth() * HomeModel.COLUMNS - 2 * inset;
+        final int left = w.left + mWorkspace.cellLeft(col) + inset;
+        final int width = mWorkspace.cellWidth() * d.widgetCols - 2 * inset;
         final int top = w.top + mWorkspace.cellTop(page, (bottom + rows - 1) * HomeModel.COLUMNS)
                 + inset;
         final int height = mWorkspace.cellHeight() * rows - 2 * inset;

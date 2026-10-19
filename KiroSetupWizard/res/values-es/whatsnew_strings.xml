@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 4.1: "What's new" after an update (WhatsNewActivity). The lists say
+     what changed since the previous public release, Developer Beta 4. -->
+<resources>
+    <string name="whatsnew_start">Empezar</string>
+    <string name="whatsnew_title">KiroOS 1.0</string>
+    <string name="whatsnew_ready">%1$s está lista</string>
+    <string name="whatsnew_previous">Developer Beta 4</string>
+    <string name="whatsnew_since">Novedades desde la %1$s</string>
+    <string name="whatsnew_section_new">Novedades</string>
+    <string name="whatsnew_section_improvements">Mejoras</string>
+    <string name="whatsnew_section_optimizations">Optimizaciones</string>
+    <string name="whatsnew_section_fixes">Correcciones</string>
+    <string name="whatsnew_all_set">Todo listo</string>
+    <string name="whatsnew_all_set_summary">Tus apps y ajustes están justo donde los dejaste.</string>
+    <string name="whatsnew_enjoy">Disfruta de la %1$s</string>
+    <string-array name="whatsnew_new">
+        <item>Los widgets tienen hasta tres tamaños: mantén pulsado un widget y elige pequeño, mediano o grande</item>
+        <item>El reloj de inicio es un widget: muévelo donde quieras, en tres tamaños</item>
+        <item>Mantén pulsado el brillo para tema claro / oscuro y protección ocular</item>
+        <item>Un nuevo panel de volumen con el diseño de KiroOS</item>
+        <item>Nuevos sonidos al bloquear y al desbloquear</item>
+        <item>Game Space tiene su propio apartado en Ajustes, debajo de Batería</item>
+        <item>Iconos nuevos, más vivos</item>
+        <item>Más extensiones Vulkan para apps y juegos</item>
+    </string-array>
+    <string-array name="whatsnew_improvements">
+        <item>Las apps se abren y se cierran con más fluidez: el icono crece con la app</item>
+        <item>Vibración más precisa: un toque corto y limpio</item>
+        <item>Colores de pantalla más naturales</item>
+        <item>kAI empieza un chat nuevo al abrirlo (el último está en el historial)</item>
+        <item>Canvas se abre desde inicio: mantén pulsado un espacio vacío, Fondo</item>
+        <item>KiroOS Equalizer ahora se llama Kiro EQ</item>
+        <item>KiroOS Update avisa cuando no hay Internet y vuelve a comprobar solo</item>
+    </string-array>
+    <string-array name="whatsnew_optimizations">
+        <item>Las páginas web se abren más rápido en todas las apps (KOptimize WebView compilado tras las actualizaciones)</item>
+    </string-array>
+    <string-array name="whatsnew_fixes">
+        <item>Los mensajes vuelven a aparecer arriba mientras usas el teléfono</item>
+        <item>El botón Detener de kAI siempre detiene la respuesta</item>
+        <item>Las teclas junto a Inicio ya no vibran con la pantalla siempre activa</item>
+        <item>Ya no hay luz en los bordes mientras kAI escribe</item>
+    </string-array>
+</resources>

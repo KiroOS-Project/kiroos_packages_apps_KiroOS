@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 4.1: "What's new" after an update (WhatsNewActivity). The lists say
+     what changed since the previous public release, Developer Beta 4. -->
+<resources>
+    <string name="whatsnew_start">Başla</string>
+    <string name="whatsnew_title">KiroOS 1.0</string>
+    <string name="whatsnew_ready">%1$s hazır</string>
+    <string name="whatsnew_previous">Developer Beta 4</string>
+    <string name="whatsnew_since">%1$s sürümünden bu yana yenilikler</string>
+    <string name="whatsnew_section_new">Yenilikler</string>
+    <string name="whatsnew_section_improvements">İyileştirmeler</string>
+    <string name="whatsnew_section_optimizations">Optimizasyonlar</string>
+    <string name="whatsnew_section_fixes">Düzeltmeler</string>
+    <string name="whatsnew_all_set">Her şey hazır</string>
+    <string name="whatsnew_all_set_summary">Uygulamaların ve ayarların bıraktığın yerde.</string>
+    <string name="whatsnew_enjoy">%1$s keyfini çıkar</string>
+    <string-array name="whatsnew_new">
+        <item>Widget\'lar üç boyuta kadar: bir widget\'a basılı tut ve küçük, orta veya büyük seç</item>
+        <item>Ana ekran saati bir widget: istediğin yere taşı, üç boyutta</item>
+        <item>Açık / koyu tema ve göz koruması için parlaklığa basılı tut</item>
+        <item>KiroOS tasarımında yeni ses paneli</item>
+        <item>Kilitleme ve kilit açma için yeni sesler</item>
+        <item>Game Space artık Ayarlar\'da Pil\'in altında</item>
+        <item>Yeni, daha canlı simgeler</item>
+        <item>Uygulama ve oyunlar için daha fazla Vulkan uzantısı</item>
+    </string-array>
+    <string-array name="whatsnew_improvements">
+        <item>Uygulamalar daha akıcı açılıp kapanıyor: simge uygulamayla birlikte büyüyor</item>
+        <item>Daha hassas titreşim: kısa ve net bir dokunuş</item>
+        <item>Ekranda daha doğal renkler</item>
+        <item>kAI açıldığında yeni bir sohbet başlatır (sonuncusu Geçmiş\'te)</item>
+        <item>Canvas ana ekrandan açılır: boş bir yere basılı tut, Duvar kağıdı</item>
+        <item>KiroOS Equalizer artık Kiro EQ</item>
+        <item>KiroOS Update internet olmadığını söyler ve kendisi tekrar kontrol eder</item>
+    </string-array>
+    <string-array name="whatsnew_optimizations">
+        <item>Web sayfaları tüm uygulamalarda daha hızlı açılır (KOptimize WebView güncellemelerden sonra derlenir)</item>
+    </string-array>
+    <string-array name="whatsnew_fixes">
+        <item>Mesajlar telefonu kullanırken yeniden üstte görünür</item>
+        <item>kAI\'nin Durdur düğmesi yanıtı her zaman durdurur</item>
+        <item>Ana ekran tuşunun yanındaki tuşlar her zaman açık ekranda artık titreşmez</item>
+        <item>kAI yazarken kenarlarda ışık yok</item>
+    </string-array>
+</resources>

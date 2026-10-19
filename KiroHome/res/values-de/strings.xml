@@ -16,6 +16,10 @@
     <string name="move_widget_up">Nach oben</string>
     <string name="move_widget_down">Nach unten</string>
     <string name="remove_widget">Widget entfernen</string>
+    <string name="widget_size_small">Klein</string>
+    <string name="widget_size_medium">Mittel</string>
+    <string name="widget_size_large">Groß</string>
+    <string name="widget_no_room">Hier ist kein Platz für diese Größe</string>
     <string name="remove_clock">Uhr entfernen</string>
     <string name="show_clock">Uhr anzeigen</string>
     <string name="folder_default">Ordner</string>

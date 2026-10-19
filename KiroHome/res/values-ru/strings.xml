@@ -16,6 +16,10 @@
     <string name="move_widget_up">Выше</string>
     <string name="move_widget_down">Ниже</string>
     <string name="remove_widget">Убрать виджет</string>
+    <string name="widget_size_small">Маленький</string>
+    <string name="widget_size_medium">Средний</string>
+    <string name="widget_size_large">Большой</string>
+    <string name="widget_no_room">Здесь нет места для этого размера</string>
     <string name="remove_clock">Убрать часы</string>
     <string name="show_clock">Показать часы</string>
     <string name="folder_default">Папка</string>

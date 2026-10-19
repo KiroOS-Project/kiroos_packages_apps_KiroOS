@@ -3,6 +3,8 @@
     android:initialLayout="@layout/widget_gallery"
     android:minHeight="110dp"
     android:minWidth="250dp"
+    android:minResizeHeight="100dp"
+    android:minResizeWidth="140dp"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen" />

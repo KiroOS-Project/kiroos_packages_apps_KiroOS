@@ -48,10 +48,33 @@ public class ClockWidget extends AppWidgetProvider {
         }
     }
 
+    /** Beta 4.1: the home changed the widget's size (small, medium, large) */
+    @Override
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager manager, int id,
+            android.os.Bundle options) {
+        onUpdate(context, manager, new int[] {id});
+    }
+
     @Override
     public void onUpdate(Context context, AppWidgetManager manager, int[] ids) {
         if (ids == null || ids.length == 0) return;
+        // each widget for its own size: the time fills a small, a medium or a large one
+        for (int id : ids) {
+            final android.os.Bundle o = manager.getAppWidgetOptions(id);
+            final int w = o.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 250);
+            final int h = o.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 110);
+            manager.updateAppWidget(id, views(context, w, h));
+        }
+    }
+
+    private RemoteViews views(Context context, int widthDp, int heightDp) {
         final RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_clock);
+        final boolean small = widthDp < 200;
+        final boolean large = heightDp >= 280;
+        v.setTextViewTextSize(R.id.clock_time, android.util.TypedValue.COMPLEX_UNIT_SP,
+                small ? 40 : large ? 96 : 58);
+        v.setTextViewTextSize(R.id.clock_date, android.util.TypedValue.COMPLEX_UNIT_SP,
+                small ? 12 : large ? 18 : 14);
         final AlarmManager am = context.getSystemService(AlarmManager.class);
         final AlarmManager.AlarmClockInfo next = am != null ? am.getNextAlarmClock() : null;
         if (next != null) {
@@ -69,6 +92,6 @@ public class ClockWidget extends AppWidgetProvider {
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         v.setOnClickPendingIntent(R.id.clock_root, PendingIntent.getActivity(context, 0, open,
                 PendingIntent.FLAG_UPDATE_CURRENT));
-        manager.updateAppWidget(ids, v);
+        return v;
     }
 }

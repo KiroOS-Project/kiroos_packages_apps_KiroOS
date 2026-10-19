@@ -90,12 +90,15 @@ final class HomeModel {
     static final String FOLDER_PREFIX = "folder:";
 
     /*
-     * Beta 4: widgets live in the grid like apps, anywhere on any page. A widget takes full
-     * rows: its bottom-left cell holds "widget:<id>:<rows>", every other cell it covers holds
-     * "+widget:<id>" (not empty, so no app is placed there).
+     * Beta 4: widgets live in the grid like apps, anywhere on any page. Its bottom-left cell
+     * holds "widget:<id>:<rows>:<cols>", every other cell it covers holds "+widget:<id>" (not
+     * empty, so no app is placed there). Beta 4.1: a widget can be half the width (2 columns)
+     * as well as full width; Beta 4 keys ("widget:<id>:<rows>") are full width.
      */
     static final String WIDGET_PREFIX = "widget:";
     static final String WIDGET_PART_PREFIX = "+widget:";
+    /** Beta 4.1: the home's own clock is a widget of the grid too (movable, three sizes) */
+    static final int CLOCK_ID = -2;
 
     static boolean isWidget(String key) {
         return key != null && key.startsWith(WIDGET_PREFIX);
@@ -122,11 +125,33 @@ final class HomeModel {
     }
 
     static int widgetRows(String key) {
+        final String[] p = widgetParts(key);
         try {
-            return Math.max(1, Integer.parseInt(key.substring(key.lastIndexOf(':') + 1)));
+            return p.length > 1 ? Math.max(1, Integer.parseInt(p[1])) : 1;
         } catch (RuntimeException e) {
             return 1;
         }
+    }
+
+    /** how many columns a widget takes (Beta 4 widgets: all of them) */
+    static int widgetCols(String key) {
+        final String[] p = widgetParts(key);
+        try {
+            return p.length > 2
+                    ? Math.max(1, Math.min(COLUMNS, Integer.parseInt(p[2]))) : COLUMNS;
+        } catch (RuntimeException e) {
+            return COLUMNS;
+        }
+    }
+
+    /** "widget:<id>:<rows>[:<cols>]" -> {id, rows, cols} as text */
+    private static String[] widgetParts(String key) {
+        if (!isWidget(key)) return new String[0];
+        return key.substring(WIDGET_PREFIX.length()).split(":");
+    }
+
+    private static String widgetKey(int id, int rows, int cols) {
+        return WIDGET_PREFIX + id + ":" + rows + ":" + cols;
     }
 
     /** where a widget is (its bottom-left cell), or null */
@@ -170,19 +195,22 @@ final class HomeModel {
     }
 
     /**
-     * Puts a widget of "rows" rows with its bottom row at bottomRow on a page (clamped to the
-     * rows the page shows). Apps in those rows move to the next free cells; another widget in
-     * the way refuses the drop (false). The widget leaves wherever it was.
+     * Puts a widget of rows x cols cells with its bottom-left cell at (bottomRow, col) on a
+     * page (clamped to the rows the page shows). Apps in those cells move to the next free
+     * cells; another widget in the way refuses the drop (false). The widget leaves wherever it
+     * was.
      */
-    boolean placeWidget(int id, int rows, int page, int bottomRow) {
+    boolean placeWidget(int id, int rows, int cols, int page, int bottomRow, int col) {
         if (page < 0) return false;
         ensurePage(page);
         final int shown = rows(page);
         rows = Math.max(1, Math.min(shown, rows));
+        cols = Math.max(1, Math.min(COLUMNS, cols));
         bottomRow = Math.max(0, Math.min(shown - rows, bottomRow));
+        col = Math.max(0, Math.min(COLUMNS - cols, col));
         final String[] cells = mPages.get(page);
         for (int r = bottomRow; r < bottomRow + rows; r++) {
-            for (int c = 0; c < COLUMNS; c++) {
+            for (int c = col; c < col + cols; c++) {
                 final String k = cells[r * COLUMNS + c];
                 if (isWidgetCell(k) && widgetId(k) != id) {
                     return false;
@@ -192,11 +220,11 @@ final class HomeModel {
         clearWidget(id);
         final List<String> displaced = new ArrayList<>();
         for (int r = bottomRow; r < bottomRow + rows; r++) {
-            for (int c = 0; c < COLUMNS; c++) {
+            for (int c = col; c < col + cols; c++) {
                 final int i = r * COLUMNS + c;
                 if (!cells[i].isEmpty()) displaced.add(cells[i]);
-                cells[i] = (r == bottomRow && c == 0)
-                        ? WIDGET_PREFIX + id + ":" + rows : WIDGET_PART_PREFIX + id;
+                cells[i] = (r == bottomRow && c == col)
+                        ? widgetKey(id, rows, cols) : WIDGET_PART_PREFIX + id;
             }
         }
         for (String k : displaced) {
@@ -210,24 +238,53 @@ final class HomeModel {
     }
 
     /**
-     * A new widget: the first place with "rows" free full rows, from the given page on,
-     * top rows first; with none, the top of the first page (its apps move on).
+     * A new widget: the first free rows x cols place, from the given page on, top rows first,
+     * left first; with none, the top of the given page (its apps move on).
      */
-    void addWidget(int id, int rows, int fromPage) {
+    void addWidget(int id, int rows, int cols, int fromPage) {
+        cols = Math.max(1, Math.min(COLUMNS, cols));
         for (int p = Math.max(0, fromPage); p < mPages.size(); p++) {
             final int shown = rows(p);
             for (int bottom = shown - rows; bottom >= 0; bottom--) {
-                boolean free = true;
-                for (int i = bottom * COLUMNS; i < (bottom + rows) * COLUMNS && free; i++) {
-                    free = mPages.get(p)[i].isEmpty();
-                }
-                if (free) {
-                    placeWidget(id, rows, p, bottom);
-                    return;
+                for (int col = 0; col + cols <= COLUMNS; col += cols) {
+                    if (isFree(p, bottom, rows, col, cols)) {
+                        placeWidget(id, rows, cols, p, bottom, col);
+                        return;
+                    }
                 }
             }
         }
-        placeWidget(id, rows, 0, rows(0) - rows);
+        final int page = Math.max(0, Math.min(fromPage, mPages.size() - 1));
+        if (!placeWidget(id, rows, cols, page, rows(page) - rows, 0)) {
+            // a widget there too: a page of its own
+            placeWidget(id, rows, cols, mPages.size(), rows(mPages.size()) - rows, 0);
+        }
+    }
+
+    /** true when the cells of a rows x cols box are all empty */
+    private boolean isFree(int page, int bottom, int rows, int col, int cols) {
+        if (bottom < 0 || bottom + rows > rows(page) || col < 0 || col + cols > COLUMNS) {
+            return false;
+        }
+        final String[] cells = mPages.get(page);
+        for (int r = bottom; r < bottom + rows; r++) {
+            for (int c = col; c < col + cols; c++) {
+                if (!cells[r * COLUMNS + c].isEmpty()) return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Beta 4.1: a widget changes size where it is. It keeps its bottom-left corner when it
+     * can (a half-width widget on the right that grows to full width moves to the left
+     * edge); apps in the way move on. False if another widget is in the way.
+     */
+    boolean resizeWidget(int id, int rows, int cols) {
+        final Loc at = findWidget(id);
+        if (at == null) return false;
+        final int col = Math.min(at.column(), COLUMNS - Math.max(1, Math.min(COLUMNS, cols)));
+        return placeWidget(id, rows, cols, at.container, at.row(), col);
     }
 
     /** A named group of apps in one cell. */
@@ -281,6 +338,11 @@ final class HomeModel {
 
     int pageCount() {
         return mPages.size();
+    }
+
+    /** the saved layout (or the first one) is in */
+    boolean isLoaded() {
+        return mLoaded;
     }
 
     static boolean isFolder(String key) {
@@ -490,7 +552,8 @@ final class HomeModel {
                 if (!isWidget(page[i])) continue;
                 final int rows = widgetRows(page[i]);
                 if (i / COLUMNS + rows > rows(p)) {
-                    placeWidget(widgetId(page[i]), rows, p, rows(p) - rows);
+                    placeWidget(widgetId(page[i]), rows, widgetCols(page[i]), p,
+                            rows(p) - rows, i % COLUMNS);
                     moved = true;
                 }
             }
