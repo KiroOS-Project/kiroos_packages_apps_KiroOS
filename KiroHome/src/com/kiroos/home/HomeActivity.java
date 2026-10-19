@@ -765,6 +765,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_SHORT).show();
             return;
         }
+        mLastLaunched = app.component.getPackageName();
         // Home 2.0: the icon becomes the app. Its picture leaves as the window grows out of
         // it, so no second copy of the icon stays behind the opening app; it is back a moment
         // later (the app covers the home by then, or it is a small window over it)
@@ -783,8 +784,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     }
 
     /** how far into the system's close (Beta 4.1: 380 ms, melting from 58%) the app melts into
-     *  its icon */
-    private static final long CATCH_DELAY = 220;
+     *  its icon. Beta 4.1 "Fluida": the close spring is 55% of the way at 110 ms, where the app
+     *  starts melting into the icon (AppTransition.createKiroCloseToIcon) */
+    private static final long CATCH_DELAY = 110;
 
     /**
      * Home 2.0: an app that just went back to the home lands in its icon, and the icon catches
@@ -802,27 +804,62 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             w.setScaleX(0.96f);
             w.setScaleY(0.96f);
             w.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(CATCH_DELAY)
-                    .setDuration(360).setInterpolator(
-                            new android.view.animation.OvershootInterpolator(1.6f))
+                    .setDuration(KiroSpring.CATCH.duration()).setInterpolator(KiroSpring.CATCH)
                     .start();
             return;
         }
-        String pkg = null;
-        try {
-            final android.app.ActivityManager am = getSystemService(
-                    android.app.ActivityManager.class);
-            for (android.app.ActivityManager.RecentTaskInfo t : am.getRecentTasks(3,
-                    android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE)) {
-                if (t.baseIntent == null || t.baseIntent.getComponent() == null) continue;
-                final String p = t.baseIntent.getComponent().getPackageName();
-                if (p.equals(getPackageName())) continue;
-                if (System.currentTimeMillis() - t.lastActiveTime < 1500) pkg = p;
-                break;
-            }
-        } catch (RuntimeException e) {
-            return;
+        if (isDrawerOpen()) return;
+        // Beta 4.1: the app the home opened last is caught at once, on this frame; the recent
+        // tasks (a call into the activity manager, which can wait ~170 ms on its lock while the
+        // home is being started, and held this first frame back so the close started late)
+        // are asked off the main thread and only correct it when another app came back
+        final String guess = mLastLaunched;
+        mLastLaunched = null;
+        if (guess != null) {
+            catchIcon(guess);
         }
-        if (pkg == null || isDrawerOpen()) return;
+        final android.app.ActivityManager am = getSystemService(android.app.ActivityManager.class);
+        android.os.AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            @Override
+            public void run() {
+                String pkg = null;
+                try {
+                    for (android.app.ActivityManager.RecentTaskInfo t : am.getRecentTasks(3,
+                            android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE)) {
+                        if (t.baseIntent == null || t.baseIntent.getComponent() == null) continue;
+                        final String p = t.baseIntent.getComponent().getPackageName();
+                        if (p.equals(getPackageName())) continue;
+                        if (System.currentTimeMillis() - t.lastActiveTime < 1500) pkg = p;
+                        break;
+                    }
+                } catch (RuntimeException e) {
+                    return;
+                }
+                final String came = pkg;
+                if (came == null || came.equals(guess)) return;
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (guess != null) {
+                            final View wrong = visibleIcon(guess);
+                            if (wrong != null) {
+                                wrong.animate().cancel();
+                                wrong.setAlpha(1f);
+                                wrong.setScaleX(1f);
+                                wrong.setScaleY(1f);
+                            }
+                        }
+                        if (!isDrawerOpen()) catchIcon(came);
+                    }
+                });
+            }
+        });
+    }
+
+    /** the app last opened from the home (launch), caught first when the home comes back */
+    private String mLastLaunched;
+
+    private void catchIcon(String pkg) {
         final View icon = visibleIcon(pkg);
         if (icon == null) return;
         icon.animate().cancel();
@@ -830,7 +867,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         icon.setScaleX(0.8f);
         icon.setScaleY(0.8f);
         icon.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(CATCH_DELAY)
-                .setDuration(360).setInterpolator(new android.view.animation.OvershootInterpolator(2.2f))
+                .setDuration(KiroSpring.CATCH.duration()).setInterpolator(KiroSpring.CATCH)
                 .start();
     }
 
@@ -983,8 +1020,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         floating.setY(at.top);
         floating.setElevation(12 * getResources().getDisplayMetrics().density);
         final float lift = widget ? 1.04f : DRAG_LIFT;
-        floating.animate().scaleX(lift).scaleY(lift).setDuration(160)
-                .setInterpolator(KiroTouch.EASE).start();
+        floating.animate().scaleX(lift).scaleY(lift).setDuration(KiroSpring.QUICK.duration())
+                .setInterpolator(KiroSpring.QUICK).start();
         d.floating = floating;
         d.home = at;
         d.offX = mRoot.lastX() - at.left;
@@ -1145,8 +1182,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                         .y(target.exactCenterY() - floating.getHeight() / 2f)
                         .scaleX(scale).scaleY(scale)
                         .alpha(merged ? 0f : 1f)
-                        .setDuration(merged ? 200 : 240)
-                        .setInterpolator(KiroTouch.EASE)
+                        .setDuration(merged ? KiroSpring.SMOOTH.duration()
+                                : KiroSpring.FLUID.duration())
+                        .setInterpolator(merged ? KiroSpring.SMOOTH : KiroSpring.FLUID)
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
@@ -1254,7 +1292,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final float tx = cx - size / 2f;
         final float ty = cy - size / 2f;
         if (wasVisible) {
-            mDropHint.animate().x(tx).y(ty).setDuration(120).setInterpolator(KiroTouch.EASE)
+            mDropHint.animate().x(tx).y(ty).setDuration(KiroSpring.QUICK.duration()).setInterpolator(KiroSpring.QUICK)
                     .start();
         } else {
             mDropHint.setX(tx);
@@ -1381,7 +1419,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         if (speed > 0f && distance >= 1f) {
             anim.setInterpolator(new Glide(speed * duration / 1000f / distance));
         } else {
-            anim.setInterpolator(KiroTouch.EASE);
+            // Beta 4.1 "Fluida": not flung, the drawer moves on the damped spring
+            anim.setDuration(KiroSpring.SMOOTH.duration());
+            anim.setInterpolator(KiroSpring.SMOOTH);
         }
         anim.addUpdateListener(new android.animation.ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -1565,8 +1605,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 v.setAlpha(0f);
                 v.setScaleX(0.86f);
                 v.setScaleY(0.86f);
-                v.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(120).setDuration(380)
-                        .setInterpolator(new android.view.animation.OvershootInterpolator(1.4f))
+                v.animate().alpha(1f).scaleX(1f).scaleY(1f).setStartDelay(120)
+                        .setDuration(KiroSpring.FLUID.duration()).setInterpolator(KiroSpring.FLUID)
                         .start();
             }
         }
@@ -1640,7 +1680,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 };
                 if (v != null) {
                     // it shrinks and fades, then leaves its place
-                    v.animate().alpha(0f).scaleX(0.86f).scaleY(0.86f).setDuration(200)
+                    v.animate().alpha(0f).scaleX(0.6f).scaleY(0.6f)
+                            .setDuration(KiroSpring.SMOOTH.duration() / 2)
+                            .setInterpolator(KiroSpring.SMOOTH)
                             .withEndAction(remove).start();
                 } else {
                     remove.run();
@@ -1687,8 +1729,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 v.setScaleX(old.width() / (float) target.width());
                 v.setScaleY(old.height() / (float) target.height());
                 v.animate().translationX(0f).translationY(0f).scaleX(1f).scaleY(1f)
-                        .setDuration(360)
-                        .setInterpolator(new android.view.animation.OvershootInterpolator(0.8f))
+                        .setDuration(KiroSpring.FLUID.duration())
+                        .setInterpolator(KiroSpring.FLUID)
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
@@ -1746,7 +1788,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final boolean wasVisible = mDropHint.getVisibility() == View.VISIBLE;
         mDropHint.setVisibility(View.VISIBLE);
         if (wasVisible) {
-            mDropHint.animate().x(left).y(top).setDuration(120).setInterpolator(KiroTouch.EASE)
+            mDropHint.animate().x(left).y(top).setDuration(KiroSpring.QUICK.duration()).setInterpolator(KiroSpring.QUICK)
                     .start();
         } else {
             mDropHint.setX(left);

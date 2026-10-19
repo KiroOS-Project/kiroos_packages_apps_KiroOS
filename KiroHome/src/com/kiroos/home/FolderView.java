@@ -178,7 +178,7 @@ final class FolderView extends FrameLayout {
         mCard.setScaleX(0.9f);
         mCard.setScaleY(0.9f);
         animate().alpha(1f).setDuration(180).setInterpolator(KiroTouch.EASE).start();
-        mCard.animate().scaleX(1f).scaleY(1f).setDuration(260).setInterpolator(KiroTouch.EASE)
+        mCard.animate().scaleX(1f).scaleY(1f).setDuration(KiroSpring.FLUID.duration()).setInterpolator(KiroSpring.FLUID)
                 .start();
     }
 
