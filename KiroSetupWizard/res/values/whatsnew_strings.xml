@@ -19,13 +19,17 @@
         <item>The home clock is a widget: move it anywhere, in three sizes</item>
         <item>Hold the brightness slider for Light / Dark theme and Eye protection</item>
         <item>A new volume panel in the KiroOS design</item>
+        <item>Media volume in 30 steps, for finer control</item>
+        <item>New ringtone, alarm and notification sounds: Aurora, Sunrise, Glass, Drop and Spark</item>
+        <item>Speaker protection: no more crackling with loud sounds</item>
         <item>New sounds for locking the screen and unlocking to the home</item>
         <item>Game Space has its own place in Settings, under Battery</item>
         <item>New, more vivid icons</item>
         <item>More Vulkan extensions for apps and games</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Apps open and close more smoothly: the icon grows with the app</item>
+        <item>New app animation: the app grows out of its icon and flies back into it</item>
+        <item>Widgets, the drawer and folders move on the same soft spring</item>
         <item>More precise haptics: one short, clean tap</item>
         <item>More natural colors on the display</item>
         <item>kAI starts a new chat when you open it (the last one is in History)</item>
@@ -34,9 +38,13 @@
         <item>KiroOS Update tells you when there is no internet and checks again on its own</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
+        <item>Smooth even when you open and close apps quickly</item>
         <item>Web pages open faster in every app (KOptimize WebView compiled after updates)</item>
     </string-array>
     <string-array name="whatsnew_fixes">
+        <item>The open / close animation no longer looks like a jump</item>
+        <item>The speaker no longer crackles with loud ringtones and bass-heavy music</item>
+        <item>Updated phones no longer keep the LineageOS sounds</item>
         <item>Messages now pop up at the top while you use the phone</item>
         <item>kAI\'s Stop button always stops the answer</item>
         <item>The keys beside Home no longer vibrate on the always-on display</item>

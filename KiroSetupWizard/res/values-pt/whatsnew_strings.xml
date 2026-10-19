@@ -19,13 +19,17 @@
         <item>O relógio da tela inicial é um widget: mova-o para onde quiser, em três tamanhos</item>
         <item>Toque e segure o brilho para tema claro / escuro e proteção ocular</item>
         <item>Um novo painel de volume no design do KiroOS</item>
+        <item>Volume de mídia em 30 níveis, para um ajuste mais fino</item>
+        <item>Novos toques, alarme e notificações: Aurora, Sunrise, Glass, Drop e Spark</item>
+        <item>Proteção do alto-falante: sem chiado com sons altos</item>
         <item>Novos sons ao bloquear e desbloquear</item>
         <item>O Game Space tem seu próprio item nas Configurações, abaixo de Bateria</item>
         <item>Novos ícones, mais vivos</item>
         <item>Mais extensões Vulkan para apps e jogos</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Os apps abrem e fecham com mais fluidez: o ícone cresce com o app</item>
+        <item>Nova animação: o app sai do ícone e volta para ele</item>
+        <item>Widgets, gaveta e pastas se movem com a mesma mola suave</item>
         <item>Vibração mais precisa: um toque curto e limpo</item>
         <item>Cores da tela mais naturais</item>
         <item>O kAI começa uma nova conversa ao abrir (a última está no histórico)</item>
@@ -34,9 +38,13 @@
         <item>O KiroOS Update avisa quando não há internet e verifica de novo sozinho</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
+        <item>Fluido mesmo quando você abre e fecha apps rapidamente</item>
         <item>As páginas da web abrem mais rápido em todos os apps (KOptimize WebView compilado após as atualizações)</item>
     </string-array>
     <string-array name="whatsnew_fixes">
+        <item>Abrir e fechar um app não parece mais um salto</item>
+        <item>O alto-falante não chia mais com toques altos e músicas com muito grave</item>
+        <item>Telefones atualizados não ficam mais com os sons do LineageOS</item>
         <item>As mensagens voltam a aparecer no topo enquanto você usa o telefone</item>
         <item>O botão Parar do kAI sempre para a resposta</item>
         <item>As teclas ao lado de Início não vibram mais na tela sempre ativa</item>

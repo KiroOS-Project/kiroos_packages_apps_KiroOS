@@ -19,13 +19,17 @@
         <item>Die Uhr auf dem Startbildschirm ist ein Widget: verschiebbar, in drei Größen</item>
         <item>Helligkeitsregler halten für hell / dunkel und Augenschutz</item>
         <item>Ein neues Lautstärkefeld im KiroOS-Design</item>
+        <item>Medienlautstärke in 30 Stufen, für feinere Einstellung</item>
+        <item>Neue Klingel-, Wecker- und Benachrichtigungstöne: Aurora, Sunrise, Glass, Drop und Spark</item>
+        <item>Lautsprecherschutz: kein Knistern mehr bei lauten Tönen</item>
         <item>Neue Töne beim Sperren und Entsperren</item>
         <item>Game Space hat einen eigenen Eintrag in den Einstellungen, unter Akku</item>
         <item>Neue, lebendigere Symbole</item>
         <item>Mehr Vulkan-Erweiterungen für Apps und Spiele</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Apps öffnen und schließen flüssiger: das Symbol wächst mit der App</item>
+        <item>Neue App-Animation: die App wächst aus ihrem Symbol und fliegt dorthin zurück</item>
+        <item>Widgets, App-Übersicht und Ordner bewegen sich mit derselben weichen Feder</item>
         <item>Präzisere Vibration: ein kurzer, klarer Impuls</item>
         <item>Natürlichere Farben auf dem Display</item>
         <item>kAI beginnt beim Öffnen einen neuen Chat (der letzte ist im Verlauf)</item>
@@ -34,9 +38,13 @@
         <item>KiroOS Update meldet fehlendes Internet und prüft selbst erneut</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
+        <item>Flüssig, auch wenn du Apps schnell öffnest und schließt</item>
         <item>Webseiten öffnen sich in allen Apps schneller (KOptimize WebView nach Updates kompiliert)</item>
     </string-array>
     <string-array name="whatsnew_fixes">
+        <item>Das Öffnen und Schließen wirkt nicht mehr wie ein Sprung</item>
+        <item>Der Lautsprecher knistert nicht mehr bei lauten Klingeltönen und basslastiger Musik</item>
+        <item>Aktualisierte Telefone behalten nicht mehr die LineageOS-Töne</item>
         <item>Nachrichten erscheinen beim Benutzen wieder oben</item>
         <item>Die Stopp-Taste von kAI stoppt die Antwort immer</item>
         <item>Die Tasten neben Home vibrieren auf dem Always-on-Display nicht mehr</item>

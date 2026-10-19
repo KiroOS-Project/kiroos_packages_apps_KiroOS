@@ -19,13 +19,17 @@
         <item>L\'orologio della home è un widget: spostalo dove vuoi, in tre grandezze</item>
         <item>Tieni premuta la luminosità per tema chiaro / scuro e protezione occhi</item>
         <item>Un nuovo pannello del volume nel design KiroOS</item>
+        <item>Volume multimediale in 30 passi, per una regolazione più fine</item>
+        <item>Nuove suonerie, sveglia e notifiche: Aurora, Sunrise, Glass, Drop e Spark</item>
+        <item>Protezione dello speaker: niente più gracchiamento con i suoni forti</item>
         <item>Nuovi suoni per il blocco dello schermo e lo sblocco verso la home</item>
         <item>Game Space ha una sua voce nelle Impostazioni, sotto Batteria</item>
         <item>Nuove icone, più vivaci</item>
         <item>Più estensioni Vulkan per app e giochi</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Le app si aprono e si chiudono in modo più fluido: l\'icona cresce con l\'app</item>
+        <item>Nuova animazione: l\'app esce dalla sua icona e ci rientra</item>
+        <item>Widget, cassetto e cartelle si muovono sulla stessa molla morbida</item>
         <item>Vibrazione più precisa: un tocco breve e pulito</item>
         <item>Colori dello schermo più naturali</item>
         <item>kAI apre una chat nuova quando lo avvii (l\'ultima è nella Cronologia)</item>
@@ -34,9 +38,13 @@
         <item>KiroOS Update ti dice quando manca internet e ricontrolla da solo</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
+        <item>Fluido anche quando apri e chiudi le app velocemente</item>
         <item>Le pagine web si aprono più veloci in tutte le app (KOptimize WebView compilato dopo gli aggiornamenti)</item>
     </string-array>
     <string-array name="whatsnew_fixes">
+        <item>L\'animazione di apertura e chiusura non sembra più un salto</item>
+        <item>Lo speaker non gracchia più con le suonerie forti e la musica con tanti bassi</item>
+        <item>I telefoni aggiornati non restano più con i suoni di LineageOS</item>
         <item>I messaggi ora compaiono in alto mentre usi il telefono</item>
         <item>Il tasto Stop di kAI ferma sempre la risposta</item>
         <item>I tasti accanto a Home non vibrano più con lo schermo always-on</item>

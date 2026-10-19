@@ -19,13 +19,17 @@
         <item>Ana ekran saati bir widget: istediğin yere taşı, üç boyutta</item>
         <item>Açık / koyu tema ve göz koruması için parlaklığa basılı tut</item>
         <item>KiroOS tasarımında yeni ses paneli</item>
+        <item>Medya sesi 30 adımda, daha hassas ayar için</item>
+        <item>Yeni zil, alarm ve bildirim sesleri: Aurora, Sunrise, Glass, Drop ve Spark</item>
+        <item>Hoparlör koruması: yüksek seslerde artık cızırtı yok</item>
         <item>Kilitleme ve kilit açma için yeni sesler</item>
         <item>Game Space artık Ayarlar\'da Pil\'in altında</item>
         <item>Yeni, daha canlı simgeler</item>
         <item>Uygulama ve oyunlar için daha fazla Vulkan uzantısı</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Uygulamalar daha akıcı açılıp kapanıyor: simge uygulamayla birlikte büyüyor</item>
+        <item>Yeni animasyon: uygulama simgesinden çıkar ve ona geri döner</item>
+        <item>Widget\'lar, uygulama çekmecesi ve klasörler aynı yumuşak yayla hareket eder</item>
         <item>Daha hassas titreşim: kısa ve net bir dokunuş</item>
         <item>Ekranda daha doğal renkler</item>
         <item>kAI açıldığında yeni bir sohbet başlatır (sonuncusu Geçmiş\'te)</item>
@@ -34,9 +38,13 @@
         <item>KiroOS Update internet olmadığını söyler ve kendisi tekrar kontrol eder</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
+        <item>Uygulamaları hızlıca açıp kapatsan da akıcı</item>
         <item>Web sayfaları tüm uygulamalarda daha hızlı açılır (KOptimize WebView güncellemelerden sonra derlenir)</item>
     </string-array>
     <string-array name="whatsnew_fixes">
+        <item>Açma / kapatma animasyonu artık bir sıçrama gibi görünmüyor</item>
+        <item>Hoparlör yüksek zil seslerinde ve bol baslı müzikte artık cızırdamıyor</item>
+        <item>Güncellenen telefonlar artık LineageOS seslerinde kalmıyor</item>
         <item>Mesajlar telefonu kullanırken yeniden üstte görünür</item>
         <item>kAI\'nin Durdur düğmesi yanıtı her zaman durdurur</item>
         <item>Ana ekran tuşunun yanındaki tuşlar her zaman açık ekranda artık titreşmez</item>

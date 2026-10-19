@@ -19,13 +19,17 @@
         <item>El reloj de inicio es un widget: muévelo donde quieras, en tres tamaños</item>
         <item>Mantén pulsado el brillo para tema claro / oscuro y protección ocular</item>
         <item>Un nuevo panel de volumen con el diseño de KiroOS</item>
+        <item>Volumen multimedia en 30 pasos, para un ajuste más fino</item>
+        <item>Nuevos tonos de llamada, alarma y notificación: Aurora, Sunrise, Glass, Drop y Spark</item>
+        <item>Protección del altavoz: se acabaron los chasquidos con sonidos fuertes</item>
         <item>Nuevos sonidos al bloquear y al desbloquear</item>
         <item>Game Space tiene su propio apartado en Ajustes, debajo de Batería</item>
         <item>Iconos nuevos, más vivos</item>
         <item>Más extensiones Vulkan para apps y juegos</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Las apps se abren y se cierran con más fluidez: el icono crece con la app</item>
+        <item>Nueva animación: la app sale de su icono y vuelve a él</item>
+        <item>Widgets, cajón y carpetas se mueven con el mismo muelle suave</item>
         <item>Vibración más precisa: un toque corto y limpio</item>
         <item>Colores de pantalla más naturales</item>
         <item>kAI empieza un chat nuevo al abrirlo (el último está en el historial)</item>
@@ -34,9 +38,13 @@
         <item>KiroOS Update avisa cuando no hay Internet y vuelve a comprobar solo</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
+        <item>Fluido aunque abras y cierres apps muy rápido</item>
         <item>Las páginas web se abren más rápido en todas las apps (KOptimize WebView compilado tras las actualizaciones)</item>
     </string-array>
     <string-array name="whatsnew_fixes">
+        <item>Abrir y cerrar una app ya no parece un salto</item>
+        <item>El altavoz ya no cruje con tonos fuertes y música con muchos graves</item>
+        <item>Los teléfonos actualizados ya no se quedan con los sonidos de LineageOS</item>
         <item>Los mensajes vuelven a aparecer arriba mientras usas el teléfono</item>
         <item>El botón Detener de kAI siempre detiene la respuesta</item>
         <item>Las teclas junto a Inicio ya no vibran con la pantalla siempre activa</item>

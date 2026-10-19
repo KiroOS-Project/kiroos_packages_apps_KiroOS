@@ -19,13 +19,17 @@
         <item>L\'horloge de l\'accueil est un widget : déplacez-la où vous voulez, en trois tailles</item>
         <item>Maintenez la luminosité pour le thème clair / sombre et la protection des yeux</item>
         <item>Un nouveau panneau de volume au design KiroOS</item>
+        <item>Volume multimédia en 30 crans, pour un réglage plus fin</item>
+        <item>Nouvelles sonneries, alarme et notifications : Aurora, Sunrise, Glass, Drop et Spark</item>
+        <item>Protection du haut-parleur : fini les grésillements avec les sons forts</item>
         <item>De nouveaux sons au verrouillage et au déverrouillage</item>
         <item>Game Space a sa propre entrée dans les Paramètres, sous Batterie</item>
         <item>De nouvelles icônes, plus vives</item>
         <item>Plus d\'extensions Vulkan pour les apps et les jeux</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Les apps s\'ouvrent et se ferment plus en douceur : l\'icône grandit avec l\'app</item>
+        <item>Nouvelle animation : l\'app sort de son icône et y retourne</item>
+        <item>Widgets, tiroir et dossiers bougent avec le même ressort tout en douceur</item>
         <item>Des vibrations plus précises : une impulsion courte et nette</item>
         <item>Des couleurs d\'écran plus naturelles</item>
         <item>kAI ouvre une nouvelle discussion au lancement (la précédente est dans l\'historique)</item>
@@ -34,9 +38,13 @@
         <item>KiroOS Update signale l\'absence d\'Internet et vérifie à nouveau tout seul</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
+        <item>Fluide même quand vous ouvrez et fermez les apps rapidement</item>
         <item>Les pages web s\'ouvrent plus vite dans toutes les apps (KOptimize WebView compilé après les mises à jour)</item>
     </string-array>
     <string-array name="whatsnew_fixes">
+        <item>L\'ouverture et la fermeture ne ressemblent plus à un saut</item>
+        <item>Le haut-parleur ne grésille plus avec les sonneries fortes et la musique riche en basses</item>
+        <item>Les téléphones mis à jour ne gardent plus les sons de LineageOS</item>
         <item>Les messages s\'affichent à nouveau en haut pendant l\'utilisation</item>
         <item>Le bouton Stop de kAI arrête toujours la réponse</item>
         <item>Les touches à côté d\'Accueil ne vibrent plus sur l\'écran toujours allumé</item>
