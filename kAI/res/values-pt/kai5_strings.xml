@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: kAI in the cloud -->
+<resources>
+    <string name="kai_limit">Você atingiu seu limite, tente de novo em %1$s</string>
+    <string name="kai_offline">O kAI precisa de internet · verifique a conexão</string>
+    <string name="kai_busy">O kAI está muito ocupado agora · tente de novo em instantes</string>
+    <string name="kai_status">kAI</string>
+    <string name="kai_status_limit">Limite atingido · de novo em %1$s</string>
+    <string name="kai_hours_minutes">%1$s e %2$s</string>
+    <plurals name="kai_status_left">
+        <item quantity="one">kAI · resta %d pedido nestas 5 horas</item>
+        <item quantity="other">kAI · restam %d pedidos nestas 5 horas</item>
+    </plurals>
+    <plurals name="kai_hours">
+        <item quantity="one">%d hora</item>
+        <item quantity="other">%d horas</item>
+    </plurals>
+    <plurals name="kai_minutes">
+        <item quantity="one">%d minuto</item>
+        <item quantity="other">%d minutos</item>
+    </plurals>
+</resources>

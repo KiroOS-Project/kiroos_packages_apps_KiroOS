@@ -30,8 +30,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 /**
- * kAI voice, all on the phone: speech to text with whisper.cpp (Whisper base, libkai_whisper)
- * and answers read aloud by the system text-to-speech (Pico, Italian and English).
+ * kAI voice: speech to text with the cloud's Whisper (whisper.cpp on the phone when offline)
+ * and answers read aloud by kAI's own neural voice (KaiSpeech: Italian and English, on the
+ * phone); other languages by the system text-to-speech.
  *
  * listen() records 16 kHz mono until the speaker stops (about a second of silence after
  * some speech), stop() is pressed, or 20 seconds pass; then the audio is transcribed.
@@ -82,6 +83,10 @@ final class Voice {
             return;
         }
         mRecording = true;
+        // the answer will be read aloud: the voice loads while the user is still talking
+        if (KaiSpeech.supports(lang)) {
+            speech().prepare(lang);
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -195,6 +200,17 @@ final class Voice {
     }
 
     private static synchronized String transcribe(float[] audio, Locale lang) {
+        // Beta 5: the cloud's Whisper first (far better, in Italian too); the small model on the
+        // phone when offline or past the limit
+        final String code0 = "it".equals(lang.getLanguage()) ? "it"
+                : "en".equals(lang.getLanguage()) ? "en" : "auto";
+        final long tc = System.currentTimeMillis();
+        final String cloud = LocalEngine.transcribe(audio, code0);
+        if (cloud != null) {
+            Log.i(TAG, "transcribed " + audio.length / RATE + " s in the cloud in "
+                    + (System.currentTimeMillis() - tc) + " ms");
+            return cloud;
+        }
         if (sWhisper == 0) {
             File f = new File(LocalEngine.DATA_DIR, MODEL);
             if (!f.canRead()) {
@@ -222,6 +238,7 @@ final class Voice {
             NativeWhisper.nativeFree(sWhisper);
             sWhisper = 0;
         }
+        KaiSpeech.release();
     }
 
     // ------------------------------------------------------------------ text to speech
@@ -262,27 +279,59 @@ final class Voice {
             checkSpoken();
             return;
         }
-        final String id = "kai-live-" + (++mQueued);
-        if (mTts == null) {
-            mTts = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
-                    mTtsReady = status == TextToSpeech.SUCCESS;
-                    if (mTtsReady) {
-                        listenToTts();
-                        queue(clean, lang, id);
-                    } else {
-                        mSpokenCount = mQueued;
-                        checkSpoken();
-                    }
-                }
-            });
-        } else if (mTtsReady) {
+        final String id = "kai-live-" + mGen + "-" + (++mQueued);
+        if (KaiSpeech.supports(lang)) {
+            speech().speak(clean, lang, id);
+            return;
+        }
+        if (mTtsReady) {
             listenToTts();
             queue(clean, lang, id);
-        } else {
-            mSpokenCount++;             // the engine is still starting and will take this one
+            return;
         }
+        // Beta 5: the cloud writes a whole answer in about a second, before the engine has
+        // started: every sentence waits here (only the first one used to be read, "Ciao")
+        mPending.add(new String[] {clean, id});
+        mPendingLang = lang;
+        startTts();
+    }
+
+    /** sentences that came while the engine was starting, in order */
+    private final java.util.List<String[]> mPending = new java.util.ArrayList<>();
+    private Locale mPendingLang;
+    /** a whole answer asked for (not Live) while the engine was starting */
+    private String mPendingSay;
+
+    /** starts the engine once; what waited for it is said when it is ready */
+    private void startTts() {
+        if (mTts != null) {
+            return;
+        }
+        mTts = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(final int status) {
+                mMain.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTtsReady = status == TextToSpeech.SUCCESS;
+                        if (mTtsReady) {
+                            listenToTts();
+                            if (mPendingSay != null) {
+                                say(mPendingSay, mPendingLang);
+                            }
+                            for (String[] p : mPending) {
+                                queue(p[0], mPendingLang, p[1]);
+                            }
+                        } else {
+                            mSpokenCount = mQueued;
+                        }
+                        mPendingSay = null;
+                        mPending.clear();
+                        checkSpoken();
+                    }
+                });
+            }
+        });
     }
 
     private void queue(String text, Locale lang, String id) {
@@ -303,16 +352,7 @@ final class Voice {
 
             @Override
             public void onDone(final String id) {
-                if (!id.startsWith("kai-live-")) {
-                    return;
-                }
-                mMain.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mSpokenCount++;
-                        checkSpoken();
-                    }
-                });
+                said(id);
             }
 
             @Override
@@ -321,6 +361,36 @@ final class Voice {
             }
         });
     }
+
+    /** any thread: a sentence of the current Live answer has been said (others are ignored) */
+    private void said(final String id) {
+        mMain.post(new Runnable() {
+            @Override
+            public void run() {
+                if (id.startsWith("kai-live-" + mGen + "-")) {
+                    mSpokenCount++;
+                    checkSpoken();
+                }
+            }
+        });
+    }
+
+    /** kAI's own voice (Italian and English), made on first use */
+    private KaiSpeech speech() {
+        if (mSpeech == null) {
+            mSpeech = new KaiSpeech(new KaiSpeech.Listener() {
+                @Override
+                public void onDone(String id) {
+                    said(id);
+                }
+            });
+        }
+        return mSpeech;
+    }
+
+    private KaiSpeech mSpeech;
+    /** bumped when speech is cut off: late "said" reports of the old answer are ignored */
+    private int mGen;
 
     private void checkSpoken() {
         if (mEnded && mSpokenCount >= mQueued) {
@@ -339,19 +409,19 @@ final class Voice {
         if (clean.isEmpty()) {
             return;
         }
-        if (mTts == null) {
-            mTts = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
-                    mTtsReady = status == TextToSpeech.SUCCESS;
-                    if (mTtsReady) {
-                        say(clean, lang);
-                    }
-                }
-            });
-        } else if (mTtsReady) {
-            say(clean, lang);
+        if (KaiSpeech.supports(lang)) {
+            speech().stop();
+            speech().speak(clean, lang, "kai");
+            return;
         }
+        if (mTtsReady) {
+            say(clean, lang);
+            return;
+        }
+        // still starting: the latest answer is said once it is ready
+        mPendingSay = clean;
+        mPendingLang = lang;
+        startTts();
     }
 
     private void say(String text, Locale lang) {
@@ -365,15 +435,27 @@ final class Voice {
         mEnded = false;
         mQueued = 0;
         mSpokenCount = 0;
+        mPending.clear();
+        mPendingSay = null;
+        mGen++;
+        if (mSpeech != null) {
+            mSpeech.stop();
+        }
         if (mTts != null) {
             mTts.stop();
         }
     }
 
     void shutdown() {
+        if (mSpeech != null) {
+            mSpeech.shutdown();
+            mSpeech = null;
+        }
         if (mTts != null) {
             mTts.shutdown();
             mTts = null;
+            mTtsReady = false;
+            mListening = false;
         }
     }
 }

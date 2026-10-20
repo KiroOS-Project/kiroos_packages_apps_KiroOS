@@ -1,0 +1,8 @@
+kAI voice bench (KaiSpeech), not part of the ROM.
+
+Build (after kAI has been built once, from the source tree root): bash build.sh
+Run on a phone with the voice in /system/usr/share/kai/voice:
+  adb push voicetest.jar /data/local/tmp/
+  adb shell 'CLASSPATH=/data/local/tmp/voicetest.jar app_process /system/bin \
+      com.kiroos.kai.VoiceTest it "Ciao!"'
+It prints when each sentence was heard; logcat -s kAI shows load and synthesis times.

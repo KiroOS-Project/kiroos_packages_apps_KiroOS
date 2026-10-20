@@ -187,14 +187,8 @@ public class KaiActivity extends Activity {
                 }
             }
         });
-        findViewById(R.id.btn_settings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mBusy) {
-                    chooseModel();
-                }
-            }
-        });
+        // Beta 5: no model to choose (the cloud has one)
+        findViewById(R.id.btn_settings).setVisibility(View.GONE);
         mStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,14 +327,9 @@ public class KaiActivity extends Activity {
      * only when neither can answer.
      */
     private Target resolve(boolean startLocal) throws Exception {
-        // KiroOS 2.1: kAI runs on the phone only, no PC and no cloud
-        if (!LocalEngine.available()) {
-            throw new BridgeClient.NoModelException();
-        }
-        if (!startLocal || LocalEngine.ensureRunning()) {
-            return new Target(BridgeClient.local(), LocalEngine.modelName(), true);
-        }
-        throw new Exception("loading");
+        // Beta 5: the kAI cloud (LocalEngine), a large model: the full chat history and the
+        // web excerpts, like the PC got before ("local" = the small on-device model, gone)
+        return new Target(BridgeClient.local(), LocalEngine.modelName(), false);
     }
 
     private void checkBridge() {
@@ -353,7 +342,10 @@ public class KaiActivity extends Activity {
             @Override
             protected Target doInBackground(Void... params) {
                 try {
-                    // warm the on-device model up now, so the first answer is quick
+                    // Beta 5: the cloud answers, and says how many requests are left
+                    if (!LocalEngine.refreshStatus()) {
+                        throw new Exception("offline");
+                    }
                     return resolve(true);
                 } catch (BridgeClient.NoModelException e) {
                     mNoModel = true;
@@ -370,9 +362,7 @@ public class KaiActivity extends Activity {
                     return;
                 }
                 if (t != null) {
-                    mStatus.setText(getString(t.local ? R.string.on_device : R.string.connected,
-                            t.model.isEmpty() ? getString(R.string.default_model) : t.model));
-                    mStatus.setTextColor(getColor(R.color.kiro_positive));
+                    showQuota();
                 } else if (mLoading) {
                     // the phone's own model is still loading: not an error, look again soon
                     mStatus.setText(R.string.model_loading);
@@ -382,7 +372,7 @@ public class KaiActivity extends Activity {
                         mHandler.postDelayed(mRetry, 1000);
                     }
                 } else {
-                    mStatus.setText(mNoModel ? R.string.no_model : R.string.not_connected);
+                    mStatus.setText(mNoModel ? R.string.no_model : R.string.kai_offline);
                     mStatus.setTextColor(getColor(R.color.kiro_negative));
                     // keep trying while the app is open (the model may still be starting)
                     mHandler.removeCallbacks(mRetry);
@@ -392,6 +382,20 @@ public class KaiActivity extends Activity {
                 }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /** the status line: kAI, and the requests left in these 5 hours (or when it starts again) */
+    private void showQuota() {
+        final int left = LocalEngine.sLeft;
+        if (left == 0 && LocalEngine.sReset > System.currentTimeMillis() / 1000) {
+            mStatus.setText(getString(R.string.kai_status_limit,
+                    LocalEngine.untilReset(this, LocalEngine.sReset)));
+            mStatus.setTextColor(getColor(R.color.kiro_negative));
+        } else {
+            mStatus.setText(left >= 0 ? getResources().getQuantityString(R.plurals.kai_status_left,
+                    left, left) : getString(R.string.kai_status));
+            mStatus.setTextColor(getColor(R.color.kiro_positive));
+        }
     }
 
     private void send() {
@@ -584,6 +588,7 @@ public class KaiActivity extends Activity {
                                 setBusy(false);
                                 refresh();
                                 save();
+                                showQuota();
                             }
                         });
                     }
@@ -716,7 +721,12 @@ public class KaiActivity extends Activity {
                 }
                 mRequest = null;
                 if (answer.content.isEmpty()) {
-                    answer.content = getString(R.string.error_answer, message);
+                    // the limit is said as it is ("you've used your limit, try again in 4 h");
+                    // other errors keep the "no answer" frame
+                    answer.content = message != null && message.startsWith(LocalEngine.LIMIT_PREFIX)
+                            ? ERROR_MARK + " " + LocalEngine.errorText(KaiActivity.this, message)
+                            : getString(R.string.error_answer,
+                                    LocalEngine.errorText(KaiActivity.this, message));
                 }
                 setBusy(false);
                 refresh();
@@ -805,21 +815,6 @@ public class KaiActivity extends Activity {
                 && results[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
             toggleVoice();
         }
-    }
-
-    /** Keng 1.5 Flash-Lite Live / Lite / Base / Pro, in a sheet from the bottom */
-    private void chooseModel() {
-        KaiModelSheet.show(this, new KaiModelSheet.Listener() {
-            @Override
-            public void onPicked(LocalEngine.Model m) {
-                if (m == LocalEngine.selected()) {
-                    return;
-                }
-                mPrefs.edit().putString("local_model", m.id).apply();
-                LocalEngine.select(m.id);
-                checkBridge();   // loads it now, the status line says when it is ready
-            }
-        });
     }
 
     private void showSettings() {

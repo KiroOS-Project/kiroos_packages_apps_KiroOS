@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: kAI in the cloud -->
+<resources>
+    <string name="kai_limit">Лимит исчерпан, попробуйте снова через %1$s</string>
+    <string name="kai_offline">kAI нужен интернет · проверьте подключение</string>
+    <string name="kai_busy">kAI сейчас сильно загружен · попробуйте чуть позже</string>
+    <string name="kai_status">kAI</string>
+    <string name="kai_status_limit">Лимит исчерпан · снова через %1$s</string>
+    <string name="kai_hours_minutes">%1$s %2$s</string>
+    <plurals name="kai_status_left">
+        <item quantity="one">kAI · осталось запросов: %d за эти 5 часов</item>
+        <item quantity="few">kAI · осталось запросов: %d за эти 5 часов</item>
+        <item quantity="many">kAI · осталось запросов: %d за эти 5 часов</item>
+        <item quantity="other">kAI · осталось запросов: %d за эти 5 часов</item>
+    </plurals>
+    <plurals name="kai_hours">
+        <item quantity="one">%d ч</item>
+        <item quantity="few">%d ч</item>
+        <item quantity="many">%d ч</item>
+        <item quantity="other">%d ч</item>
+    </plurals>
+    <plurals name="kai_minutes">
+        <item quantity="one">%d мин</item>
+        <item quantity="few">%d мин</item>
+        <item quantity="many">%d мин</item>
+        <item quantity="other">%d мин</item>
+    </plurals>
+</resources>

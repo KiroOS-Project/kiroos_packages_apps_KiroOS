@@ -146,13 +146,14 @@ final class PhoneActions {
         if (place.isEmpty()) {
             return null;
         }
-        final Intent i = new Intent(Intent.ACTION_VIEW,
-                android.net.Uri.parse("geo:0,0?q=" + android.net.Uri.encode(place)))
-                .setPackage("com.kiroos.atlas")
-                .putExtra("com.kiroos.atlas.extra.DIRECTIONS", go)
+        // Google Maps: "google.navigation:" starts the directions, "geo:" shows the place
+        final Intent i = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(go
+                ? "google.navigation:q=" + android.net.Uri.encode(place)
+                : "geo:0,0?q=" + android.net.Uri.encode(place)))
+                .setPackage("com.google.android.apps.maps")
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (i.resolveActivity(c.getPackageManager()) == null) {
-            return null;                   // no Atlas: the model answers instead
+            return null;                   // no Maps: the model answers instead
         }
         c.startActivity(i);
         return c.getString(go ? R.string.act_maps_go : R.string.act_maps_show, place);

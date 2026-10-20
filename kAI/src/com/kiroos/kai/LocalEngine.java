@@ -16,450 +16,362 @@
 
 package com.kiroos.kai;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
- * kAI 1.1 on-device models, run inside the app by llama.cpp (libkai_llm.so, see NativeLlm).
+ * kAI's engine (KiroOS Developer Beta 5): the cloud. The on-device models of Beta 3-4.1 (1.25 GB
+ * of the ROM, a few words per second on the S6) are gone; kAI now asks the kAI cloud service, a
+ * Cloudflare Worker running large free models (output/../kai-cloud), and gets the answer as it is
+ * written. There is no model to pick and no key on the phone.
  *
- * Three models ("Keng 1.5"), all 4-bit (Q4_K_M) GGUF files shipped in the ROM under
- * /system/usr/share/kai and linked from /data/kiroos/models (a file placed there with the same
- * name takes precedence). The chosen one is loaded when kAI opens (memory-mapped: a few
- * seconds) and freed a few minutes after kAI goes to the background.
+ * Each phone has an anonymous id (a random UUID made on first use, kept in kAI's own data): the
+ * service allows 300 requests in 5 hours per id, then answers "limit" with the time it resets.
  *
- * Thermal Guardian: while a model writes, the battery temperature (what the hand feels; the
- * SoC die itself runs 60-70 C under load, which is normal for the Exynos 7420) is read every
- * second; at 46 C the model drops from 4 to 2 threads (the answer goes on, slower, while the
- * phone cools) and goes back to 4 below 42 C.
+ * The class keeps the name and the static calls of the on-device engine, so the chat, the voice
+ * overlay and the widgets did not change: there is one "model" (kAI), always available, never
+ * loading.
  */
 final class LocalEngine {
 
     private static final String TAG = "kAI";
-    // kept for BridgeClient.local(): the in-process engine needs no address
+    // kept for BridgeClient.local(): the engine needs no local address
     static final String HOST = "127.0.0.1";
     static final int PORT = 11435;
 
+    /** the speech model for offline voice (the only model still on the phone) */
     static final String SYSTEM_DIR = "/system/usr/share/kai";
     static final String DATA_DIR = "/data/kiroos/models";
-    private static final int THREADS = 4;           // the four Cortex-A57
-    private static final int HOT_MC = 46000;
-    private static final int COOL_MC = 42000;
+
+    /** the kAI cloud service; Settings.Global kiroos_kai_url can point elsewhere (testing) */
+    private static final String DEFAULT_URL = "https://kiroos-kai.kai-cloud.workers.dev";
+
+    /** what onError gets when the 5-hour limit is reached: this prefix, then the reset time */
+    static final String LIMIT_PREFIX = "limit:";
 
     static final class Model {
         final String id;
         final String name;
-        final String file;
-        final int ctx;
-        final float temperature;
-        final int maxTokens;
-        /** Qwen3: asked to answer straight away ("/no_think"); its empty think block is dropped */
-        final boolean noThink;
 
-        Model(String id, String name, String file, int ctx, float temperature, int maxTokens) {
-            this(id, name, file, ctx, temperature, maxTokens, false);
-        }
-
-        Model(String id, String name, String file, int ctx, float temperature, int maxTokens,
-                boolean noThink) {
+        Model(String id, String name) {
             this.id = id;
             this.name = name;
-            this.file = file;
-            this.ctx = ctx;
-            this.temperature = temperature;
-            this.maxTokens = maxTokens;
-            this.noThink = noThink;
-        }
-
-        File path() {
-            final File data = new File(DATA_DIR, file);
-            return data.canRead() ? data : new File(SYSTEM_DIR, file);
         }
 
         boolean installed() {
-            return path().canRead();
-        }
-    }
-
-    /** 4 GB phones (S6 edge+) can give Pro a longer memory */
-    private static final boolean BIG_RAM = totalRamKb() > 3500L * 1024;
-
-    /**
-     * Keng 1.5 Flash-Lite Live: Qwen3 0.6B without its thinking step, low temperature. The
-     * everyday model and the voice of kAI (hold Power): on the PC it reads a question twice as
-     * fast as Pro and writes 1.8x as fast, with short, correct answers in Italian and English.
-     */
-    static final Model LIVE = new Model("live", "Keng 1.5 Flash-Lite Live",
-            "qwen3-0.6b-q4_k_m.gguf", 2048, 0.2f, 320, true);
-
-    /** the models of the app's model sheet; the voice (LIVE) is not one of them */
-    static final Model[] MODELS = {
-        // SmolLM2 135M: instant, arithmetic, definitions, phone settings
-        new Model("lite", "Keng 1.5 Flash Lite", "smollm2-135m-instruct-q4_k_m.gguf", 2048, 0.2f,
-                384),
-        // Qwen3 0.6B, the same file as Flash-Lite Live, set for chatting (longer answers)
-        new Model("base", "Keng 1.5 Base", "qwen3-0.6b-q4_k_m.gguf", 2048, 0.4f, 512, true),
-        // Llama 3.2 1B: code and step-by-step reasoning; the context is capped so the KV cache
-        // cannot push a 3 GB phone out of memory
-        new Model("pro", "Keng 1.5 Pro", "llama-3.2-1b-instruct-q4_k_m.gguf",
-                BIG_RAM ? 2048 : 1024, 0.5f, 640),
-    };
-
-    // Base runs Qwen3 0.6B (it replaced Qwen2.5 0.5B in the ROM: faster and more accurate,
-    // and the OTA zip has to stay under 2 GiB)
-    private static final Model DEFAULT = MODELS[1];
-    private static volatile Model sSelected = DEFAULT;
-    private static Model sLoaded;
-    private static long sHandle;
-    private static volatile boolean sLoading;
-    private static Boolean sLibrary;
-    /** answers being written: the model is never freed under one (guarded by the class) */
-    private static int sActive;
-    private static final android.os.Handler sMain =
-            new android.os.Handler(android.os.Looper.getMainLooper());
-    private static final Runnable sRelease = new Runnable() {
-        @Override
-        public void run() {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    stop();
-                }
-            }, "kAI-release").start();
-        }
-    };
-
-    private LocalEngine() {
-    }
-
-    static Model find(String id) {
-        for (Model m : MODELS) {
-            if (m.id.equals(id)) {
-                return m;
-            }
-        }
-        return DEFAULT;
-    }
-
-    static void select(String id) {
-        sSelected = find(id);
-    }
-
-    static Model selected() {
-        return sSelected;
-    }
-
-    /** the name shown in the status line */
-    static String modelName() {
-        return sSelected.name;
-    }
-
-    private static synchronized boolean library() {
-        if (sLibrary == null) {
-            try {
-                NativeLlm.nativeContextSize(0);
-                sLibrary = true;
-            } catch (Throwable t) {
-                Log.w(TAG, "on-device engine missing", t);
-                sLibrary = false;
-            }
-        }
-        return sLibrary;
-    }
-
-    /** true when this build ships the engine and the chosen model */
-    static boolean available() {
-        return available(sSelected);
-    }
-
-    static boolean available(Model m) {
-        return library() && m.installed();
-    }
-
-    /** Loads the chosen model if it is not the one in memory. Blocking: a worker thread. */
-    static boolean ensureRunning() {
-        return ensureRunning(sSelected);
-    }
-
-    /** Loads the given model if it is not the one in memory. Blocking: a worker thread. */
-    static synchronized boolean ensureRunning(Model want) {
-        if (sHandle != 0 && sLoaded != null && (sLoaded == want
-                || (sLoaded.file.equals(want.file) && sLoaded.ctx == want.ctx))) {
             return true;
         }
-        if (!available(want)) {
-            return false;
-        }
-        free();
-        sLoading = true;
-        try {
-            final long t0 = System.currentTimeMillis();
-            sHandle = NativeLlm.nativeLoad(want.path().getPath(), want.ctx, THREADS);
-            sLoaded = sHandle != 0 ? want : null;
-            Log.i(TAG, want.name + (sHandle != 0 ? " loaded in " : " failed after ")
-                    + (System.currentTimeMillis() - t0) + " ms");
-            return sHandle != 0;
-        } finally {
-            sLoading = false;
-        }
     }
 
-    /** true while a model is being loaded */
-    static boolean loading() {
-        return sLoading;
-    }
+    static final Model CLOUD = new Model("cloud", "kAI");
+    /** the voice talks with the same model now */
+    static final Model LIVE = CLOUD;
+    static final Model[] MODELS = {CLOUD};
 
-    /** frees the model's memory (not while an answer is being written) */
-    static synchronized void stop() {
-        if (sActive > 0) {
-            return;
-        }
-        free();
-        Voice.release();
-    }
-
-    /** the model's memory goes back a few minutes after kAI was last used */
-    static void releaseLater() {
-        sMain.removeCallbacks(sRelease);
-        sMain.postDelayed(sRelease, 3 * 60 * 1000);
-    }
-
-    /** kAI is in use again: keep the model */
-    static void keep() {
-        sMain.removeCallbacks(sRelease);
-    }
-
-    private static void free() {
-        if (sHandle != 0) {
-            NativeLlm.nativeFree(sHandle);
-            sHandle = 0;
-            sLoaded = null;
-        }
-    }
-
-    /** ends the answer being written (between two tokens) */
-    static void cancel() {
-        final long h = sHandle;
-        if (h != 0) {
-            NativeLlm.nativeStop(h);
-        }
-    }
-
-    /**
-     * Writes the answer to the chat, streaming it. The oldest turns are dropped when the chat
-     * does not fit the model's context.
-     */
-    static void generate(List<BridgeClient.Message> history, final BridgeClient.Stream stream) {
-        generate(sSelected, history, stream);
-    }
-
-    /** the same, with a given model (the voice overlay always talks with Flash-Lite Live) */
-    static void generate(Model model, List<BridgeClient.Message> history,
-            final BridgeClient.Stream out) {
-        final long h;
-        final Model m;
-        synchronized (LocalEngine.class) {
-            if (!ensureRunning(model)) {
-                out.onError("model");
-                return;
-            }
-            h = sHandle;
-            m = model;
-            sActive++;
-        }
-        final List<BridgeClient.Message> msgs = new ArrayList<>(history);
-        final BridgeClient.Stream stream = m.noThink ? new NoThink(out) : out;
-        if (m.noThink) {
-            // Qwen3's own switch, on the last question: answer at once, no reasoning first
-            for (int i = msgs.size() - 1; i >= 0; i--) {
-                final BridgeClient.Message q = msgs.get(i);
-                if ("user".equals(q.role)) {
-                    msgs.set(i, new BridgeClient.Message("user", q.content + " /no_think"));
-                    break;
-                }
-            }
-        }
-        final Guardian guardian = new Guardian(h);
-        guardian.start();
-        try {
-            int r;
-            for (;;) {
-                final String[] roles = new String[msgs.size()];
-                final byte[][] contents = new byte[msgs.size()][];
-                for (int i = 0; i < msgs.size(); i++) {
-                    roles[i] = msgs.get(i).role;
-                    contents[i] = msgs.get(i).content.getBytes(StandardCharsets.UTF_8);
-                }
-                r = NativeLlm.nativeGenerate(h, roles, contents, m.maxTokens, m.temperature,
-                        new NativeLlm.Callback() {
-                            @Override
-                            public boolean onPiece(byte[] utf8) {
-                                stream.onDelta(new String(utf8, StandardCharsets.UTF_8));
-                                return true;
-                            }
-                        });
-                // too long for the context: drop the oldest turn after the instructions
-                if (r == NativeLlm.ERR_TOO_LONG && msgs.size() > 2) {
-                    msgs.remove(msgs.get(0).role.equals("system") ? 1 : 0);
-                    continue;
-                }
-                break;
-            }
-            if (r < 0) {
-                Log.w(TAG, m.name + " failed: " + r);
-                stream.onError(r == NativeLlm.ERR_TOO_LONG ? "too long" : "engine " + r);
-            } else {
-                stream.onDone();
-            }
-        } finally {
-            guardian.finish();
-            synchronized (LocalEngine.class) {
-                sActive--;
-            }
-        }
-    }
-
-    /**
-     * Drops the (empty) think block Qwen3 writes before its answer, and the blank lines after
-     * it, so the chat and the voice get the answer only.
-     */
-    private static final class NoThink implements BridgeClient.Stream {
-        private final BridgeClient.Stream mOut;
-        private final StringBuilder mHead = new StringBuilder();
-        private boolean mPassing;
-
-        NoThink(BridgeClient.Stream out) {
-            mOut = out;
-        }
-
-        @Override
-        public void onDelta(String delta) {
-            if (mPassing) {
-                mOut.onDelta(delta);
-                return;
-            }
-            mHead.append(delta);
-            final String h = mHead.toString();
-            final String lead = h.replaceFirst("^\\s+", "");
-            if (lead.isEmpty() || "<think>".startsWith(lead.length() > 7 ? "~" : lead)) {
-                return;                                  // could still be the think tag
-            }
-            String rest;
-            if (lead.startsWith("<think>")) {
-                final int end = lead.indexOf("</think>");
-                if (end < 0) {
-                    return;                              // still inside the block
-                }
-                rest = lead.substring(end + "</think>".length());
-            } else {
-                rest = lead;
-            }
-            rest = rest.replaceFirst("^\\s+", "");
-            if (rest.isEmpty()) {
-                return;
-            }
-            mPassing = true;
-            mOut.onDelta(rest);
-        }
-
-        @Override
-        public void onDone() {
-            if (!mPassing) {
-                // a short answer that never got past the check above
-                final String lead = mHead.toString().trim();
-                if (!lead.isEmpty() && !lead.startsWith("<think>")) {
-                    mOut.onDelta(lead);
-                }
-            }
-            mOut.onDone();
-        }
-
-        @Override
-        public void onError(String message) {
-            mOut.onError(message);
-        }
-    }
-
-    /** Kiro Thermal Guardian, kAI side: fewer threads while the SoC is hot */
-    private static final class Guardian extends Thread {
-        private final long mHandle;
-        private volatile boolean mRunning = true;
-        private int mThreads = THREADS;
-
-        Guardian(long handle) {
-            super("kAI-thermal");
-            mHandle = handle;
-            setDaemon(true);
-        }
-
-        @Override
-        public void run() {
-            while (mRunning) {
-                final int t = readTemp();
-                if (t >= HOT_MC && mThreads != 2) {
-                    mThreads = 2;
-                    NativeLlm.nativeSetThreads(mHandle, 2);
-                    Log.i(TAG, "thermal: battery " + t / 1000 + " C, 2 threads");
-                } else if (t > 0 && t <= COOL_MC && mThreads != THREADS) {
-                    mThreads = THREADS;
-                    NativeLlm.nativeSetThreads(mHandle, THREADS);
-                    Log.i(TAG, "thermal: battery " + t / 1000 + " C, " + THREADS + " threads");
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    return;
-                }
-            }
-        }
-
-        void finish() {
-            mRunning = false;
-            interrupt();
-            // the next answer starts at full speed unless it is still hot
-            if (mThreads != THREADS && readTemp() <= COOL_MC) {
-                NativeLlm.nativeSetThreads(mHandle, THREADS);
-            }
-        }
-    }
-
-    private static android.content.Context sApp;
+    private static Context sApp;
+    private static volatile HttpURLConnection sActive;
+    private static volatile boolean sCancelled;
+    /** what the service said last: requests left, and when the 5 hours end (Unix s, 0 = n/a) */
+    static volatile int sLeft = -1;
+    static volatile long sReset;
 
     /** the overlay (hold Power) is showing (Beta 4.1: no Edge Glow while kAI writes at all) */
     static volatile boolean sOverlayShowing;
 
-    static void init(android.content.Context app) {
-        sApp = app;
+    private LocalEngine() {
+    }
+
+    static void init(Context app) {
+        sApp = app.getApplicationContext();
+    }
+
+    // --- what the rest of kAI calls (one model, always ready) ---------------------------------
+
+    static Model find(String id) {
+        return CLOUD;
+    }
+
+    static void select(String id) {
+    }
+
+    static Model selected() {
+        return CLOUD;
+    }
+
+    static String modelName() {
+        return CLOUD.name;
+    }
+
+    static boolean available() {
+        return true;
+    }
+
+    static boolean available(Model m) {
+        return true;
+    }
+
+    static boolean ensureRunning() {
+        return true;
+    }
+
+    static boolean ensureRunning(Model want) {
+        return true;
+    }
+
+    static boolean loading() {
+        return false;
+    }
+
+    static void stop() {
+        Voice.release();
+    }
+
+    static void releaseLater() {
+    }
+
+    static void keep() {
+    }
+
+    /** ends the answer being written */
+    static void cancel() {
+        sCancelled = true;
+        final HttpURLConnection c = sActive;
+        if (c != null) {
+            c.disconnect();
+        }
+    }
+
+    // --- the service ---------------------------------------------------------------------------
+
+    private static String base() {
+        String url = null;
+        if (sApp != null) {
+            url = android.provider.Settings.Global.getString(sApp.getContentResolver(),
+                    "kiroos_kai_url");
+        }
+        return url != null && url.startsWith("https://") ? url : DEFAULT_URL;
+    }
+
+    /** this phone's anonymous id for the service (made once, kept in kAI's data) */
+    static synchronized String installId() {
+        final SharedPreferences p = sApp.getSharedPreferences("kai_cloud", Context.MODE_PRIVATE);
+        String id = p.getString("id", null);
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+            p.edit().putString("id", id).apply();
+        }
+        return id;
+    }
+
+    private static HttpURLConnection open(String path, String method) throws Exception {
+        final HttpURLConnection c = (HttpURLConnection) new URL(base() + path).openConnection();
+        c.setConnectTimeout(8000);
+        c.setReadTimeout(60000);
+        c.setRequestMethod(method);
+        c.setRequestProperty("X-Kiro-Install", installId());
+        c.setRequestProperty("X-Kiro-Build", android.os.Build.DISPLAY);
+        return c;
+    }
+
+    private static String readAll(InputStream in) throws Exception {
+        if (in == null) return "";
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final byte[] b = new byte[4096];
+        int n;
+        while ((n = in.read(b)) > 0) out.write(b, 0, n);
+        return new String(out.toByteArray(), StandardCharsets.UTF_8);
+    }
+
+    private static void quota(JSONObject o) {
+        if (o.has("left")) sLeft = o.optInt("left", -1);
+        if (o.has("reset")) sReset = o.optLong("reset", 0);
+    }
+
+    /** an HTTP error of the service as the message onError gets */
+    private static String errorOf(HttpURLConnection c, int code) {
+        try {
+            final JSONObject o = new JSONObject(readAll(c.getErrorStream()));
+            if ("limit".equals(o.optString("error"))) {
+                sLeft = 0;
+                sReset = o.optLong("reset", 0);
+                return LIMIT_PREFIX + sReset;
+            }
+            if ("busy".equals(o.optString("error"))) return "busy";
+        } catch (Exception e) {
+            // no readable body
+        }
+        return "HTTP " + code;
+    }
+
+    /** the requests left and the reset time, without using one (blocking); false if offline */
+    static boolean refreshStatus() {
+        HttpURLConnection c = null;
+        try {
+            c = open("/v1/status", "GET");
+            c.setReadTimeout(8000);
+            if (c.getResponseCode() != 200) return false;
+            quota(new JSONObject(readAll(c.getInputStream())));
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (c != null) c.disconnect();
+        }
+    }
+
+    /** the same, with a given model (there is one: kept for the voice overlay) */
+    static void generate(Model model, List<BridgeClient.Message> history,
+            BridgeClient.Stream stream) {
+        generate(history, stream);
+    }
+
+    /** Writes the answer, streaming it. Blocking: call on a worker thread. */
+    static void generate(List<BridgeClient.Message> history, BridgeClient.Stream stream) {
+        sCancelled = false;
+        HttpURLConnection c = null;
+        try {
+            final JSONArray msgs = new JSONArray();
+            for (BridgeClient.Message m : history) {
+                msgs.put(new JSONObject().put("role", m.role).put("content", m.content));
+            }
+            final byte[] body = new JSONObject().put("messages", msgs).toString()
+                    .getBytes(StandardCharsets.UTF_8);
+            c = open("/v1/chat", "POST");
+            sActive = c;
+            c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            c.setFixedLengthStreamingMode(body.length);
+            try (OutputStream out = c.getOutputStream()) {
+                out.write(body);
+            }
+            final int code = c.getResponseCode();
+            if (code != 200) {
+                stream.onError(errorOf(c, code));
+                return;
+            }
+            try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream(),
+                    StandardCharsets.UTF_8))) {
+                String line;
+                while (!sCancelled && (line = r.readLine()) != null) {
+                    if (!line.startsWith("data:")) continue;
+                    final JSONObject o = new JSONObject(line.substring(5).trim());
+                    if (o.has("error")) {
+                        stream.onError(o.optString("error"));
+                        return;
+                    }
+                    final String d = o.optString("d", "");
+                    if (!d.isEmpty()) stream.onDelta(d);
+                    if (o.optBoolean("done")) {
+                        quota(o);
+                        break;
+                    }
+                }
+            }
+            stream.onDone();
+        } catch (Exception e) {
+            if (sCancelled) {
+                stream.onDone();
+            } else {
+                Log.w(TAG, "cloud: " + e);
+                stream.onError("offline");
+            }
+        } finally {
+            if (c != null) c.disconnect();
+            sActive = null;
+        }
     }
 
     /**
-     * battery temperature in milli-degrees C (-1 if unknown), from the sticky battery
-     * broadcast: apps may not read the thermal sysfs nodes
+     * Speech to text in the cloud (Whisper, far better than the small model on the phone).
+     * 16 kHz mono samples; null when it cannot (offline, the limit, an error): the phone's own
+     * model does it then.
      */
-    static int readTemp() {
-        if (sApp == null) {
-            return -1;
+    static String transcribe(float[] audio, String lang) {
+        HttpURLConnection c = null;
+        try {
+            final byte[] wav = wav(audio, 16000);
+            c = open("/v1/transcribe", "POST");
+            c.setDoOutput(true);
+            c.setRequestProperty("Content-Type", "audio/wav");
+            if (lang != null && !"auto".equals(lang)) c.setRequestProperty("X-Kai-Language", lang);
+            c.setFixedLengthStreamingMode(wav.length);
+            try (OutputStream out = c.getOutputStream()) {
+                out.write(wav);
+            }
+            if (c.getResponseCode() != 200) return null;
+            final JSONObject o = new JSONObject(readAll(c.getInputStream()));
+            quota(o);
+            return o.optString("text", "").trim();
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (c != null) c.disconnect();
         }
-        final android.content.Intent b = sApp.registerReceiver(null,
-                new android.content.IntentFilter(android.content.Intent.ACTION_BATTERY_CHANGED));
-        if (b == null) {
-            return -1;
-        }
-        final int tenths = b.getIntExtra(android.os.BatteryManager.EXTRA_TEMPERATURE, -10);
-        return tenths < 0 ? -1 : tenths * 100;
     }
 
-    private static long totalRamKb() {
-        try (BufferedReader r = new BufferedReader(new FileReader("/proc/meminfo"))) {
-            final String l = r.readLine();   // MemTotal:  2765344 kB
-            return Long.parseLong(l.replaceAll("[^0-9]", ""));
-        } catch (Exception e) {
-            return 0;
+    /** 16-bit mono WAV of the samples */
+    private static byte[] wav(float[] audio, int rate) {
+        final int n = audio.length;
+        final byte[] b = new byte[44 + n * 2];
+        final java.nio.ByteBuffer bb = java.nio.ByteBuffer.wrap(b)
+                .order(java.nio.ByteOrder.LITTLE_ENDIAN);
+        bb.put("RIFF".getBytes(StandardCharsets.US_ASCII)).putInt(36 + n * 2)
+                .put("WAVE".getBytes(StandardCharsets.US_ASCII))
+                .put("fmt ".getBytes(StandardCharsets.US_ASCII)).putInt(16).putShort((short) 1)
+                .putShort((short) 1).putInt(rate).putInt(rate * 2).putShort((short) 2)
+                .putShort((short) 16)
+                .put("data".getBytes(StandardCharsets.US_ASCII)).putInt(n * 2);
+        for (float v : audio) {
+            final int s = Math.round(Math.max(-1f, Math.min(1f, v)) * 32767f);
+            bb.putShort((short) s);
         }
+        return b;
+    }
+
+    /** "riprova tra 4 h 12 min" style: the time until the 5 hours end, from now */
+    static String untilReset(Context c, long reset) {
+        final long s = Math.max(60, reset - System.currentTimeMillis() / 1000);
+        final long h = s / 3600;
+        final long m = (s % 3600 + 59) / 60;
+        if (h == 0) return c.getResources().getQuantityString(R.plurals.kai_minutes, (int) m, m);
+        if (m == 0 || m == 60) {
+            final long hh = m == 60 ? h + 1 : h;
+            return c.getResources().getQuantityString(R.plurals.kai_hours, (int) hh, hh);
+        }
+        return c.getString(R.string.kai_hours_minutes,
+                c.getResources().getQuantityString(R.plurals.kai_hours, (int) h, h),
+                c.getResources().getQuantityString(R.plurals.kai_minutes, (int) m, m));
+    }
+
+    /** the text an error of the service shows in the chat */
+    static String errorText(Context c, String message) {
+        if (message != null && message.startsWith(LIMIT_PREFIX)) {
+            long reset = 0;
+            try {
+                reset = Long.parseLong(message.substring(LIMIT_PREFIX.length()));
+            } catch (NumberFormatException e) {
+                // unknown: 5 hours
+            }
+            if (reset <= 0) reset = System.currentTimeMillis() / 1000 + 5 * 3600;
+            return c.getString(R.string.kai_limit, untilReset(c, reset));
+        }
+        if ("offline".equals(message)) return c.getString(R.string.kai_offline);
+        if ("busy".equals(message)) return c.getString(R.string.kai_busy);
+        return message;
     }
 }

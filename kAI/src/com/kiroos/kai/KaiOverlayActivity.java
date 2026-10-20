@@ -175,6 +175,11 @@ public class KaiOverlayActivity extends Activity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        // a short Power press while the card is up closes it (instead of the screen going off)
+        if (intent != null && intent.getBooleanExtra("close", false)) {
+            close();
+            return;
+        }
         // Power held again while the card is up: listen again
         start(intent);
     }
@@ -487,7 +492,12 @@ public class KaiOverlayActivity extends Activity {
                                 mSpeakAnswer = false;
                                 mAura.setMode(KaiAuraView.IDLE);
                                 if (mText.length() == 0) {
-                                    mAnswer.setText(getString(R.string.error_answer, message));
+                                    // Beta 5: the cloud's limit is said as it is
+                                    final String why = LocalEngine.errorText(
+                                            KaiOverlayActivity.this, message);
+                                    mAnswer.setText(message != null
+                                            && message.startsWith(LocalEngine.LIMIT_PREFIX)
+                                            ? why : getString(R.string.error_answer, why));
                                 } else {
                                     render();
                                 }
