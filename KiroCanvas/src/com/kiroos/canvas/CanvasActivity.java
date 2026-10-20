@@ -58,6 +58,7 @@ public class CanvasActivity extends Activity {
     private static final String TAG = "KiroCanvas";
     private static final int REQUEST_PICK = 1;
     private static final int[] NAMES = {
+        R.string.w_silk_midnight, R.string.w_silk_graphite, R.string.w_silk_dawn,
         R.string.w_aurora, R.string.w_nebula, R.string.w_waves, R.string.w_mesh,
         R.string.w_orbit, R.string.w_dunes, R.string.w_glass, R.string.w_midnight,
     };
@@ -75,6 +76,7 @@ public class CanvasActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mWallpaper = WallpaperManager.getInstance(this);
+        Recipes.init(this);
         mPrefs = getSharedPreferences("canvas", MODE_PRIVATE);
         mScreen = new Point();
         getWindowManager().getDefaultDisplay().getRealSize(mScreen);

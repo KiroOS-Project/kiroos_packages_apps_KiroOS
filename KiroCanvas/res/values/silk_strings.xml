@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the silk wallpapers (names, the same in every language) -->
+<resources>
+    <string name="w_silk_midnight" translatable="false">Silk · Midnight</string>
+    <string name="w_silk_graphite" translatable="false">Silk · Graphite</string>
+    <string name="w_silk_dawn" translatable="false">Silk · Dawn</string>
+</resources>

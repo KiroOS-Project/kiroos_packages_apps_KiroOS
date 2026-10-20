@@ -34,7 +34,21 @@ import java.util.Random;
  */
 final class Recipes {
 
-    static final int COUNT = 8;
+    /**
+     * Beta 5: the three silks come first (Midnight is the system's default wallpaper). They are
+     * photographs of a rendered satin (output/wallpaper5/silk.c, light and cloth computed at the
+     * phone's resolution), not drawn here: res/drawable-nodpi/silk_*.jpg, scaled to the size asked.
+     */
+    static final int SILKS = 3;
+    static final int[] SILK_RES = {R.drawable.silk_midnight, R.drawable.silk_graphite,
+            R.drawable.silk_dawn};
+    static final int COUNT = SILKS + 8;
+
+    private static android.content.res.Resources sRes;
+
+    static void init(android.content.Context c) {
+        sRes = c.getApplicationContext().getResources();
+    }
 
     private static final int BLUE = 0xFF3987E5;
     private static final int CYAN = 0xFF2BC4D9;
@@ -50,6 +64,11 @@ final class Recipes {
         final Bitmap b = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         final Canvas c = new Canvas(b);
         c.drawColor(Color.BLACK);
+        if (recipe < SILKS) {
+            silk(c, w, h, SILK_RES[recipe]);
+            return b;
+        }
+        recipe -= SILKS;
         final float u = Math.min(w, h) / 1440f;   // 1 unit = 1 px of the 1440 px wide screen
         switch (recipe) {
             case 0: aurora(c, w, h, u); break;
@@ -62,6 +81,28 @@ final class Recipes {
             default: midnight(c, w, h); break;
         }
         return b;
+    }
+
+    /** a silk picture, cropped to fill w x h from its centre (decoded at about that size) */
+    private static void silk(Canvas c, int w, int h, int res) {
+        if (sRes == null) return;
+        final android.graphics.BitmapFactory.Options o = new android.graphics.BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        android.graphics.BitmapFactory.decodeResource(sRes, res, o);
+        int sample = 1;
+        while (o.outWidth / (sample * 2) >= w && o.outHeight / (sample * 2) >= h) sample *= 2;
+        o.inJustDecodeBounds = false;
+        o.inSampleSize = sample;
+        o.inScaled = false;
+        final Bitmap src = android.graphics.BitmapFactory.decodeResource(sRes, res, o);
+        if (src == null) return;
+        final float scale = Math.max(w / (float) src.getWidth(), h / (float) src.getHeight());
+        final float sw = w / scale, sh = h / scale;
+        final float l = (src.getWidth() - sw) / 2f, t = (src.getHeight() - sh) / 2f;
+        c.drawBitmap(src, new android.graphics.Rect(Math.round(l), Math.round(t),
+                Math.round(l + sw), Math.round(t + sh)), new android.graphics.Rect(0, 0, w, h),
+                new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG));
+        src.recycle();
     }
 
     private static int alpha(int color, int a) {
