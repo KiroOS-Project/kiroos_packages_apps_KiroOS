@@ -58,9 +58,15 @@
 /* KiroOS parameters (int32 param, int16 or int32 value), next to the standard ones */
 #define KIRO_PARAM_BASS 0x4B01          /* 0-1000 */
 #define KIRO_PARAM_BASS_MODE 0x4B02     /* 0 speaker, 1 headphones / Bluetooth */
-#define BASS_SPEAKER_HZ 150.0f
-#define BASS_SPEAKER_DB 8.0f
+/* Beta 5: the speaker's bass lift sits where it still plays (250 Hz, not 150: under ~200 Hz it
+ * only moved the cone, filled the limiter and broke the sound) */
+#define BASS_SPEAKER_HZ 250.0f
+#define BASS_SPEAKER_DB 6.0f
 #define BASS_SPEAKER_Q 0.8f
+/* on the speaker, the bands it cannot play are not lifted (their lift becomes virtual bass):
+ * at most this much at 31 / 62 / 125 Hz */
+static const float kSpeakerMaxDb[3] = { 0.0f, 0.0f, 3.0f };
+#define LOOKAHEAD 96                    /* frames, 2 ms at 48 kHz */
 #define BASS_VIRTUAL_HZ 140.0f          /* below this the speaker gets harmonics instead */
 #define BASS_VIRTUAL_GAIN 1.6f
 #define BASS_SHELF_HZ 90.0f
@@ -143,9 +149,14 @@ typedef struct {
     int virtualActive;
     float virtualGain;
     biquad_t vLow[2];               /* 4th-order low pass of the mono sum: the missing bass */
-    biquad_t vBand[2];              /* high pass + low pass around the harmonics */
+    biquad_t vBand[3];              /* high pass + steep low pass around the harmonics */
     float vLowZ[2][2];
-    float vBandZ[2][2];
+    float vBandZ[3][2];
+    /* Beta 5: the limiter looks 2 ms ahead and holds the gain a peak needs until it is out */
+    float delay[LOOKAHEAD][2];
+    int delayPos;
+    float holdTarget;
+    int holdLeft;
 } eq_context_t;
 
 static const struct effect_interface_s gInterface;
@@ -242,28 +253,36 @@ static void design(eq_context_t *c)
         }
         c->bassExtra = powf(10.0f, bassDb / 20.0f) - 1.0f;
     }
-    if (c->virtualActive) {
-        c->virtualGain = BASS_VIRTUAL_GAIN * s;
-        passFilter(&c->vLow[0], c->rate, BASS_VIRTUAL_HZ, 0);
-        passFilter(&c->vLow[1], c->rate, BASS_VIRTUAL_HZ, 0);
-        passFilter(&c->vBand[0], c->rate, BASS_VIRTUAL_HZ, 1);  /* drops the DC of |x| */
-        passFilter(&c->vBand[1], c->rate, 600.0f, 0);
-    }
+    /* on the speaker, what the low bands could not lift becomes virtual bass */
+    float lowExcess = 0;
     for (int b = 0; b < NUM_BANDS; b++) {
-        const float db = c->levels[b] / 100.0f;
-        c->active[b] = c->levels[b] != 0 && kCenterHz[b] < c->rate * 0.45f;
+        float db = c->levels[b] / 100.0f;
+        if (c->bassMode == 0 && b < 3 && db > kSpeakerMaxDb[b]) {
+            if (db - kSpeakerMaxDb[b] > lowExcess) lowExcess = db - kSpeakerMaxDb[b];
+            db = kSpeakerMaxDb[b];
+        }
+        c->active[b] = db != 0 && kCenterHz[b] < c->rate * 0.45f;
         if (!c->active[b]) {
             continue;
         }
         if (db > maxBoost) maxBoost = db;
         peaking(&c->bq[b], c->rate, kCenterHz[b], db, BAND_Q);
     }
-    /* a quarter of the biggest band boost back as headroom, none for the bass: on the output
-     * mix the volume is already applied, so below full volume there is room anyway, and a
-     * bass that lowers everything else only sounds quieter (what the NXP bass boost did).
-     * At full volume the limiter catches the peaks. */
-    (void) bassDb;
-    c->pregain = powf(10.0f, -maxBoost * 0.25f / 20.0f);
+    if (c->bassMode == 0 && lowExcess > 0) c->virtualActive = 1;
+    if (c->virtualActive) {
+        c->virtualGain = BASS_VIRTUAL_GAIN * s + lowExcess / 12.0f;
+        passFilter(&c->vLow[0], c->rate, BASS_VIRTUAL_HZ, 0);
+        passFilter(&c->vLow[1], c->rate, BASS_VIRTUAL_HZ, 0);
+        passFilter(&c->vBand[0], c->rate, BASS_VIRTUAL_HZ, 1);  /* drops the DC of |x| */
+        passFilter(&c->vBand[1], c->rate, 600.0f, 0);
+        /* Beta 5: steeper, the higher harmonics of a low note were heard as a buzz */
+        passFilter(&c->vBand[2], c->rate, 600.0f, 0);
+    }
+    /* Beta 5: half of the biggest lift, the bass's included, back as headroom. The limiter
+     * had to work at every bass note before (and broke the sound); the speaker engine in the
+     * HAL makes it loud again, cleanly. */
+    const float lift = maxBoost > bassDb ? maxBoost : bassDb;
+    c->pregain = powf(10.0f, -lift * 0.5f / 20.0f);
 }
 
 static void resetState(eq_context_t *c)
@@ -273,6 +292,10 @@ static void resetState(eq_context_t *c)
     memset(c->vLowZ, 0, sizeof(c->vLowZ));
     memset(c->vBandZ, 0, sizeof(c->vBandZ));
     c->gain = 1.0f;
+    memset(c->delay, 0, sizeof(c->delay));
+    c->delayPos = 0;
+    c->holdTarget = 1.0f;
+    c->holdLeft = 0;
     c->bassEnv = 0;
     c->bassDyn = 0;     /* the boost fades in */
     c->vEnv = 0;
@@ -374,7 +397,11 @@ static int32_t eq_process(effect_handle_t self, audio_buffer_t *in, audio_buffer
             c->vEnv += (a - c->vEnv) * (a > c->vEnv ? c->envAtk : c->envRel);
             harm = low * low / (c->vEnv + 1e-3f);
             harm = runBiquad(&c->vBand[0], c->vBandZ[0], harm);
-            harm = runBiquad(&c->vBand[1], c->vBandZ[1], harm) * c->virtualGain * c->bassDyn;
+            /* with the Bass slider the harmonics follow its dynamics; from the low bands alone
+             * (their lift moved here on the speaker) they are at full strength */
+            harm = runBiquad(&c->vBand[1], c->vBandZ[1], harm);
+            harm = runBiquad(&c->vBand[2], c->vBandZ[2], harm) * c->virtualGain
+                    * (c->bassActive ? c->bassDyn : 1.0f);
         }
         const float extra = c->bassExtra * c->bassDyn;
         for (int ch = 0; ch < 2; ch++) {
@@ -387,14 +414,28 @@ static int32_t eq_process(effect_handle_t self, audio_buffer_t *in, audio_buffer
             }
             x[ch] = v;
         }
-        /* peak limiter on both channels together (keeps the stereo image) */
+        /* peak limiter on both channels together (keeps the stereo image). Beta 5: it looks
+         * 2 ms ahead and holds the gain a peak needs until that peak has left: chased only
+         * while the peak was there (Beta 4), the gain barely moved and the peaks went into the
+         * soft knee, the crackle heard with the bass up */
         const float peak = fmaxf(fabsf(x[0]), fabsf(x[1]));
-        const float want = peak > LIMIT ? LIMIT / peak : 1.0f;
-        /* 0.5 ms attack (an instant one modulated the waveform, a crackle when it worked
-         * hard), smooth release; what the attack lets through is rounded off below */
+        const float wantNow = peak > LIMIT ? LIMIT / peak : 1.0f;
+        if (wantNow <= c->holdTarget || c->holdLeft <= 0) {
+            if (wantNow <= c->holdTarget) c->holdLeft = LOOKAHEAD;
+            c->holdTarget = wantNow;
+        } else {
+            c->holdLeft--;
+        }
+        const float want = c->holdTarget;
         c->gain += (want - c->gain) * (want < c->gain ? c->limAtk : c->release);
+        float delayed[2];
         for (int ch = 0; ch < 2; ch++) {
-            float y = x[ch] * c->gain;
+            delayed[ch] = c->delay[c->delayPos][ch];
+            c->delay[c->delayPos][ch] = x[ch];
+        }
+        if (++c->delayPos >= LOOKAHEAD) c->delayPos = 0;
+        for (int ch = 0; ch < 2; ch++) {
+            float y = delayed[ch] * c->gain;
             const float ay = fabsf(y);
             if (ay > LIMIT) {
                 /* soft knee above -0.3 dBFS: never past full scale, no hard edge */
