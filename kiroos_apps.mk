@@ -26,8 +26,7 @@ PRODUCT_PACKAGES += \
     KiroCanvas \
     KiroScreenRecord \
     KiroCapture \
-    KiroAppLock \
-    KiroAtlas
+    KiroAppLock
 
 # KOptimize WebView, the system WebView (KOptimizeWebView/Android.mk; it overrides the AOSP
 # webview). Its APK is kept out of git: without it the AOSP WebView stays.
