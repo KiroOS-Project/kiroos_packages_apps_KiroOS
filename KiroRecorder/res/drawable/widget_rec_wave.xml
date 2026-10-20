@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Beta 5 widget: a voice's waveform under the last recording -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="150dp"
+    android:height="24dp"
+    android:viewportWidth="150"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M2,11.5v1M7,9v6M12,5v14M17,10v4M22,3v18M27,7v10M32,11v2M37,6v12M42,2v20M47,8v8M52,5v14M57,10v4M62,4v16M67,8v8M72,11v2M77,6v12M82,9v6M87,4v16M92,10v4M97,11.5v1M102,8v8M107,5v14M112,9v6M117,3v18M122,8v8M127,11v2M132,6v12M137,9v6M142,11v2M147,11.5v1"
+        android:strokeColor="#8CFFFFFF"
+        android:strokeWidth="2.4"
+        android:strokeLineCap="round" />
+</vector>

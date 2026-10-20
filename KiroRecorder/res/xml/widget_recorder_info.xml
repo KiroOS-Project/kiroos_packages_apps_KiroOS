@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Beta 5: medium (4 x 2) by default, small (2 x 2) too -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:initialLayout="@layout/widget_recorder"
-    android:minHeight="72dp"
+    android:minHeight="110dp"
+    android:minResizeHeight="110dp"
+    android:minResizeWidth="110dp"
     android:minWidth="250dp"
     android:resizeMode="horizontal"
     android:updatePeriodMillis="0"

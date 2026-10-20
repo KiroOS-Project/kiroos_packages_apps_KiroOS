@@ -63,6 +63,10 @@ import java.util.List;
  */
 public class RecorderActivity extends Activity implements RecorderService.Listener {
 
+    /** Beta 5: the widget's play button opens the app playing this recording (a path) */
+    static final String EXTRA_PLAY = "com.kiroos.recorder.extra.PLAY";
+    private String mPlayPath;
+
     static final String PREFS = "recorder";
     static final String PREF_QUALITY = "quality";
     static final String QUALITY_VOICE = "voice";
@@ -177,6 +181,14 @@ public class RecorderActivity extends Activity implements RecorderService.Listen
         });
         KiroTouch.apply(mQuality);
         updateQuality();
+        mPlayPath = getIntent().getStringExtra(EXTRA_PLAY);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        mPlayPath = intent.getStringExtra(EXTRA_PLAY);
     }
 
     private boolean isVoice() {
@@ -323,6 +335,17 @@ public class RecorderActivity extends Activity implements RecorderService.Listen
             protected void onPostExecute(List<Recording> list) {
                 mAdapter.set(list);
                 mEmpty.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+                // opened from the widget's play button: that recording plays
+                final String play = mPlayPath;
+                mPlayPath = null;
+                if (play != null && (mPlayer == null || !mPlayer.isPlaying())) {
+                    for (Recording r : list) {
+                        if (r.file.getAbsolutePath().equals(play)) {
+                            togglePlay(r.file);
+                            break;
+                        }
+                    }
+                }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Beta 5 widget: the white dot of the red record button -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@android:color/white" />
+    <size android:width="18dp" android:height="18dp" />
+</shape>

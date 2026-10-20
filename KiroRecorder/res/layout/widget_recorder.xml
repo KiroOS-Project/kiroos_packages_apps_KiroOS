@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Recorder widget: a record button; while recording the time runs, with pause and stop -->
+<!-- Recorder widget, medium (4 x 2, Beta 5): the record button, and the last recording to play;
+     while recording: stop, pause and the time running on a red card -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rec_root"
     android:layout_width="match_parent"
@@ -7,53 +8,126 @@
     android:background="@drawable/widget_recorder_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingEnd="14dp"
-    android:paddingStart="18dp">
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/rec_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:singleLine="true"
-            android:textColor="@color/kiro_accent"
-            android:textSize="13sp" />
-
-        <Chronometer
-            android:id="@+id/rec_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
-            android:singleLine="true"
-            android:textColor="@color/kiro_text"
-            android:textSize="34sp" />
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/rec_pause"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/widget_recorder_button_bg"
-        android:contentDescription="@string/pause"
-        android:padding="13dp"
-        android:src="@drawable/ic_pause"
-        android:tint="@color/kiro_text"
-        android:visibility="gone" />
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp">
 
     <ImageView
         android:id="@+id/rec_main"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
         android:background="@drawable/widget_recorder_record_bg"
         android:contentDescription="@string/record"
-        android:padding="17dp"
-        android:src="@drawable/ic_mic"
-        android:tint="@android:color/white" />
+        android:scaleType="center"
+        android:src="@drawable/widget_rec_dot" />
+
+    <!-- idle: the last recording -->
+    <LinearLayout
+        android:id="@+id/rec_last"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/rec_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/rec_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:singleLine="true"
+                android:textColor="#8CFFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rec_play_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/rec_play"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/widget_recorder_button_bg"
+                android:contentDescription="@string/widget_play"
+                android:padding="8dp"
+                android:src="@drawable/ic_play"
+                android:tint="@android:color/white" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:importantForAccessibility="no"
+                android:scaleType="fitXY"
+                android:src="@drawable/widget_rec_wave" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- recording: the time, with pause -->
+    <LinearLayout
+        android:id="@+id/rec_live"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/rec_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:singleLine="true"
+                android:textColor="#FFFF8A8A"
+                android:textSize="12sp" />
+
+            <Chronometer
+                android:id="@+id/rec_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/rec_pause"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/widget_recorder_button_bg"
+            android:contentDescription="@string/pause"
+            android:padding="12dp"
+            android:src="@drawable/ic_pause"
+            android:tint="@android:color/white" />
+    </LinearLayout>
 </LinearLayout>
