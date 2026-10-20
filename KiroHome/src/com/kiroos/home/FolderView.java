@@ -81,10 +81,10 @@ final class FolderView extends FrameLayout {
         mCard = new LinearLayout(context);
         mCard.setOrientation(LinearLayout.VERTICAL);
         mCard.setClickable(true); // taps on the card do not close it
-        final GradientDrawable bg = new GradientDrawable();
-        bg.setColor(0xFF181818);
-        bg.setCornerRadius(24 * d);
-        mCard.setBackground(bg);
+        // Beta 5: frosted glass, the blurred wallpaper behind the card
+        final float r = 24 * d;
+        mCard.setBackground(new Glass.GlassDrawable(mCard, r, r, r, r, 0xFF181818));
+        mCard.setClipToOutline(true);
         final int pad = Math.round(20 * d);
         mCard.setPadding(pad, pad, pad, Math.round(12 * d));
         mCard.setElevation(12 * d);
@@ -179,7 +179,13 @@ final class FolderView extends FrameLayout {
         mCard.setScaleY(0.9f);
         animate().alpha(1f).setDuration(180).setInterpolator(KiroTouch.EASE).start();
         mCard.animate().scaleX(1f).scaleY(1f).setDuration(KiroSpring.FLUID.duration()).setInterpolator(KiroSpring.FLUID)
-                .start();
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        // the glass lines up with the wallpaper again where the card settled
+                        mCard.invalidate();
+                    }
+                }).start();
     }
 
     /** closes the folder (animated or at once, e.g. when an app is dragged out of it) */

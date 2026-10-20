@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the new clock, app drawer and widget picker -->
+<resources>
+    <string name="clock_widget">Часы</string>
+    <string name="clock_alarm_at" formatted="false">Будильник %1$s</string>
+    <string name="clock_tile_alarm">Будильник</string>
+    <string name="clock_tile_timer">Таймер</string>
+    <string name="clock_tile_stopwatch">Секундомер</string>
+    <string name="drawer_recent">НЕДАВНИЕ</string>
+    <string name="drawer_all">ВСЕ ПРИЛОЖЕНИЯ</string>
+    <string name="drawer_no_results">Приложения не найдены</string>
+    <string name="picker_title">Виджеты</string>
+    <string name="picker_hint">нажмите, чтобы увидеть сверху</string>
+    <string name="picker_add">Добавить на главный экран</string>
+    <string name="picker_bar">Панель</string>
+</resources>

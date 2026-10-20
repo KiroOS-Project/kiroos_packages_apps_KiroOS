@@ -329,7 +329,8 @@ public class HomeLayout extends FrameLayout {
                 if (mMode == PAGE) {
                     mCallbacks.onPageDrag(ev.getX(i) - mDownX);
                 } else if (mMode == DRAWER) {
-                    final float travel = getHeight() * 0.6f;
+                    // Beta 5: the sheet stays under the finger, one to one
+                    final float travel = getHeight() * 0.95f;
                     mCallbacks.onDrawerDrag(Math.max(0f, Math.min(1f, -dy / travel)));
                 }
                 return true;
@@ -406,7 +407,7 @@ public class HomeLayout extends FrameLayout {
             mCallbacks.onPageRelease(vx, mMinFling);
         } else if (mMode == DRAWER) {
             final boolean open = up && (vy < -mMinFling
-                    || (vy < mMinFling && -dy > getHeight() * 0.25f));
+                    || (vy < mMinFling && -dy > getHeight() * 0.3f));
             // the speed toward where it settles (up when opening, down when closing)
             final float speed = open ? Math.max(0f, -vy) : Math.max(0f, vy);
             mCallbacks.onDrawerRelease(open, speed);

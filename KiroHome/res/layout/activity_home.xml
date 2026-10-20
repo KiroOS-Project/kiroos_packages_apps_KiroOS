@@ -77,57 +77,12 @@
         android:background="@drawable/drop_hint"
         android:visibility="gone" />
 
-    <FrameLayout
+    <!-- Beta 5: the app drawer, a sheet that rises under the finger (AppDrawer) -->
+    <com.kiroos.home.AppDrawer
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/drawer_scrim"
-        android:clickable="true"
-        android:visibility="invisible">
-
-        <LinearLayout
-            android:id="@+id/drawer_inner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.kiroos.home.SearchField
-                android:id="@+id/drawer_search"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/home_margin"
-                android:layout_marginStart="@dimen/home_margin"
-                android:layout_marginTop="16dp"
-                android:drawablePadding="12dp"
-                android:drawableStart="@drawable/ic_search"
-                android:hint="@string/search_apps"
-                android:imeOptions="actionGo|flagNoExtractUi"
-                android:inputType="text|textNoSuggestions"
-                android:maxLines="1"
-                android:singleLine="true"
-                style="@style/Kiro.Field" />
-
-            <GridView
-                android:id="@+id/drawer_grid"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:cacheColorHint="@android:color/transparent"
-                android:clipToPadding="false"
-                android:listSelector="@android:color/transparent"
-                android:numColumns="4"
-                android:overScrollMode="ifContentScrolls"
-                android:paddingBottom="24dp"
-                android:paddingEnd="@dimen/home_margin"
-                android:paddingStart="@dimen/home_margin"
-                android:paddingTop="12dp"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbars="none"
-                android:fastScrollEnabled="true"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="10dp" />
-        </LinearLayout>
-    </FrameLayout>
+        android:visibility="invisible" />
 
     <View
         android:id="@+id/menu_anchor"

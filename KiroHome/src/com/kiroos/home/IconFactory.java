@@ -168,8 +168,9 @@ final class IconFactory {
         Bitmap b = mCache.get(key);
         if (b == null) {
             // the xxxhdpi icon: zoomed round icons stay sharp
+            final boolean own = hasDarkTwin(app.info.getComponentName().getPackageName());
             b = render(app.info.getBadgedIcon(Math.max(mDensity, DisplayMetrics.DENSITY_XXXHIGH)),
-                    mDark && !hasDarkTwin(app.info.getComponentName().getPackageName()));
+                    mDark && !own, own);
             mCache.put(key, b);
         }
         return b;
@@ -192,8 +193,11 @@ final class IconFactory {
         }
     }
 
-    /** Serialized: the main thread and the prewarm thread share the paints and the path. */
-    private synchronized Bitmap render(Drawable source, boolean dim) {
+    /**
+     * Serialized: the main thread and the prewarm thread share the paints and the path.
+     * own: a KiroOS icon, which has its own top light and rim (only clipped here).
+     */
+    private synchronized Bitmap render(Drawable source, boolean dim, boolean own) {
         final Bitmap raw = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
         final Canvas rc = new Canvas(raw);
         source.setBounds(0, 0, mSize, mSize);
@@ -247,18 +251,22 @@ final class IconFactory {
         if (dim) {
             c.drawColor(DARK_DIM, android.graphics.PorterDuff.Mode.SRC_ATOP);
         }
-        c.drawRect(0, 0, mSize, mSize * 0.6f, mSheen);
+        if (!own) {
+            c.drawRect(0, 0, mSize, mSize * 0.6f, mSheen);
+        }
         final Bitmap out = Bitmap.createBitmap(mSize, mSize, Bitmap.Config.ARGB_8888);
         final Canvas oc = new Canvas(out);
         mShape.setShader(new BitmapShader(art, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
         oc.drawPath(mSquircle, mShape);
         mShape.setShader(null);
         art.recycle();
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(Math.max(1f, mSize / 96f));
-        mPaint.setColor(RIM);
-        oc.drawPath(mSquircle, mPaint);
-        mPaint.setStyle(Paint.Style.FILL);
+        if (!own) {
+            mPaint.setStyle(Paint.Style.STROKE);
+            mPaint.setStrokeWidth(Math.max(1f, mSize / 96f));
+            mPaint.setColor(RIM);
+            oc.drawPath(mSquircle, mPaint);
+            mPaint.setStyle(Paint.Style.FILL);
+        }
         mPaint.setColor(Color.BLACK);
         raw.recycle();
         return out;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the new clock, app drawer and widget picker -->
+<resources>
+    <string name="clock_widget">Saat</string>
+    <string name="clock_alarm_at" formatted="false">Alarm %1$s</string>
+    <string name="clock_tile_alarm">Alarm</string>
+    <string name="clock_tile_timer">Zamanlayıcı</string>
+    <string name="clock_tile_stopwatch">Kronometre</string>
+    <string name="drawer_recent">SON KULLANILANLAR</string>
+    <string name="drawer_all">TÜM UYGULAMALAR</string>
+    <string name="drawer_no_results">Uygulama bulunamadı</string>
+    <string name="picker_title">Widget\'lar</string>
+    <string name="picker_hint">yukarıda görmek için dokunun</string>
+    <string name="picker_add">Ana ekrana ekle</string>
+    <string name="picker_bar">Çubuk</string>
+</resources>

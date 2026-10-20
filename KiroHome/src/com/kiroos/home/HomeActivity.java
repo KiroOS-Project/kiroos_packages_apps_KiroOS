@@ -71,7 +71,7 @@ import java.util.List;
  * Apps open with a zoom from their icon.
  */
 public class HomeActivity extends Activity implements HomeLayout.Callbacks,
-        AppRepository.Listener {
+        AppRepository.Listener, AppDrawer.Host {
 
     /** always dark, whatever the system theme */
     @Override
@@ -109,10 +109,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     private View mClock;
     private LinearLayout mDock;
     private View mDropHint;
-    private View mDrawer;
-    private GridView mDrawerGrid;
-    private EditText mSearch;
-    private DrawerAdapter mDrawerAdapter;
+    private AppDrawer mDrawer;
     private float mDrawerProgress;
     private int mTouchSlop;
 
@@ -176,9 +173,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mIndicator = (PageIndicator) findViewById(R.id.page_indicator);
         mDock = (LinearLayout) findViewById(R.id.dock);
         mDropHint = findViewById(R.id.drop_hint);
-        mDrawer = findViewById(R.id.drawer);
-        mDrawerGrid = (GridView) findViewById(R.id.drawer_grid);
-        mSearch = (EditText) findViewById(R.id.drawer_search);
+        mDrawer = (AppDrawer) findViewById(R.id.drawer);
+        mDrawer.setup(this, mIcons);
 
         mWallpaperManager = WallpaperManager.getInstance(this);
         mHeader = findViewById(R.id.header);
@@ -222,7 +218,6 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         mStartPage = getSharedPreferences("home", MODE_PRIVATE).getInt(KEY_PAGE, 0);
 
         // both layers draw behind the transparent bars but keep their content clear of them
-        final View drawerInner = findViewById(R.id.drawer_inner);
         mRoot.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
@@ -230,7 +225,10 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                 final int bottom = insets.getSystemWindowInsetBottom();
                 mHomeContent.setPadding(mHomeContent.getPaddingLeft(), top,
                         mHomeContent.getPaddingRight(), bottom);
-                drawerInner.setPadding(0, top, 0, bottom);
+                mDrawer.setInsets(top, bottom);
+                mInsetTop = top;
+                mInsetBottom = bottom;
+                if (mPicker != null) mPicker.setInsets(top, bottom);
                 // the pages slide exactly edge to edge (a rounded dp margin left 1 px strips)
                 final ViewGroup.MarginLayoutParams lp =
                         (ViewGroup.MarginLayoutParams) mWorkspace.getLayoutParams();
@@ -241,18 +239,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             }
         });
 
-        mClock.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    startActivity(new Intent(AlarmClock.ACTION_SHOW_ALARMS)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                } catch (ActivityNotFoundException | SecurityException e) {
-                    // no clock app
-                }
-            }
-        });
-        // held like any widget: it lifts and follows the finger; let go in place, its menu
+        // a tap opens the Clock app where it was tapped (HomeClockView.performClick); held like any widget: it lifts and follows the finger; let go in place, its menu
         mClock.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -265,60 +252,6 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         findViewById(R.id.widget_stack).setVisibility(View.GONE);
         mWidgets = new WidgetStack(this, getSharedPreferences("home", MODE_PRIVATE));
 
-        mDrawerAdapter = new DrawerAdapter(this, mIcons);
-        mDrawerGrid.setAdapter(mDrawerAdapter);
-        mDrawerGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                launch(mDrawerAdapter.getItem(position), view.findViewById(R.id.app_icon));
-            }
-        });
-        mDrawerGrid.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // drag it onto the home (the drawer steps aside); dropped back in place: menu
-                final AppInfo app = mDrawerAdapter.getItem(position);
-                startDrag(app, app.key(), null, null, view);
-                return true;
-            }
-        });
-        mDrawerGrid.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int state) {
-                if (state == SCROLL_STATE_TOUCH_SCROLL) {
-                    hideKeyboard();
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int first, int visible, int total) {
-            }
-        });
-        new DrawerDismisser(mDrawerGrid, this);
-        mSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mDrawerAdapter.filter(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-        mSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (mDrawerAdapter.getCount() > 0) {
-                    launch(mDrawerAdapter.getItem(0), null);
-                    return true;
-                }
-                return false;
-            }
-        });
 
         setDrawerProgress(0f);
         mRepo.addListener(this);
@@ -380,7 +313,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         final boolean alreadyOnHome = hasWindowFocus() && (intent.getFlags()
                 & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT;
         if (Intent.ACTION_MAIN.equals(intent.getAction()) && alreadyOnHome) {
-            if (isDrawerOpen()) {
+            if (mPicker != null) {
+                mPicker.close();
+            } else if (isDrawerOpen()) {
                 animateDrawer(false);
             } else {
                 mWorkspace.snapTo(0, true);
@@ -390,7 +325,9 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
     @Override
     public void onBackPressed() {
-        if (mFolderView != null) {
+        if (mPicker != null) {
+            mPicker.close();
+        } else if (mFolderView != null) {
             closeFolder(true);
         } else if (isDrawerOpen()) {
             animateDrawer(false);
@@ -425,8 +362,7 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
         }
         mModel.prune(mRepo);
         mModel.fitRows();
-        mDrawerAdapter.setApps(apps);
-        mDrawerAdapter.filter(mSearch.getText().toString());
+        mDrawer.setApps(apps);
         if (mDrag == null) {
             bindHome();
         }
@@ -672,7 +608,8 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
     @Override
     public boolean isFolderOpen() {
-        return mFolderView != null;
+        // the widget picker takes all touches too
+        return mFolderView != null || mPicker != null;
     }
 
     private void openFolder(final String key) {
@@ -755,7 +692,14 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
      * never as the large dark square the thumbnail of Home 2.0 left over the app). The icon on
      * the home stays where it is: the picture covers it, and the home steps back around it.
      */
-    void launch(AppInfo app, View from) {
+    @Override
+    public void startDragFromDrawer(AppInfo app, View cell) {
+        // drag it onto the home (the drawer steps aside); dropped back in place: its menu
+        startDrag(app, app.key(), null, null, cell);
+    }
+
+    @Override
+    public void launch(AppInfo app, View from) {
         Bundle opts = null;
         Rect bounds = null;
         if (from != null) {
@@ -957,7 +901,10 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
                     : R.string.lock_app);
         }
         m.add(0, 4, 0, R.string.app_info);
-        m.add(0, 5, 0, R.string.uninstall);
+        if (!isSystemApp(app.component.getPackageName())) {
+            // the apps of the system (and Play Store) stay
+            m.add(0, 5, 0, R.string.uninstall);
+        }
         menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -995,6 +942,15 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
             }
         });
         menu.show();
+    }
+
+    private boolean isSystemApp(String pkg) {
+        try {
+            return (getPackageManager().getApplicationInfo(pkg, 0).flags
+                    & android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0;
+        } catch (android.content.pm.PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     /** KiroOS App Lock (com.kiroos.applock): the locked packages and the lock/unlock screen */
@@ -1455,74 +1411,66 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
      * Kiro Home 2.0: released by a moving finger, the drawer glides on from the finger's own
      * speed (the gesture and the animation are one movement); otherwise it eases in place.
      */
+    /**
+     * Beta 5: the sheet settles on the system's spring, started with the finger's own speed,
+     * so letting go and the settling are one movement (a flick up overshoots a hair and comes
+     * back, like the app transitions).
+     */
     void animateDrawer(final boolean open, float speed) {
         final float from = mDrawerProgress;
         final float to = open ? 1f : 0f;
         if (mDrawerAnim != null) {
             mDrawerAnim.cancel();
         }
+        final float distance = Math.abs(to - from) * Math.max(1, mDrawer.getHeight());
+        if (distance < 1f) {
+            setDrawerProgress(to);
+            if (!open) mDrawer.reset();
+            return;
+        }
         final android.animation.ValueAnimator anim = android.animation.ValueAnimator.ofFloat(from, to);
         mDrawerAnim = anim;
-        // the drag maps 60% of the screen height to the whole way (HomeLayout)
-        final float distance = Math.abs(to - from) * mRoot.getHeight() * 0.6f;
-        final long fallback = (long) (160 + 180 * Math.abs(to - from));
-        final long duration = Glide.duration(distance, speed, 140, 340, fallback);
-        anim.setDuration(duration);
-        if (speed > 0f && distance >= 1f) {
-            anim.setInterpolator(new Glide(speed * duration / 1000f / distance));
-        } else {
-            // Beta 4.1 "Fluida": not flung, the drawer moves on the damped spring
-            anim.setDuration(KiroSpring.SMOOTH.duration());
-            anim.setInterpolator(KiroSpring.SMOOTH);
-        }
+        // the finger's speed in "whole distances per second", the spring's starting velocity
+        final double v0 = Math.min(12.0, speed / distance);
+        final KiroSpring spring = open ? new KiroSpring(0.84, 13.5, v0, 600)
+                : new KiroSpring(0.98, 15, v0, 480);
+        anim.setDuration(spring.duration());
+        anim.setInterpolator(spring);
         anim.addUpdateListener(new android.animation.ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(android.animation.ValueAnimator a) {
                 setDrawerProgress((float) a.getAnimatedValue());
             }
         });
+        anim.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(android.animation.Animator a) {
+                if (mDrawerAnim == anim) setDrawerProgress(to);
+            }
+        });
         anim.start();
         if (!open) {
-            hideKeyboard();
-            mSearch.setText("");
-            mDrawerGrid.setSelection(0);
+            mDrawer.reset();
         }
     }
 
     private void setDrawerProgress(float p) {
-        if (mDrawerProgress == 0f && p > 0f) {
-            // opening: the icons cascade in again (Kiro.GridView layout animation)
-            mDrawerGrid.scheduleLayoutAnimation();
-        }
         mDrawerProgress = p;
-        final float h = mRoot.getHeight() > 0 ? mRoot.getHeight()
-                : getResources().getDisplayMetrics().heightPixels;
-        // While it moves, the drawer and the home fade and scale: as GPU textures (hardware
-        // layers) that costs one blend per frame instead of redrawing both view trees into
-        // an offscreen buffer every frame. At rest they are plain views again, and the home
-        // under an open drawer is not drawn at all.
-        final boolean moving = p > 0f && p < 1f;
-        setLayer(mDrawer, moving);
-        setLayer(mHomeContent, moving);
-        mHomeContent.setVisibility(p < 1f ? View.VISIBLE : View.INVISIBLE);
-        mDrawer.setVisibility(p > 0f ? View.VISIBLE : View.INVISIBLE);
-        mDrawer.setTranslationY((1f - p) * h * 0.35f);
-        mDrawer.setAlpha(p);
-        mHomeContent.setAlpha(1f - p);
-        mHomeContent.setScaleX(1f - 0.06f * p);
-        mHomeContent.setScaleY(1f - 0.06f * p);
-    }
-
-    private static void setLayer(View v, boolean hardware) {
-        final int type = hardware ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_NONE;
-        if (v.getLayerType() != type) {
-            v.setLayerType(type, null);
-        }
+        mDrawer.setProgress(p);
+        final float c = Math.max(0f, Math.min(1f, p));
+        // the home steps back under the sheet; as a GPU texture while it moves
+        final boolean moving = c > 0f && c < 1f;
+        final int type = moving ? View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_NONE;
+        if (mHomeContent.getLayerType() != type) mHomeContent.setLayerType(type, null);
+        mHomeContent.setVisibility(c < 1f ? View.VISIBLE : View.INVISIBLE);
+        mHomeContent.setAlpha(1f - c);
+        mHomeContent.setPivotY(mHomeContent.getHeight() * 0.4f);
+        mHomeContent.setScaleX(1f - 0.08f * c);
+        mHomeContent.setScaleY(1f - 0.08f * c);
     }
 
     private void hideKeyboard() {
-        final InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mSearch.getWindowToken(), 0);
+        mDrawer.hideKeyboard();
     }
 
     // --- gestures on the home -----------------------------------------------------------
@@ -1604,15 +1552,61 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
 
     // --- widgets ------------------------------------------------------------------------
 
+    /** Beta 5: the open widget picker, or null */
+    private WidgetPicker mPicker;
+    private int mInsetTop;
+    private int mInsetBottom;
+
+    /** Beta 5: the home's own widget picker, with live previews (WidgetPicker) */
     private void pickWidget() {
-        final int id = mWidgets.allocateId();
-        final Intent pick = new Intent(AppWidgetManager.ACTION_APPWIDGET_PICK);
-        pick.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
-        try {
-            startActivityForResult(pick, REQUEST_PICK_WIDGET);
-        } catch (ActivityNotFoundException e) {
-            mWidgets.deleteId(id);
-        }
+        if (mPicker != null) return;
+        mPicker = new WidgetPicker(this, mWidgets, mWorkspace.cellWidth(),
+                mWorkspace.cellHeight(), mModel.findWidget(HomeModel.CLOCK_ID) != null,
+                new WidgetPicker.Host() {
+            @Override
+            public void onWidgetPicked(int id, int rows, int cols) {
+                if (id == HomeModel.CLOCK_ID) {
+                    getSharedPreferences("home", MODE_PRIVATE).edit()
+                            .putBoolean(KEY_CLOCK, true).apply();
+                }
+                addWidgetToHome(id, rows, cols);
+            }
+
+            @Override
+            public void onWidgetNeedsConfigure(AppWidgetProviderInfo info) {
+                final int id = mWidgets.allocateId();
+                boolean bound = false;
+                try {
+                    bound = AppWidgetManager.getInstance(HomeActivity.this)
+                            .bindAppWidgetIdIfAllowed(id, info.provider);
+                } catch (RuntimeException e) {
+                    // refused
+                }
+                if (!bound) {
+                    mWidgets.deleteId(id);
+                    return;
+                }
+                if (info.configure == null) {
+                    addWidgetToHome(id);
+                    return;
+                }
+                try {
+                    mWidgets.host().startAppWidgetConfigureActivityForResult(HomeActivity.this,
+                            id, 0, REQUEST_CONFIGURE_WIDGET, null);
+                } catch (ActivityNotFoundException e) {
+                    addWidgetToHome(id);
+                }
+            }
+
+            @Override
+            public void onPickerClosed() {
+                mPicker = null;
+            }
+        });
+        mPicker.setInsets(mInsetTop, mInsetBottom);
+        mRoot.addView(mPicker, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mPicker.open();
     }
 
     @Override
@@ -1647,7 +1641,11 @@ public class HomeActivity extends Activity implements HomeLayout.Callbacks,
     private void addWidgetToHome(int id) {
         final int[] size = mWidgets.defaultSize(id, mWorkspace.cellWidth(),
                 mWorkspace.cellHeight());
-        mModel.addWidget(id, size[0], size[1], mWorkspace.currentPage());
+        addWidgetToHome(id, size[0], size[1]);
+    }
+
+    private void addWidgetToHome(int id, int rows, int cols) {
+        mModel.addWidget(id, rows, cols, mWorkspace.currentPage());
         bindHome();
         final HomeModel.Loc at = mModel.findWidget(id);
         if (at != null) {

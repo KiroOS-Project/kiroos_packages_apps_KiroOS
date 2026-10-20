@@ -72,7 +72,7 @@ final class HomeModel {
             // KiroOS 3.0: only system apps, in full rows. First page, the everyday apps in the
             // two rows above the dock
             {0, 1, 0, "com.kiroos.gallery"},
-            {0, 1, 1, "com.kiroos.atlas"},
+            {0, 1, 1, "com.google.android.apps.maps"},
             {0, 1, 2, "com.kiroos.calendar"},
             {0, 1, 3, "com.kiroos.clock"},
             {0, 0, 0, "com.kiroos.kai"},
