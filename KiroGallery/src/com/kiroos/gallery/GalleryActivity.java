@@ -69,10 +69,18 @@ public class GalleryActivity extends Activity {
     private boolean mLoading;
     private boolean mDirty;
 
+    /** Beta 5: the photos changed while the gallery was not shown: read them again at start */
+    private boolean mStale = true;
+    private boolean mStarted;
+
     private final ContentObserver mObserver = new ContentObserver(mHandler) {
         @Override
         public void onChange(boolean selfChange) {
-            load();
+            if (mStarted) {
+                load();
+            } else {
+                mStale = true;
+            }
         }
     };
 
@@ -160,6 +168,8 @@ public class GalleryActivity extends Activity {
         });
         findViewById(R.id.btn_camera).setVisibility(mPicker ? View.GONE : View.VISIBLE);
         showAlbums(false);
+        getContentResolver().registerContentObserver(MediaStore.Files.getContentUri("external"),
+                true, mObserver);
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -172,18 +182,32 @@ public class GalleryActivity extends Activity {
         load();
     }
 
+    /*
+     * Beta 5: the photos are read once and then only when they change (the observer stays on
+     * while the gallery is in the background, and only marks them stale). Read again at every
+     * start, the grid was rebuilt and every thumbnail drawn anew while the app was still
+     * opening: 84-92% of its first frames came late.
+     */
     @Override
     protected void onStart() {
         super.onStart();
-        getContentResolver().registerContentObserver(MediaStore.Files.getContentUri("external"),
-                true, mObserver);
-        load();
+        mStarted = true;
+        if (mStale) {
+            mStale = false;
+            load();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        mStarted = false;
+    }
+
+    @Override
+    protected void onDestroy() {
         getContentResolver().unregisterContentObserver(mObserver);
+        super.onDestroy();
     }
 
     @Override
@@ -223,7 +247,7 @@ public class GalleryActivity extends Activity {
             mGrid.setHorizontalSpacing(Math.round(12 * d));
             mGrid.setVerticalSpacing(Math.round(16 * d));
             mGrid.setPadding(Math.round(16 * d), 0, Math.round(16 * d), Math.round(16 * d));
-            mGrid.setAdapter(mAlbumAdapter);
+            if (mGrid.getAdapter() != mAlbumAdapter) mGrid.setAdapter(mAlbumAdapter);
             final List<Media.Album> albums = Media.albums(mAll);
             // 1.2: Favourites first, when there are some
             final List<Media.Item> favourites = Favourites.filter(mAll, Favourites.all(this));
@@ -242,7 +266,8 @@ public class GalleryActivity extends Activity {
             mGrid.setHorizontalSpacing(Math.round(2 * d));
             mGrid.setVerticalSpacing(Math.round(2 * d));
             mGrid.setPadding(0, 0, 0, 0);
-            mGrid.setAdapter(mGridAdapter);
+            // the same adapter keeps its views and their pictures (a new one rebuilt them all)
+            if (mGrid.getAdapter() != mGridAdapter) mGrid.setAdapter(mGridAdapter);
             final List<Media.Item> shown;
             if (mBucket == 0) {
                 shown = mAll;

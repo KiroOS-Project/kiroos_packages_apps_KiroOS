@@ -323,7 +323,7 @@ public class ViewerActivity extends Activity implements SwipePager.Adapter {
         }
         // show the grid thumbnail first, then the sharp picture
         if (item.id >= 0) {
-            Thumbnails.get(this).load(item, image);
+            Thumbnails.get(this).load(item, image, false);
         } else {
             image.setImageDrawable(null);
         }

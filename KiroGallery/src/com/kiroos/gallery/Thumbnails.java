@@ -59,8 +59,11 @@ final class Thumbnails {
         return sInstance;
     }
 
+    private final int mPlaceholder;
+
     private Thumbnails(Context context) {
         mResolver = context.getContentResolver();
+        mPlaceholder = context.getColor(R.color.kiro_surface);
         final int max = (int) (Runtime.getRuntime().maxMemory() / 6);
         mCache = new LruCache<Long, Bitmap>(max) {
             @Override
@@ -74,7 +77,12 @@ final class Thumbnails {
         return item.video ? -item.id : item.id;
     }
 
+    /** for the grid: a placeholder colour while the thumbnail loads */
     void load(final Media.Item item, final ImageView into) {
+        load(item, into, true);
+    }
+
+    void load(final Media.Item item, final ImageView into, boolean placeholder) {
         final Future<?> old = (Future<?>) into.getTag(R.id.thumb_task);
         if (old != null) {
             old.cancel(true);
@@ -86,7 +94,9 @@ final class Thumbnails {
             into.setTag(R.id.thumb_task, null);
             return;
         }
-        into.setImageDrawable(null);
+        // the placeholder colour while it loads (the cell has no background of its own)
+        into.setImageDrawable(placeholder
+                ? new android.graphics.drawable.ColorDrawable(mPlaceholder) : null);
         final Future<?> task = mExecutor.submit(new Runnable() {
             @Override
             public void run() {
@@ -126,9 +136,26 @@ final class Thumbnails {
                 m.postRotate(item.orientation);
                 b = Bitmap.createBitmap(b, 0, 0, b.getWidth(), b.getHeight(), m, true);
             }
-            return b;
+            return compact(b);
         } catch (RuntimeException | OutOfMemoryError e) {
             return null;
+        }
+    }
+
+    /**
+     * Beta 5: a thumbnail in 16-bit colour (photos have no transparency; at grid size the
+     * difference does not show): half the memory, so twice as many stay cached and the GPU
+     * takes half as long to receive them, which it does again each time the gallery opens.
+     */
+    private static Bitmap compact(Bitmap b) {
+        if (b == null || b.getConfig() == Bitmap.Config.RGB_565) return b;
+        try {
+            final Bitmap c = b.copy(Bitmap.Config.RGB_565, false);
+            if (c == null) return b;
+            b.recycle();
+            return c;
+        } catch (OutOfMemoryError e) {
+            return b;
         }
     }
 
