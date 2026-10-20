@@ -32,6 +32,16 @@ import java.util.List;
  * The latest release of an app at its official source, and whether the installed one is
  * older. F-Droid and Signal say which version they have; for the other direct downloads the
  * file's fingerprint (ETag, Last-Modified, size) at install time is compared with today's.
+ *
+ * The KiroOS apps in the ROM are updated apart from the OTA too: kiroos-apps.json, next to
+ * the OTA manifest, lists the builds published for them:
+ *   {"apps": {"com.kiroos.kai": {"versionCode": 122, "versionName": "1.1", "url": "kAI.apk",
+ *    "size": 4200000, "notes": "...", "notes_en": "..."}}}
+ * An update is signed like the ROM's app (Android refuses anything else) and its versionCode
+ * stays below the next OTA's (an OTA bumps every app by 10, a store update by 1), so the next
+ * OTA's build replaces it. Apps signed with the platform key (Phone, Messages, Kiro Sound,
+ * Home, KeurStore...) cannot be: a test-keys build refuses platform-signed packages outside
+ * /system (PackageManagerService), so the list never names them and they wait for the OTA.
  */
 final class Sources {
 
@@ -42,7 +52,16 @@ final class Sources {
         final List<String> urls = new ArrayList<>();
         /** the file's fingerprint, for sources without a version */
         String fingerprint;
+        /** download size in bytes, -1 when the source does not say */
+        long size = -1;
+        /** what is new, when the source says */
+        String notes;
     }
+
+    private static final String KIRO_APPS = "kiroos-apps.json";
+    /** the KiroOS apps' list, fetched once for a whole update check */
+    private static JSONObject sKiroApps;
+    private static long sKiroAppsAt;
 
     private Sources() {
     }
@@ -50,7 +69,18 @@ final class Sources {
     /** Blocking (network). */
     static Release latest(Catalog.App app) throws Exception {
         final Release r = new Release();
-        if (app.fdroid()) {
+        if (app.system()) {
+            final JSONObject o = kiroApps().optJSONObject(app.pkg);
+            if (o == null) {
+                throw new java.io.FileNotFoundException("no store build of " + app.pkg);
+            }
+            r.versionName = o.optString("versionName", null);
+            r.versionCode = o.getLong("versionCode");
+            r.size = o.optLong("size", -1);
+            final boolean it = "it".equals(java.util.Locale.getDefault().getLanguage());
+            r.notes = o.optString(it ? "notes" : "notes_en", o.optString("notes", null));
+            r.urls.add(new URL(otaBase(), o.getString("url")).toString());
+        } else if (app.fdroid()) {
             final JSONObject o = new JSONObject(Installer.get(
                     "https://f-droid.org/api/v1/packages/" + app.pkg));
             final long suggested = o.getLong("suggestedVersionCode");
@@ -82,25 +112,57 @@ final class Sources {
             final String url = "https://www.whatsapp.com/android/current/WhatsApp.apk";
             r.urls.add(url);
             r.fingerprint = fingerprint(url);
+            r.size = size(r.fingerprint);
         } else if (app.source.startsWith("apk:")) {
             final String url = app.source.substring(4);
             r.urls.add(url);
             r.fingerprint = fingerprint(url);
+            r.size = size(r.fingerprint);
         } else if (app.source.startsWith("kiroos:")) {
             // a KiroOS component: its manifest sits next to the OTA manifest
-            final String ota = android.os.SystemProperties.get("ro.kiroos.ota.url", "");
-            if (!ota.startsWith("http")) {
-                throw new IllegalStateException("no KiroOS update server");
-            }
-            final URL manifest = new URL(new URL(ota), app.source.substring(7));
+            final URL manifest = new URL(otaBase(), app.source.substring(7));
             final JSONObject o = new JSONObject(Installer.get(manifest.toString()));
             r.versionName = o.optString("versionName", null);
             r.versionCode = o.getLong("versionCode");
+            r.size = o.optLong("size", -1);
             r.urls.add(new URL(manifest, o.getString("url")).toString());
         } else {
             throw new IllegalArgumentException(app.source);
         }
         return r;
+    }
+
+    private static URL otaBase() throws Exception {
+        final String ota = android.os.SystemProperties.get("ro.kiroos.ota.url", "");
+        if (!ota.startsWith("http")) {
+            throw new IllegalStateException("no KiroOS update server");
+        }
+        return new URL(ota);
+    }
+
+    /** the KiroOS apps' store builds (empty when none is published), kept for 5 minutes */
+    private static synchronized JSONObject kiroApps() throws Exception {
+        if (sKiroApps == null || System.currentTimeMillis() - sKiroAppsAt > 5 * 60 * 1000) {
+            JSONObject apps;
+            try {
+                apps = new JSONObject(Installer.get(new URL(otaBase(), KIRO_APPS).toString()))
+                        .optJSONObject("apps");
+            } catch (java.io.FileNotFoundException e) {
+                apps = null;             // nothing published yet
+            }
+            sKiroApps = apps != null ? apps : new JSONObject();
+            sKiroAppsAt = System.currentTimeMillis();
+        }
+        return sKiroApps;
+    }
+
+    /** the size part of a fingerprint */
+    private static long size(String fingerprint) {
+        try {
+            return Long.parseLong(fingerprint.substring(fingerprint.lastIndexOf('|') + 1));
+        } catch (RuntimeException e) {
+            return -1;
+        }
     }
 
     private static String apk(String pkg, long code) {
@@ -139,6 +201,32 @@ final class Sources {
         if (r.fingerprint != null) {
             prefs(c).edit().putString(app.pkg, r.fingerprint).apply();
         }
+    }
+
+    /** the last updates, newest first: "pkg|time|versionName" (10 at most) */
+    static List<String[]> recent(Context c) {
+        final List<String[]> out = new ArrayList<>();
+        try {
+            final JSONArray a = new JSONArray(prefs(c).getString("recent", "[]"));
+            for (int i = 0; i < a.length(); i++) {
+                out.add(a.getString(i).split("\\|", 3));
+            }
+        } catch (Exception e) {
+            // nothing kept yet
+        }
+        return out;
+    }
+
+    static synchronized void updated(Context c, Catalog.App app, Release r) {
+        final JSONArray a = new JSONArray();
+        a.put(app.pkg + "|" + System.currentTimeMillis() + "|"
+                + (r.versionName != null ? r.versionName : ""));
+        for (String[] e : recent(c)) {
+            if (a.length() < 10 && !e[0].equals(app.pkg)) {
+                a.put(android.text.TextUtils.join("|", e));
+            }
+        }
+        prefs(c).edit().putString("recent", a.toString()).apply();
     }
 
     /** true when the source has a newer build than the one on the phone */

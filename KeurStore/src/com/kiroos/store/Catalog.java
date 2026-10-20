@@ -80,10 +80,21 @@ final class Catalog {
             this.section = section;
         }
 
+        /** the app's own colour (the store page and the cards), 0 when the catalogue has none */
+        int color;
+        /** a card's two lines on Discover, for the featured apps */
+        String eyebrow;
+        String headline;
+
         boolean direct() {
             return source.startsWith("apk:") || source.equals("signal")
                     || source.equals("whatsapp") || source.equals("fdroid")
                     || source.startsWith("kiroos:");
+        }
+
+        /** KeurStore can bring a newer build of it (a KiroOS app: when one is published) */
+        boolean updatable() {
+            return direct() || system();
         }
 
         boolean fdroid() {
@@ -236,11 +247,21 @@ final class Catalog {
                             also[k] = alsoJ.getString(k);
                         }
                     }
-                    list.add(new App(a.getString("pkg"), also, a.getString("name"),
+                    final App app = new App(a.getString("pkg"), also, a.getString("name"),
                             italian ? a.optString("desc")
                                     : a.optString("desc_en", a.optString("desc")),
                             source, a.optString("icon", null), a.optString("site", null),
-                            section));
+                            section);
+                    try {
+                        app.color = android.graphics.Color.parseColor(a.optString("color", ""));
+                    } catch (IllegalArgumentException e) {
+                        app.color = 0;
+                    }
+                    app.eyebrow = italian ? a.optString("eyebrow", null)
+                            : a.optString("eyebrow_en", a.optString("eyebrow", null));
+                    app.headline = italian ? a.optString("headline", null)
+                            : a.optString("headline_en", a.optString("headline", null));
+                    list.add(app);
                 }
                 out.put(section, list);
             }

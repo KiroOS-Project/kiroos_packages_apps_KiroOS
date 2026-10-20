@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KeurStore 3 -->
+<resources>
+    <string name="ks_tab_mine">Meine Apps</string>
+    <string name="ks_essentials">Unverzichtbar</string>
+    <string name="ks_games_title">Spiele zum Ausprobieren</string>
+    <string name="ks_games_sub">Kostenlos, ohne Werbung, laufen gut auf dem S6</string>
+    <string name="ks_kiro_title">Für KiroOS gemacht</string>
+    <string name="ks_kiro_sub">Schon auf dem Handy, auch zwischen Systemupdates aktualisiert</string>
+    <string name="ks_checked_fmt">GEPRÜFT %1$s</string>
+    <string name="ks_checked_never">NOCH NICHT GEPRÜFT</string>
+    <string name="ks_all_good_text">Apps aktualisieren sich nachts selbst, im WLAN und beim Laden</string>
+    <string name="ks_recent_title">Kürzlich aktualisiert</string>
+    <string name="ks_stat_version">VERSION</string>
+    <string name="ks_stat_size">GRÖSSE</string>
+    <string name="ks_stat_source">QUELLE</string>
+    <string name="ks_short_official">Offiziell</string>
+    <string name="ks_short_fdroid">F-Droid</string>
+    <string name="ks_short_kiro">KiroOS</string>
+    <string name="ks_whats_new">Neuigkeiten</string>
+    <string name="ks_about">Info</string>
+    <string name="ks_safe_text">Von der offiziellen Quelle geladen und vom Entwickler signiert: Android prüft die Signatur bei jedem Update.</string>
+    <string name="ks_safe_kiro">Eine KiroOS-App, signiert wie das System: Android prüft die Signatur bei jedem Update.</string>
+    <string name="ks_back">Zurück</string>
+    <string name="ks_search_close">Suche schließen</string>
+    <string name="ks_version_change">%1$s → %2$s</string>
+    <string name="ks_checking_short">Wird geprüft…</string>
+    <string name="ks_checked_now">GERADE GEPRÜFT</string>
+    <plurals name="ks_updates">
+        <item quantity="one">%d Update</item>
+        <item quantity="other">%d Updates</item>
+    </plurals>
+    <plurals name="ks_apps">
+        <item quantity="one">%d APP</item>
+        <item quantity="other">%d APPS</item>
+    </plurals>
+</resources>

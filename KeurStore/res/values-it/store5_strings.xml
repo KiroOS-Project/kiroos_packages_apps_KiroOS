@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KeurStore 3 -->
+<resources>
+    <string name="ks_tab_mine">Le mie app</string>
+    <string name="ks_essentials">Essenziali</string>
+    <string name="ks_games_title">Giochi da provare</string>
+    <string name="ks_games_sub">Gratis, senza pubblicità, girano bene sul S6</string>
+    <string name="ks_kiro_title">Fatte per KiroOS</string>
+    <string name="ks_kiro_sub">Già sul telefono, aggiornate anche tra un aggiornamento di sistema e l\'altro</string>
+    <string name="ks_checked_fmt">CONTROLLATO %1$s</string>
+    <string name="ks_checked_never">NON ANCORA CONTROLLATO</string>
+    <string name="ks_all_good_text">Le app si aggiornano da sole di notte, in Wi-Fi e in carica</string>
+    <string name="ks_recent_title">Aggiornate di recente</string>
+    <string name="ks_stat_version">VERSIONE</string>
+    <string name="ks_stat_size">DIMENSIONE</string>
+    <string name="ks_stat_source">FONTE</string>
+    <string name="ks_short_official">Ufficiale</string>
+    <string name="ks_short_fdroid">F-Droid</string>
+    <string name="ks_short_kiro">KiroOS</string>
+    <string name="ks_whats_new">Novità</string>
+    <string name="ks_about">Informazioni</string>
+    <string name="ks_safe_text">Scaricata dalla fonte ufficiale e firmata dallo sviluppatore: Android controlla la firma a ogni aggiornamento.</string>
+    <string name="ks_safe_kiro">Un\'app KiroOS, firmata come il sistema: Android controlla la firma a ogni aggiornamento.</string>
+    <string name="ks_back">Indietro</string>
+    <string name="ks_search_close">Chiudi la ricerca</string>
+    <string name="ks_version_change">%1$s → %2$s</string>
+    <string name="ks_checking_short">Controllo…</string>
+    <string name="ks_checked_now">CONTROLLATO ORA</string>
+    <plurals name="ks_updates">
+        <item quantity="one">%d aggiornamento</item>
+        <item quantity="other">%d aggiornamenti</item>
+    </plurals>
+    <plurals name="ks_apps">
+        <item quantity="one">%d APP</item>
+        <item quantity="other">%d APP</item>
+    </plurals>
+</resources>

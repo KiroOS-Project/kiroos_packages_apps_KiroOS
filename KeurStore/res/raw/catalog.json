@@ -1,45 +1,45 @@
 {
-  "version": 3,
-  "note": "KeurStore 2.0 catalogue: every app is installed and updated right here, from its official source only (the developer's own download, or F-Droid for open-source apps), and runs on Android 7.1. Apps only on Google Play cannot be installed outside it and are not listed. Refreshed from <OTA server>/store/catalog.json when reachable.",
+  "version": 4,
+  "note": "KeurStore 3 catalogue: every app is installed and updated right here, from its official source only (the developer's own download, or F-Droid for open-source apps), and runs on Android 7.1. Apps only on Google Play cannot be installed outside it and are not listed. KiroOS apps (source system) are updated apart from the OTA when kiroos-apps.json lists a build. color: the app's own colour; eyebrow/headline: the Discover card of a featured app. Refreshed from <OTA server>/store/catalog.json when reachable.",
   "sections": [
     {"id": "featured", "apps": [
-      {"pkg": "org.telegram.messenger.web", "also": ["org.telegram.messenger"], "name": "Telegram", "desc": "Messaggi veloci e sicuri", "desc_en": "Fast, secure messaging", "source": "apk:https://telegram.org/dl/android/apk", "icon": "https://telegram.org/img/apple-touch-icon.png", "site": "telegram.org"},
-      {"pkg": "org.thoughtcrime.securesms", "name": "Signal", "desc": "Chat private con crittografia end-to-end", "desc_en": "Private end-to-end encrypted chats", "source": "signal", "icon": "https://signal.org/assets/images/favicon/apple-touch-icon.png", "site": "signal.org"},
-      {"pkg": "com.whatsapp", "name": "WhatsApp", "desc": "Messaggi e chiamate", "desc_en": "Messages and calls", "source": "whatsapp", "icon": "https://www.whatsapp.com/apple-touch-icon.png", "site": "whatsapp.com"},
-      {"pkg": "org.videolan.vlc", "name": "VLC", "desc": "Riproduce qualsiasi video e musica", "desc_en": "Plays any video and music", "source": "fdroid"},
-      {"pkg": "org.schabi.newpipe", "name": "NewPipe", "desc": "Video in streaming, leggero e senza pubblicità", "desc_en": "Light streaming video, no ads", "source": "fdroid"},
-      {"pkg": "org.wikipedia", "name": "Wikipedia", "desc": "L'enciclopedia libera, anche offline", "desc_en": "The free encyclopedia, offline too", "source": "fdroid"}
-    ]},
-    {"id": "games", "apps": [
-      {"pkg": "io.anuke.mindustry", "name": "Mindustry", "desc": "Strategia e fabbriche", "desc_en": "Strategy and factories", "source": "fdroid"},
-      {"pkg": "com.shatteredpixel.shatteredpixeldungeon", "name": "Shattered Pixel Dungeon", "desc": "Avventura nei sotterranei", "desc_en": "Dungeon adventure", "source": "fdroid"},
-      {"pkg": "net.minetest.minetest", "name": "Luanti", "desc": "Costruisci mondi a blocchi", "desc_en": "Build block worlds", "source": "fdroid"},
-      {"pkg": "com.dozingcatsoftware.bouncy", "name": "Vector Pinball", "desc": "Flipper classico", "desc_en": "Classic pinball", "source": "fdroid"}
+      {"pkg": "org.telegram.messenger.web", "also": ["org.telegram.messenger"], "name": "Telegram", "desc": "Messaggi veloci e sicuri", "desc_en": "Fast, secure messaging", "source": "apk:https://telegram.org/dl/android/apk", "icon": "https://telegram.org/img/apple-touch-icon.png", "site": "telegram.org", "color": "#2AABEE", "eyebrow": "IN EVIDENZA", "eyebrow_en": "FEATURED", "headline": "Le tue chat, ovunque", "headline_en": "Your chats, everywhere"},
+      {"pkg": "app.organicmaps", "name": "Organic Maps", "desc": "Mappe e navigatore offline", "desc_en": "Offline maps and navigation", "source": "fdroid", "color": "#20B05A", "eyebrow": "SENZA RETE", "eyebrow_en": "NO SIGNAL NEEDED", "headline": "Mappe che funzionano anche offline", "headline_en": "Maps that work offline"},
+      {"pkg": "org.videolan.vlc", "name": "VLC", "desc": "Riproduce qualsiasi video e musica", "desc_en": "Plays any video and music", "source": "fdroid", "color": "#F47B20", "eyebrow": "GUARDA TUTTO", "eyebrow_en": "WATCH ANYTHING", "headline": "Qualsiasi video, senza codec", "headline_en": "Any video, no codecs"},
+      {"pkg": "org.thoughtcrime.securesms", "name": "Signal", "desc": "Chat private con crittografia end-to-end", "desc_en": "Private end-to-end encrypted chats", "source": "signal", "icon": "https://signal.org/assets/images/favicon/apple-touch-icon.png", "site": "signal.org", "color": "#3A76F0", "eyebrow": "PRIVACY", "eyebrow_en": "PRIVACY", "headline": "Messaggi che legge solo chi li riceve", "headline_en": "Messages only the recipient can read"},
+      {"pkg": "org.schabi.newpipe", "name": "NewPipe", "desc": "Video in streaming, leggero e senza pubblicità", "desc_en": "Light streaming video, no ads", "source": "fdroid", "color": "#CD201F", "eyebrow": "LEGGERA", "eyebrow_en": "LIGHTWEIGHT", "headline": "Video in streaming, senza pubblicità", "headline_en": "Streaming video, no ads"},
+      {"pkg": "com.whatsapp", "name": "WhatsApp", "desc": "Messaggi e chiamate", "desc_en": "Messages and calls", "source": "whatsapp", "icon": "https://www.whatsapp.com/apple-touch-icon.png", "site": "whatsapp.com", "color": "#25D366", "eyebrow": "DAL SITO UFFICIALE", "eyebrow_en": "FROM THE OFFICIAL SITE", "headline": "Messaggi e chiamate, senza Play Store", "headline_en": "Messages and calls, no Play Store"}
     ]},
     {"id": "utility", "apps": [
-      {"pkg": "app.organicmaps", "name": "Organic Maps", "desc": "Mappe e navigatore offline", "desc_en": "Offline maps and navigation", "source": "fdroid"},
-      {"pkg": "org.breezyweather", "name": "Breezy Weather", "desc": "Meteo preciso e bello", "desc_en": "Accurate, beautiful weather", "source": "fdroid"},
-      {"pkg": "com.fsck.k9", "name": "K-9 Mail", "desc": "Email per qualsiasi account", "desc_en": "Email for any account", "source": "fdroid"},
-      {"pkg": "net.osmand.plus", "name": "OsmAnd~", "desc": "Mappe dettagliate e percorsi", "desc_en": "Detailed maps and routes", "source": "fdroid"},
-      {"pkg": "com.beemdevelopment.aegis", "name": "Aegis", "desc": "Codici di verifica in due passaggi", "desc_en": "Two-factor codes", "source": "fdroid"},
-      {"pkg": "com.kunzisoft.keepass.libre", "name": "KeePassDX", "desc": "Le tue password al sicuro", "desc_en": "Your passwords, safe", "source": "fdroid"},
-      {"pkg": "de.markusfisch.android.binaryeye", "name": "Binary Eye", "desc": "Legge codici QR e a barre", "desc_en": "Reads QR codes and barcodes", "source": "fdroid"},
-      {"pkg": "net.sourceforge.opencamera", "name": "Open Camera", "desc": "Fotocamera con controlli manuali", "desc_en": "Camera with manual controls", "source": "fdroid"},
-      {"pkg": "de.danoeh.antennapod", "name": "AntennaPod", "desc": "Podcast", "desc_en": "Podcasts", "source": "fdroid"},
-      {"pkg": "net.gsantner.markor", "name": "Markor", "desc": "Note e liste di cose da fare", "desc_en": "Notes and to-do lists", "source": "fdroid"},
-      {"pkg": "com.kgurgul.cpuinfo", "name": "CPU Info", "desc": "Processore, memoria e sensori", "desc_en": "Processor, memory and sensors", "source": "fdroid"}
+      {"pkg": "org.breezyweather", "name": "Breezy Weather", "desc": "Meteo preciso e bello", "desc_en": "Accurate, beautiful weather", "source": "fdroid", "color": "#4E8DF5"},
+      {"pkg": "org.wikipedia", "name": "Wikipedia", "desc": "L'enciclopedia libera, anche offline", "desc_en": "The free encyclopedia, offline too", "source": "fdroid", "color": "#5B6168"},
+      {"pkg": "com.beemdevelopment.aegis", "name": "Aegis", "desc": "Codici di verifica in due passaggi", "desc_en": "Two-factor codes", "source": "fdroid", "color": "#2C3E9E"},
+      {"pkg": "com.kunzisoft.keepass.libre", "name": "KeePassDX", "desc": "Le tue password al sicuro", "desc_en": "Your passwords, safe", "source": "fdroid", "color": "#3C8D3F"},
+      {"pkg": "com.fsck.k9", "name": "K-9 Mail", "desc": "Email per qualsiasi account", "desc_en": "Email for any account", "source": "fdroid", "color": "#E2463B"},
+      {"pkg": "net.osmand.plus", "name": "OsmAnd~", "desc": "Mappe dettagliate e percorsi", "desc_en": "Detailed maps and routes", "source": "fdroid", "color": "#F28C1E"},
+      {"pkg": "de.markusfisch.android.binaryeye", "name": "Binary Eye", "desc": "Legge codici QR e a barre", "desc_en": "Reads QR codes and barcodes", "source": "fdroid", "color": "#2D9D8F"},
+      {"pkg": "net.sourceforge.opencamera", "name": "Open Camera", "desc": "Fotocamera con controlli manuali", "desc_en": "Camera with manual controls", "source": "fdroid", "color": "#3F4A5A"},
+      {"pkg": "de.danoeh.antennapod", "name": "AntennaPod", "desc": "Podcast", "desc_en": "Podcasts", "source": "fdroid", "color": "#2B5FA8"},
+      {"pkg": "net.gsantner.markor", "name": "Markor", "desc": "Note e liste di cose da fare", "desc_en": "Notes and to-do lists", "source": "fdroid", "color": "#4C8E5C"},
+      {"pkg": "com.kgurgul.cpuinfo", "name": "CPU Info", "desc": "Processore, memoria e sensori", "desc_en": "Processor, memory and sensors", "source": "fdroid", "color": "#2F8F83"}
+    ]},
+    {"id": "games", "apps": [
+      {"pkg": "io.anuke.mindustry", "name": "Mindustry", "desc": "Strategia e fabbriche", "desc_en": "Strategy and factories", "source": "fdroid", "color": "#B7652B"},
+      {"pkg": "com.shatteredpixel.shatteredpixeldungeon", "name": "Shattered Pixel Dungeon", "desc": "Avventura nei sotterranei", "desc_en": "Dungeon adventure", "source": "fdroid", "color": "#6E4AA8"},
+      {"pkg": "net.minetest.minetest", "name": "Luanti", "desc": "Costruisci mondi a blocchi", "desc_en": "Build block worlds", "source": "fdroid", "color": "#5E8C3A"},
+      {"pkg": "com.dozingcatsoftware.bouncy", "name": "Vector Pinball", "desc": "Flipper classico", "desc_en": "Classic pinball", "source": "fdroid", "color": "#C2338F"}
     ]},
     {"id": "kiro", "apps": [
-      {"pkg": "com.kiroos.kai", "name": "kAI", "desc": "Assistente sul telefono, anche offline", "desc_en": "On-device assistant, offline too", "source": "system"},
-      {"pkg": "com.kiroos.camera", "name": "Kiro Camera", "desc": "Notte, Ritratto, LOG e Cinema 21:9", "desc_en": "Night, Portrait, LOG and 21:9 Cinema", "source": "system"},
-      {"pkg": "com.kiroos.pulse", "name": "Pulse Music", "desc": "Musica con equalizzatore a 10 bande", "desc_en": "Music with a 10-band equalizer", "source": "system"},
-      {"pkg": "com.kiroos.surge", "name": "Surge Browser", "desc": "Browser veloce con blocco annunci", "desc_en": "Fast browser with ad blocking", "source": "system"},
-      {"pkg": "com.kiroos.gallery", "name": "Galleria", "desc": "Foto e video", "desc_en": "Photos and videos", "source": "system"},
-      {"pkg": "com.kiroos.files", "name": "File", "desc": "I tuoi documenti", "desc_en": "Your documents", "source": "system"},
-      {"pkg": "com.kiroos.webview", "name": "KOptimize WebView", "desc": "Il motore web di KiroOS per browser e app, aggiornato a parte", "desc_en": "The KiroOS web engine for browsers and apps, updated on its own", "source": "kiroos:koptimize-webview.json"},
-      {"pkg": "com.kiroos.sound", "name": "Kiro Sound", "desc": "Equalizzatore per altoparlante, cuffie e Bluetooth", "desc_en": "Equalizer for speaker, headphones and Bluetooth", "source": "system"},
-      {"pkg": "com.kiroos.canvas", "name": "Canvas", "desc": "Sfondi AMOLED e sfocatura della schermata di blocco", "desc_en": "AMOLED wallpapers and lock screen blur", "source": "system"},
-      {"pkg": "com.kiroos.atlas", "name": "Atlas", "desc": "Mappe, percorsi e navigazione con la voce", "desc_en": "Maps, directions and voice navigation", "source": "system"}
+      {"pkg": "com.kiroos.kai", "name": "kAI", "desc": "L'assistente IA di KiroOS, con la voce", "desc_en": "The KiroOS AI assistant, with your voice", "source": "system", "color": "#323A7C"},
+      {"pkg": "com.kiroos.camera", "name": "Kiro Camera", "desc": "Notte, Ritratto, LOG e Cinema 21:9", "desc_en": "Night, Portrait, LOG and 21:9 Cinema", "source": "system", "color": "#454A54"},
+      {"pkg": "com.kiroos.pulse", "name": "Pulse Music", "desc": "Musica con equalizzatore a 10 bande", "desc_en": "Music with a 10-band equalizer", "source": "system", "color": "#6A3BE0"},
+      {"pkg": "com.kiroos.sound", "name": "Kiro Sound", "desc": "Equalizzatore per altoparlante, cuffie e Bluetooth", "desc_en": "Equalizer for speaker, headphones and Bluetooth", "source": "system", "color": "#0D8C84"},
+      {"pkg": "com.kiroos.surge", "name": "Surge Browser", "desc": "Browser veloce con blocco annunci", "desc_en": "Fast browser with ad blocking", "source": "system", "color": "#1B69E4"},
+      {"pkg": "com.kiroos.gallery", "name": "Galleria", "desc": "Foto e video", "desc_en": "Photos and videos", "source": "system", "color": "#E8405E"},
+      {"pkg": "com.kiroos.files", "name": "File", "desc": "I tuoi documenti", "desc_en": "Your documents", "source": "system", "color": "#F39C0A"},
+      {"pkg": "com.kiroos.clock", "name": "Orologio", "desc": "Sveglie, timer e cronometro", "desc_en": "Alarms, timers and stopwatch", "source": "system", "color": "#5F646E"},
+      {"pkg": "com.kiroos.recorder", "name": "Registratore", "desc": "Note vocali in alta qualità", "desc_en": "High-quality voice notes", "source": "system", "color": "#D7263A"},
+      {"pkg": "com.kiroos.webview", "name": "KOptimize WebView", "desc": "Il motore web di KiroOS per browser e app, aggiornato a parte", "desc_en": "The KiroOS web engine for browsers and apps, updated on its own", "source": "kiroos:koptimize-webview.json", "color": "#1F57CF"}
     ]}
   ]
 }

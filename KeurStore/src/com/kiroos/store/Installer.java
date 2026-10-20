@@ -73,6 +73,7 @@ final class Installer {
     static int install(Context c, Catalog.App app, Progress p) {
         int result;
         Sources.Release r = null;
+        final boolean update = app.installed(c.getPackageManager()) != null;
         try {
             r = Sources.latest(app);
             Log.i(TAG, app.pkg + ": latest " + r.versionName + " (" + r.versionCode + "), "
@@ -93,6 +94,9 @@ final class Installer {
         }
         if (result == OK) {
             Sources.installed(c, app, r);
+            if (update) {
+                Sources.updated(c, app, r);
+            }
             SystemProperties.set("sys.kiroos.guard.optimize", app.pkg);
         }
         c.sendBroadcast(new Intent(ACTION_DONE).setPackage(c.getPackageName())

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KeurStore 3 -->
+<resources>
+    <string name="ks_tab_mine">My apps</string>
+    <string name="ks_essentials">Essentials</string>
+    <string name="ks_games_title">Games to try</string>
+    <string name="ks_games_sub">Free, no ads, and they run well on the S6</string>
+    <string name="ks_kiro_title">Made for KiroOS</string>
+    <string name="ks_kiro_sub">Already on your phone, updated between system updates too</string>
+    <string name="ks_checked_fmt">CHECKED %1$s</string>
+    <string name="ks_checked_never">NOT CHECKED YET</string>
+    <string name="ks_all_good_text">Apps update by themselves at night, on Wi-Fi and while charging</string>
+    <string name="ks_recent_title">Updated recently</string>
+    <string name="ks_stat_version">VERSION</string>
+    <string name="ks_stat_size">SIZE</string>
+    <string name="ks_stat_source">SOURCE</string>
+    <string name="ks_short_official">Official</string>
+    <string name="ks_short_fdroid">F-Droid</string>
+    <string name="ks_short_kiro">KiroOS</string>
+    <string name="ks_whats_new">What\'s new</string>
+    <string name="ks_about">About</string>
+    <string name="ks_safe_text">Downloaded from its official source and signed by its developer: Android checks the signature on every update.</string>
+    <string name="ks_safe_kiro">A KiroOS app, signed like the system: Android checks the signature on every update.</string>
+    <string name="ks_back">Back</string>
+    <string name="ks_search_close">Close search</string>
+    <string name="ks_version_change">%1$s → %2$s</string>
+    <string name="ks_checking_short">Checking…</string>
+    <string name="ks_checked_now">CHECKED JUST NOW</string>
+    <plurals name="ks_updates">
+        <item quantity="one">%d update</item>
+        <item quantity="other">%d updates</item>
+    </plurals>
+    <plurals name="ks_apps">
+        <item quantity="one">%d APP</item>
+        <item quantity="other">%d APPS</item>
+    </plurals>
+</resources>

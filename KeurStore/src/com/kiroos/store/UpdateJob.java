@@ -30,7 +30,8 @@ import android.util.Log;
 /**
  * Silent background updates of the catalogue apps on the phone, once a day on Wi-Fi while
  * charging: the ones KeurStore can update (same package, a newer build at the official
- * source). Android accepts an update only if it is signed like the installed app.
+ * source, KiroOS apps included). Android accepts an update only if it is signed like the
+ * installed app.
  */
 public class UpdateJob extends JobService {
 
@@ -70,7 +71,7 @@ public class UpdateJob extends JobService {
     static void update(Context c) {
         Catalog.refresh(c);
         for (Catalog.App app : Catalog.all(Catalog.load(c, true))) {
-            if (!app.direct()) {
+            if (!app.updatable()) {
                 continue;
             }
             final PackageInfo have = app.installed(c.getPackageManager());

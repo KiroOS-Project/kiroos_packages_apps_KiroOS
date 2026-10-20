@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KeurStore 3 -->
+<resources>
+    <string name="ks_tab_mine">Мои приложения</string>
+    <string name="ks_essentials">Самое нужное</string>
+    <string name="ks_games_title">Игры, которые стоит попробовать</string>
+    <string name="ks_games_sub">Бесплатно, без рекламы, хорошо идут на S6</string>
+    <string name="ks_kiro_title">Сделано для KiroOS</string>
+    <string name="ks_kiro_sub">Уже на телефоне, обновляются и между обновлениями системы</string>
+    <string name="ks_checked_fmt">ПРОВЕРЕНО %1$s</string>
+    <string name="ks_checked_never">ЕЩЁ НЕ ПРОВЕРЕНО</string>
+    <string name="ks_all_good_text">Приложения обновляются сами ночью, по Wi-Fi и на зарядке</string>
+    <string name="ks_recent_title">Недавно обновлены</string>
+    <string name="ks_stat_version">ВЕРСИЯ</string>
+    <string name="ks_stat_size">РАЗМЕР</string>
+    <string name="ks_stat_source">ИСТОЧНИК</string>
+    <string name="ks_short_official">Официальный</string>
+    <string name="ks_short_fdroid">F-Droid</string>
+    <string name="ks_short_kiro">KiroOS</string>
+    <string name="ks_whats_new">Что нового</string>
+    <string name="ks_about">Описание</string>
+    <string name="ks_safe_text">Загружено из официального источника и подписано разработчиком: Android проверяет подпись при каждом обновлении.</string>
+    <string name="ks_safe_kiro">Приложение KiroOS, подписанное как система: Android проверяет подпись при каждом обновлении.</string>
+    <string name="ks_back">Назад</string>
+    <string name="ks_search_close">Закрыть поиск</string>
+    <string name="ks_version_change">%1$s → %2$s</string>
+    <string name="ks_checking_short">Проверка…</string>
+    <string name="ks_checked_now">ПРОВЕРЕНО ТОЛЬКО ЧТО</string>
+    <plurals name="ks_updates">
+        <item quantity="one">%d обновление</item>
+        <item quantity="few">%d обновления</item>
+        <item quantity="many">%d обновлений</item>
+        <item quantity="other">%d обновлений</item>
+    </plurals>
+    <plurals name="ks_apps">
+        <item quantity="one">%d ПРИЛОЖЕНИЕ</item>
+        <item quantity="few">%d ПРИЛОЖЕНИЯ</item>
+        <item quantity="many">%d ПРИЛОЖЕНИЙ</item>
+        <item quantity="other">%d ПРИЛОЖЕНИЙ</item>
+    </plurals>
+</resources>

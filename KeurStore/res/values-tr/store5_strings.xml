@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KeurStore 3 -->
+<resources>
+    <string name="ks_tab_mine">Uygulamalarım</string>
+    <string name="ks_essentials">Temel uygulamalar</string>
+    <string name="ks_games_title">Denenecek oyunlar</string>
+    <string name="ks_games_sub">Ücretsiz, reklamsız, S6\'da iyi çalışır</string>
+    <string name="ks_kiro_title">KiroOS için yapıldı</string>
+    <string name="ks_kiro_sub">Zaten telefonunda, sistem güncellemeleri arasında da güncellenir</string>
+    <string name="ks_checked_fmt">KONTROL EDİLDİ: %1$s</string>
+    <string name="ks_checked_never">HENÜZ KONTROL EDİLMEDİ</string>
+    <string name="ks_all_good_text">Uygulamalar gece, Wi-Fi\'da ve şarjdayken kendiliğinden güncellenir</string>
+    <string name="ks_recent_title">Son güncellenenler</string>
+    <string name="ks_stat_version">SÜRÜM</string>
+    <string name="ks_stat_size">BOYUT</string>
+    <string name="ks_stat_source">KAYNAK</string>
+    <string name="ks_short_official">Resmi</string>
+    <string name="ks_short_fdroid">F-Droid</string>
+    <string name="ks_short_kiro">KiroOS</string>
+    <string name="ks_whats_new">Yenilikler</string>
+    <string name="ks_about">Hakkında</string>
+    <string name="ks_safe_text">Resmi kaynağından indirildi ve geliştiricisi tarafından imzalandı: Android her güncellemede imzayı kontrol eder.</string>
+    <string name="ks_safe_kiro">Sistem gibi imzalanmış bir KiroOS uygulaması: Android her güncellemede imzayı kontrol eder.</string>
+    <string name="ks_back">Geri</string>
+    <string name="ks_search_close">Aramayı kapat</string>
+    <string name="ks_version_change">%1$s → %2$s</string>
+    <string name="ks_checking_short">Kontrol ediliyor…</string>
+    <string name="ks_checked_now">AZ ÖNCE KONTROL EDİLDİ</string>
+    <plurals name="ks_updates">
+        <item quantity="one">%d güncelleme</item>
+        <item quantity="other">%d güncelleme</item>
+    </plurals>
+    <plurals name="ks_apps">
+        <item quantity="one">%d UYGULAMA</item>
+        <item quantity="other">%d UYGULAMA</item>
+    </plurals>
+</resources>
