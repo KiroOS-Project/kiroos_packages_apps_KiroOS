@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KiroOS Beta 4.1: "What's new" after an update (WhatsNewActivity). The lists say
-     what changed since the previous public release, Developer Beta 4. -->
+<!-- KiroOS Developer Beta 5: "What's new" after an update (WhatsNewActivity). The lists say
+     what changed since the previous public release, Developer Beta 4.1. -->
 <resources>
     <string name="whatsnew_start">Start</string>
     <string name="whatsnew_title">KiroOS 1.0</string>
     <string name="whatsnew_ready">%1$s is ready</string>
-    <string name="whatsnew_previous">Developer Beta 4</string>
+    <string name="whatsnew_previous">Developer Beta 4.1</string>
     <string name="whatsnew_since">What\'s new since %1$s</string>
     <string name="whatsnew_section_new">New</string>
     <string name="whatsnew_section_improvements">Improvements</string>
@@ -15,39 +15,40 @@
     <string name="whatsnew_all_set_summary">Your apps and settings are just where you left them.</string>
     <string name="whatsnew_enjoy">Enjoy %1$s</string>
     <string-array name="whatsnew_new">
-        <item>Widgets come in up to three sizes: hold a widget and pick small, medium or large</item>
-        <item>The home clock is a widget: move it anywhere, in three sizes</item>
-        <item>Hold the brightness slider for Light / Dark theme and Eye protection</item>
-        <item>A new volume panel in the KiroOS design</item>
-        <item>Media volume in 30 steps, for finer control</item>
-        <item>New ringtone, alarm and notification sounds: Aurora, Sunrise, Glass, Drop and Spark</item>
-        <item>Speaker protection: no more crackling with loud sounds</item>
-        <item>New sounds for locking the screen and unlocking to the home</item>
-        <item>Game Space has its own place in Settings, under Battery</item>
-        <item>New, more vivid icons</item>
-        <item>More Vulkan extensions for apps and games</item>
+        <item>A new home: the clock widget in three sizes with Alarm, Timer and Stopwatch</item>
+        <item>A new app drawer: swipe up, recent apps on top and an A–Z letter rail</item>
+        <item>Pick widgets with live previews, at the size they will have</item>
+        <item>A Recorder widget in two sizes: record in one tap</item>
+        <item>Frosted glass under the drawer, folders and the widget picker</item>
+        <item>Kiro Speaker Engine: bass you can feel, louder and clean</item>
+        <item>kAI in the cloud: smarter, faster answers, 300 requests every 5 hours</item>
+        <item>kAI\'s new natural voice, on the phone and offline (Italian and English)</item>
+        <item>New 3D icons</item>
+        <item>New silk wallpapers: Midnight, Graphite and Dawn, to pick during setup</item>
+        <item>KeurStore 3: a new design, a page for every app, updates with size and what is new</item>
+        <item>KiroOS apps can be updated from KeurStore between system updates</item>
+        <item>Hold Power to open kAI; press Power to close it</item>
+        <item>Display > Navigation bar: on-screen keys on or off, no restart</item>
+        <item>Hold the clock in the status bar to show the seconds</item>
+        <item>Recommended apps during setup: Google Maps from the Play Store</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>New app animation: the app grows out of its icon and flies back into it</item>
-        <item>Widgets, the drawer and folders move on the same soft spring</item>
-        <item>More precise haptics: one short, clean tap</item>
-        <item>More natural colors on the display</item>
-        <item>kAI starts a new chat when you open it (the last one is in History)</item>
-        <item>Canvas opens from the home: hold an empty spot, Wallpaper</item>
-        <item>KiroOS Equalizer is now Kiro EQ</item>
-        <item>KiroOS Update tells you when there is no internet and checks again on its own</item>
+        <item>The power menu opens only with Power + Volume up, never by holding Power</item>
+        <item>Volume up no longer changes the volume when you open the power menu</item>
+        <item>System apps and the Play Store cannot be removed or disabled by mistake</item>
+        <item>Google Maps takes the place of Atlas</item>
+        <item>kAI understands your voice better (speech recognition in the cloud)</item>
+        <item>The Gallery opens faster</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
-        <item>Smooth even when you open and close apps quickly</item>
-        <item>Web pages open faster in every app (KOptimize WebView compiled after updates)</item>
+        <item>The update is 1.25 GB smaller (the on-device chat models are gone)</item>
+        <item>Kiro apps draw less on screen: smoother scrolling</item>
+        <item>kAI uses less battery in the background</item>
     </string-array>
     <string-array name="whatsnew_fixes">
-        <item>The open / close animation no longer looks like a jump</item>
-        <item>The speaker no longer crackles with loud ringtones and bass-heavy music</item>
-        <item>Updated phones no longer keep the LineageOS sounds</item>
-        <item>Messages now pop up at the top while you use the phone</item>
-        <item>kAI\'s Stop button always stops the answer</item>
-        <item>The keys beside Home no longer vibrate on the always-on display</item>
-        <item>No more side light while kAI writes</item>
+        <item>kAI\'s voice no longer stops after the first word: it reads the whole answer</item>
+        <item>The clock widget no longer goes blank when resized</item>
+        <item>No more distortion with Kiro Sound bass at the maximum and the bass EQ</item>
+        <item>Loud peaks no longer get past the speaker protection</item>
     </string-array>
 </resources>

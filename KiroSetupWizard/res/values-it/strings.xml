@@ -90,15 +90,15 @@
     <string name="text_default">Normale</string>
     <string name="text_large">Grande</string>
     <string name="kai_title">Ti presento kAI</string>
-    <string name="kai_summary">L\'assistente di KiroOS. Ragiona sul telefono, così le tue domande restano con te, anche offline.</string>
+    <string name="kai_summary">L\'assistente di KiroOS. Risponde in un secondo con un grande modello di IA nel cloud, gratis: fino a 300 richieste ogni 5 ore.</string>
     <string name="kai_point_talk">Tieni premuto il tasto di accensione e parla: kAI risponde ad alta voce e continua ad ascoltarti per una vera conversazione.</string>
-    <string name="kai_point_models">Keng 1.5 Flash Lite per risposte istantanee, Pro per il codice e il ragionamento passo passo.</string>
+    <string name="kai_point_models">Nessun modello da scegliere: kAI usa sempre il migliore e cerca sul web quando serve.</string>
     <string name="kai_point_actions">Risultati esatti nei calcoli, e accende o spegne torcia, Wi‑Fi e Bluetooth.</string>
     <string name="kai_power">Tieni premuto il tasto di accensione per kAI</string>
     <string name="kai_power_summary">Accensione e volume su: premuti insieme fanno uno screenshot, tenuti aprono il menu di spegnimento</string>
     <string name="highlights_title">KiroOS vs LineageOS</string>
     <string name="highlights_summary">Cosa aggiunge KiroOS al LineageOS su cui è costruito, e qualche cosa da provare subito.</string>
-    <string name="feat_kai">L\'intelligenza artificiale che vive nel telefono, con la voce e risposte anche offline</string>
+    <string name="feat_kai">Un assistente IA a cui parlare, con risposte in un secondo e la ricerca sul web</string>
     <string name="feat_edge">I bordi dello schermo si illuminano per kAI, la ricarica, la musica e le notifiche</string>
     <string name="feat_cc_t">Centro di controllo</string>
     <string name="feat_cc">Scorri dall\'alto: Wi‑Fi, Bluetooth, luminosità e riquadri animati</string>
@@ -115,7 +115,7 @@
     <string name="feat_privacy">Un pallino nella barra di stato mentre la fotocamera o il microfono sono in uso</string>
     <!-- Beta 4: KiroOS accanto a LineageOS 14.1 (la penultima pagina) -->
     <string name="vs_heading">Funzione</string>
-    <string name="vs_ai">Assistente IA sul telefono</string>
+    <string name="vs_ai">Assistente IA integrato</string>
     <string name="vs_apps">Oltre 20 app fatte apposta</string>
     <string name="vs_apps_lineage">AOSP di base</string>
     <string name="vs_cc">Centro di controllo, pannello Edge</string>

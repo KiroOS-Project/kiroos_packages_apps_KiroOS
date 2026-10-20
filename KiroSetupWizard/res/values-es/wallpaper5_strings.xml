@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the wallpaper page -->
+<resources>
+    <string name="wallpaper_title">Fondo de pantalla</string>
+    <string name="wallpaper_summary">Tres sedas hechas para KiroOS. Elige la que prefieras; puedes cambiarla cuando quieras en Canvas.</string>
+</resources>

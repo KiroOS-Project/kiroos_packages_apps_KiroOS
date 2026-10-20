@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the wallpaper page -->
+<resources>
+    <string name="wallpaper_title">Wallpaper</string>
+    <string name="wallpaper_summary">Three silks made for KiroOS. Pick the one you like; you can change it any time in Canvas.</string>
+</resources>

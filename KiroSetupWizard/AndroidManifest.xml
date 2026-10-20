@@ -23,6 +23,8 @@
     <uses-permission android:name="android.permission.STATUS_BAR" />
     <!-- 1.2: date and time, Google account and backup, location, theme and text size -->
     <uses-permission android:name="android.permission.SET_TIME" />
+    <!-- Beta 5: the wallpaper page -->
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
     <uses-permission android:name="android.permission.SET_TIME_ZONE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.BACKUP" />

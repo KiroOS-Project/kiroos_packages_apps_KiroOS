@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KiroOS Beta 4.1: "What's new" after an update (WhatsNewActivity). The lists say
-     what changed since the previous public release, Developer Beta 4. -->
+<!-- KiroOS Developer Beta 5: "What's new" after an update (WhatsNewActivity). The lists say
+     what changed since the previous public release, Developer Beta 4.1. -->
 <resources>
     <string name="whatsnew_start">Başla</string>
     <string name="whatsnew_title">KiroOS 1.0</string>
     <string name="whatsnew_ready">%1$s hazır</string>
-    <string name="whatsnew_previous">Developer Beta 4</string>
+    <string name="whatsnew_previous">Developer Beta 4.1</string>
     <string name="whatsnew_since">%1$s sürümünden bu yana yenilikler</string>
     <string name="whatsnew_section_new">Yenilikler</string>
     <string name="whatsnew_section_improvements">İyileştirmeler</string>
@@ -15,39 +15,40 @@
     <string name="whatsnew_all_set_summary">Uygulamaların ve ayarların bıraktığın yerde.</string>
     <string name="whatsnew_enjoy">%1$s keyfini çıkar</string>
     <string-array name="whatsnew_new">
-        <item>Widget\'lar üç boyuta kadar: bir widget\'a basılı tut ve küçük, orta veya büyük seç</item>
-        <item>Ana ekran saati bir widget: istediğin yere taşı, üç boyutta</item>
-        <item>Açık / koyu tema ve göz koruması için parlaklığa basılı tut</item>
-        <item>KiroOS tasarımında yeni ses paneli</item>
-        <item>Medya sesi 30 adımda, daha hassas ayar için</item>
-        <item>Yeni zil, alarm ve bildirim sesleri: Aurora, Sunrise, Glass, Drop ve Spark</item>
-        <item>Hoparlör koruması: yüksek seslerde artık cızırtı yok</item>
-        <item>Kilitleme ve kilit açma için yeni sesler</item>
-        <item>Game Space artık Ayarlar\'da Pil\'in altında</item>
-        <item>Yeni, daha canlı simgeler</item>
-        <item>Uygulama ve oyunlar için daha fazla Vulkan uzantısı</item>
+        <item>Yeni ana ekran: Alarm, Zamanlayıcı ve Kronometre ile üç boyutta saat widget\'ı</item>
+        <item>Yeni uygulama çekmecesi: yukarı kaydır, son uygulamalar üstte ve A–Z harf çubuğu</item>
+        <item>Widget\'ları alacakları boyutta canlı önizlemeyle seç</item>
+        <item>İki boyutta Ses Kaydedici widget\'ı: tek dokunuşla kaydet</item>
+        <item>Çekmece, klasörler ve widget seçimi altında buzlu cam</item>
+        <item>Kiro Speaker Engine: hissedilen bas, daha yüksek ve temiz ses</item>
+        <item>Bulutta kAI: daha akıllı ve hızlı yanıtlar, her 5 saatte 300 istek</item>
+        <item>kAI\'nin yeni doğal sesi, telefonda ve çevrimdışı (İtalyanca ve İngilizce)</item>
+        <item>Yeni 3D simgeler</item>
+        <item>Yeni ipek duvar kâğıtları: Midnight, Graphite ve Dawn, kurulumda seçilebilir</item>
+        <item>KeurStore 3: yeni tasarım, her uygulama için bir sayfa, boyut ve yeniliklerle güncellemeler</item>
+        <item>KiroOS uygulamaları sistem güncellemeleri arasında da KeurStore\'dan güncellenir</item>
+        <item>kAI\'yi açmak için Güç tuşunu basılı tut; kapatmak için Güç tuşuna bas</item>
+        <item>Ekran > Gezinme çubuğu: ekran tuşları açık veya kapalı, yeniden başlatmadan</item>
+        <item>Saniyeleri görmek için durum çubuğundaki saati basılı tut</item>
+        <item>Kurulumda önerilen uygulamalar: Play Store\'dan Google Haritalar</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Yeni animasyon: uygulama simgesinden çıkar ve ona geri döner</item>
-        <item>Widget\'lar, uygulama çekmecesi ve klasörler aynı yumuşak yayla hareket eder</item>
-        <item>Daha hassas titreşim: kısa ve net bir dokunuş</item>
-        <item>Ekranda daha doğal renkler</item>
-        <item>kAI açıldığında yeni bir sohbet başlatır (sonuncusu Geçmiş\'te)</item>
-        <item>Canvas ana ekrandan açılır: boş bir yere basılı tut, Duvar kağıdı</item>
-        <item>KiroOS Equalizer artık Kiro EQ</item>
-        <item>KiroOS Update internet olmadığını söyler ve kendisi tekrar kontrol eder</item>
+        <item>Güç menüsü yalnızca Güç + Ses açma ile açılır, Güç tuşunu basılı tutunca asla</item>
+        <item>Güç menüsünü açarken Ses açma artık sesi değiştirmez</item>
+        <item>Sistem uygulamaları ve Play Store artık yanlışlıkla kaldırılamaz veya devre dışı bırakılamaz</item>
+        <item>Atlas\'ın yerini Google Haritalar aldı</item>
+        <item>kAI sesini daha iyi anlıyor (bulutta konuşma tanıma)</item>
+        <item>Galeri daha hızlı açılıyor</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
-        <item>Uygulamaları hızlıca açıp kapatsan da akıcı</item>
-        <item>Web sayfaları tüm uygulamalarda daha hızlı açılır (KOptimize WebView güncellemelerden sonra derlenir)</item>
+        <item>Güncelleme 1,25 GB daha küçük (telefondaki sohbet modelleri kaldırıldı)</item>
+        <item>Kiro uygulamaları ekrana daha az çiziyor: daha akıcı kaydırma</item>
+        <item>kAI arka planda daha az pil harcıyor</item>
     </string-array>
     <string-array name="whatsnew_fixes">
-        <item>Açma / kapatma animasyonu artık bir sıçrama gibi görünmüyor</item>
-        <item>Hoparlör yüksek zil seslerinde ve bol baslı müzikte artık cızırdamıyor</item>
-        <item>Güncellenen telefonlar artık LineageOS seslerinde kalmıyor</item>
-        <item>Mesajlar telefonu kullanırken yeniden üstte görünür</item>
-        <item>kAI\'nin Durdur düğmesi yanıtı her zaman durdurur</item>
-        <item>Ana ekran tuşunun yanındaki tuşlar her zaman açık ekranda artık titreşmez</item>
-        <item>kAI yazarken kenarlarda ışık yok</item>
+        <item>kAI\'nin sesi artık ilk kelimede durmuyor: yanıtın tamamını okuyor</item>
+        <item>Saat widget\'ı boyutu değişince artık boş kalmıyor</item>
+        <item>Kiro Sound bası en yüksekte ve bas EQ ile artık bozulma yok</item>
+        <item>Yüksek tepeler artık hoparlör korumasını geçmiyor</item>
     </string-array>
 </resources>

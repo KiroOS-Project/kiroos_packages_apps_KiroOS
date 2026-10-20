@@ -94,6 +94,14 @@ public class SetupActivity extends Activity {
             mPages.add(new KaiPage(this));
         }
         mPages.add(new HighlightsPage(this));
+        // Beta 5: recommended apps (Google Maps from the Play Store)
+        if (AppsPage.available(this)) {
+            mPages.add(new AppsPage(this));
+        }
+        // Beta 5: the page before the last, the wallpaper (the three silks)
+        if (WallpaperPage.available(this)) {
+            mPages.add(new WallpaperPage(this));
+        }
         mPages.add(new DonePage(this));
         buildDots();
 

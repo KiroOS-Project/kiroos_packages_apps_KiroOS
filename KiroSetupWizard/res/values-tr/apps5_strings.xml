@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the recommended apps page -->
+<resources>
+    <string name="apps_title">Önerilen uygulamalar</string>
+    <string name="apps_summary">Google Haritalar ana ekranında hazır: şimdi Play Store\'dan yükle.</string>
+    <string name="apps_maps">Google Haritalar</string>
+    <string name="apps_maps_summary">Haritalar ve navigasyon · Play Store</string>
+    <string name="apps_install_maps">Google Haritalar\'ı yükle</string>
+    <string name="apps_maps_installed">Yüklendi</string>
+    <string name="apps_store_note">Diğer resmi ve açık kaynak uygulamalar KeurStore\'da seni bekliyor.</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the wallpaper page -->
+<resources>
+    <string name="wallpaper_title">Hintergrund</string>
+    <string name="wallpaper_summary">Drei Seiden, gemacht für KiroOS. Wähle deine; du kannst sie jederzeit in Canvas ändern.</string>
+</resources>

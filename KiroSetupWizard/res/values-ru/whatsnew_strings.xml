@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KiroOS Beta 4.1: "What's new" after an update (WhatsNewActivity). The lists say
-     what changed since the previous public release, Developer Beta 4. -->
+<!-- KiroOS Developer Beta 5: "What's new" after an update (WhatsNewActivity). The lists say
+     what changed since the previous public release, Developer Beta 4.1. -->
 <resources>
     <string name="whatsnew_start">Начать</string>
     <string name="whatsnew_title">KiroOS 1.0</string>
     <string name="whatsnew_ready">%1$s готова</string>
-    <string name="whatsnew_previous">Developer Beta 4</string>
+    <string name="whatsnew_previous">Developer Beta 4.1</string>
     <string name="whatsnew_since">Что нового по сравнению с %1$s</string>
     <string name="whatsnew_section_new">Новое</string>
     <string name="whatsnew_section_improvements">Улучшения</string>
@@ -15,39 +15,40 @@
     <string name="whatsnew_all_set_summary">Ваши приложения и настройки там же, где вы их оставили.</string>
     <string name="whatsnew_enjoy">Приятной работы с %1$s</string>
     <string-array name="whatsnew_new">
-        <item>Виджеты бывают трёх размеров: удерживайте виджет и выберите маленький, средний или большой</item>
-        <item>Часы на главном экране — это виджет: перемещайте их куда угодно, три размера</item>
-        <item>Удерживайте ползунок яркости: светлая / тёмная тема и защита глаз</item>
-        <item>Новая панель громкости в стиле KiroOS</item>
-        <item>Громкость медиа в 30 шагов — для более точной настройки</item>
-        <item>Новые мелодии звонка, будильника и уведомлений: Aurora, Sunrise, Glass, Drop и Spark</item>
-        <item>Защита динамика: больше никакого хрипа на громких звуках</item>
-        <item>Новые звуки блокировки и разблокировки</item>
-        <item>У Game Space свой раздел в Настройках, под Батареей</item>
-        <item>Новые, более яркие значки</item>
-        <item>Больше расширений Vulkan для приложений и игр</item>
+        <item>Новый главный экран: виджет часов трёх размеров с будильником, таймером и секундомером</item>
+        <item>Новое меню приложений: свайп вверх, недавние приложения сверху и полоса букв A–Z</item>
+        <item>Выбор виджетов с живым предпросмотром в том размере, который у них будет</item>
+        <item>Виджет Диктофона двух размеров: запись одним касанием</item>
+        <item>Матовое стекло под меню приложений, папками и выбором виджетов</item>
+        <item>Kiro Speaker Engine: ощутимый бас, громче и чище</item>
+        <item>kAI в облаке: умнее и быстрее, 300 запросов каждые 5 часов</item>
+        <item>Новый естественный голос kAI, на телефоне и без интернета (итальянский и английский)</item>
+        <item>Новые 3D-значки</item>
+        <item>Новые шёлковые обои: Midnight, Graphite и Dawn, на выбор при настройке</item>
+        <item>KeurStore 3: новый дизайн, страница каждого приложения, обновления с размером и новинками</item>
+        <item>Приложения KiroOS обновляются из KeurStore и между обновлениями системы</item>
+        <item>Удерживайте кнопку питания, чтобы открыть kAI; нажмите её, чтобы закрыть</item>
+        <item>Экран > Панель навигации: экранные кнопки вкл. или выкл. без перезагрузки</item>
+        <item>Удерживайте часы в строке состояния, чтобы видеть секунды</item>
+        <item>Рекомендуемые приложения при настройке: Google Карты из Play Маркета</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Новая анимация: приложение вырастает из значка и возвращается в него</item>
-        <item>Виджеты, меню приложений и папки движутся на той же мягкой пружине</item>
-        <item>Более точная вибрация: короткий чёткий отклик</item>
-        <item>Более естественные цвета экрана</item>
-        <item>kAI начинает новый чат при запуске (прошлый — в истории)</item>
-        <item>Canvas открывается с главного экрана: удерживайте пустое место, Обои</item>
-        <item>Эквалайзер KiroOS теперь называется Kiro EQ</item>
-        <item>KiroOS Update сообщает об отсутствии интернета и сам проверяет снова</item>
+        <item>Меню питания открывается только сочетанием Питание + Громкость вверх, а не удержанием</item>
+        <item>Громкость вверх больше не меняет громкость, когда вы открываете меню питания</item>
+        <item>Системные приложения и Play Маркет нельзя случайно удалить или отключить</item>
+        <item>Google Карты заменили Atlas</item>
+        <item>kAI лучше понимает ваш голос (распознавание речи в облаке)</item>
+        <item>Галерея открывается быстрее</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
-        <item>Плавно, даже если быстро открывать и закрывать приложения</item>
-        <item>Веб-страницы открываются быстрее во всех приложениях (KOptimize WebView компилируется после обновлений)</item>
+        <item>Обновление стало меньше на 1,25 ГБ (чат-моделей на телефоне больше нет)</item>
+        <item>Приложения Kiro меньше рисуют на экране: прокрутка плавнее</item>
+        <item>kAI тратит меньше заряда в фоне</item>
     </string-array>
     <string-array name="whatsnew_fixes">
-        <item>Открытие и закрытие приложения больше не выглядит как скачок</item>
-        <item>Динамик больше не хрипит на громких мелодиях и музыке с басами</item>
-        <item>Обновлённые телефоны больше не остаются со звуками LineageOS</item>
-        <item>Сообщения снова появляются сверху во время использования</item>
-        <item>Кнопка «Стоп» в kAI всегда останавливает ответ</item>
-        <item>Клавиши рядом с «Домой» больше не вибрируют на постоянном экране</item>
-        <item>Больше нет подсветки краёв, пока kAI пишет</item>
+        <item>Голос kAI больше не замолкает после первого слова: он читает весь ответ</item>
+        <item>Виджет часов больше не становится пустым при изменении размера</item>
+        <item>Нет искажений при басах Kiro Sound на максимуме и эквалайзере на басах</item>
+        <item>Громкие пики больше не проходят мимо защиты динамика</item>
     </string-array>
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the recommended apps page -->
+<resources>
+    <string name="apps_title">Apps recommandées</string>
+    <string name="apps_summary">Google Maps est déjà sur votre écran d\'accueil : installez-la maintenant depuis le Play Store.</string>
+    <string name="apps_maps">Google Maps</string>
+    <string name="apps_maps_summary">Cartes et navigation · Play Store</string>
+    <string name="apps_install_maps">Installer Google Maps</string>
+    <string name="apps_maps_installed">Installée</string>
+    <string name="apps_store_note">D\'autres apps officielles et open source vous attendent dans KeurStore.</string>
+</resources>

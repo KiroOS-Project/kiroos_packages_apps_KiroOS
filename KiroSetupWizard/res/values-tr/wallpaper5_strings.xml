@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the wallpaper page -->
+<resources>
+    <string name="wallpaper_title">Duvar kağıdı</string>
+    <string name="wallpaper_summary">KiroOS için yapılmış üç ipek. Beğendiğini seç; istediğin zaman Canvas\'ta değiştirebilirsin.</string>
+</resources>

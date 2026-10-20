@@ -90,16 +90,16 @@
     <string name="text_default">Default</string>
     <string name="text_large">Large</string>
     <string name="kai_title">Meet kAI</string>
-    <string name="kai_summary">The KiroOS assistant. It thinks on your phone, so your questions stay with you, even offline.</string>
+    <string name="kai_summary">The KiroOS assistant. It answers in a second with a large AI model in the cloud, free: up to 300 requests every 5 hours.</string>
     <string name="kai_point_talk">Hold the power button and talk: kAI answers out loud and keeps listening for a real conversation.</string>
-    <string name="kai_point_models">Keng 1.5 Flash Lite for instant answers, Pro for code and step-by-step reasoning.</string>
+    <string name="kai_point_models">No model to choose: kAI always uses the best one, and searches the web when it needs to.</string>
     <string name="kai_point_actions">Exact answers to calculations, and it turns the torch, Wi‑Fi and Bluetooth on or off.</string>
     <string name="kai_power">Hold the power button for kAI</string>
     <string name="kai_power_summary">Power and volume up: a quick press takes a screenshot, hold them for the power menu</string>
     <string name="highlights_title">KiroOS vs LineageOS</string>
     <string name="highlights_summary">What KiroOS adds to the LineageOS it is built on, and a few things to try first.</string>
     <string name="feat_kai_t">kAI</string>
-    <string name="feat_kai">Artificial intelligence that lives in your phone, with voice and offline answers</string>
+    <string name="feat_kai">An AI assistant you can talk to, with answers in a second and web search</string>
     <string name="feat_edge_t">Edge Glow</string>
     <string name="feat_edge">The screen edges light up for kAI, charging, music and notifications</string>
     <string name="feat_cc_t">Control center</string>
@@ -122,7 +122,7 @@
     <string name="feat_privacy">A dot in the status bar while the camera or microphone is in use</string>
     <!-- Beta 4: KiroOS next to LineageOS 14.1 (the page before the last) -->
     <string name="vs_heading">Feature</string>
-    <string name="vs_ai">On-device AI assistant</string>
+    <string name="vs_ai">AI assistant built in</string>
     <string name="vs_apps">20+ apps made for it</string>
     <string name="vs_apps_lineage">Basic AOSP</string>
     <string name="vs_cc">Control center, Edge panel</string>

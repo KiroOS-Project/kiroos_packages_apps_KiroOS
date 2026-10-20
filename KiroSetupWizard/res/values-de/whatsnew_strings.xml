@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KiroOS Beta 4.1: "What's new" after an update (WhatsNewActivity). The lists say
-     what changed since the previous public release, Developer Beta 4. -->
+<!-- KiroOS Developer Beta 5: "What's new" after an update (WhatsNewActivity). The lists say
+     what changed since the previous public release, Developer Beta 4.1. -->
 <resources>
     <string name="whatsnew_start">Los geht\'s</string>
     <string name="whatsnew_title">KiroOS 1.0</string>
     <string name="whatsnew_ready">%1$s ist bereit</string>
-    <string name="whatsnew_previous">Developer Beta 4</string>
+    <string name="whatsnew_previous">Developer Beta 4.1</string>
     <string name="whatsnew_since">Neu seit der %1$s</string>
     <string name="whatsnew_section_new">Neu</string>
     <string name="whatsnew_section_improvements">Verbesserungen</string>
@@ -15,39 +15,40 @@
     <string name="whatsnew_all_set_summary">Deine Apps und Einstellungen sind genau dort, wo du sie gelassen hast.</string>
     <string name="whatsnew_enjoy">Viel Spaß mit der %1$s</string>
     <string-array name="whatsnew_new">
-        <item>Widgets gibt es in bis zu drei Größen: Widget halten und klein, mittel oder groß wählen</item>
-        <item>Die Uhr auf dem Startbildschirm ist ein Widget: verschiebbar, in drei Größen</item>
-        <item>Helligkeitsregler halten für hell / dunkel und Augenschutz</item>
-        <item>Ein neues Lautstärkefeld im KiroOS-Design</item>
-        <item>Medienlautstärke in 30 Stufen, für feinere Einstellung</item>
-        <item>Neue Klingel-, Wecker- und Benachrichtigungstöne: Aurora, Sunrise, Glass, Drop und Spark</item>
-        <item>Lautsprecherschutz: kein Knistern mehr bei lauten Tönen</item>
-        <item>Neue Töne beim Sperren und Entsperren</item>
-        <item>Game Space hat einen eigenen Eintrag in den Einstellungen, unter Akku</item>
-        <item>Neue, lebendigere Symbole</item>
-        <item>Mehr Vulkan-Erweiterungen für Apps und Spiele</item>
+        <item>Ein neuer Startbildschirm: das Uhr-Widget in drei Größen mit Wecker, Timer und Stoppuhr</item>
+        <item>Eine neue App-Übersicht: nach oben wischen, zuletzt genutzte Apps oben und eine A–Z-Leiste</item>
+        <item>Widgets mit Live-Vorschau auswählen, in der Größe, die sie haben werden</item>
+        <item>Ein Rekorder-Widget in zwei Größen: Aufnahme mit einem Tippen</item>
+        <item>Mattglas unter der App-Übersicht, den Ordnern und der Widget-Auswahl</item>
+        <item>Kiro Speaker Engine: Bass, den man spürt, lauter und klar</item>
+        <item>kAI in der Cloud: klügere, schnellere Antworten, 300 Anfragen alle 5 Stunden</item>
+        <item>Die neue natürliche Stimme von kAI, auf dem Handy und offline (Italienisch und Englisch)</item>
+        <item>Neue 3D-Symbole</item>
+        <item>Neue Seiden-Hintergründe: Midnight, Graphite und Dawn, bei der Einrichtung wählbar</item>
+        <item>KeurStore 3: neues Design, eine Seite pro App, Updates mit Größe und Neuerungen</item>
+        <item>KiroOS-Apps lassen sich im KeurStore auch zwischen Systemupdates aktualisieren</item>
+        <item>Ein/Aus gedrückt halten öffnet kAI; Ein/Aus drücken schließt es</item>
+        <item>Display > Navigationsleiste: Bildschirmtasten an oder aus, ohne Neustart</item>
+        <item>Die Uhr in der Statusleiste gedrückt halten, um die Sekunden zu sehen</item>
+        <item>Empfohlene Apps bei der Einrichtung: Google Maps aus dem Play Store</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Neue App-Animation: die App wächst aus ihrem Symbol und fliegt dorthin zurück</item>
-        <item>Widgets, App-Übersicht und Ordner bewegen sich mit derselben weichen Feder</item>
-        <item>Präzisere Vibration: ein kurzer, klarer Impuls</item>
-        <item>Natürlichere Farben auf dem Display</item>
-        <item>kAI beginnt beim Öffnen einen neuen Chat (der letzte ist im Verlauf)</item>
-        <item>Canvas öffnet sich vom Startbildschirm: leere Stelle halten, Hintergrund</item>
-        <item>KiroOS Equalizer heißt jetzt Kiro EQ</item>
-        <item>KiroOS Update meldet fehlendes Internet und prüft selbst erneut</item>
+        <item>Das Ein/Aus-Menü öffnet sich nur mit Ein/Aus + Lauter, nie durch langes Drücken</item>
+        <item>Lauter ändert die Lautstärke nicht mehr, wenn du das Ein/Aus-Menü öffnest</item>
+        <item>System-Apps und der Play Store lassen sich nicht mehr versehentlich entfernen oder deaktivieren</item>
+        <item>Google Maps ersetzt Atlas</item>
+        <item>kAI versteht deine Stimme besser (Spracherkennung in der Cloud)</item>
+        <item>Die Galerie öffnet schneller</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
-        <item>Flüssig, auch wenn du Apps schnell öffnest und schließt</item>
-        <item>Webseiten öffnen sich in allen Apps schneller (KOptimize WebView nach Updates kompiliert)</item>
+        <item>Das Update ist 1,25 GB kleiner (die Chat-Modelle auf dem Handy sind weg)</item>
+        <item>Kiro-Apps zeichnen weniger auf den Bildschirm: flüssigeres Scrollen</item>
+        <item>kAI verbraucht im Hintergrund weniger Akku</item>
     </string-array>
     <string-array name="whatsnew_fixes">
-        <item>Das Öffnen und Schließen wirkt nicht mehr wie ein Sprung</item>
-        <item>Der Lautsprecher knistert nicht mehr bei lauten Klingeltönen und basslastiger Musik</item>
-        <item>Aktualisierte Telefone behalten nicht mehr die LineageOS-Töne</item>
-        <item>Nachrichten erscheinen beim Benutzen wieder oben</item>
-        <item>Die Stopp-Taste von kAI stoppt die Antwort immer</item>
-        <item>Die Tasten neben Home vibrieren auf dem Always-on-Display nicht mehr</item>
-        <item>Kein Leuchten mehr an den Seiten, während kAI schreibt</item>
+        <item>Die Stimme von kAI hört nicht mehr nach dem ersten Wort auf: sie liest die ganze Antwort</item>
+        <item>Das Uhr-Widget wird beim Ändern der Größe nicht mehr leer</item>
+        <item>Keine Verzerrung mehr mit Kiro-Sound-Bass am Maximum und Bass-EQ</item>
+        <item>Laute Spitzen kommen nicht mehr am Lautsprecherschutz vorbei</item>
     </string-array>
 </resources>

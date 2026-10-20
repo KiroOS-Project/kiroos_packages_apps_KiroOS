@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- KiroOS Beta 5: the wallpaper page -->
+<resources>
+    <string name="wallpaper_title">Fond d\'écran</string>
+    <string name="wallpaper_summary">Trois soies créées pour KiroOS. Choisissez la vôtre ; vous pouvez la changer à tout moment dans Canvas.</string>
+</resources>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- KiroOS Beta 4.1: "What's new" after an update (WhatsNewActivity). The lists say
-     what changed since the previous public release, Developer Beta 4. -->
+<!-- KiroOS Developer Beta 5: "What's new" after an update (WhatsNewActivity). The lists say
+     what changed since the previous public release, Developer Beta 4.1. -->
 <resources>
     <string name="whatsnew_start">Empezar</string>
     <string name="whatsnew_title">KiroOS 1.0</string>
     <string name="whatsnew_ready">%1$s está lista</string>
-    <string name="whatsnew_previous">Developer Beta 4</string>
+    <string name="whatsnew_previous">Developer Beta 4.1</string>
     <string name="whatsnew_since">Novedades desde la %1$s</string>
     <string name="whatsnew_section_new">Novedades</string>
     <string name="whatsnew_section_improvements">Mejoras</string>
@@ -15,39 +15,40 @@
     <string name="whatsnew_all_set_summary">Tus apps y ajustes están justo donde los dejaste.</string>
     <string name="whatsnew_enjoy">Disfruta de la %1$s</string>
     <string-array name="whatsnew_new">
-        <item>Los widgets tienen hasta tres tamaños: mantén pulsado un widget y elige pequeño, mediano o grande</item>
-        <item>El reloj de inicio es un widget: muévelo donde quieras, en tres tamaños</item>
-        <item>Mantén pulsado el brillo para tema claro / oscuro y protección ocular</item>
-        <item>Un nuevo panel de volumen con el diseño de KiroOS</item>
-        <item>Volumen multimedia en 30 pasos, para un ajuste más fino</item>
-        <item>Nuevos tonos de llamada, alarma y notificación: Aurora, Sunrise, Glass, Drop y Spark</item>
-        <item>Protección del altavoz: se acabaron los chasquidos con sonidos fuertes</item>
-        <item>Nuevos sonidos al bloquear y al desbloquear</item>
-        <item>Game Space tiene su propio apartado en Ajustes, debajo de Batería</item>
-        <item>Iconos nuevos, más vivos</item>
-        <item>Más extensiones Vulkan para apps y juegos</item>
+        <item>Una nueva pantalla de inicio: el widget del reloj en tres tamaños con Alarma, Temporizador y Cronómetro</item>
+        <item>Un nuevo cajón de apps: desliza hacia arriba, apps recientes arriba y una barra de letras A–Z</item>
+        <item>Elige widgets con vista previa en vivo, al tamaño que tendrán</item>
+        <item>Un widget de Grabadora en dos tamaños: graba con un toque</item>
+        <item>Cristal esmerilado bajo el cajón, las carpetas y el selector de widgets</item>
+        <item>Kiro Speaker Engine: graves que se sienten, más volumen y sonido limpio</item>
+        <item>kAI en la nube: respuestas más inteligentes y rápidas, 300 peticiones cada 5 horas</item>
+        <item>La nueva voz natural de kAI, en el teléfono y sin conexión (italiano e inglés)</item>
+        <item>Nuevos iconos 3D</item>
+        <item>Nuevos fondos de seda: Midnight, Graphite y Dawn, para elegir en la configuración</item>
+        <item>KeurStore 3: nuevo diseño, una página para cada app, actualizaciones con tamaño y novedades</item>
+        <item>Las apps de KiroOS se actualizan desde KeurStore también entre actualizaciones del sistema</item>
+        <item>Mantén pulsado Encendido para abrir kAI; pulsa Encendido para cerrarlo</item>
+        <item>Pantalla > Barra de navegación: botones en pantalla sí o no, sin reiniciar</item>
+        <item>Mantén pulsado el reloj de la barra de estado para ver los segundos</item>
+        <item>Apps recomendadas en la configuración: Google Maps desde Play Store</item>
     </string-array>
     <string-array name="whatsnew_improvements">
-        <item>Nueva animación: la app sale de su icono y vuelve a él</item>
-        <item>Widgets, cajón y carpetas se mueven con el mismo muelle suave</item>
-        <item>Vibración más precisa: un toque corto y limpio</item>
-        <item>Colores de pantalla más naturales</item>
-        <item>kAI empieza un chat nuevo al abrirlo (el último está en el historial)</item>
-        <item>Canvas se abre desde inicio: mantén pulsado un espacio vacío, Fondo</item>
-        <item>KiroOS Equalizer ahora se llama Kiro EQ</item>
-        <item>KiroOS Update avisa cuando no hay Internet y vuelve a comprobar solo</item>
+        <item>El menú de apagado se abre solo con Encendido + Subir volumen, nunca manteniendo Encendido</item>
+        <item>Subir volumen ya no cambia el volumen al abrir el menú de apagado</item>
+        <item>Las apps del sistema y Play Store ya no se pueden quitar ni desactivar por error</item>
+        <item>Google Maps ocupa el lugar de Atlas</item>
+        <item>kAI entiende mejor tu voz (reconocimiento de voz en la nube)</item>
+        <item>La Galería se abre más rápido</item>
     </string-array>
     <string-array name="whatsnew_optimizations">
-        <item>Fluido aunque abras y cierres apps muy rápido</item>
-        <item>Las páginas web se abren más rápido en todas las apps (KOptimize WebView compilado tras las actualizaciones)</item>
+        <item>La actualización ocupa 1,25 GB menos (ya no están los modelos de chat en el teléfono)</item>
+        <item>Las apps de Kiro dibujan menos en pantalla: desplazamiento más fluido</item>
+        <item>kAI gasta menos batería en segundo plano</item>
     </string-array>
     <string-array name="whatsnew_fixes">
-        <item>Abrir y cerrar una app ya no parece un salto</item>
-        <item>El altavoz ya no cruje con tonos fuertes y música con muchos graves</item>
-        <item>Los teléfonos actualizados ya no se quedan con los sonidos de LineageOS</item>
-        <item>Los mensajes vuelven a aparecer arriba mientras usas el teléfono</item>
-        <item>El botón Detener de kAI siempre detiene la respuesta</item>
-        <item>Las teclas junto a Inicio ya no vibran con la pantalla siempre activa</item>
-        <item>Ya no hay luz en los bordes mientras kAI escribe</item>
+        <item>La voz de kAI ya no se detiene en la primera palabra: lee toda la respuesta</item>
+        <item>El widget del reloj ya no se queda en blanco al cambiar su tamaño</item>
+        <item>Sin distorsión con los graves de Kiro Sound al máximo y el ecualizador de graves</item>
+        <item>Los picos fuertes ya no superan la protección del altavoz</item>
     </string-array>
 </resources>
